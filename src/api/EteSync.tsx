@@ -1,0 +1,368 @@
+import * as sjcl from 'sjcl';
+import * as URI from 'urijs';
+
+import * as fetch from 'isomorphic-fetch';
+
+import { byte, base64, stringToByteArray } from './Helpers';
+import { CryptoManager, HMAC_SIZE_BYTES } from './Crypto';
+export { CryptoManager } from './Crypto';
+
+class ExtendableError extends Error {
+  constructor(message: any) {
+    super(message);
+    Object.setPrototypeOf(this, ExtendableError.prototype);
+    this.name = this.constructor.name;
+    this.stack = (new Error(message)).stack;
+  }
+}
+
+export class HTTPError extends ExtendableError {
+  constructor(message: any) {
+    super(message);
+    Object.setPrototypeOf(this, HTTPError.prototype);
+    this.name = this.constructor.name;
+  }
+}
+
+export class IntegrityError extends ExtendableError {
+  constructor(message: any) {
+    super(message);
+    Object.setPrototypeOf(this, IntegrityError.prototype);
+    this.name = this.constructor.name;
+  }
+}
+
+// FIXME: Make secure + types
+function CastJson(json: any, to: any) {
+  return Object.assign(to, json);
+}
+
+function hmacToHex(hmac: byte[]): string {
+    return sjcl.codec.hex.fromBits(sjcl.codec.bytes.toBits(hmac));
+}
+
+export class Credentials {
+  email: string;
+  authToken: string;
+
+  constructor(email: string, authToken: string) {
+    this.email = email;
+    this.authToken = authToken;
+  }
+}
+
+export class CollectionInfo {
+  uid: string;
+  version: number;
+  type: string;
+  displayName: string;
+  description: string;
+  color: number;
+
+  constructor(json?: any) {
+    CastJson(json, this);
+  }
+}
+
+class BaseJournal<T> {
+  uid: string;
+  protected _encrypted: byte[];
+  protected _content?: string;
+
+  a(a: T) { /* Silence T unused */ }
+
+  deserialize(uid: string, content: base64) {
+    this.uid = uid;
+    this._encrypted = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(content));
+    this._content = undefined;
+  }
+
+  serialize(): {uid: string, content: base64} {
+    return {
+      uid: this.uid,
+      content: sjcl.codec.base64.fromBits(sjcl.codec.bytes.toBits(this._encrypted)),
+    };
+  }
+
+  protected verifyBase(hmac: byte[], calculated: byte[]) {
+    if (!this.hmacEqual(hmac, calculated)) {
+      throw new IntegrityError('Bad HMAC. ' + hmacToHex(hmac) + ' != ' + hmacToHex(calculated));
+    }
+  }
+
+  private hmacEqual(hmac: byte[], calculated: byte[]) {
+    return (hmac.length === calculated.length) &&
+      (hmac.every((v, i) => v === calculated[i]));
+  }
+}
+
+export class Journal extends BaseJournal<CollectionInfo> {
+  setInfo(cryptoManager: CryptoManager, info: CollectionInfo) {
+    this.uid = info.uid;
+    this._content = JSON.stringify(info);
+    const encrypted = cryptoManager.encrypt(this._content);
+    this._encrypted = this.calculateHmac(cryptoManager, encrypted).concat(encrypted);
+  }
+
+  getInfo(cryptoManager: CryptoManager): CollectionInfo {
+    if (this._content === undefined) {
+      this._content = JSON.parse(cryptoManager.decrypt(this.encryptedContent()));
+    }
+
+    this.verify(cryptoManager);
+
+    return new CollectionInfo(this._content);
+  }
+
+  calculateHmac(cryptoManager: CryptoManager, encrypted: byte[]): byte[] {
+    let prefix = stringToByteArray(this.uid);
+    return cryptoManager.hmac(prefix.concat(encrypted));
+  }
+
+  verify(cryptoManager: CryptoManager) {
+    let calculated = this.calculateHmac(cryptoManager, this.encryptedContent());
+    let hmac = this._encrypted.slice(0, HMAC_SIZE_BYTES);
+
+    super.verifyBase(hmac, calculated);
+  }
+
+  private encryptedContent(): byte[] {
+    return this._encrypted.slice(HMAC_SIZE_BYTES);
+  }
+}
+
+enum SyncEntryType {
+  Add = 'ADD',
+  Delete = 'DEL',
+  Change = 'CHANGE',
+}
+
+export class SyncEntry {
+  type: SyncEntryType;
+  content: string;
+
+  constructor(json?: any) {
+    CastJson(json, this);
+  }
+}
+
+export class Entry extends BaseJournal<SyncEntry> {
+  setSyncEntry(cryptoManager: CryptoManager, info: SyncEntry, prevUid: string | null) {
+    this._content = JSON.stringify(info);
+    this._encrypted = cryptoManager.encrypt(this._content);
+    this.uid = hmacToHex(this.calculateHmac(cryptoManager, this._encrypted, prevUid));
+  }
+
+  getSyncEntry(cryptoManager: CryptoManager, prevUid: string | null): SyncEntry {
+    if (this._content === undefined) {
+      this._content = JSON.parse(cryptoManager.decrypt(this._encrypted));
+    }
+
+    this.verify(cryptoManager, prevUid);
+
+    return new SyncEntry(this._content);
+  }
+
+  verify(cryptoManager: CryptoManager, prevUid: string | null) {
+    let calculated = this.calculateHmac(cryptoManager, this._encrypted, prevUid);
+    let hmac = sjcl.codec.bytes.fromBits(sjcl.codec.hex.toBits(this.uid));
+
+    super.verifyBase(hmac, calculated);
+  }
+
+  private calculateHmac(cryptoManager: CryptoManager, encrypted: byte[], prevUid: string | null): byte[] {
+    let prefix = (prevUid !== null) ? stringToByteArray(prevUid) : [];
+    return cryptoManager.hmac(prefix.concat(encrypted));
+  }
+}
+
+// FIXME: baseUrl and apiBase should be the right type all around.
+
+class BaseNetwork {
+  apiBase: any; // FIXME
+
+  static urlExtend(_baseUrl: URL, segments: Array<string>): URL {
+    let baseUrl = _baseUrl as any;
+    baseUrl = baseUrl.clone();
+    for (const segment of segments) {
+      baseUrl.segment(segment);
+    }
+    return baseUrl.normalize();
+  }
+
+  constructor(apiBase: string) {
+    this.apiBase = URI(apiBase).normalize();
+  }
+
+  // FIXME: Get the correct type for extra
+  newCall(segments: Array<string> = [], extra: any = {}, _apiBase: URL = this.apiBase): Promise<{} | Array<any>> {
+    let apiBase = BaseNetwork.urlExtend(_apiBase, segments);
+
+    extra = Object.assign({}, extra);
+    extra.headers = Object.assign(
+      { 'Accept': 'application/json' },
+      extra.headers);
+
+    return new Promise((resolve, reject) => {
+      fetch(apiBase.toString(), extra).then((response) => {
+        response.text().then((text) => {
+          let json: any;
+          let body: any = text;
+          try {
+            json = JSON.parse(text);
+            body = json;
+          } catch (e) {
+            body = text;
+          }
+
+          if (response.ok) {
+            resolve(body);
+          } else {
+            reject(new HTTPError(json.detail));
+          }
+        }).catch((error) => {
+          reject(error);
+        });
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  }
+}
+
+export class Authenticator extends BaseNetwork {
+  constructor(apiBase: string) {
+    super(apiBase);
+    this.apiBase = BaseNetwork.urlExtend(this.apiBase, ['api-token-auth', '']);
+  }
+
+  getAuthToken(username: string, password: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      // FIXME: should be FormData but doesn't work for whatever reason
+      let form = 'username=' + encodeURIComponent(username) +
+        '&password=' + encodeURIComponent(password);
+      const extra = {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        body: form
+      };
+
+      this.newCall([], extra).then((json: {token: string}) => {
+        resolve(json.token);
+      }).catch((error: Error) => {
+        reject(error);
+      });
+    });
+  }
+}
+
+export class BaseManager extends BaseNetwork {
+  protected credentials: Credentials;
+
+  constructor(credentials: Credentials, apiBase: string, segments: Array<string>) {
+    super(apiBase);
+    this.credentials = credentials;
+    this.apiBase = BaseNetwork.urlExtend(this.apiBase, ['api', 'v1'].concat(segments));
+  }
+
+  // FIXME: Get the correct type for extra
+  newCall(segments: Array<string> = [], extra: any = {}, apiBase: any = this.apiBase): Promise<{} | Array<any>> {
+    extra = Object.assign({}, extra);
+    extra.headers = Object.assign(
+      {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'Token ' + this.credentials.authToken
+      },
+      extra.headers);
+
+    return super.newCall(segments, extra, apiBase);
+  }
+}
+
+export class JournalManager extends BaseManager {
+  constructor(credentials: Credentials, apiBase: string) {
+    super(credentials, apiBase, ['journals', '']);
+  }
+
+  list(): Promise<Journal[]> {
+    return new Promise((resolve, reject) => {
+      this.newCall().then((json: Array<{}>) => {
+        resolve(json.map((val: any) => {
+          let journal = new Journal();
+          journal.deserialize(val.uid, val.content);
+          return journal;
+        }));
+      }).catch((error: Error) => {
+        reject(error);
+      });
+    });
+  }
+
+  create(journal: Journal): Promise<{}> {
+    const extra = {
+      method: 'post',
+      body: JSON.stringify(journal.serialize()),
+    };
+
+    return this.newCall([], extra);
+  }
+
+  update(journal: Journal): Promise<{}> {
+    const extra = {
+      method: 'put',
+      body: JSON.stringify(journal.serialize()),
+    };
+
+    return this.newCall([journal.uid, ''], extra);
+  }
+
+  delete(journal: Journal): Promise<{}> {
+    const extra = {
+      method: 'delete',
+    };
+
+    return this.newCall([journal.uid, ''], extra);
+  }
+}
+
+export class EntryManager extends BaseManager {
+  constructor(credentials: Credentials, apiBase: string, journalId: string) {
+    super(credentials, apiBase, ['journals', journalId, 'entries', '']);
+  }
+
+  list(lastUid: string | null, limit: number = 0): Promise<Entry[]> {
+    let apiBase = this.apiBase.clone();
+    apiBase = apiBase.search({
+      last: (lastUid !== null) ? lastUid : undefined,
+      limit: (limit > 0) ? limit : undefined,
+    });
+
+    return new Promise((resolve, reject) => {
+      this.newCall(undefined, undefined, apiBase).then((json: Array<{}>) => {
+        resolve(json.map((val: any) => {
+          let entryl = new Entry();
+          entryl.deserialize(val.uid, val.content);
+          return entryl;
+        }));
+      }).catch((error: Error) => {
+        reject(error);
+      });
+    });
+  }
+
+  create(entries: Entry[], lastUid: string | null): Promise<{}> {
+    let apiBase = this.apiBase.clone();
+    apiBase = apiBase.search({
+      last: (lastUid !== null) ? lastUid : undefined,
+    });
+
+    const extra = {
+      method: 'post',
+      body: JSON.stringify(entries.map((x) => x.serialize())),
+    };
+
+    return this.newCall(undefined, extra, apiBase);
+  }
+}

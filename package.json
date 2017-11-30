@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "isomorphic-fetch": "^2.1.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts-ts": "2.8.0"
+    "react-router-dom": "^4.2.2",
+    "react-scripts-ts": "2.8.0",
+    "sjcl": "^1.0.7",
+    "urijs": "^1.16.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -14,9 +18,14 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/isomorphic-fetch": "^0.0.34",
     "@types/jest": "^21.1.8",
     "@types/node": "^8.0.53",
     "@types/react": "^16.0.25",
-    "@types/react-dom": "^16.0.3"
+    "@types/react-dom": "^16.0.3",
+    "@types/react-router": "^4.0.19",
+    "@types/react-router-dom": "^4.2.3",
+    "@types/sjcl": "^1.0.28",
+    "@types/urijs": "^1.15.34"
   }
 }

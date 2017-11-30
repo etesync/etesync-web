@@ -1,0 +1,29 @@
+import { CryptoManager, deriveKey } from './Crypto';
+import { USER, PASSWORD, keyBase64 } from './TestConstants';
+
+import { stringToByteArray } from './Helpers';
+
+it('Derive key', () => {
+  const derived = deriveKey(USER, PASSWORD);
+  expect(derived).toBe(keyBase64);
+});
+
+it('Symmetric encryption v1', () => {
+  const cryptoManager = new CryptoManager(keyBase64, 'TestSaltShouldBeJournalId', 1);
+  const clearText = 'This Is Some Test Cleartext.';
+  const cipher = cryptoManager.encrypt(clearText);
+  expect(clearText).toBe(cryptoManager.decrypt(cipher));
+
+  const expected = 'Lz+HUFzh1HdjxuGdQrBwBG1IzHT0ug6mO8fwePSbXtc=';
+  expect(expected).toBe(cryptoManager.hmac64(stringToByteArray('Some test data')));
+});
+
+it('Symmetric encryption v2', () => {
+  const cryptoManager = new CryptoManager(keyBase64, 'TestSaltShouldBeJournalId', 2);
+  const clearText = 'This Is Some Test Cleartext.';
+  const cipher = cryptoManager.encrypt(clearText);
+  expect(clearText).toBe(cryptoManager.decrypt(cipher));
+
+  const expected = 'XQ/A0gentOaE98R9wzf3zEIAHj4OH1GF8J4C6JiJupo=';
+  expect(expected).toBe(cryptoManager.hmac64(stringToByteArray('Some test data')));
+});
