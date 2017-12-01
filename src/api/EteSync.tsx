@@ -321,6 +321,18 @@ export class JournalManager extends BaseManager {
     super(credentials, apiBase, ['journals', '']);
   }
 
+  fetch(journalUid: string): Promise<Journal> {
+    return new Promise((resolve, reject) => {
+      this.newCall([journalUid, '']).then((json: JournalJson) => {
+        let journal = new Journal(json.version);
+        journal.deserialize(json);
+        resolve(journal);
+      }).catch((error: Error) => {
+        reject(error);
+      });
+    });
+  }
+
   list(): Promise<Journal[]> {
     return new Promise((resolve, reject) => {
       this.newCall().then((json: Array<{}>) => {

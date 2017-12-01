@@ -12,6 +12,7 @@ export class JournalView extends React.Component {
   };
 
   state: {
+    journal?: EteSync.Journal,
     entries: Array<EteSync.Entry>,
   };
   props: {
@@ -32,19 +33,27 @@ export class JournalView extends React.Component {
     const apiBase = this.props.etesync.serviceApiUrl;
     const journal = this.props.match.params.journalUid;
 
+    let journalManager = new EteSync.JournalManager(credentials, apiBase);
+    journalManager.fetch(journal).then((journalInstance) => {
+      this.setState(Object.assign({}, this.state, { journal: journalInstance }));
+    });
+
     let entryManager = new EteSync.EntryManager(credentials, apiBase, journal);
     entryManager.list(this.props.prevUid || null).then((entries) => {
-      this.setState({ entries });
+      this.setState(Object.assign({}, this.state, { entries }));
     });
   }
 
   render() {
+    if (this.state.journal === undefined) {
+      return (<div>Loading</div>);
+    }
+
     const derived = this.props.etesync.encryptionKey;
-    const journal = this.props.match.params.journalUid;
+    const journal = this.state.journal;
     let prevUid = this.props.prevUid || null;
     const journals = this.state.entries.map((entry) => {
-      // FIXME: actually get the correct version!
-      let cryptoManager = new EteSync.CryptoManager(derived, journal, 1);
+      let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
       let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
       prevUid = entry.uid;
       return (<li key={entry.uid}>{syncEntry.type}: {syncEntry.content}</li>);
