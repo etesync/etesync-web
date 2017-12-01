@@ -44,18 +44,22 @@ export class EteSyncContext extends React.Component {
     }
 
     return (
-      <Switch>
-        <Route
-          path={routeResolver.getRoute('home')}
-          exact={true}
-          render={() => <JournalList etesync={this.state as EteSyncContextType} />}
-        />
-        <Route
-          path={routeResolver.getRoute('journals._id')}
-          exact={true}
-          render={({match}) => <JournalView match={match} etesync={this.state as EteSyncContextType} />}
-        />
-      </Switch>
+      <div>
+        <div className="App-header">
+          <h2>Welcome to React</h2>
+        </div>
+        <Switch>
+          <Route
+            path={routeResolver.getRoute('home')}
+            exact={true}
+            render={() => <JournalList etesync={this.state as EteSyncContextType} />}
+          />
+          <Route
+            path={routeResolver.getRoute('journals._id')}
+            render={({match}) => <JournalView match={match} etesync={this.state as EteSyncContextType} />}
+          />
+        </Switch>
+      </div>
     );
   }
 }

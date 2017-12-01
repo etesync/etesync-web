@@ -55,9 +55,6 @@ export class JournalList extends React.Component {
 
     return (
       <div>
-        <div className="App-header">
-          <h2>Welcome to React</h2>
-        </div>
         <ul>
           {journals}
         </ul>
