@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router';
 import './App.css';
 
 import { JournalList } from './JournalList';
+import { JournalView } from './JournalView';
 import { RouteResolver, RouteKeysType } from './routes';
 
 interface RouteItem {
@@ -25,8 +26,7 @@ const navigationRoutes: RouteItem[] = [
     path: 'journals._id',
     exact: true,
     name: 'Journal',
-    keys: {journalUid: 1},
-    component: JournalList,
+    component: JournalView,
   },
 ];
 
