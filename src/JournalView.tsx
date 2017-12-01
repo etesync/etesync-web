@@ -1,11 +1,7 @@
 import * as React from 'react';
 
+import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
-
-const SERVICE_API = 'http://localhost:8000';
-const USER = 'hacj';
-const PASSWORD = 'hack';
-const derived = EteSync.deriveKey(USER, PASSWORD);
 
 export class JournalView extends React.Component {
   static defaultProps = {
@@ -16,8 +12,9 @@ export class JournalView extends React.Component {
     entries: Array<EteSync.Entry>,
   };
   props: {
+    etesync: EteSyncContextType
     match: any,
-    prevUid: string | null,
+    prevUid?: string | null,
   };
 
   constructor(props: any) {
@@ -28,22 +25,20 @@ export class JournalView extends React.Component {
   }
 
   componentDidMount() {
+    const credentials = this.props.etesync.credentials;
+    const apiBase = this.props.etesync.serviceApiUrl;
     const journal = this.props.match.params.journalUid;
-    let authenticator = new EteSync.Authenticator(SERVICE_API);
 
-    authenticator.getAuthToken(USER, PASSWORD).then((authToken) => {
-      const credentials = new EteSync.Credentials(USER, authToken);
-
-      let entryManager = new EteSync.EntryManager(credentials, SERVICE_API, journal);
-      entryManager.list(this.props.prevUid).then((entries) => {
-        this.setState({ entries });
-      });
+    let entryManager = new EteSync.EntryManager(credentials, apiBase, journal);
+    entryManager.list(this.props.prevUid || null).then((entries) => {
+      this.setState({ entries });
     });
   }
 
   render() {
+    const derived = this.props.etesync.encryptionKey;
     const journal = this.props.match.params.journalUid;
-    let prevUid = this.props.prevUid;
+    let prevUid = this.props.prevUid || null;
     const journals = this.state.entries.map((entry) => {
       // FIXME: actually get the correct version!
       let cryptoManager = new EteSync.CryptoManager(derived, journal, 1);

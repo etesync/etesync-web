@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
-
-const SERVICE_API = 'http://localhost:8000';
-const USER = 'test@localhost';
-const PASSWORD = 'SomePassword';
-const derived = EteSync.deriveKey(USER, PASSWORD);
 
 import { routeResolver } from './App';
 
 export class JournalList extends React.Component {
+  props: {
+    etesync: EteSyncContextType
+  };
+
   state: {
     journals: Array<EteSync.Journal>,
   };
@@ -23,23 +23,21 @@ export class JournalList extends React.Component {
   }
 
   componentDidMount() {
-    let authenticator = new EteSync.Authenticator(SERVICE_API);
+    const credentials = this.props.etesync.credentials;
+    const apiBase = this.props.etesync.serviceApiUrl;
 
-    authenticator.getAuthToken(USER, PASSWORD).then((authToken) => {
-      const credentials = new EteSync.Credentials(USER, authToken);
-
-      let journalManager = new EteSync.JournalManager(credentials, SERVICE_API);
-      journalManager.list().then((journals) => {
-        journals = journals.filter((x) => (
-          // Skip shared journals for now.
-          !x.key
-        ));
-        this.setState({ journals });
-      });
+    let journalManager = new EteSync.JournalManager(credentials, apiBase);
+    journalManager.list().then((journals) => {
+      journals = journals.filter((x) => (
+        // Skip shared journals for now.
+        !x.key
+      ));
+      this.setState({ journals });
     });
   }
 
   render() {
+    const derived = this.props.etesync.encryptionKey;
     const journals = this.state.journals.map((journal, idx) => {
       let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
       let info = journal.getInfo(cryptoManager);
