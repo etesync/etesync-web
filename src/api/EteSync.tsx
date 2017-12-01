@@ -105,11 +105,11 @@ export class Journal extends BaseJournal<CollectionInfo> {
   }
 
   getInfo(cryptoManager: CryptoManager): CollectionInfo {
+    this.verify(cryptoManager);
+
     if (this._content === undefined) {
       this._content = JSON.parse(cryptoManager.decrypt(this.encryptedContent()));
     }
-
-    this.verify(cryptoManager);
 
     return new CollectionInfo(this._content);
   }
@@ -154,11 +154,11 @@ export class Entry extends BaseJournal<SyncEntry> {
   }
 
   getSyncEntry(cryptoManager: CryptoManager, prevUid: string | null): SyncEntry {
+    this.verify(cryptoManager, prevUid);
+
     if (this._content === undefined) {
       this._content = JSON.parse(cryptoManager.decrypt(this._encrypted));
     }
-
-    this.verify(cryptoManager, prevUid);
 
     return new SyncEntry(this._content);
   }
