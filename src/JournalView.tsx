@@ -1,7 +1,10 @@
 import * as React from 'react';
+import { Route, Redirect } from 'react-router';
 
 import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
+
+import { routeResolver } from './App';
 
 export class JournalView extends React.Component {
   static defaultProps = {
@@ -49,9 +52,20 @@ export class JournalView extends React.Component {
 
     return (
       <div>
-        <ul>
-          {journals}
-        </ul>
+        <Route
+          path={routeResolver.getRoute('journals._id')}
+          exact={true}
+          render={() => <Redirect to={routeResolver.getRoute('journals._id.entries', {journalUid: journal})} />}
+        />
+        <h2>Welcome to Journal!</h2>
+        <Route
+          path={routeResolver.getRoute('journals._id.entries')}
+          render={() =>
+            <ul>
+              {journals}
+            </ul>
+          }
+        />
       </div>
     );
   }

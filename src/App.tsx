@@ -11,6 +11,12 @@ export const routeResolver = new RouteResolver({
     _base: 'journals',
     _id: {
       _base: ':journalUid',
+      entries: {
+        _base: 'entries',
+        _id: {
+          _base: ':entryUid',
+        },
+      },
     },
   },
 });
