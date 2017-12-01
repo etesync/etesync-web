@@ -8,16 +8,7 @@ const USER = 'test@localhost';
 const PASSWORD = 'SomePassword';
 const derived = EteSync.deriveKey(USER, PASSWORD);
 
-import { RouteResolver } from './routes';
-const routeResolver = new RouteResolver({
-  home: '',
-  journals: {
-    _base: 'journals',
-    _id: {
-      _base: ':journalUid',
-    },
-  },
-});
+import { routeResolver } from './App';
 
 export class JournalList extends React.Component {
   state: {

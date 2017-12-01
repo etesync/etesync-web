@@ -30,7 +30,7 @@ const navigationRoutes: RouteItem[] = [
   },
 ];
 
-const routeResolver = new RouteResolver({
+export const routeResolver = new RouteResolver({
   home: '',
   journals: {
     _base: 'journals',
