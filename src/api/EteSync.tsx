@@ -7,7 +7,7 @@ import * as fetch from 'isomorphic-fetch';
 
 import { byte, base64, stringToByteArray } from './Helpers';
 import { CryptoManager, HMAC_SIZE_BYTES } from './Crypto';
-export { CryptoManager } from './Crypto';
+export { CryptoManager, deriveKey } from './Crypto';
 
 class ExtendableError extends Error {
   constructor(message: any) {
@@ -119,6 +119,10 @@ export class Journal extends BaseJournal<JournalJson> {
   constructor(version: number = Constants.CURRENT_VERSION) {
     super();
     this._json.version = version;
+  }
+
+  get key(): base64 | undefined {
+    return this._json.key;
   }
 
   get version(): number {
