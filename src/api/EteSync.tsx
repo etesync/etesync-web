@@ -1,6 +1,8 @@
 import * as sjcl from 'sjcl';
 import * as URI from 'urijs';
 
+import * as Constants from './Constants';
+
 import * as fetch from 'isomorphic-fetch';
 
 import { byte, base64, stringToByteArray } from './Helpers';
@@ -53,7 +55,6 @@ export class Credentials {
 
 export class CollectionInfo {
   uid: string;
-  version: number;
   type: string;
   displayName: string;
   description: string;
@@ -64,24 +65,36 @@ export class CollectionInfo {
   }
 }
 
-class BaseJournal<T> {
+interface BaseJson {
   uid: string;
+  content: base64;
+}
+
+class BaseJournal<T extends BaseJson> {
+  protected _json: T;
   protected _encrypted: byte[];
   protected _content?: string;
 
-  a(a: T) { /* Silence T unused */ }
+  constructor() {
+    this._json = {} as any;
+  }
 
-  deserialize(uid: string, content: base64) {
-    this.uid = uid;
-    this._encrypted = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(content));
+  deserialize(json: T) {
+    this._json = Object.assign({}, json);
+    this._encrypted = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(json.content));
     this._content = undefined;
   }
 
-  serialize(): {uid: string, content: base64} {
-    return {
-      uid: this.uid,
-      content: sjcl.codec.base64.fromBits(sjcl.codec.bytes.toBits(this._encrypted)),
-    };
+  get uid(): string {
+    return this._json.uid;
+  }
+
+  serialize(): BaseJson {
+    return Object.assign(
+      {},
+      this._json,
+      { content: sjcl.codec.base64.fromBits(sjcl.codec.bytes.toBits(this._encrypted)) }
+    );
   }
 
   protected verifyBase(hmac: byte[], calculated: byte[]) {
@@ -96,9 +109,24 @@ class BaseJournal<T> {
   }
 }
 
-export class Journal extends BaseJournal<CollectionInfo> {
+interface JournalJson extends BaseJson {
+  version: number;
+  owner: string;
+  key?: base64;
+}
+
+export class Journal extends BaseJournal<JournalJson> {
+  constructor(version: number = Constants.CURRENT_VERSION) {
+    super();
+    this._json.version = version;
+  }
+
+  get version(): number {
+    return this._json.version;
+  }
+
   setInfo(cryptoManager: CryptoManager, info: CollectionInfo) {
-    this.uid = info.uid;
+    this._json.uid = info.uid;
     this._content = JSON.stringify(info);
     const encrypted = cryptoManager.encrypt(this._content);
     this._encrypted = this.calculateHmac(cryptoManager, encrypted).concat(encrypted);
@@ -146,11 +174,14 @@ export class SyncEntry {
   }
 }
 
-export class Entry extends BaseJournal<SyncEntry> {
+interface EntryJson extends BaseJson {
+}
+
+export class Entry extends BaseJournal<EntryJson> {
   setSyncEntry(cryptoManager: CryptoManager, info: SyncEntry, prevUid: string | null) {
     this._content = JSON.stringify(info);
     this._encrypted = cryptoManager.encrypt(this._content);
-    this.uid = hmacToHex(this.calculateHmac(cryptoManager, this._encrypted, prevUid));
+    this._json.uid = hmacToHex(this.calculateHmac(cryptoManager, this._encrypted, prevUid));
   }
 
   getSyncEntry(cryptoManager: CryptoManager, prevUid: string | null): SyncEntry {
@@ -289,9 +320,9 @@ export class JournalManager extends BaseManager {
   list(): Promise<Journal[]> {
     return new Promise((resolve, reject) => {
       this.newCall().then((json: Array<{}>) => {
-        resolve(json.map((val: any) => {
-          let journal = new Journal();
-          journal.deserialize(val.uid, val.content);
+        resolve(json.map((val: JournalJson) => {
+          let journal = new Journal(val.version);
+          journal.deserialize(val);
           return journal;
         }));
       }).catch((error: Error) => {
@@ -342,9 +373,9 @@ export class EntryManager extends BaseManager {
     return new Promise((resolve, reject) => {
       this.newCall(undefined, undefined, apiBase).then((json: Array<{}>) => {
         resolve(json.map((val: any) => {
-          let entryl = new Entry();
-          entryl.deserialize(val.uid, val.content);
-          return entryl;
+          let entry = new Entry();
+          entry.deserialize(val);
+          return entry;
         }));
       }).catch((error: Error) => {
         reject(error);
