@@ -1,18 +1,15 @@
 import * as React from 'react';
-import { Router } from 'react-router';
+import { HashRouter } from 'react-router-dom';
 import './App.css';
 
 import { JournalList } from './JournalList';
 
-import createBrowserHistory from 'history/createBrowserHistory';
-const customHistory = createBrowserHistory();
-
 class App extends React.Component {
   render() {
     return (
-      <Router history={customHistory}>
+      <HashRouter>
         <JournalList />
-      </Router>
+      </HashRouter>
     );
   }
 }
