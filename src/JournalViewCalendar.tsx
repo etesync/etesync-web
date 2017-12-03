@@ -19,10 +19,14 @@ export class JournalViewCalendar extends React.Component {
       return (<div>Loading</div>);
     }
 
-    let items: Map<string, any> = new Map();
+    let items: Map<string, ICAL.Component> = new Map();
 
     for (const syncEntry of this.props.entries) {
       let comp = new ICAL.Component(ICAL.parse(syncEntry.content)).getFirstSubcomponent('vevent');
+
+      if (comp === null) {
+        continue;
+      }
 
       const uid = comp.getFirstPropertyValue('uid');
 
@@ -34,10 +38,9 @@ export class JournalViewCalendar extends React.Component {
       }
     }
 
-    // FIXME: should be ICAL.component
-    let entries: Array<any> = Array.from(items.values()).map((value: string) => (
+    let entries = Array.from(items.values()).map((value) => (
       new ICAL.Event(value)
-    )).sort((a: any, b: any) => {
+    )).sort((a, b) => {
       if (a.summary < b.summary) {
         return -1;
       } else if (a.summary > b.summary) {

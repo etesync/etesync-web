@@ -19,7 +19,7 @@ export class JournalViewAddressBook extends React.Component {
       return (<div>Loading</div>);
     }
 
-    let items: Map<string, any> = new Map();
+    let items: Map<string, ICAL.Component> = new Map();
 
     for (const syncEntry of this.props.entries) {
       let comp = new ICAL.Component(ICAL.parse(syncEntry.content));
@@ -34,8 +34,7 @@ export class JournalViewAddressBook extends React.Component {
       }
     }
 
-    // FIXME: should be ICAL.component
-    let entries: Array<any> = Array.from(items.values()).sort((_a: any, _b: any) => {
+    let entries = Array.from(items.values()).sort((_a, _b) => {
       const a = _a.getFirstPropertyValue('fn');
       const b = _b.getFirstPropertyValue('fn');
 
