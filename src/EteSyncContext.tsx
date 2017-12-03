@@ -9,9 +9,14 @@ import * as EteSync from './api/EteSync';
 import { routeResolver } from './App';
 
 const SERVICE_API = 'http://localhost:8000';
-const USER = 'me@etesync.com';
-const PASSWORD = '';
-const derived = EteSync.deriveKey(USER, PASSWORD);
+
+const CONTEXT_SESSION_KEY = 'EteSyncContext';
+
+enum LoadState {
+  Initial = 'INIT',
+  Working = 'WORKING',
+  Done = 'DONE',
+}
 
 export interface EteSyncContextType {
     serviceApiUrl: string;
@@ -20,13 +25,47 @@ export interface EteSyncContextType {
 }
 
 export class EteSyncContext extends React.Component {
-  static state: EteSyncContextType;
+  username: HTMLInputElement;
+  password: HTMLInputElement;
+  encryptionPassword: HTMLInputElement;
 
-  componentDidMount() {
+  state: {
+    context?: EteSyncContextType;
+    loadState: LoadState;
+    error?: Error;
+  };
+
+  constructor(props: any) {
+    super(props);
+    this.state = {loadState: LoadState.Initial};
+    this.generateEncryption = this.generateEncryption.bind(this);
+
+    const contextStr = sessionStorage.getItem(CONTEXT_SESSION_KEY);
+
+    if (contextStr !== null) {
+      const context: EteSyncContextType  = JSON.parse(contextStr);
+
+      this.state = {
+        loadState: LoadState.Done,
+        context
+      };
+    }
+  }
+
+  generateEncryption() {
     let authenticator = new EteSync.Authenticator(SERVICE_API);
 
-    authenticator.getAuthToken(USER, PASSWORD).then((authToken) => {
-      const credentials = new EteSync.Credentials(USER, authToken);
+    this.setState({
+      loadState: LoadState.Working
+    });
+
+    const username = this.username.value;
+    const password = this.password.value;
+    const encryptionPassword = this.encryptionPassword.value;
+
+    authenticator.getAuthToken(username, password).then((authToken) => {
+      const credentials = new EteSync.Credentials(username, authToken);
+      const derived = EteSync.deriveKey(username, encryptionPassword);
 
       const context = {
         serviceApiUrl: SERVICE_API,
@@ -34,14 +73,43 @@ export class EteSyncContext extends React.Component {
         encryptionKey: derived,
       };
 
-      this.setState(context);
+      sessionStorage.setItem(CONTEXT_SESSION_KEY, JSON.stringify(context));
+
+      this.setState({
+        loadState: LoadState.Done,
+        context
+      });
+    }).catch((error) => {
+      this.setState({
+        loadState: LoadState.Initial,
+        error
+      });
     });
   }
 
   render() {
-    if (this.state === null) {
+    if (this.state.loadState === LoadState.Initial) {
+      return (
+        <div>
+          {(this.state.error !== undefined) && (<div>Error! {this.state.error.message}</div>)}
+          <form onSubmit={this.generateEncryption}>
+            <input type="text" placeholder="Username" ref={(input) => this.username = input as HTMLInputElement} />
+            <input type="password" placeholder="Password" ref={(input) => this.password = input as HTMLInputElement} />
+            <input
+              type="password"
+              placeholder="Encryption Password"
+              ref={(input) => this.encryptionPassword = input as HTMLInputElement}
+            />
+            <button>Submit</button>
+          </form>
+        </div>
+      );
+    } else if ((this.state.context === undefined) ||
+      (this.state.loadState === LoadState.Working)) {
       return (<div>loading</div>);
     }
+
+    let context: EteSyncContextType = this.state.context;
 
     return (
       <div>
@@ -52,11 +120,11 @@ export class EteSyncContext extends React.Component {
           <Route
             path={routeResolver.getRoute('home')}
             exact={true}
-            render={() => <JournalList etesync={this.state as EteSyncContextType} />}
+            render={() => <JournalList etesync={context} />}
           />
           <Route
             path={routeResolver.getRoute('journals._id')}
-            render={({match}) => <JournalView match={match} etesync={this.state as EteSyncContextType} />}
+            render={({match}) => <JournalView match={match} etesync={context} />}
           />
         </Switch>
       </div>
