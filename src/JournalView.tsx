@@ -64,7 +64,7 @@ export class JournalView extends React.Component {
         <Route
           path={routeResolver.getRoute('journals._id')}
           exact={true}
-          render={() => <Redirect to={routeResolver.getRoute('journals._id.entries', {journalUid: journal})} />}
+          render={() => <Redirect to={routeResolver.getRoute('journals._id.entries', {journalUid: journal.uid})} />}
         />
         <h2>Welcome to Journal!</h2>
         <Route
