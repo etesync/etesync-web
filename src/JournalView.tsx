@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Route, Redirect } from 'react-router';
 
-import * as ICAL from 'ical.js';
-
 import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
+
+import { JournalViewEntries } from './JournalViewEntries';
 
 export class JournalView extends React.Component {
   static defaultProps = {
@@ -54,24 +54,13 @@ export class JournalView extends React.Component {
     const derived = this.props.etesync.encryptionKey;
     const journal = this.state.journal;
     let prevUid = this.props.prevUid || null;
-    const journals = this.state.entries.map((entry) => {
+    const syncEntries = this.state.entries.map((entry) => {
       let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
       let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
       prevUid = entry.uid;
-      const comp = new ICAL.Component(ICAL.parse(syncEntry.content));
 
-      if (comp.name === 'vcalendar') {
-        const vevent = new ICAL.Event(comp.getFirstSubcomponent('vevent'));
-        return (<li key={entry.uid}>{syncEntry.action}: {vevent.summary} ({vevent.uid})</li>);
-      } else if (comp.name === 'vcard') {
-        const vcard = comp;
-        const name = vcard.getFirstPropertyValue('fn');
-        const uid = vcard.getFirstPropertyValue('uid');
-        return (<li key={entry.uid}>{syncEntry.action}: {name} ({uid})</li>);
-      } else {
-        return (<li key={entry.uid}>{syncEntry.action}: {syncEntry.content}</li>);
-      }
-    }).reverse();
+      return syncEntry;
+    });
 
     return (
       <div>
@@ -84,9 +73,7 @@ export class JournalView extends React.Component {
         <Route
           path={routeResolver.getRoute('journals._id.entries')}
           render={() =>
-            <ul>
-              {journals}
-            </ul>
+            <JournalViewEntries journal={journal} entries={syncEntries} />
           }
         />
       </div>
