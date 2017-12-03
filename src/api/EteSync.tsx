@@ -170,7 +170,7 @@ enum SyncEntryType {
 }
 
 export class SyncEntry {
-  type: SyncEntryType;
+  action: SyncEntryType;
   content: string;
 
   constructor(json?: any) {

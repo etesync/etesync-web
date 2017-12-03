@@ -2378,6 +2378,10 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
 
+ical.js@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/ical.js/-/ical.js-1.2.2.tgz#59b517362a8f61dce0342fe67deb7c20dd119f6e"
+
 iconv-lite@0.4.19, iconv-lite@^0.4.17, iconv-lite@~0.4.13:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
