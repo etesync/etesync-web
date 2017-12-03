@@ -9,7 +9,7 @@
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.8.0",
-    "sjcl": "^1.0.7",
+    "sjcl": "git+https://github.com/etesync/sjcl",
     "urijs": "^1.16.1"
   },
   "scripts": {
