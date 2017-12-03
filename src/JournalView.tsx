@@ -7,6 +7,8 @@ import * as EteSync from './api/EteSync';
 import { routeResolver } from './App';
 
 import { JournalViewEntries } from './JournalViewEntries';
+import { JournalViewAddressBook } from './JournalViewAddressBook';
+import { JournalViewCalendar } from './JournalViewCalendar';
 
 export class JournalView extends React.Component {
   static defaultProps = {
@@ -54,8 +56,10 @@ export class JournalView extends React.Component {
     const derived = this.props.etesync.encryptionKey;
     const journal = this.state.journal;
     let prevUid = this.props.prevUid || null;
+    const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
+    const collectionInfo = journal.getInfo(cryptoManager);
+
     const syncEntries = this.state.entries.map((entry) => {
-      let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
       let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
       prevUid = entry.uid;
 
@@ -74,6 +78,19 @@ export class JournalView extends React.Component {
           path={routeResolver.getRoute('journals._id.entries')}
           render={() =>
             <JournalViewEntries journal={journal} entries={syncEntries} />
+          }
+        />
+        <Route
+          path={routeResolver.getRoute('journals._id.items')}
+          render={() => {
+              if (collectionInfo.type === 'CALENDAR') {
+                return <JournalViewCalendar journal={journal} entries={syncEntries} />;
+              } else if (collectionInfo.type === 'ADDRESS_BOOK') {
+                return <JournalViewAddressBook journal={journal} entries={syncEntries} />;
+              } else {
+                return <div>Unsupported type</div>;
+              }
+            }
           }
         />
       </div>

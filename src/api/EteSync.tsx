@@ -163,14 +163,14 @@ export class Journal extends BaseJournal<JournalJson> {
   }
 }
 
-enum SyncEntryType {
+export enum SyncEntryAction {
   Add = 'ADD',
   Delete = 'DEL',
   Change = 'CHANGE',
 }
 
 export class SyncEntry {
-  action: SyncEntryType;
+  action: SyncEntryAction;
   content: string;
 
   constructor(json?: any) {
