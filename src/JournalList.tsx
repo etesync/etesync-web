@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { List, ListItem } from 'material-ui/List';
+
 import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
 
@@ -38,26 +40,38 @@ export class JournalList extends React.Component {
 
   render() {
     const derived = this.props.etesync.encryptionKey;
-    const journals = this.state.journals.map((journal, idx) => {
-      let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-      let info = journal.getInfo(cryptoManager);
-      return (
-        <li key={journal.uid}>
+    const journalMap = this.state.journals.reduce(
+      (ret, journal) => {
+        let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
+        let info = journal.getInfo(cryptoManager);
+        ret[info.type] = ret[info.type] || [];
+        ret[info.type].push(
           <Link
+            key={journal.uid}
             to={routeResolver.getRoute('journals._id', { journalUid: journal.uid })}
             className="Drawer-navlink"
           >
-            {info.displayName}: {info.type} ({journal.uid})
+            <ListItem>
+              {info.displayName} ({journal.uid.slice(0, 5)})
+            </ListItem>
           </Link>
-          </li>
-      );
-    });
+        );
+        return ret;
+      },
+      { CALENDAR: [],
+        ADDRESS_BOOK: []});
 
     return (
       <div>
-        <ul>
-          {journals}
-        </ul>
+        <h2>Address Books</h2>
+        <List>
+          {journalMap.ADDRESS_BOOK}
+        </List>
+
+        <h2>Calendars</h2>
+        <List>
+          {journalMap.CALENDAR}
+        </List>
       </div>
     );
   }
