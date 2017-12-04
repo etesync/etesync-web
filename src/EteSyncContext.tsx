@@ -8,7 +8,7 @@ import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
 
-const SERVICE_API = 'http://localhost:8000';
+import * as C from './Constants';
 
 const CONTEXT_SESSION_KEY = 'EteSyncContext';
 
@@ -54,7 +54,7 @@ export class EteSyncContext extends React.Component {
 
   generateEncryption(e: any) {
     e.preventDefault();
-    let authenticator = new EteSync.Authenticator(SERVICE_API);
+    let authenticator = new EteSync.Authenticator(C.serviceApiBase);
 
     this.setState({
       loadState: LoadState.Working
@@ -69,7 +69,7 @@ export class EteSyncContext extends React.Component {
       const derived = EteSync.deriveKey(username, encryptionPassword);
 
       const context = {
-        serviceApiUrl: SERVICE_API,
+        serviceApiUrl: C.serviceApiBase,
         credentials,
         encryptionKey: derived,
       };

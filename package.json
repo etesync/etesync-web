@@ -5,6 +5,7 @@
   "dependencies": {
     "ical.js": "^1.2.2",
     "isomorphic-fetch": "^2.1.1",
+    "material-ui": "^0.20.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.34",
     "@types/jest": "^21.1.8",
+    "@types/material-ui": "^0.18.5",
     "@types/node": "^8.0.53",
     "@types/react": "^16.0.25",
     "@types/react-dom": "^16.0.3",

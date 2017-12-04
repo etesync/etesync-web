@@ -18,7 +18,12 @@
   font-size: large;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.App-drawer-header {
+  background-color: #555;
+  padding: 10px;
+}
+
+.App-drawer-logo {
+  width: 60px;
+  margin-bottom: 10px;
 }
