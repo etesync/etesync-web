@@ -52,7 +52,8 @@ export class EteSyncContext extends React.Component {
     }
   }
 
-  generateEncryption() {
+  generateEncryption(e: any) {
+    e.preventDefault();
     let authenticator = new EteSync.Authenticator(SERVICE_API);
 
     this.setState({
