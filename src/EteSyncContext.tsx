@@ -1,5 +1,8 @@
 import * as React from 'react';
 import { Switch, Route, Redirect } from 'react-router';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import Toggle from 'material-ui/Toggle';
 
 import { JournalList } from './JournalList';
 import { JournalView } from './JournalView';
@@ -25,14 +28,15 @@ export interface EteSyncContextType {
 }
 
 export class EteSyncContext extends React.Component {
-  server: HTMLInputElement;
-  username: HTMLInputElement;
-  password: HTMLInputElement;
-  encryptionPassword: HTMLInputElement;
+  server: TextField;
+  username: TextField;
+  password: TextField;
+  encryptionPassword: TextField;
 
   state: {
     context?: EteSyncContextType;
     loadState: LoadState;
+    showAdvanced?: boolean;
     error?: Error;
   };
 
@@ -40,6 +44,7 @@ export class EteSyncContext extends React.Component {
     super(props);
     this.state = {loadState: LoadState.Initial};
     this.generateEncryption = this.generateEncryption.bind(this);
+    this.toggleAdvancedSettings = this.toggleAdvancedSettings.bind(this);
 
     const contextStr = sessionStorage.getItem(CONTEXT_SESSION_KEY);
 
@@ -55,7 +60,7 @@ export class EteSyncContext extends React.Component {
 
   generateEncryption(e: any) {
     e.preventDefault();
-    const server = this.server.value;
+    const server = this.state.showAdvanced ? this.server.getValue() : C.serviceApiBase;
 
     let authenticator = new EteSync.Authenticator(server);
 
@@ -63,9 +68,9 @@ export class EteSyncContext extends React.Component {
       loadState: LoadState.Working
     });
 
-    const username = this.username.value;
-    const password = this.password.value;
-    const encryptionPassword = this.encryptionPassword.value;
+    const username = this.username.getValue();
+    const password = this.password.getValue();
+    const encryptionPassword = this.encryptionPassword.getValue();
 
     authenticator.getAuthToken(username, password).then((authToken) => {
       const credentials = new EteSync.Credentials(username, authToken);
@@ -91,30 +96,57 @@ export class EteSyncContext extends React.Component {
     });
   }
 
+  toggleAdvancedSettings() {
+    this.setState(Object.assign(
+      {}, this.state,
+      {showAdvanced: !this.state.showAdvanced}));
+  }
+
   render() {
     if (this.state.loadState === LoadState.Initial) {
+      let advancedSettings = null;
+      if (this.state.showAdvanced) {
+        advancedSettings = (
+            <div>
+              <TextField
+                type="text"
+                floatingLabelText="Server"
+                ref={(input) => this.server = input as TextField}
+              />
+              <br />
+            </div>
+        );
+      }
+
       return (
         <div>
           {(this.state.error !== undefined) && (<div>Error! {this.state.error.message}</div>)}
           <form onSubmit={this.generateEncryption}>
-            <input type="text" placeholder="Username" ref={(input) => this.username = input as HTMLInputElement} />
-            <input
-              type="password"
-              placeholder="Password"
-              ref={(input) => this.password = input as HTMLInputElement}
-            />
-            <input
-              type="password"
-              placeholder="Encryption Password"
-              ref={(input) => this.encryptionPassword = input as HTMLInputElement}
-            />
-            <input
+            <TextField
               type="text"
-              placeholder="Server"
-              ref={(input) => this.server = input as HTMLInputElement}
-              defaultValue={C.serviceApiBase}
+              floatingLabelText="Username"
+              ref={(input) => this.username = input as TextField}
             />
-            <button>Submit</button>
+            <br />
+            <TextField
+              type="password"
+              floatingLabelText="Password"
+              ref={(input) => this.password = input as TextField}
+            />
+            <br />
+            <TextField
+              type="password"
+              floatingLabelText="Encryption Password"
+              ref={(input) => this.encryptionPassword = input as TextField}
+            />
+            <br />
+            <Toggle
+              label="Advanced settings"
+              toggled={this.state.showAdvanced}
+              onToggle={this.toggleAdvancedSettings}
+            />
+            {advancedSettings}
+            <RaisedButton type="submit" label="Log In" secondary={true} />
           </form>
         </div>
       );
