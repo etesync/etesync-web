@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Switch, Route } from 'react-router';
+import { Switch, Route, Redirect } from 'react-router';
 
 import { JournalList } from './JournalList';
 import { JournalView } from './JournalView';
@@ -120,6 +120,11 @@ export class EteSyncContext extends React.Component {
         <Switch>
           <Route
             path={routeResolver.getRoute('home')}
+            exact={true}
+            render={() => <Redirect to={routeResolver.getRoute('journals')} />}
+          />
+          <Route
+            path={routeResolver.getRoute('journals')}
             exact={true}
             render={() => <JournalList etesync={context} />}
           />
