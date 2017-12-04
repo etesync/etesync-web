@@ -219,9 +219,6 @@ export class EteSyncContext extends React.Component {
 
     return (
       <div>
-        <div className="App-header">
-          <h2>Welcome to React</h2>
-        </div>
         <Switch>
           <Route
             path={routeResolver.getRoute('home')}
