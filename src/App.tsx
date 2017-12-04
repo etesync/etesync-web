@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, NavLink } from 'react-router-dom';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { amber500, amber700, lightBlue500, darkBlack, white } from 'material-ui/styles/colors';
@@ -90,6 +90,7 @@ class App extends React.Component {
   render() {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
+        <HashRouter>
         <div>
           <AppBar
             title={C.appName}
@@ -108,7 +109,12 @@ class App extends React.Component {
               </div>
             </div>
             <List>
-              <ListItem primaryText="Main" leftIcon={<ActionHome />} href={routeResolver.getRoute('home')} />
+              <NavLink
+                to={routeResolver.getRoute('home')}
+                exact={true}
+              >
+                <ListItem primaryText="Main" leftIcon={<ActionHome />}  onClick={this.closeDrawer} />
+              </NavLink>
               <Divider />
               <Subheader>External Links</Subheader>
               <ListItem primaryText="Website" leftIcon={<ActionHome />} href={C.homePage} />
@@ -118,10 +124,9 @@ class App extends React.Component {
             </List>
           </Drawer>
 
-          <HashRouter>
-            <EteSyncContext />
-          </HashRouter>
+          <EteSyncContext />
         </div>
+        </HashRouter>
       </MuiThemeProvider>
     );
   }
