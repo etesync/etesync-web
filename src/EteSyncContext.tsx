@@ -135,7 +135,7 @@ export class EteSyncContext extends React.Component {
         advancedSettings = (
             <div>
               <TextField
-                type="text"
+                type="url"
                 errorText={this.state.errors.errorServer}
                 floatingLabelText="Server"
                 ref={(input) => this.server = input as TextField}
@@ -176,7 +176,7 @@ export class EteSyncContext extends React.Component {
             <h2>Please Log In</h2>
             <form style={styles.form} onSubmit={this.generateEncryption}>
               <TextField
-                type="text"
+                type="email"
                 errorText={this.state.errors.errorEmail}
                 floatingLabelText="Email"
                 ref={(input) => this.username = input as TextField}
