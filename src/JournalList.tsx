@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { List, ListItem } from 'material-ui/List';
+import Paper from 'material-ui/Paper';
 
 import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
@@ -61,8 +62,20 @@ export class JournalList extends React.Component {
       { CALENDAR: [],
         ADDRESS_BOOK: []});
 
+    const styles = {
+      holder: {
+        margin: 'auto',
+        maxWidth: 400,
+        padding: 20,
+      },
+      paper: {
+        padding: 20,
+      },
+    };
+
     return (
-      <div>
+      <div style={styles.holder}>
+      <Paper style={styles.paper} zDepth={2}>
         <h2>Address Books</h2>
         <List>
           {journalMap.ADDRESS_BOOK}
@@ -72,6 +85,7 @@ export class JournalList extends React.Component {
         <List>
           {journalMap.CALENDAR}
         </List>
+      </Paper>
       </div>
     );
   }
