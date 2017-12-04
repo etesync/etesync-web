@@ -36,17 +36,17 @@ interface FormErrors {
 }
 
 export class EteSyncContext extends React.Component {
-  server: TextField;
-  username: TextField;
-  password: TextField;
-  encryptionPassword: TextField;
-
   state: {
     context?: EteSyncContextType;
     loadState: LoadState;
     showAdvanced?: boolean;
     error?: Error;
     errors: FormErrors;
+
+    server: string;
+    username: string;
+    password: string;
+    encryptionPassword: string;
   };
 
   constructor(props: any) {
@@ -54,9 +54,14 @@ export class EteSyncContext extends React.Component {
     this.state = {
       loadState: LoadState.Initial,
       errors: {},
+      server: '',
+      username: '',
+      password: '',
+      encryptionPassword: '',
     };
     this.generateEncryption = this.generateEncryption.bind(this);
     this.toggleAdvancedSettings = this.toggleAdvancedSettings.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
 
     const contextStr = sessionStorage.getItem(CONTEXT_SESSION_KEY);
 
@@ -70,15 +75,23 @@ export class EteSyncContext extends React.Component {
     }
   }
 
+  handleInputChange(event: any) {
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({
+      [name]: value
+    });
+  }
+
   generateEncryption(e: any) {
     e.preventDefault();
-    const server = this.state.showAdvanced ? this.server.getValue() : C.serviceApiBase;
+    const server = this.state.showAdvanced ? this.state.server : C.serviceApiBase;
 
     let authenticator = new EteSync.Authenticator(server);
 
-    const username = this.username.getValue();
-    const password = this.password.getValue();
-    const encryptionPassword = this.encryptionPassword.getValue();
+    const username = this.state.username;
+    const password = this.state.password;
+    const encryptionPassword = this.state.encryptionPassword;
 
     let errors: FormErrors = {};
     const fieldRequired = 'This field is required!';
@@ -138,7 +151,9 @@ export class EteSyncContext extends React.Component {
                 type="url"
                 errorText={this.state.errors.errorServer}
                 floatingLabelText="Server"
-                ref={(input) => this.server = input as TextField}
+                name="server"
+                value={this.state.server}
+                onChange={this.handleInputChange}
               />
               <br />
             </div>
@@ -179,13 +194,17 @@ export class EteSyncContext extends React.Component {
                 type="email"
                 errorText={this.state.errors.errorEmail}
                 floatingLabelText="Email"
-                ref={(input) => this.username = input as TextField}
+                name="username"
+                value={this.state.username}
+                onChange={this.handleInputChange}
               />
               <TextField
                 type="password"
                 errorText={this.state.errors.errorPassword}
                 floatingLabelText="Password"
-                ref={(input) => this.password = input as TextField}
+                name="password"
+                value={this.state.password}
+                onChange={this.handleInputChange}
               />
               <div style={styles.forgotPassword}>
                 <a href={C.forgotPassword}>Forgot password?</a>
@@ -194,7 +213,9 @@ export class EteSyncContext extends React.Component {
                 type="password"
                 errorText={this.state.errors.errorEncryptionPassword}
                 floatingLabelText="Encryption Password"
-                ref={(input) => this.encryptionPassword = input as TextField}
+                name="encryptionPassword"
+                value={this.state.encryptionPassword}
+                onChange={this.handleInputChange}
               />
               <Toggle
                 label="Advanced settings"
@@ -212,7 +233,7 @@ export class EteSyncContext extends React.Component {
       );
     } else if ((this.state.context === undefined) ||
       (this.state.loadState === LoadState.Working)) {
-      return (<div>loading</div>);
+      return (<div>Loading</div>);
     }
 
     let context: EteSyncContextType = this.state.context;
