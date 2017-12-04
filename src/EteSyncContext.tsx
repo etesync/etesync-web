@@ -28,6 +28,13 @@ export interface EteSyncContextType {
     encryptionKey: string;
 }
 
+interface FormErrors {
+  errorEmail?: string;
+  errorPassword?: string;
+  errorEncryptionPassword?: string;
+  errorServer?: string;
+}
+
 export class EteSyncContext extends React.Component {
   server: TextField;
   username: TextField;
@@ -39,11 +46,15 @@ export class EteSyncContext extends React.Component {
     loadState: LoadState;
     showAdvanced?: boolean;
     error?: Error;
+    errors: FormErrors;
   };
 
   constructor(props: any) {
     super(props);
-    this.state = {loadState: LoadState.Initial};
+    this.state = {
+      loadState: LoadState.Initial,
+      errors: {},
+    };
     this.generateEncryption = this.generateEncryption.bind(this);
     this.toggleAdvancedSettings = this.toggleAdvancedSettings.bind(this);
 
@@ -52,10 +63,10 @@ export class EteSyncContext extends React.Component {
     if (contextStr !== null) {
       const context: EteSyncContextType  = JSON.parse(contextStr);
 
-      this.state = {
+      this.state = Object.assign({}, this.state, {
         loadState: LoadState.Done,
         context
-      };
+      });
     }
   }
 
@@ -65,13 +76,31 @@ export class EteSyncContext extends React.Component {
 
     let authenticator = new EteSync.Authenticator(server);
 
-    this.setState({
-      loadState: LoadState.Working
-    });
-
     const username = this.username.getValue();
     const password = this.password.getValue();
     const encryptionPassword = this.encryptionPassword.getValue();
+
+    let errors: FormErrors = {};
+    const fieldRequired = 'This field is required!';
+    if (!username) {
+      errors.errorEmail = fieldRequired;
+    }
+    if (!password) {
+      errors.errorPassword = fieldRequired;
+    }
+    if (!encryptionPassword) {
+      errors.errorEncryptionPassword = fieldRequired;
+    }
+    if (Object.keys(errors).length) {
+      this.setState(Object.assign(
+        {}, this.state,
+        {errors: errors}));
+      return;
+    }
+
+    this.setState({
+      loadState: LoadState.Working
+    });
 
     authenticator.getAuthToken(username, password).then((authToken) => {
       const credentials = new EteSync.Credentials(username, authToken);
@@ -111,6 +140,7 @@ export class EteSyncContext extends React.Component {
             <div>
               <TextField
                 type="text"
+                errorText={this.state.errors.errorServer}
                 floatingLabelText="Server"
                 ref={(input) => this.server = input as TextField}
               />
@@ -151,11 +181,13 @@ export class EteSyncContext extends React.Component {
             <form style={styles.form} onSubmit={this.generateEncryption}>
               <TextField
                 type="text"
+                errorText={this.state.errors.errorEmail}
                 floatingLabelText="Email"
                 ref={(input) => this.username = input as TextField}
               />
               <TextField
                 type="password"
+                errorText={this.state.errors.errorPassword}
                 floatingLabelText="Password"
                 ref={(input) => this.password = input as TextField}
               />
@@ -164,6 +196,7 @@ export class EteSyncContext extends React.Component {
               </div>
               <TextField
                 type="password"
+                errorText={this.state.errors.errorEncryptionPassword}
                 floatingLabelText="Encryption Password"
                 ref={(input) => this.encryptionPassword = input as TextField}
               />
