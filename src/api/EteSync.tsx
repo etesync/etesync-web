@@ -170,11 +170,13 @@ export enum SyncEntryAction {
 }
 
 export class SyncEntry {
+  uid?: string;
   action: SyncEntryAction;
   content: string;
 
-  constructor(json?: any) {
+  constructor(json?: any, uid?: string) {
     CastJson(json, this);
+    this.uid = uid;
   }
 }
 
@@ -195,7 +197,7 @@ export class Entry extends BaseJournal<EntryJson> {
       this._content = JSON.parse(cryptoManager.decrypt(this._encrypted));
     }
 
-    return new SyncEntry(this._content);
+    return new SyncEntry(this._content, this.uid);
   }
 
   verify(cryptoManager: CryptoManager, prevUid: string | null) {

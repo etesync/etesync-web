@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { List, ListItem } from 'material-ui/List';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import IconAdd from 'material-ui/svg-icons/content/add';
 import IconDelete from 'material-ui/svg-icons/action/delete';
 import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
@@ -13,10 +15,19 @@ export class JournalViewEntries extends React.Component {
     prevUid: null,
   };
 
+  state: {
+    dialog?: string;
+  };
+
   props: {
     journal: EteSync.Journal,
     entries: Array<EteSync.SyncEntry>,
   };
+
+  constructor(props: any) {
+    super(props);
+    this.state = {};
+  }
 
   render() {
     if (this.props.journal === undefined) {
@@ -35,41 +46,59 @@ export class JournalViewEntries extends React.Component {
         icon = (<IconDelete color="#F20C0C" />);
       }
 
+      let name;
+      let uid;
       if (comp.name === 'vcalendar') {
         const vevent = new ICAL.Event(comp.getFirstSubcomponent('vevent'));
-        return (
-          <ListItem
-            key={idx}
-            leftIcon={icon}
-            primaryText={vevent.summary}
-            secondaryText={vevent.uid}
-          />
-        );
+        name = vevent.summary;
+        uid = vevent.uid;
       } else if (comp.name === 'vcard') {
         const vcard = comp;
-        const name = vcard.getFirstPropertyValue('fn');
-        const uid = vcard.getFirstPropertyValue('uid');
-        return (
-          <ListItem
-            key={idx}
-            leftIcon={icon}
-            primaryText={name}
-            secondaryText={uid}
-          />
-        );
+        name = vcard.getFirstPropertyValue('fn');
+        uid = vcard.getFirstPropertyValue('uid');
       } else {
-        return (
-          <ListItem
-            key={idx}
-            leftIcon={icon}
-            primaryText="Error processing entry"
-          />
-        );
+        name = 'Error processing entry';
+        uid = '';
       }
+      return (
+        <ListItem
+          key={idx}
+          leftIcon={icon}
+          primaryText={name}
+          secondaryText={uid}
+          onClick={() => {
+            this.setState({
+              dialog: syncEntry.content
+            });
+          }}
+        />
+        );
     }).reverse();
 
+    const actions = [(
+      <FlatButton
+        label="Close"
+        primary={true}
+        onClick={() => {
+          this.setState({dialog: undefined});
+        }}
+      />
+      ),
+    ];
     return (
       <div>
+        <Dialog
+          title="Raw Content"
+          actions={actions}
+          modal={false}
+          autoScrollBodyContent={true}
+          open={this.state.dialog !== undefined}
+          onRequestClose={() => {
+            this.setState({dialog: undefined});
+          }}
+        >
+          <pre>{this.state.dialog}</pre>
+        </Dialog>
         <List>
           {entries}
         </List>
