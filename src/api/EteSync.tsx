@@ -165,7 +165,7 @@ export class Journal extends BaseJournal<JournalJson> {
 
 export enum SyncEntryAction {
   Add = 'ADD',
-  Delete = 'DEL',
+  Delete = 'DELETE',
   Change = 'CHANGE',
 }
 
