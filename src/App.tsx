@@ -33,7 +33,7 @@ const muiTheme = getMuiTheme({
   }
 });
 
-function getPalette(part: string): string {
+export function getPalette(part: string): string {
   const theme = muiTheme;
   if ((theme.palette === undefined) || (theme.palette[part] === undefined)) {
     return '';

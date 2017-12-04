@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Switch, Route, Redirect } from 'react-router';
+import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
@@ -9,7 +10,7 @@ import { JournalView } from './JournalView';
 
 import * as EteSync from './api/EteSync';
 
-import { routeResolver } from './App';
+import { routeResolver, getPalette } from './App';
 
 import * as C from './Constants';
 
@@ -118,36 +119,66 @@ export class EteSyncContext extends React.Component {
         );
       }
 
+      const styles = {
+        holder: {
+          margin: 'auto',
+          maxWidth: 400,
+          padding: 20,
+        },
+        paper: {
+          padding: 20,
+        },
+        form: {
+        },
+        forgotPassword: {
+          color: getPalette('accent1Color'),
+          paddingTop: 20,
+        },
+        advancedSettings: {
+          marginTop: 20,
+        },
+        submit: {
+          marginTop: 40,
+          textAlign: 'right',
+        },
+      };
+
       return (
-        <div>
-          {(this.state.error !== undefined) && (<div>Error! {this.state.error.message}</div>)}
-          <form onSubmit={this.generateEncryption}>
-            <TextField
-              type="text"
-              floatingLabelText="Username"
-              ref={(input) => this.username = input as TextField}
-            />
-            <br />
-            <TextField
-              type="password"
-              floatingLabelText="Password"
-              ref={(input) => this.password = input as TextField}
-            />
-            <br />
-            <TextField
-              type="password"
-              floatingLabelText="Encryption Password"
-              ref={(input) => this.encryptionPassword = input as TextField}
-            />
-            <br />
-            <Toggle
-              label="Advanced settings"
-              toggled={this.state.showAdvanced}
-              onToggle={this.toggleAdvancedSettings}
-            />
-            {advancedSettings}
-            <RaisedButton type="submit" label="Log In" secondary={true} />
-          </form>
+        <div style={styles.holder}>
+          <Paper zDepth={2} style={styles.paper}>
+            {(this.state.error !== undefined) && (<div>Error! {this.state.error.message}</div>)}
+            <h2>Please Log In</h2>
+            <form style={styles.form} onSubmit={this.generateEncryption}>
+              <TextField
+                type="text"
+                floatingLabelText="Email"
+                ref={(input) => this.username = input as TextField}
+              />
+              <TextField
+                type="password"
+                floatingLabelText="Password"
+                ref={(input) => this.password = input as TextField}
+              />
+              <div style={styles.forgotPassword}>
+                <a href={C.forgotPassword}>Forgot password?</a>
+              </div>
+              <TextField
+                type="password"
+                floatingLabelText="Encryption Password"
+                ref={(input) => this.encryptionPassword = input as TextField}
+              />
+              <Toggle
+                label="Advanced settings"
+                style={styles.advancedSettings}
+                toggled={this.state.showAdvanced}
+                onToggle={this.toggleAdvancedSettings}
+              />
+              {advancedSettings}
+              <div style={styles.submit}>
+                <RaisedButton type="submit" label="Log In" secondary={true} />
+              </div>
+            </form>
+          </Paper>
         </div>
       );
     } else if ((this.state.context === undefined) ||
