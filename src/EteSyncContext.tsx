@@ -25,6 +25,7 @@ export interface EteSyncContextType {
 }
 
 export class EteSyncContext extends React.Component {
+  server: HTMLInputElement;
   username: HTMLInputElement;
   password: HTMLInputElement;
   encryptionPassword: HTMLInputElement;
@@ -54,7 +55,9 @@ export class EteSyncContext extends React.Component {
 
   generateEncryption(e: any) {
     e.preventDefault();
-    let authenticator = new EteSync.Authenticator(C.serviceApiBase);
+    const server = this.server.value;
+
+    let authenticator = new EteSync.Authenticator(server);
 
     this.setState({
       loadState: LoadState.Working
@@ -69,7 +72,7 @@ export class EteSyncContext extends React.Component {
       const derived = EteSync.deriveKey(username, encryptionPassword);
 
       const context = {
-        serviceApiUrl: C.serviceApiBase,
+        serviceApiUrl: server,
         credentials,
         encryptionKey: derived,
       };
@@ -95,11 +98,21 @@ export class EteSyncContext extends React.Component {
           {(this.state.error !== undefined) && (<div>Error! {this.state.error.message}</div>)}
           <form onSubmit={this.generateEncryption}>
             <input type="text" placeholder="Username" ref={(input) => this.username = input as HTMLInputElement} />
-            <input type="password" placeholder="Password" ref={(input) => this.password = input as HTMLInputElement} />
+            <input
+              type="password"
+              placeholder="Password"
+              ref={(input) => this.password = input as HTMLInputElement}
+            />
             <input
               type="password"
               placeholder="Encryption Password"
               ref={(input) => this.encryptionPassword = input as HTMLInputElement}
+            />
+            <input
+              type="text"
+              placeholder="Server"
+              ref={(input) => this.server = input as HTMLInputElement}
+              defaultValue={C.serviceApiBase}
             />
             <button>Submit</button>
           </form>
