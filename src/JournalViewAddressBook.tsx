@@ -1,8 +1,14 @@
 import * as React from 'react';
+import { Route, Switch } from 'react-router';
+import { List, ListItem } from 'material-ui/List';
+import { Link } from 'react-router-dom';
 
 import * as ICAL from 'ical.js';
 
 import * as EteSync from './api/EteSync';
+
+import { routeResolver } from './App';
+import { JournalViewContact } from './JournalViewContact';
 
 export class JournalViewAddressBook extends React.Component {
   static defaultProps = {
@@ -47,18 +53,43 @@ export class JournalViewAddressBook extends React.Component {
       }
     });
 
-    let itemList = entries.map((entry, idx) => {
+    let itemList = entries.map((entry) => {
+      const uid = entry.getFirstPropertyValue('uid');
       const name = entry.getFirstPropertyValue('fn');
       return (
-        <li key={idx}>{name}</li>
+        <Link
+          key={uid}
+          to={routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid })}
+        >
+          <ListItem primaryText={name} />
+        </Link>
       );
     });
 
     return (
       <div>
-        <ul>
-          {itemList}
-        </ul>
+        <Switch>
+          <Route
+            path={routeResolver.getRoute('journals._id.items')}
+            exact={true}
+            render={() => (
+                <List>
+                  {itemList}
+                </List>
+              )
+            }
+          />
+          <Route
+            path={routeResolver.getRoute('journals._id.items._id')}
+            exact={true}
+            render={({match}) => {
+
+              return (
+                <JournalViewContact contact={items.get(match.params.itemUid)} />
+              );
+            }}
+          />
+        </Switch>
       </div>
     );
   }

@@ -8,6 +8,8 @@ declare module 'ical.js' {
     getFirstSubcomponent(name?: string): Component | null;
 
     getFirstPropertyValue(name?: string): string;
+
+    getAllProperties(name?: string): Array<Property>;
   }
 
   class Event {
@@ -16,5 +18,13 @@ declare module 'ical.js' {
 
     constructor(component?: Component | null,
                 options?: {strictExceptions: boolean, exepctions: Array<Component|Event>});
+  }
+
+  class Property {
+    name: string;
+    type: string;
+
+    getValues(): Array<any>;
+    toJSON(): any;
   }
 }
