@@ -87,31 +87,22 @@ export class JournalView extends React.Component {
           <Tab
             label={itemsTitle}
             containerElement={<Link to={routeResolver.getRoute('journals._id.items', {journalUid: journal.uid})} />}
-          />
+          >
+              <h2>{collectionInfo.displayName}</h2>
+              {itemsView}
+          </Tab>
           <Tab
             label="Journal Entries"
             containerElement={<Link to={routeResolver.getRoute('journals._id.entries', {journalUid: journal.uid})} />}
-          />
+          >
+              <h2>{collectionInfo.displayName}</h2>
+              <JournalViewEntries journal={journal} entries={syncEntries} />;
+          </Tab>
         </Tabs>
         <Route
           path={routeResolver.getRoute('journals._id')}
           exact={true}
           render={() => <Redirect to={routeResolver.getRoute('journals._id.items', {journalUid: journal.uid})} />}
-        />
-        <h2>{collectionInfo.displayName}</h2>
-        <Route
-          path={routeResolver.getRoute('journals._id.entries')}
-          render={() => {
-              return <JournalViewEntries journal={journal} entries={syncEntries} />;
-            }
-          }
-        />
-        <Route
-          path={routeResolver.getRoute('journals._id.items')}
-          render={() => {
-              return itemsView;
-            }
-          }
         />
       </div>
     );
