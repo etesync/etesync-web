@@ -7,6 +7,8 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import { List, ListItem } from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+import Divider from 'material-ui/Divider';
 import ActionCode from 'material-ui/svg-icons/action/code';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import ActionBugReport from 'material-ui/svg-icons/action/bug-report';
@@ -106,6 +108,9 @@ class App extends React.Component {
               </div>
             </div>
             <List>
+              <ListItem primaryText="Main" leftIcon={<ActionHome />} href={routeResolver.getRoute('home')} />
+              <Divider />
+              <Subheader>External Links</Subheader>
               <ListItem primaryText="Website" leftIcon={<ActionHome />} href={C.homePage} />
               <ListItem primaryText="FAQ" leftIcon={<ActionQuestionAnswer />} href={C.faq} />
               <ListItem primaryText="Source Code" leftIcon={<ActionCode />} href={C.sourceCode} />
