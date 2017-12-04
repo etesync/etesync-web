@@ -92,9 +92,7 @@ export class EteSyncContext extends React.Component {
       errors.errorEncryptionPassword = fieldRequired;
     }
     if (Object.keys(errors).length) {
-      this.setState(Object.assign(
-        {}, this.state,
-        {errors: errors}));
+      this.setState({errors: errors});
       return;
     }
 
@@ -127,9 +125,7 @@ export class EteSyncContext extends React.Component {
   }
 
   toggleAdvancedSettings() {
-    this.setState(Object.assign(
-      {}, this.state,
-      {showAdvanced: !this.state.showAdvanced}));
+    this.setState({showAdvanced: !this.state.showAdvanced});
   }
 
   render() {

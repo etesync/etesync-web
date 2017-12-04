@@ -39,12 +39,12 @@ export class JournalView extends React.Component {
 
     let journalManager = new EteSync.JournalManager(credentials, apiBase);
     journalManager.fetch(journal).then((journalInstance) => {
-      this.setState(Object.assign({}, this.state, { journal: journalInstance }));
+      this.setState({ journal: journalInstance });
     });
 
     let entryManager = new EteSync.EntryManager(credentials, apiBase, journal);
     entryManager.list(this.props.prevUid || null).then((entries) => {
-      this.setState(Object.assign({}, this.state, { entries }));
+      this.setState({ entries });
     });
   }
 
