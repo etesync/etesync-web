@@ -15,6 +15,8 @@ declare module 'ical.js' {
   class Event {
     uid: string;
     summary: string;
+    startDate: any;
+    endDate: any;
 
     constructor(component?: Component | null,
                 options?: {strictExceptions: boolean, exepctions: Array<Component|Event>});
