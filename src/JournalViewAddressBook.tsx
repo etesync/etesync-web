@@ -70,7 +70,7 @@ export class JournalViewAddressBook extends React.Component {
       <div>
         <Switch>
           <Route
-            path={routeResolver.getRoute('journals._id.items')}
+            path={routeResolver.getRoute('journals._id')}
             exact={true}
             render={() => (
                 <List>

@@ -1,12 +1,8 @@
 import * as React from 'react';
-import { Route, Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
-
-import { routeResolver } from './App';
 
 import { JournalViewEntries } from './JournalViewEntries';
 import { JournalViewAddressBook } from './JournalViewAddressBook';
@@ -86,24 +82,17 @@ export class JournalView extends React.Component {
         <Tabs>
           <Tab
             label={itemsTitle}
-            containerElement={<Link to={routeResolver.getRoute('journals._id.items', {journalUid: journal.uid})} />}
           >
               <h2>{collectionInfo.displayName}</h2>
               {itemsView}
           </Tab>
           <Tab
             label="Journal Entries"
-            containerElement={<Link to={routeResolver.getRoute('journals._id.entries', {journalUid: journal.uid})} />}
           >
               <h2>{collectionInfo.displayName}</h2>
               <JournalViewEntries journal={journal} entries={syncEntries} />;
           </Tab>
         </Tabs>
-        <Route
-          path={routeResolver.getRoute('journals._id')}
-          exact={true}
-          render={() => <Redirect to={routeResolver.getRoute('journals._id.items', {journalUid: journal.uid})} />}
-        />
       </div>
     );
   }
