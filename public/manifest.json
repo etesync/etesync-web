@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "EteSync",
+  "name": "EteSync - Secure, Encryted and Journaled Cloud Sync",
   "icons": [
     {
       "src": "favicon.ico",
