@@ -10,6 +10,7 @@ const loggerMiddleware = createLogger();
 
 enum Actions {
   FETCH_CREDENTIALS = 'FETCH_CREDENTIALS',
+  FETCH_JOURNALS = 'FETCH_JOURNALS',
 }
 
 export enum FetchStatus {
@@ -33,9 +34,16 @@ export interface CredentialsData {
 
 export type CredentialsType = FetchType<CredentialsData>;
 
+export type JournalsData = Array<EteSync.Journal>;
+
+export type JournalsType = FetchType<JournalsData>;
+
 export interface StoreState {
   fetchCount: number;
   credentials: CredentialsType;
+  cache: {
+    journals: JournalsType;
+  };
 }
 
 export function credentialsSuccess(creds: CredentialsData) {
@@ -61,6 +69,29 @@ export function credentialsFailure(error: Error) {
   };
 }
 
+export function journalsSuccess(value: JournalsData) {
+  return {
+    type: Actions.FETCH_JOURNALS,
+    status: FetchStatus.Success,
+    journals: value,
+  };
+}
+
+export function journalsRequest() {
+  return {
+    type: Actions.FETCH_JOURNALS,
+    status: FetchStatus.Request,
+  };
+}
+
+export function journalsFailure(error: Error) {
+  return {
+    type: Actions.FETCH_JOURNALS,
+    status: FetchStatus.Failure,
+    error
+  };
+}
+
 export function logout() {
   return {
     type: Actions.FETCH_CREDENTIALS,
@@ -77,6 +108,32 @@ function credentials(state: CredentialsType = {status: FetchStatus.Initial, valu
           return {
             status: action.status,
             value: action.credentials,
+          };
+        case FetchStatus.Failure:
+          return {
+            status: action.status,
+            value: null,
+            error: action.error,
+          };
+        default:
+          return {
+            status: action.status,
+            value: null,
+          };
+      }
+    default:
+      return state;
+  }
+}
+
+function journals(state: JournalsType = {status: FetchStatus.Initial, value: null}, action: any) {
+  switch (action.type) {
+    case Actions.FETCH_JOURNALS:
+      switch (action.status) {
+        case FetchStatus.Success:
+          return {
+            status: action.status,
+            value: action.journals,
           };
         case FetchStatus.Failure:
           return {
@@ -122,6 +179,9 @@ const credentialsPersistConfig = {
 const reducers = combineReducers({
   fetchCount,
   credentials: persistReducer(credentialsPersistConfig, credentials),
+  cache: combineReducers({
+    journals
+  })
 });
 
 export const store = createStore(

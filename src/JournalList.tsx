@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { List, ListItem } from 'material-ui/List';
@@ -8,40 +10,56 @@ import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
+import * as store from './store';
 
-export class JournalList extends React.Component {
-  props: {
-    etesync: EteSyncContextType
-  };
+interface PropsType {
+  etesync: EteSyncContextType;
+}
 
-  state: {
-    journals: Array<EteSync.Journal>,
+interface PropsTypeInner extends PropsType {
+  journals: store.JournalsType;
+}
+
+function fetchJournals(etesync: EteSyncContextType) {
+  const credentials = etesync.credentials;
+  const apiBase = etesync.serviceApiUrl;
+
+  return (dispatch: any) => {
+    dispatch(store.journalsRequest());
+
+    let journalManager = new EteSync.JournalManager(credentials, apiBase);
+    journalManager.list().then(
+      (journals) => {
+        dispatch(store.journalsSuccess(journals));
+      },
+      (error) => {
+        dispatch(store.journalsFailure(error));
+      }
+    );
   };
+}
+
+class JournalListInner extends React.Component {
+  props: PropsTypeInner;
 
   constructor(props: any) {
     super(props);
-    this.state = {
-      journals: [],
-    };
   }
 
   componentDidMount() {
-    const credentials = this.props.etesync.credentials;
-    const apiBase = this.props.etesync.serviceApiUrl;
-
-    let journalManager = new EteSync.JournalManager(credentials, apiBase);
-    journalManager.list().then((journals) => {
-      journals = journals.filter((x) => (
-        // Skip shared journals for now.
-        !x.key
-      ));
-      this.setState({ journals });
-    });
+    store.store.dispatch(fetchJournals(this.props.etesync));
   }
 
   render() {
+    if (this.props.journals.value === null) {
+      return (<div/>);
+    }
+
     const derived = this.props.etesync.encryptionKey;
-    const journalMap = this.state.journals.reduce(
+    const journalMap = this.props.journals.value.filter((x) => (
+        // Skip shared journals for now.
+        !x.key
+      )).reduce(
       (ret, journal) => {
         let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
         let info = journal.getInfo(cryptoManager);
@@ -90,3 +108,13 @@ export class JournalList extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state: store.StoreState, props: PropsType) => {
+  return {
+    journals: state.cache.journals,
+  };
+};
+
+export const JournalList = withRouter(connect(
+  mapStateToProps
+)(JournalListInner));
