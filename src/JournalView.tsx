@@ -1,5 +1,7 @@
 import * as React from 'react';
 const Fragment = (React as any).Fragment;
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import { EteSyncContextType } from './EteSyncContext';
@@ -9,56 +11,77 @@ import JournalViewEntries from './JournalViewEntries';
 import JournalViewAddressBook from './JournalViewAddressBook';
 import JournalViewCalendar from './JournalViewCalendar';
 
+import * as store from './store';
+
+interface PropsType {
+  etesync: EteSyncContextType;
+  match: any;
+}
+
+interface PropsTypeInner extends PropsType {
+  journals: store.JournalsType;
+  entries: store.EntriesType;
+}
+
+function fetchEntries(etesync: EteSyncContextType, journalUid: string) {
+  const credentials = etesync.credentials;
+  const apiBase = etesync.serviceApiUrl;
+
+  return (dispatch: any) => {
+    const prevUid = null;
+    dispatch(store.entriesRequest(journalUid));
+
+    let entryManager = new EteSync.EntryManager(credentials, apiBase, journalUid);
+    entryManager.list(prevUid).then(
+      (entries) => {
+        dispatch(store.entriesSuccess(journalUid, entries));
+      },
+      (error) => {
+        dispatch(store.entriesFailure(journalUid, error));
+      }
+    );
+  };
+}
+
 class JournalView extends React.Component {
   static defaultProps = {
     prevUid: null,
   };
 
-  state: {
-    journal?: EteSync.Journal,
-    entries: Array<EteSync.Entry>,
-  };
-  props: {
-    etesync: EteSyncContextType
-    match: any,
-    prevUid?: string | null,
-  };
+  props: PropsTypeInner;
 
   constructor(props: any) {
     super(props);
-    this.state = {
-      entries: [],
-    };
   }
 
   componentDidMount() {
-    const credentials = this.props.etesync.credentials;
-    const apiBase = this.props.etesync.serviceApiUrl;
     const journal = this.props.match.params.journalUid;
 
-    let journalManager = new EteSync.JournalManager(credentials, apiBase);
-    journalManager.fetch(journal).then((journalInstance) => {
-      this.setState({ journal: journalInstance });
-    });
-
-    let entryManager = new EteSync.EntryManager(credentials, apiBase, journal);
-    entryManager.list(this.props.prevUid || null).then((entries) => {
-      this.setState({ entries });
-    });
+    store.store.dispatch(fetchEntries(this.props.etesync, journal));
   }
 
   render() {
-    if (this.state.journal === undefined) {
+    const journalUid = this.props.match.params.journalUid;
+    const entries = this.props.entries[journalUid];
+
+    (window as any).me = this.props.entries;
+    if ((this.props.journals.value === null) ||
+      (!entries) || (entries.value === null)) {
       return (<div>Loading</div>);
     }
 
+    const journal = this.props.journals.value.find((x) => (x.uid === journalUid));
+
+    if (journal === undefined) {
+      return (<div>Journal not found!</div>);
+    }
+
     const derived = this.props.etesync.encryptionKey;
-    const journal = this.state.journal;
-    let prevUid = this.props.prevUid || null;
+    let prevUid: string | null = null;
     const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
     const collectionInfo = journal.getInfo(cryptoManager);
 
-    const syncEntries = this.state.entries.map((entry) => {
+    const syncEntries = entries.value.map((entry) => {
       let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
       prevUid = entry.uid;
 
@@ -99,4 +122,13 @@ class JournalView extends React.Component {
   }
 }
 
-export default JournalView;
+const mapStateToProps = (state: store.StoreState, props: PropsType) => {
+  return {
+    journals: state.cache.journals,
+    entries: state.cache.entries,
+  };
+};
+
+export default withRouter(connect(
+  mapStateToProps
+)(JournalView));

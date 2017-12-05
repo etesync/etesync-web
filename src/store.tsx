@@ -11,6 +11,7 @@ const loggerMiddleware = createLogger();
 enum Actions {
   FETCH_CREDENTIALS = 'FETCH_CREDENTIALS',
   FETCH_JOURNALS = 'FETCH_JOURNALS',
+  FETCH_ENTRIES = 'FETCH_ENTRIES',
 }
 
 export enum FetchStatus {
@@ -38,11 +39,16 @@ export type JournalsData = Array<EteSync.Journal>;
 
 export type JournalsType = FetchType<JournalsData>;
 
+export type EntriesData = Array<EteSync.Entry>;
+
+export type EntriesType = {[key: string]: FetchType<EntriesData>};
+
 export interface StoreState {
   fetchCount: number;
   credentials: CredentialsType;
   cache: {
     journals: JournalsType;
+    entries: EntriesType;
   };
 }
 
@@ -88,7 +94,33 @@ export function journalsFailure(error: Error) {
   return {
     type: Actions.FETCH_JOURNALS,
     status: FetchStatus.Failure,
-    error
+    error,
+  };
+}
+
+export function entriesSuccess(journal: string, value: EntriesData) {
+  return {
+    type: Actions.FETCH_ENTRIES,
+    status: FetchStatus.Success,
+    entries: value,
+    journal,
+  };
+}
+
+export function entriesRequest(journal: string) {
+  return {
+    type: Actions.FETCH_ENTRIES,
+    status: FetchStatus.Request,
+    journal,
+  };
+}
+
+export function entriesFailure(journal: string, error: Error) {
+  return {
+    type: Actions.FETCH_ENTRIES,
+    status: FetchStatus.Failure,
+    journal,
+    error,
   };
 }
 
@@ -152,6 +184,38 @@ function journals(state: JournalsType = {status: FetchStatus.Initial, value: nul
   }
 }
 
+function entries(state: EntriesType = {}, action: any) {
+  switch (action.type) {
+    case Actions.FETCH_ENTRIES:
+      switch (action.status) {
+        case FetchStatus.Success:
+          return { ...state,
+            [action.journal]: {
+              status: action.status,
+              value: action.entries,
+            },
+          };
+        case FetchStatus.Failure:
+          return { ...state,
+            [action.journal]: {
+              status: action.status,
+              value: null,
+              error: action.error,
+            },
+          };
+        default:
+          return { ...state,
+            [action.journal]: {
+              status: action.status,
+              value: null,
+            },
+          };
+      }
+    default:
+      return state;
+  }
+}
+
 function fetchCount(state: number = 0, action: any) {
   if ('status' in action) {
     switch (action.status) {
@@ -180,7 +244,8 @@ const reducers = combineReducers({
   fetchCount,
   credentials: persistReducer(credentialsPersistConfig, credentials),
   cache: combineReducers({
-    journals
+    journals,
+    entries,
   })
 });
 
