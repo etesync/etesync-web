@@ -127,7 +127,7 @@ export class EteSyncContextInner extends React.Component {
 
   render() {
     if (((this.props.credentials.status === store.FetchStatus.Initial) &&
-      (this.props.credentials.credentials === null)) ||
+      (this.props.credentials.value === null)) ||
       (this.props.credentials.status === store.FetchStatus.Failure)) {
 
       let advancedSettings = null;
@@ -222,7 +222,7 @@ export class EteSyncContextInner extends React.Component {
       return (<div>Loading</div>);
     }
 
-    let context = this.props.credentials.credentials as store.CredentialsData;
+    let context = this.props.credentials.value as store.CredentialsData;
 
     return (
       <div>

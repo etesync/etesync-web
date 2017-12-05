@@ -19,17 +19,19 @@ export enum FetchStatus {
   Success = 'SUCCESS',
 }
 
+export interface FetchType<T> {
+  status: FetchStatus;
+  value: T | null;
+  error?: Error;
+}
+
 export interface CredentialsData {
   serviceApiUrl: string;
   credentials: EteSync.Credentials;
   encryptionKey: string;
 }
 
-export interface CredentialsType {
-  status: FetchStatus;
-  credentials: CredentialsData | null;
-  error?: Error;
-}
+export type CredentialsType = FetchType<CredentialsData>;
 
 export interface StoreState {
   fetchCount: number;
@@ -66,7 +68,7 @@ export function logout() {
   };
 }
 
-function credentials(state: CredentialsType = {status: FetchStatus.Initial, credentials: null},
+function credentials(state: CredentialsType = {status: FetchStatus.Initial, value: null},
                      action: any): CredentialsType {
   switch (action.type) {
     case Actions.FETCH_CREDENTIALS:
@@ -74,18 +76,18 @@ function credentials(state: CredentialsType = {status: FetchStatus.Initial, cred
         case FetchStatus.Success:
           return {
             status: action.status,
-            credentials: action.credentials,
+            value: action.credentials,
           };
         case FetchStatus.Failure:
           return {
             status: action.status,
-            credentials: null,
+            value: null,
             error: action.error,
           };
         default:
           return {
             status: action.status,
-            credentials: null,
+            value: null,
           };
       }
     default:
@@ -114,7 +116,7 @@ function fetchCount(state: number = 0, action: any) {
 const credentialsPersistConfig = {
   key: 'credentials',
   storage: session,
-  whitelist: ['credentials'],
+  whitelist: ['value'],
 };
 
 const reducers = combineReducers({
