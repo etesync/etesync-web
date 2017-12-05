@@ -116,6 +116,8 @@ export class EteSyncContextInner extends React.Component {
       return;
     }
 
+    this.setState({password: '', encryptionPassword: ''});
+
     store.store.dispatch(fetchCredentials(username, password, encryptionPassword, server));
   }
 
