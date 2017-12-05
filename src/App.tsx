@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { HashRouter, NavLink } from 'react-router-dom';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -13,6 +14,7 @@ import ActionCode from 'material-ui/svg-icons/action/code';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import ActionBugReport from 'material-ui/svg-icons/action/bug-report';
 import ActionQuestionAnswer from 'material-ui/svg-icons/action/question-answer';
+import LogoutIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 
@@ -22,6 +24,7 @@ import { EteSyncContext } from './EteSyncContext';
 import { RouteResolver } from './routes';
 
 import * as C from './Constants';
+import * as store from './store';
 
 const logo = require('./images/logo.svg');
 
@@ -71,12 +74,17 @@ class App extends React.Component {
     drawerOpen: boolean,
   };
 
+  props: {
+    credentials?: store.CredentialsData;
+  };
+
   constructor(props: any) {
     super(props);
     this.state = { drawerOpen: false };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   toggleDrawer() {
@@ -85,6 +93,11 @@ class App extends React.Component {
 
   closeDrawer() {
     this.setState({drawerOpen: false});
+  }
+
+  logout() {
+    store.store.dispatch(store.logout());
+    this.closeDrawer();
   }
 
   render() {
@@ -115,6 +128,7 @@ class App extends React.Component {
               >
                 <ListItem primaryText="Main" leftIcon={<ActionHome />}  onClick={this.closeDrawer} />
               </NavLink>
+              <ListItem primaryText="Log Out" leftIcon={<LogoutIcon/>}  onClick={this.logout} />
               <Divider />
               <Subheader>External Links</Subheader>
               <ListItem primaryText="Website" leftIcon={<ActionHome />} href={C.homePage} />
@@ -132,4 +146,12 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state: store.StoreState) => {
+  return {
+    credentials: state.credentials,
+  };
+};
+
+export default connect(
+  mapStateToProps
+)(App);

@@ -125,7 +125,7 @@ export class EteSyncContextInner extends React.Component {
 
   render() {
     if (((this.props.credentials.status === store.FetchStatus.Initial) &&
-      (this.props.credentials.credentials === undefined)) ||
+      (this.props.credentials.credentials === null)) ||
       (this.props.credentials.status === store.FetchStatus.Failure)) {
 
       let advancedSettings = null;

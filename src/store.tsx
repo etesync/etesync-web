@@ -27,8 +27,8 @@ export interface CredentialsData {
 
 export interface CredentialsType {
   status: FetchStatus;
+  credentials: CredentialsData | null;
   error?: Error;
-  credentials?: CredentialsData;
 }
 
 export interface StoreState {
@@ -59,18 +59,34 @@ export function credentialsFailure(error: Error) {
   };
 }
 
-function credentials(state: CredentialsType = {status: FetchStatus.Initial}, action: any) {
+export function logout() {
+  return {
+    type: Actions.FETCH_CREDENTIALS,
+    status: FetchStatus.Initial,
+  };
+}
+
+function credentials(state: CredentialsType = {status: FetchStatus.Initial, credentials: null},
+                     action: any): CredentialsType {
   switch (action.type) {
     case Actions.FETCH_CREDENTIALS:
-      if (action.status === FetchStatus.Success) {
-        return {
-          status: action.status,
-          credentials: action.credentials,
-        };
-      } else {
-        return {
-          status: action.status,
-        };
+      switch (action.status) {
+        case FetchStatus.Success:
+          return {
+            status: action.status,
+            credentials: action.credentials,
+          };
+        case FetchStatus.Failure:
+          return {
+            status: action.status,
+            credentials: null,
+            error: action.error,
+          };
+        default:
+          return {
+            status: action.status,
+            credentials: null,
+          };
       }
     default:
       return state;
@@ -81,10 +97,14 @@ function fetchCount(state: number = 0, action: any) {
   // FIXME: Make it automatic by action properties.
   switch (action.type) {
     case Actions.FETCH_CREDENTIALS:
-      if (action.status === FetchStatus.Request) {
-        return state + 1;
-      } else {
-        return state - 1;
+      switch (action.status) {
+        case FetchStatus.Request:
+          return state + 1;
+        case FetchStatus.Success:
+        case FetchStatus.Failure:
+          return state - 1;
+        default:
+          return state;
       }
     default:
       return state;
