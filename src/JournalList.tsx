@@ -68,7 +68,6 @@ class JournalListInner extends React.Component {
           <Link
             key={journal.uid}
             to={routeResolver.getRoute('journals._id', { journalUid: journal.uid })}
-            className="Drawer-navlink"
           >
             <ListItem>
               {info.displayName} ({journal.uid.slice(0, 5)})
