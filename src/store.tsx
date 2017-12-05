@@ -96,18 +96,18 @@ function credentials(state: CredentialsType = {status: FetchStatus.Initial, valu
 }
 
 function fetchCount(state: number = 0, action: any) {
-  // FIXME: Make it automatic by action properties.
+  if ('status' in action) {
+    switch (action.status) {
+      case FetchStatus.Request:
+        return state + 1;
+      case FetchStatus.Success:
+      case FetchStatus.Failure:
+        return state - 1;
+      default:
+        return state;
+    }
+  }
   switch (action.type) {
-    case Actions.FETCH_CREDENTIALS:
-      switch (action.status) {
-        case FetchStatus.Request:
-          return state + 1;
-        case FetchStatus.Success:
-        case FetchStatus.Failure:
-          return state - 1;
-        default:
-          return state;
-      }
     default:
       return state;
   }
