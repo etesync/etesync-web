@@ -1,4 +1,5 @@
 import * as React from 'react';
+const Fragment = (React as any).Fragment;
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import { EteSyncContextType } from './EteSyncContext';
@@ -78,7 +79,7 @@ export class JournalView extends React.Component {
     }
 
     return (
-      <div>
+      <Fragment>
         <Tabs>
           <Tab
             label={itemsTitle}
@@ -93,7 +94,7 @@ export class JournalView extends React.Component {
               <JournalViewEntries journal={journal} entries={syncEntries} />;
           </Tab>
         </Tabs>
-      </div>
+      </Fragment>
     );
   }
 }
