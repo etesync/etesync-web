@@ -10,7 +10,7 @@ import * as ICAL from 'ical.js';
 
 import * as EteSync from './api/EteSync';
 
-export class JournalViewEntries extends React.Component {
+class JournalViewEntries extends React.Component {
   static defaultProps = {
     prevUid: null,
   };
@@ -106,3 +106,5 @@ export class JournalViewEntries extends React.Component {
     );
   }
 }
+
+export default JournalViewEntries;

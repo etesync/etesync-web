@@ -33,7 +33,7 @@ class EventWrapper {
   }
 }
 
-export class JournalViewCalendar extends React.Component {
+class JournalViewCalendar extends React.Component {
   static defaultProps = {
     prevUid: null,
   };
@@ -100,3 +100,5 @@ export class JournalViewCalendar extends React.Component {
     );
   }
 }
+
+export default JournalViewCalendar;

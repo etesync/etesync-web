@@ -5,11 +5,11 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
 
-import { JournalViewEntries } from './JournalViewEntries';
-import { JournalViewAddressBook } from './JournalViewAddressBook';
-import { JournalViewCalendar } from './JournalViewCalendar';
+import JournalViewEntries from './JournalViewEntries';
+import JournalViewAddressBook from './JournalViewAddressBook';
+import JournalViewCalendar from './JournalViewCalendar';
 
-export class JournalView extends React.Component {
+class JournalView extends React.Component {
   static defaultProps = {
     prevUid: null,
   };
@@ -98,3 +98,5 @@ export class JournalView extends React.Component {
     );
   }
 }
+
+export default JournalView;

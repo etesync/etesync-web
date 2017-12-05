@@ -21,7 +21,7 @@ import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 
 import './App.css';
 
-import { EteSyncContext } from './EteSyncContext';
+import EteSyncContext from './EteSyncContext';
 import { RouteResolver } from './routes';
 
 import * as C from './Constants';

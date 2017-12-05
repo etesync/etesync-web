@@ -6,8 +6,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 
-import { JournalList } from './JournalList';
-import { JournalView } from './JournalView';
+import JournalList from './JournalList';
+import JournalView from './JournalView';
 
 import * as EteSync from './api/EteSync';
 
@@ -55,7 +55,7 @@ function fetchCredentials(username: string, password: string, encryptionPassword
     };
 }
 
-export class EteSyncContextInner extends React.Component {
+class EteSyncContext extends React.Component {
   state: {
     showAdvanced?: boolean;
     errors: FormErrors;
@@ -253,6 +253,6 @@ const mapStateToProps = (state: store.StoreState) => {
   };
 };
 
-export const EteSyncContext = withRouter(connect(
+export default withRouter(connect(
   mapStateToProps
-)(EteSyncContextInner));
+)(EteSyncContext));

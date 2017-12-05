@@ -8,9 +8,9 @@ import * as ICAL from 'ical.js';
 import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
-import { JournalViewContact } from './JournalViewContact';
+import JournalViewContact from './JournalViewContact';
 
-export class JournalViewAddressBook extends React.Component {
+class JournalViewAddressBook extends React.Component {
   static defaultProps = {
     prevUid: null,
   };
@@ -94,3 +94,5 @@ export class JournalViewAddressBook extends React.Component {
     );
   }
 }
+
+export default JournalViewAddressBook;

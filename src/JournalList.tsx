@@ -39,7 +39,7 @@ function fetchJournals(etesync: EteSyncContextType) {
   };
 }
 
-class JournalListInner extends React.Component {
+class JournalList extends React.Component {
   props: PropsTypeInner;
 
   constructor(props: any) {
@@ -114,6 +114,6 @@ const mapStateToProps = (state: store.StoreState, props: PropsType) => {
   };
 };
 
-export const JournalList = withRouter(connect(
+export default withRouter(connect(
   mapStateToProps
-)(JournalListInner));
+)(JournalList));
