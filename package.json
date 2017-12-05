@@ -10,8 +10,13 @@
     "react": "^16.2.0",
     "react-big-calendar": "^0.17.0",
     "react-dom": "^16.2.0",
+    "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.8.0",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^5.4.0",
+    "redux-thunk": "^2.2.0",
     "sjcl": "git+https://github.com/etesync/sjcl",
     "urijs": "^1.16.1"
   },
@@ -29,8 +34,10 @@
     "@types/react": "^16.0.25",
     "@types/react-big-calendar": "^0.15.0",
     "@types/react-dom": "^16.0.3",
+    "@types/react-redux": "^5.0.14",
     "@types/react-router": "^4.0.19",
     "@types/react-router-dom": "^4.2.3",
+    "@types/redux-logger": "^3.0.5",
     "@types/sjcl": "^1.0.28",
     "@types/urijs": "^1.15.34"
   }

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Switch, Route, Redirect } from 'react-router';
+import { connect } from 'react-redux';
+import { Switch, Route, Redirect, withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -11,16 +12,9 @@ import { JournalView } from './JournalView';
 import * as EteSync from './api/EteSync';
 
 import { routeResolver, getPalette } from './App';
+import * as store from './store';
 
 import * as C from './Constants';
-
-const CONTEXT_SESSION_KEY = 'EteSyncContext';
-
-enum LoadState {
-  Initial = 'INIT',
-  Working = 'WORKING',
-  Done = 'DONE',
-}
 
 export interface EteSyncContextType {
     serviceApiUrl: string;
@@ -35,12 +29,35 @@ interface FormErrors {
   errorServer?: string;
 }
 
-export class EteSyncContext extends React.Component {
+function fetchCredentials(username: string, password: string, encryptionPassword: string, server: string) {
+    const authenticator = new EteSync.Authenticator(server);
+
+    return (dispatch: any) => {
+      dispatch(store.credentialsRequest());
+
+      authenticator.getAuthToken(username, password).then(
+        (authToken) => {
+          const credentials = new EteSync.Credentials(username, authToken);
+          const derived = EteSync.deriveKey(username, encryptionPassword);
+
+          const context = {
+            serviceApiUrl: server,
+            credentials,
+            encryptionKey: derived,
+          };
+
+          dispatch(store.credentialsSuccess(context));
+        },
+        (error) => {
+          dispatch(store.credentialsFailure(error));
+        }
+      );
+    };
+}
+
+export class EteSyncContextInner extends React.Component {
   state: {
-    context?: EteSyncContextType;
-    loadState: LoadState;
     showAdvanced?: boolean;
-    error?: Error;
     errors: FormErrors;
 
     server: string;
@@ -49,10 +66,13 @@ export class EteSyncContext extends React.Component {
     encryptionPassword: string;
   };
 
+  props: {
+    credentials: store.CredentialsType;
+  };
+
   constructor(props: any) {
     super(props);
     this.state = {
-      loadState: LoadState.Initial,
       errors: {},
       server: '',
       username: '',
@@ -62,17 +82,6 @@ export class EteSyncContext extends React.Component {
     this.generateEncryption = this.generateEncryption.bind(this);
     this.toggleAdvancedSettings = this.toggleAdvancedSettings.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-
-    const contextStr = sessionStorage.getItem(CONTEXT_SESSION_KEY);
-
-    if (contextStr !== null) {
-      const context: EteSyncContextType  = JSON.parse(contextStr);
-
-      this.state = Object.assign({}, this.state, {
-        loadState: LoadState.Done,
-        context
-      });
-    }
   }
 
   handleInputChange(event: any) {
@@ -86,8 +95,6 @@ export class EteSyncContext extends React.Component {
   generateEncryption(e: any) {
     e.preventDefault();
     const server = this.state.showAdvanced ? this.state.server : C.serviceApiBase;
-
-    let authenticator = new EteSync.Authenticator(server);
 
     const username = this.state.username;
     const password = this.state.password;
@@ -109,32 +116,7 @@ export class EteSyncContext extends React.Component {
       return;
     }
 
-    this.setState({
-      loadState: LoadState.Working
-    });
-
-    authenticator.getAuthToken(username, password).then((authToken) => {
-      const credentials = new EteSync.Credentials(username, authToken);
-      const derived = EteSync.deriveKey(username, encryptionPassword);
-
-      const context = {
-        serviceApiUrl: server,
-        credentials,
-        encryptionKey: derived,
-      };
-
-      sessionStorage.setItem(CONTEXT_SESSION_KEY, JSON.stringify(context));
-
-      this.setState({
-        loadState: LoadState.Done,
-        context
-      });
-    }).catch((error) => {
-      this.setState({
-        loadState: LoadState.Initial,
-        error
-      });
-    });
+    store.store.dispatch(fetchCredentials(username, password, encryptionPassword, server));
   }
 
   toggleAdvancedSettings() {
@@ -142,7 +124,10 @@ export class EteSyncContext extends React.Component {
   }
 
   render() {
-    if (this.state.loadState === LoadState.Initial) {
+    if (((this.props.credentials.status === store.FetchStatus.Initial) &&
+      (this.props.credentials.credentials === undefined)) ||
+      (this.props.credentials.status === store.FetchStatus.Failure)) {
+
       let advancedSettings = null;
       if (this.state.showAdvanced) {
         advancedSettings = (
@@ -187,7 +172,7 @@ export class EteSyncContext extends React.Component {
       return (
         <div style={styles.holder}>
           <Paper zDepth={2} style={styles.paper}>
-            {(this.state.error !== undefined) && (<div>Error! {this.state.error.message}</div>)}
+            {(this.props.credentials.error !== undefined) && (<div>Error! {this.props.credentials.error.message}</div>)}
             <h2>Please Log In</h2>
             <form style={styles.form} onSubmit={this.generateEncryption}>
               <TextField
@@ -231,12 +216,11 @@ export class EteSyncContext extends React.Component {
           </Paper>
         </div>
       );
-    } else if ((this.state.context === undefined) ||
-      (this.state.loadState === LoadState.Working)) {
+    } else if (this.props.credentials.status === store.FetchStatus.Request) {
       return (<div>Loading</div>);
     }
 
-    let context: EteSyncContextType = this.state.context;
+    let context = this.props.credentials.credentials as store.CredentialsData;
 
     return (
       <div>
@@ -260,3 +244,13 @@ export class EteSyncContext extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state: store.StoreState) => {
+  return {
+    credentials: state.credentials,
+  };
+};
+
+export const EteSyncContext = withRouter(connect(
+  mapStateToProps
+)(EteSyncContextInner));
