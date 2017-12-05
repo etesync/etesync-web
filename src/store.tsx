@@ -35,7 +35,7 @@ export type CredentialsType = FetchType<CredentialsData>;
 
 export interface StoreState {
   fetchCount: number;
-  credentials: CredentialsData;
+  credentials: CredentialsType;
 }
 
 export function credentialsSuccess(creds: CredentialsData) {
