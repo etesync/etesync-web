@@ -20,34 +20,11 @@ interface PropsTypeInner extends PropsType {
   journals: store.JournalsType;
 }
 
-function fetchJournals(etesync: EteSyncContextType) {
-  const credentials = etesync.credentials;
-  const apiBase = etesync.serviceApiUrl;
-
-  return (dispatch: any) => {
-    dispatch(store.journalsRequest());
-
-    let journalManager = new EteSync.JournalManager(credentials, apiBase);
-    journalManager.list().then(
-      (journals) => {
-        dispatch(store.journalsSuccess(journals));
-      },
-      (error) => {
-        dispatch(store.journalsFailure(error));
-      }
-    );
-  };
-}
-
 class JournalList extends React.Component {
   props: PropsTypeInner;
 
   constructor(props: any) {
     super(props);
-  }
-
-  componentDidMount() {
-    store.store.dispatch(fetchJournals(this.props.etesync));
   }
 
   render() {

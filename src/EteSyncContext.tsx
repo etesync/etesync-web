@@ -8,6 +8,7 @@ import Toggle from 'material-ui/Toggle';
 
 import JournalList from './JournalList';
 import JournalView from './JournalView';
+import JournalFetcher from './JournalFetcher';
 
 import * as EteSync from './api/EteSync';
 
@@ -225,7 +226,7 @@ class EteSyncContext extends React.Component {
     let context = this.props.credentials.value as store.CredentialsData;
 
     return (
-      <div>
+      <JournalFetcher etesync={context}>
         <Switch>
           <Route
             path={routeResolver.getRoute('home')}
@@ -242,7 +243,7 @@ class EteSyncContext extends React.Component {
             render={({match}) => <JournalView match={match} etesync={context} />}
           />
         </Switch>
-      </div>
+      </JournalFetcher>
     );
   }
 }
