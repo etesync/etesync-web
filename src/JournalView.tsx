@@ -1,5 +1,4 @@
 import * as React from 'react';
-const Fragment = (React as any).Fragment;
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Tabs, Tab } from 'material-ui/Tabs';
@@ -81,22 +80,20 @@ class JournalView extends React.Component {
     }
 
     return (
-      <Fragment>
-        <Tabs>
-          <Tab
-            label={itemsTitle}
-          >
-              <h2>{collectionInfo.displayName}</h2>
-              {itemsView}
-          </Tab>
-          <Tab
-            label="Journal Entries"
-          >
-              <h2>{collectionInfo.displayName}</h2>
-              <JournalViewEntries journal={journal} entries={syncEntries} />;
-          </Tab>
-        </Tabs>
-      </Fragment>
+      <Tabs>
+        <Tab
+          label={itemsTitle}
+        >
+            <h2>{collectionInfo.displayName}</h2>
+            {itemsView}
+        </Tab>
+        <Tab
+          label="Journal Entries"
+        >
+            <h2>{collectionInfo.displayName}</h2>
+            <JournalViewEntries journal={journal} entries={syncEntries} />;
+        </Tab>
+      </Tabs>
     );
   }
 }
