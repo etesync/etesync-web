@@ -1,6 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
-import { createActions, handleAction, handleActions } from 'redux-actions';
+import { createActions, handleAction, handleActions, combineActions } from 'redux-actions';
 import session from 'redux-persist/lib/storage/session';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
@@ -143,20 +143,21 @@ const journals = handleAction(
   {value: null}
 );
 
-function fetchCount(state: number = 0, action: any) {
-  switch (action.type) {
-    case fetchCredentials.toString():
-    case fetchJournals.toString():
-    case fetchEntries.toString():
-      if (action.payload === undefined) {
-        return state + 1;
-      } else {
-        return state - 1;
-      }
-    default:
-      return state;
-  }
-}
+const fetchCount = handleAction(
+  combineActions(
+    fetchCredentials,
+    fetchJournals,
+    fetchEntries
+  ),
+  (state: number, action: any) => {
+    if (action.payload === undefined) {
+      return state + 1;
+    } else {
+      return state - 1;
+    }
+  },
+  0
+);
 
 const credentialsPersistConfig = {
   key: 'credentials',
