@@ -9,8 +9,6 @@ import promiseMiddleware from './promise-middleware';
 
 import * as EteSync from './api/EteSync';
 
-const loggerMiddleware = createLogger();
-
 export interface FetchType<T> {
   value: T | null;
   fetching?: boolean;
@@ -175,13 +173,18 @@ const reducers = combineReducers({
   })
 });
 
+let middleware = [
+  thunkMiddleware,
+  promiseMiddleware,
+];
+
+if (process.env.NODE_ENV !== 'production') {
+  middleware.push(createLogger());
+}
+
 export const store = createStore(
   reducers,
-  applyMiddleware(
-    thunkMiddleware,
-    promiseMiddleware,
-    loggerMiddleware
-  )
+  applyMiddleware(...middleware)
 );
 
 export const persistor = persistStore(store);
