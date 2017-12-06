@@ -11,7 +11,7 @@ import JournalViewEntries from './JournalViewEntries';
 import JournalViewAddressBook from './JournalViewAddressBook';
 import JournalViewCalendar from './JournalViewCalendar';
 
-import * as store from './store';
+import { store, StoreState, JournalsType, EntriesType, fetchEntries } from './store';
 
 interface PropsType {
   etesync: EteSyncContextType;
@@ -19,28 +19,8 @@ interface PropsType {
 }
 
 interface PropsTypeInner extends PropsType {
-  journals: store.JournalsType;
-  entries: store.EntriesType;
-}
-
-function fetchEntries(etesync: EteSyncContextType, journalUid: string) {
-  const credentials = etesync.credentials;
-  const apiBase = etesync.serviceApiUrl;
-
-  return (dispatch: any) => {
-    const prevUid = null;
-    dispatch(store.entriesRequest(journalUid));
-
-    let entryManager = new EteSync.EntryManager(credentials, apiBase, journalUid);
-    entryManager.list(prevUid).then(
-      (entries) => {
-        dispatch(store.entriesSuccess(journalUid, entries));
-      },
-      (error) => {
-        dispatch(store.entriesFailure(journalUid, error));
-      }
-    );
-  };
+  journals: JournalsType;
+  entries: EntriesType;
 }
 
 class JournalView extends React.Component {
@@ -57,7 +37,7 @@ class JournalView extends React.Component {
   componentDidMount() {
     const journal = this.props.match.params.journalUid;
 
-    store.store.dispatch(fetchEntries(this.props.etesync, journal));
+    store.dispatch(fetchEntries(this.props.etesync, journal));
   }
 
   render() {
@@ -122,7 +102,7 @@ class JournalView extends React.Component {
   }
 }
 
-const mapStateToProps = (state: store.StoreState, props: PropsType) => {
+const mapStateToProps = (state: StoreState, props: PropsType) => {
   return {
     journals: state.cache.journals,
     entries: state.cache.entries,

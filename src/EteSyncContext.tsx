@@ -13,7 +13,7 @@ import JournalFetcher from './JournalFetcher';
 import * as EteSync from './api/EteSync';
 
 import { routeResolver, getPalette } from './App';
-import * as store from './store';
+import { store, StoreState, FetchStatus, CredentialsType, CredentialsData, fetchCredentials } from './store';
 
 import * as C from './Constants';
 
@@ -30,32 +30,6 @@ interface FormErrors {
   errorServer?: string;
 }
 
-function fetchCredentials(username: string, password: string, encryptionPassword: string, server: string) {
-    const authenticator = new EteSync.Authenticator(server);
-
-    return (dispatch: any) => {
-      dispatch(store.credentialsRequest());
-
-      authenticator.getAuthToken(username, password).then(
-        (authToken) => {
-          const credentials = new EteSync.Credentials(username, authToken);
-          const derived = EteSync.deriveKey(username, encryptionPassword);
-
-          const context = {
-            serviceApiUrl: server,
-            credentials,
-            encryptionKey: derived,
-          };
-
-          dispatch(store.credentialsSuccess(context));
-        },
-        (error) => {
-          dispatch(store.credentialsFailure(error));
-        }
-      );
-    };
-}
-
 class EteSyncContext extends React.Component {
   state: {
     showAdvanced?: boolean;
@@ -68,7 +42,7 @@ class EteSyncContext extends React.Component {
   };
 
   props: {
-    credentials: store.CredentialsType;
+    credentials: CredentialsType;
   };
 
   constructor(props: any) {
@@ -119,7 +93,7 @@ class EteSyncContext extends React.Component {
 
     this.setState({password: '', encryptionPassword: ''});
 
-    store.store.dispatch(fetchCredentials(username, password, encryptionPassword, server));
+    store.dispatch(fetchCredentials(username, password, encryptionPassword, server));
   }
 
   toggleAdvancedSettings() {
@@ -127,9 +101,9 @@ class EteSyncContext extends React.Component {
   }
 
   render() {
-    if (((this.props.credentials.status === store.FetchStatus.Initial) &&
+    if (((this.props.credentials.status === FetchStatus.Initial) &&
       (this.props.credentials.value === null)) ||
-      (this.props.credentials.status === store.FetchStatus.Failure)) {
+      (this.props.credentials.status === FetchStatus.Failure)) {
 
       let advancedSettings = null;
       if (this.state.showAdvanced) {
@@ -219,11 +193,11 @@ class EteSyncContext extends React.Component {
           </Paper>
         </div>
       );
-    } else if (this.props.credentials.status === store.FetchStatus.Request) {
+    } else if (this.props.credentials.status === FetchStatus.Request) {
       return (<div>Loading</div>);
     }
 
-    let context = this.props.credentials.value as store.CredentialsData;
+    let context = this.props.credentials.value as CredentialsData;
 
     return (
       <JournalFetcher etesync={context}>
@@ -248,7 +222,7 @@ class EteSyncContext extends React.Component {
   }
 }
 
-const mapStateToProps = (state: store.StoreState) => {
+const mapStateToProps = (state: StoreState) => {
   return {
     credentials: state.credentials,
   };

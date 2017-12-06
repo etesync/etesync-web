@@ -52,7 +52,7 @@ export interface StoreState {
   };
 }
 
-export function credentialsSuccess(creds: CredentialsData) {
+function credentialsSuccess(creds: CredentialsData) {
   return {
     type: Actions.FETCH_CREDENTIALS,
     status: FetchStatus.Success,
@@ -60,14 +60,14 @@ export function credentialsSuccess(creds: CredentialsData) {
   };
 }
 
-export function credentialsRequest() {
+function credentialsRequest() {
   return {
     type: Actions.FETCH_CREDENTIALS,
     status: FetchStatus.Request,
   };
 }
 
-export function credentialsFailure(error: Error) {
+function credentialsFailure(error: Error) {
   return {
     type: Actions.FETCH_CREDENTIALS,
     status: FetchStatus.Failure,
@@ -75,7 +75,33 @@ export function credentialsFailure(error: Error) {
   };
 }
 
-export function journalsSuccess(value: JournalsData) {
+export function fetchCredentials(username: string, password: string, encryptionPassword: string, server: string) {
+    const authenticator = new EteSync.Authenticator(server);
+
+    return (dispatch: any) => {
+      dispatch(credentialsRequest());
+
+      authenticator.getAuthToken(username, password).then(
+        (authToken) => {
+          const creds = new EteSync.Credentials(username, authToken);
+          const derived = EteSync.deriveKey(username, encryptionPassword);
+
+          const context = {
+            serviceApiUrl: server,
+            credentials: creds,
+            encryptionKey: derived,
+          };
+
+          dispatch(credentialsSuccess(context));
+        },
+        (error) => {
+          dispatch(credentialsFailure(error));
+        }
+      );
+    };
+}
+
+function journalsSuccess(value: JournalsData) {
   return {
     type: Actions.FETCH_JOURNALS,
     status: FetchStatus.Success,
@@ -83,14 +109,14 @@ export function journalsSuccess(value: JournalsData) {
   };
 }
 
-export function journalsRequest() {
+function journalsRequest() {
   return {
     type: Actions.FETCH_JOURNALS,
     status: FetchStatus.Request,
   };
 }
 
-export function journalsFailure(error: Error) {
+function journalsFailure(error: Error) {
   return {
     type: Actions.FETCH_JOURNALS,
     status: FetchStatus.Failure,
@@ -98,7 +124,26 @@ export function journalsFailure(error: Error) {
   };
 }
 
-export function entriesSuccess(journal: string, value: EntriesData) {
+export function fetchJournals(etesync: CredentialsData) {
+  const creds = etesync.credentials;
+  const apiBase = etesync.serviceApiUrl;
+
+  return (dispatch: any) => {
+    dispatch(journalsRequest());
+
+    let journalManager = new EteSync.JournalManager(creds, apiBase);
+    journalManager.list().then(
+      (vals) => {
+        dispatch(journalsSuccess(vals));
+      },
+      (error) => {
+        dispatch(journalsFailure(error));
+      }
+    );
+  };
+}
+
+function entriesSuccess(journal: string, value: EntriesData) {
   return {
     type: Actions.FETCH_ENTRIES,
     status: FetchStatus.Success,
@@ -107,7 +152,7 @@ export function entriesSuccess(journal: string, value: EntriesData) {
   };
 }
 
-export function entriesRequest(journal: string) {
+function entriesRequest(journal: string) {
   return {
     type: Actions.FETCH_ENTRIES,
     status: FetchStatus.Request,
@@ -115,12 +160,32 @@ export function entriesRequest(journal: string) {
   };
 }
 
-export function entriesFailure(journal: string, error: Error) {
+function entriesFailure(journal: string, error: Error) {
   return {
     type: Actions.FETCH_ENTRIES,
     status: FetchStatus.Failure,
     journal,
     error,
+  };
+}
+
+export function fetchEntries(etesync: CredentialsData, journalUid: string) {
+  const creds = etesync.credentials;
+  const apiBase = etesync.serviceApiUrl;
+
+  return (dispatch: any) => {
+    const prevUid = null;
+    dispatch(entriesRequest(journalUid));
+
+    let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
+    entryManager.list(prevUid).then(
+      (vals) => {
+        dispatch(entriesSuccess(journalUid, vals));
+      },
+      (error) => {
+        dispatch(entriesFailure(journalUid, error));
+      }
+    );
   };
 }
 

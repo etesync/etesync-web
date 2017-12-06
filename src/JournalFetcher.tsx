@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import { EteSyncContextType } from './EteSyncContext';
-import * as EteSync from './api/EteSync';
 
-import * as store from './store';
+import { store, JournalsType, fetchJournals, StoreState } from './store';
 
 interface PropsType {
   etesync: EteSyncContextType;
@@ -13,26 +12,7 @@ interface PropsType {
 }
 
 interface PropsTypeInner extends PropsType {
-  journals: store.JournalsType;
-}
-
-function fetchJournals(etesync: EteSyncContextType) {
-  const credentials = etesync.credentials;
-  const apiBase = etesync.serviceApiUrl;
-
-  return (dispatch: any) => {
-    dispatch(store.journalsRequest());
-
-    let journalManager = new EteSync.JournalManager(credentials, apiBase);
-    journalManager.list().then(
-      (journals) => {
-        dispatch(store.journalsSuccess(journals));
-      },
-      (error) => {
-        dispatch(store.journalsFailure(error));
-      }
-    );
-  };
+  journals: JournalsType;
 }
 
 class JournalFetcher extends React.Component {
@@ -43,7 +23,7 @@ class JournalFetcher extends React.Component {
   }
 
   componentDidMount() {
-    store.store.dispatch(fetchJournals(this.props.etesync));
+    store.dispatch(fetchJournals(this.props.etesync));
   }
 
   render() {
@@ -55,7 +35,7 @@ class JournalFetcher extends React.Component {
   }
 }
 
-const mapStateToProps = (state: store.StoreState, props: PropsType) => {
+const mapStateToProps = (state: StoreState, props: PropsType) => {
   return {
     journals: state.cache.journals,
   };
