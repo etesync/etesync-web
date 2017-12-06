@@ -11,7 +11,7 @@ import JournalView from './JournalView';
 import JournalFetcher from './JournalFetcher';
 
 import { routeResolver, getPalette } from './App';
-import { store, StoreState, FetchStatus, CredentialsType, CredentialsData, fetchCredentials } from './store';
+import { store, StoreState, CredentialsType, CredentialsData, fetchCredentials } from './store';
 
 import * as C from './Constants';
 
@@ -93,10 +93,9 @@ class EteSyncContext extends React.Component {
   }
 
   render() {
-    if (((this.props.credentials.status === FetchStatus.Initial) &&
-      (this.props.credentials.value === null)) ||
-      (this.props.credentials.status === FetchStatus.Failure)) {
-
+    if (this.props.credentials.fetching) {
+      return (<div>Loading</div>);
+    } else if (this.props.credentials.value === null) {
       let advancedSettings = null;
       if (this.state.showAdvanced) {
         advancedSettings = (
@@ -141,7 +140,7 @@ class EteSyncContext extends React.Component {
       return (
         <div style={styles.holder}>
           <Paper zDepth={2} style={styles.paper}>
-            {(this.props.credentials.error !== undefined) && (<div>Error! {this.props.credentials.error.message}</div>)}
+            {(this.props.credentials.error) && (<div>Error! {this.props.credentials.error.message}</div>)}
             <h2>Please Log In</h2>
             <form style={styles.form} onSubmit={this.generateEncryption}>
               <TextField
@@ -185,8 +184,6 @@ class EteSyncContext extends React.Component {
           </Paper>
         </div>
       );
-    } else if (this.props.credentials.status === FetchStatus.Request) {
-      return (<div>Loading</div>);
     }
 
     let context = this.props.credentials.value as CredentialsData;

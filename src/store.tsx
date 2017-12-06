@@ -1,5 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
+import { createActions, handleAction, handleActions } from 'redux-actions';
 import session from 'redux-persist/lib/storage/session';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
@@ -10,22 +11,9 @@ import * as EteSync from './api/EteSync';
 
 const loggerMiddleware = createLogger();
 
-enum Actions {
-  FETCH_CREDENTIALS = 'FETCH_CREDENTIALS',
-  FETCH_JOURNALS = 'FETCH_JOURNALS',
-  FETCH_ENTRIES = 'FETCH_ENTRIES',
-}
-
-export enum FetchStatus {
-  Initial = 'INITIAL',
-  Request = 'REQUEST',
-  Failure = 'FAILURE',
-  Success = 'SUCCESS',
-}
-
 export interface FetchType<T> {
-  status: FetchStatus;
   value: T | null;
+  fetching?: boolean;
   error?: Error;
 }
 
@@ -54,35 +42,26 @@ export interface StoreState {
   };
 }
 
-function credentialsSuccess(creds: CredentialsData) {
-  return {
-    type: Actions.FETCH_CREDENTIALS,
-    status: FetchStatus.Success,
-    credentials: creds,
-  };
+function fetchTypeIdentityReducer(state: FetchType<any>, action: any) {
+  if (action.error) {
+    return {
+      value: null,
+      error: action.payload,
+    };
+  } else {
+    const fetching = (action.payload === undefined) ? true : undefined;
+    return {
+      fetching,
+      value: (action.payload === undefined) ? null : action.payload,
+    };
+  }
 }
 
-function credentialsRequest() {
-  return {
-    type: Actions.FETCH_CREDENTIALS,
-    status: FetchStatus.Request,
-  };
-}
-
-function credentialsFailure(error: Error) {
-  return {
-    type: Actions.FETCH_CREDENTIALS,
-    status: FetchStatus.Failure,
-    error
-  };
-}
-
-export function fetchCredentials(username: string, password: string, encryptionPassword: string, server: string) {
+export const { fetchCredentials, logout } = createActions({
+  FETCH_CREDENTIALS: (username: string, password: string, encryptionPassword: string, server: string) => {
     const authenticator = new EteSync.Authenticator(server);
 
-    return (dispatch: any) => {
-      dispatch(credentialsRequest());
-
+    return new Promise((resolve, reject) => {
       authenticator.getAuthToken(username, password).then(
         (authToken) => {
           const creds = new EteSync.Credentials(username, authToken);
@@ -94,116 +73,83 @@ export function fetchCredentials(username: string, password: string, encryptionP
             encryptionKey: derived,
           };
 
-          dispatch(credentialsSuccess(context));
+          resolve(context);
         },
         (error) => {
-          dispatch(credentialsFailure(error));
+          reject(error);
         }
       );
-    };
-}
+    });
+  },
+  LOGOUT: () => undefined,
+});
 
-export function fetchJournals(etesync: CredentialsData) {
-  const creds = etesync.credentials;
-  const apiBase = etesync.serviceApiUrl;
-  let journalManager = new EteSync.JournalManager(creds, apiBase);
+export const { fetchJournals, fetchEntries } = createActions({
+  FETCH_JOURNALS: (etesync: CredentialsData) => {
+    const creds = etesync.credentials;
+    const apiBase = etesync.serviceApiUrl;
+    let journalManager = new EteSync.JournalManager(creds, apiBase);
 
-  return {
-    type: Actions.FETCH_JOURNALS,
-    payload: journalManager.list(),
-  };
-}
+    return journalManager.list();
+  },
+  FETCH_ENTRIES: [
+    (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
+      const creds = etesync.credentials;
+      const apiBase = etesync.serviceApiUrl;
+      let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
 
-export function fetchEntries(etesync: CredentialsData, journalUid: string, prevUid: string | null) {
-  const creds = etesync.credentials;
-  const apiBase = etesync.serviceApiUrl;
-  let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
+      return entryManager.list(prevUid) as any;
+    },
+    (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
+      return { journal: journalUid, prevUid };
+    }
+  ]
+});
 
-  return {
-    type: Actions.FETCH_ENTRIES,
-    payload: entryManager.list(prevUid),
-    meta: { journal: journalUid, prevUid },
-  };
-}
+const credentials = handleActions(
+  {
+    [fetchCredentials.toString()]: fetchTypeIdentityReducer,
+    [logout.toString()]: (state: CredentialsType, action: any) => {
+      return {out: true, value: null};
+    },
+  },
+  {value: null}
+);
 
-export function logout() {
-  return {
-    type: Actions.FETCH_CREDENTIALS,
-    status: FetchStatus.Initial,
-  };
-}
-
-function credentials(state: CredentialsType = {status: FetchStatus.Initial, value: null},
-                     action: any): CredentialsType {
-  switch (action.type) {
-    case Actions.FETCH_CREDENTIALS:
-      switch (action.status) {
-        case FetchStatus.Success:
-          return {
-            status: action.status,
-            value: action.credentials,
-          };
-        case FetchStatus.Failure:
-          return {
-            status: action.status,
-            value: null,
-            error: action.error,
-          };
-        default:
-          return {
-            status: action.status,
-            value: null,
-          };
-      }
-    default:
-      return state;
-  }
-}
-
-function journals(state: JournalsType = {status: FetchStatus.Initial, value: null}, action: any) {
-  switch (action.type) {
-    case Actions.FETCH_JOURNALS:
-      if (action.error) {
-        return {
+const entries = handleAction(
+  fetchEntries,
+  (state: EntriesType, action: any) => {
+    if (action.error) {
+      return { ...state,
+        [action.meta.journal]: {
           value: null,
           error: action.payload,
-        };
-      } else {
-        return {
+        },
+      };
+    } else {
+      const fetching = (action.payload === undefined) ? true : undefined;
+      return { ...state,
+        [action.meta.journal]: {
+          fetching,
           value: (action.payload === undefined) ? null : action.payload,
-        };
-      }
-    default:
-      return state;
-  }
-}
+        },
+      };
+    }
+  },
+  {}
+);
 
-function entries(state: EntriesType = {}, action: any) {
-  switch (action.type) {
-    case Actions.FETCH_ENTRIES:
-      if (action.error) {
-        return { ...state,
-            [action.meta.journal]: {
-              value: null,
-              error: action.payload,
-            },
-        };
-      } else {
-        return { ...state,
-            [action.meta.journal]: {
-              value: (action.payload === undefined) ? null : action.payload,
-            },
-        };
-      }
-    default:
-      return state;
-  }
-}
+const journals = handleAction(
+  fetchJournals,
+  fetchTypeIdentityReducer,
+  {value: null}
+);
 
 function fetchCount(state: number = 0, action: any) {
   switch (action.type) {
-    case Actions.FETCH_JOURNALS:
-    case Actions.FETCH_ENTRIES:
+    case fetchCredentials.toString():
+    case fetchJournals.toString():
+    case fetchEntries.toString():
       if (action.payload === undefined) {
         return state + 1;
       } else {
