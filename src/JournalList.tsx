@@ -56,18 +56,14 @@ class JournalList extends React.Component {
         ADDRESS_BOOK: []});
 
     const styles = {
-      holder: {
-        margin: 'auto',
-        maxWidth: 400,
-        padding: 20,
-      },
       paper: {
+        margin: 'auto',
+        maxWidth: 500,
         padding: 20,
       },
     };
 
     return (
-      <div style={styles.holder}>
       <Paper style={styles.paper} zDepth={2}>
         <h2>Address Books</h2>
         <List>
@@ -79,7 +75,6 @@ class JournalList extends React.Component {
           {journalMap.CALENDAR}
         </List>
       </Paper>
-      </div>
     );
   }
 }
