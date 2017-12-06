@@ -6,18 +6,17 @@ import { Link } from 'react-router-dom';
 import { List, ListItem } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 
-import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
-import * as store from './store';
+import { JournalsType, StoreState, CredentialsData } from './store';
 
 interface PropsType {
-  etesync: EteSyncContextType;
+  etesync: CredentialsData;
 }
 
 interface PropsTypeInner extends PropsType {
-  journals: store.JournalsType;
+  journals: JournalsType;
 }
 
 class JournalList extends React.Component {
@@ -85,7 +84,7 @@ class JournalList extends React.Component {
   }
 }
 
-const mapStateToProps = (state: store.StoreState, props: PropsType) => {
+const mapStateToProps = (state: StoreState, props: PropsType) => {
   return {
     journals: state.cache.journals,
   };

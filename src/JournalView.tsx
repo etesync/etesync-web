@@ -4,17 +4,16 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
-import { EteSyncContextType } from './EteSyncContext';
 import * as EteSync from './api/EteSync';
 
 import JournalViewEntries from './JournalViewEntries';
 import JournalViewAddressBook from './JournalViewAddressBook';
 import JournalViewCalendar from './JournalViewCalendar';
 
-import { store, StoreState, JournalsType, EntriesType, fetchEntries } from './store';
+import { store, StoreState, JournalsType, EntriesType, CredentialsData, fetchEntries } from './store';
 
 interface PropsType {
-  etesync: EteSyncContextType;
+  etesync: CredentialsData;
   match: any;
 }
 

@@ -10,18 +10,10 @@ import JournalList from './JournalList';
 import JournalView from './JournalView';
 import JournalFetcher from './JournalFetcher';
 
-import * as EteSync from './api/EteSync';
-
 import { routeResolver, getPalette } from './App';
 import { store, StoreState, FetchStatus, CredentialsType, CredentialsData, fetchCredentials } from './store';
 
 import * as C from './Constants';
-
-export interface EteSyncContextType {
-    serviceApiUrl: string;
-    credentials: EteSync.Credentials;
-    encryptionKey: string;
-}
 
 interface FormErrors {
   errorEmail?: string;

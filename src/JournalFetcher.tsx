@@ -2,12 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import { EteSyncContextType } from './EteSyncContext';
-
-import { store, JournalsType, fetchJournals, StoreState } from './store';
+import { store, JournalsType, fetchJournals, StoreState, CredentialsData } from './store';
 
 interface PropsType {
-  etesync: EteSyncContextType;
+  etesync: CredentialsData;
   children: any;
 }
 
