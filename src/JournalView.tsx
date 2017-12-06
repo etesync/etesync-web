@@ -36,7 +36,7 @@ class JournalView extends React.Component {
   componentDidMount() {
     const journal = this.props.match.params.journalUid;
 
-    store.dispatch(fetchEntries(this.props.etesync, journal));
+    store.dispatch(fetchEntries(this.props.etesync, journal, null));
   }
 
   render() {

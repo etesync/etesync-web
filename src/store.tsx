@@ -4,6 +4,8 @@ import session from 'redux-persist/lib/storage/session';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
+import promiseMiddleware from './promise-middleware';
+
 import * as EteSync from './api/EteSync';
 
 const loggerMiddleware = createLogger();
@@ -101,91 +103,26 @@ export function fetchCredentials(username: string, password: string, encryptionP
     };
 }
 
-function journalsSuccess(value: JournalsData) {
-  return {
-    type: Actions.FETCH_JOURNALS,
-    status: FetchStatus.Success,
-    journals: value,
-  };
-}
-
-function journalsRequest() {
-  return {
-    type: Actions.FETCH_JOURNALS,
-    status: FetchStatus.Request,
-  };
-}
-
-function journalsFailure(error: Error) {
-  return {
-    type: Actions.FETCH_JOURNALS,
-    status: FetchStatus.Failure,
-    error,
-  };
-}
-
 export function fetchJournals(etesync: CredentialsData) {
   const creds = etesync.credentials;
   const apiBase = etesync.serviceApiUrl;
+  let journalManager = new EteSync.JournalManager(creds, apiBase);
 
-  return (dispatch: any) => {
-    dispatch(journalsRequest());
-
-    let journalManager = new EteSync.JournalManager(creds, apiBase);
-    journalManager.list().then(
-      (vals) => {
-        dispatch(journalsSuccess(vals));
-      },
-      (error) => {
-        dispatch(journalsFailure(error));
-      }
-    );
-  };
-}
-
-function entriesSuccess(journal: string, value: EntriesData) {
   return {
-    type: Actions.FETCH_ENTRIES,
-    status: FetchStatus.Success,
-    entries: value,
-    journal,
+    type: Actions.FETCH_JOURNALS,
+    payload: journalManager.list(),
   };
 }
 
-function entriesRequest(journal: string) {
-  return {
-    type: Actions.FETCH_ENTRIES,
-    status: FetchStatus.Request,
-    journal,
-  };
-}
-
-function entriesFailure(journal: string, error: Error) {
-  return {
-    type: Actions.FETCH_ENTRIES,
-    status: FetchStatus.Failure,
-    journal,
-    error,
-  };
-}
-
-export function fetchEntries(etesync: CredentialsData, journalUid: string) {
+export function fetchEntries(etesync: CredentialsData, journalUid: string, prevUid: string | null) {
   const creds = etesync.credentials;
   const apiBase = etesync.serviceApiUrl;
+  let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
 
-  return (dispatch: any) => {
-    const prevUid = null;
-    dispatch(entriesRequest(journalUid));
-
-    let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
-    entryManager.list(prevUid).then(
-      (vals) => {
-        dispatch(entriesSuccess(journalUid, vals));
-      },
-      (error) => {
-        dispatch(entriesFailure(journalUid, error));
-      }
-    );
+  return {
+    type: Actions.FETCH_ENTRIES,
+    payload: entryManager.list(prevUid),
+    meta: { journal: journalUid, prevUid },
   };
 }
 
@@ -226,23 +163,15 @@ function credentials(state: CredentialsType = {status: FetchStatus.Initial, valu
 function journals(state: JournalsType = {status: FetchStatus.Initial, value: null}, action: any) {
   switch (action.type) {
     case Actions.FETCH_JOURNALS:
-      switch (action.status) {
-        case FetchStatus.Success:
-          return {
-            status: action.status,
-            value: action.journals,
-          };
-        case FetchStatus.Failure:
-          return {
-            status: action.status,
-            value: null,
-            error: action.error,
-          };
-        default:
-          return {
-            status: action.status,
-            value: null,
-          };
+      if (action.error) {
+        return {
+          value: null,
+          error: action.payload,
+        };
+      } else {
+        return {
+          value: (action.payload === undefined) ? null : action.payload,
+        };
       }
     default:
       return state;
@@ -252,29 +181,19 @@ function journals(state: JournalsType = {status: FetchStatus.Initial, value: nul
 function entries(state: EntriesType = {}, action: any) {
   switch (action.type) {
     case Actions.FETCH_ENTRIES:
-      switch (action.status) {
-        case FetchStatus.Success:
-          return { ...state,
-            [action.journal]: {
-              status: action.status,
-              value: action.entries,
-            },
-          };
-        case FetchStatus.Failure:
-          return { ...state,
-            [action.journal]: {
-              status: action.status,
+      if (action.error) {
+        return { ...state,
+            [action.meta.journal]: {
               value: null,
-              error: action.error,
+              error: action.payload,
             },
-          };
-        default:
-          return { ...state,
-            [action.journal]: {
-              status: action.status,
-              value: null,
+        };
+      } else {
+        return { ...state,
+            [action.meta.journal]: {
+              value: (action.payload === undefined) ? null : action.payload,
             },
-          };
+        };
       }
     default:
       return state;
@@ -282,18 +201,14 @@ function entries(state: EntriesType = {}, action: any) {
 }
 
 function fetchCount(state: number = 0, action: any) {
-  if ('status' in action) {
-    switch (action.status) {
-      case FetchStatus.Request:
-        return state + 1;
-      case FetchStatus.Success:
-      case FetchStatus.Failure:
-        return state - 1;
-      default:
-        return state;
-    }
-  }
   switch (action.type) {
+    case Actions.FETCH_JOURNALS:
+    case Actions.FETCH_ENTRIES:
+      if (action.payload === undefined) {
+        return state + 1;
+      } else {
+        return state - 1;
+      }
     default:
       return state;
   }
@@ -318,6 +233,7 @@ export const store = createStore(
   reducers,
   applyMiddleware(
     thunkMiddleware,
+    promiseMiddleware,
     loggerMiddleware
   )
 );
