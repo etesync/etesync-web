@@ -42,7 +42,6 @@ class JournalView extends React.Component {
     const journalUid = this.props.match.params.journalUid;
     const entries = this.props.entries[journalUid];
 
-    (window as any).me = this.props.entries;
     if ((this.props.journals.value === null) ||
       (!entries) || (entries.value === null)) {
       return (<div>Loading</div>);
