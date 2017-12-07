@@ -1,18 +1,16 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 import { ListItem } from 'material-ui/List';
 
 import * as EteSync from './api/EteSync';
 
-import { routeResolver } from './App';
 import { JournalsData, CredentialsData } from './store';
 
 class SideMenuJournals extends React.Component {
   props: {
     etesync: CredentialsData;
     journals: JournalsData;
-    onItemClick: () => void;
+    onItemClick: (journalUid: string) => void;
   };
 
   constructor(props: any) {
@@ -38,13 +36,8 @@ class SideMenuJournals extends React.Component {
           let info = journal.getInfo(cryptoManager);
           ret[info.type] = ret[info.type] || [];
           ret[info.type].push(
-            <ListItem key={journal.uid}>
-              <Link
-                to={routeResolver.getRoute('journals._id', { journalUid: journal.uid })}
-                onClick={this.props.onItemClick}
-              >
-                {info.displayName} ({journal.uid.slice(0, 5)})
-              </Link>
+            <ListItem key={journal.uid} onClick={() => this.props.onItemClick(journal.uid)}>
+              {info.displayName} ({journal.uid.slice(0, 5)})
             </ListItem>
           );
         }

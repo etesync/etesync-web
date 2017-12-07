@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import { List, ListItem } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
@@ -28,6 +27,7 @@ interface PropsType {
 
 interface PropsTypeInner extends PropsType {
   journals: JournalsType;
+  history: any;
 }
 
 class SideMenu extends React.Component {
@@ -57,7 +57,10 @@ class SideMenu extends React.Component {
           <SideMenuJournals
             etesync={this.props.etesync}
             journals={this.props.journals.value}
-            onItemClick={this.props.onCloseDrawerRequest}
+            onItemClick={(journalUid: string) => {
+              this.props.onCloseDrawerRequest();
+              this.props.history.push(routeResolver.getRoute('journals._id', { journalUid: journalUid }));
+            }}
           />
         </React.Fragment>
       );
@@ -79,12 +82,14 @@ class SideMenu extends React.Component {
           </div>
         </div>
         <List>
-          <NavLink
-            to={routeResolver.getRoute('home')}
-            exact={true}
-          >
-            <ListItem primaryText="Main" leftIcon={<ActionHome />}  onClick={this.props.onCloseDrawerRequest} />
-          </NavLink>
+          <ListItem
+            primaryText="Main"
+            leftIcon={<ActionHome />}
+            onClick={() => {
+              this.props.onCloseDrawerRequest();
+              this.props.history.push(routeResolver.getRoute('home'));
+            }}
+          />
           {loggedInItems}
           <Divider />
           <Subheader>External Links</Subheader>
