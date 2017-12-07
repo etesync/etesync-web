@@ -1,5 +1,4 @@
 import * as React from 'react';
-const Fragment = (React as any).Fragment;
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
@@ -73,12 +72,12 @@ class ViewContact extends React.Component {
     function listIfNotEmpty(items: Array<Array<JSX.Element>>) {
       if (items.length > 0) {
         return (
-          <Fragment>
+          <React.Fragment>
             <List>
               {items}
             </List>
             <Divider inset={true} />
-          </Fragment>
+          </React.Fragment>
         );
       } else {
         return undefined;
