@@ -33,28 +33,26 @@ class JournalAddressBook extends React.Component {
     let items = this.props.entries;
 
     return (
-      <div>
-        <Switch>
-          <Route
-            path={routeResolver.getRoute('journals._id')}
-            exact={true}
-            render={() => (
-                <AddressBook entries={Array.from(items.values())} onItemClick={this.contactClicked} />
-              )
-            }
-          />
-          <Route
-            path={routeResolver.getRoute('journals._id.items._id')}
-            exact={true}
-            render={({match}) => {
+      <Switch>
+        <Route
+          path={routeResolver.getRoute('journals._id')}
+          exact={true}
+          render={() => (
+              <AddressBook entries={Array.from(items.values())} onItemClick={this.contactClicked} />
+            )
+          }
+        />
+        <Route
+          path={routeResolver.getRoute('journals._id.items._id')}
+          exact={true}
+          render={({match}) => {
 
-              return (
-                <Contact contact={items.get(match.params.itemUid)} />
-              );
-            }}
-          />
-        </Switch>
-      </div>
+            return (
+              <Contact contact={items.get(match.params.itemUid)} />
+            );
+          }}
+        />
+      </Switch>
     );
   }
 }
