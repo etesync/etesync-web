@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router';
+import { Route, Switch, Redirect, withRouter } from 'react-router';
 
 import { routeResolver } from './App';
 
@@ -62,10 +62,15 @@ class SyncGate extends React.Component {
         <Route
           path={routeResolver.getRoute('home')}
           exact={true}
-          render={() => (
-            <Main etesync={this.props.etesync} journals={journals} entries={this.props.entries} />
-            )
-          }
+          render={({match}) => (
+            <Redirect to={routeResolver.getRoute('pim')} />
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('pim')}
+          render={({match}) => (
+            <Main etesync={this.props.etesync} journals={journals} entries={this.props.entries} match={match} />
+          )}
         />
         <Route
           path={routeResolver.getRoute('journals._id')}

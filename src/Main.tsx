@@ -15,6 +15,7 @@ class Main extends React.Component {
     etesync: CredentialsData;
     journals: JournalsData;
     entries: EntriesType;
+    match: any;
   };
 
   constructor(props: any) {
