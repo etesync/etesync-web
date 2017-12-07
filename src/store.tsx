@@ -117,22 +117,9 @@ const credentials = handleActions(
 const entries = handleAction(
   fetchEntries,
   (state: EntriesType, action: any) => {
-    if (action.error) {
-      return { ...state,
-        [action.meta.journal]: {
-          value: null,
-          error: action.payload,
-        },
-      };
-    } else {
-      const fetching = (action.payload === undefined) ? true : undefined;
-      return { ...state,
-        [action.meta.journal]: {
-          fetching,
-          value: (action.payload === undefined) ? null : action.payload,
-        },
-      };
-    }
+    return { ...state,
+      [action.meta.journal]: fetchTypeIdentityReducer(state[action.meta.journal], action)
+    };
   },
   {}
 );
