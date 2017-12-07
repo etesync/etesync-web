@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route, Redirect, withRouter } from 'react-router';
+import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 
-import JournalList from './JournalList';
-import JournalView from './JournalView';
 import JournalFetcher from './JournalFetcher';
 import LoginForm from './LoginForm';
+import LoadingIndicator from './LoadingIndicator';
 
-import { routeResolver } from './App';
-import { store, StoreState, CredentialsType, CredentialsData, fetchCredentials } from './store';
+import { store, StoreState, CredentialsType, fetchCredentials } from './store';
 
 class EteSyncContext extends React.Component {
   props: {
@@ -27,10 +25,10 @@ class EteSyncContext extends React.Component {
 
   render() {
     if (this.props.credentials.fetching) {
-      return (<div>Loading</div>);
+      return (<LoadingIndicator />);
     } else if (this.props.credentials.value === null) {
-      const styles = {
-        paper: {
+      const style = {
+        holder: {
           margin: 'auto',
           maxWidth: 400,
           padding: 20,
@@ -38,33 +36,14 @@ class EteSyncContext extends React.Component {
       };
 
       return (
-        <Paper zDepth={2} style={styles.paper}>
+        <Paper zDepth={2} style={style.holder}>
           <LoginForm onSubmit={this.onFormSubmit} error={this.props.credentials.error} />
         </Paper>
       );
     }
 
-    let context = this.props.credentials.value as CredentialsData;
-
     return (
-      <JournalFetcher etesync={context}>
-        <Switch>
-          <Route
-            path={routeResolver.getRoute('home')}
-            exact={true}
-            render={() => <Redirect to={routeResolver.getRoute('journals')} />}
-          />
-          <Route
-            path={routeResolver.getRoute('journals')}
-            exact={true}
-            render={() => <JournalList etesync={context} />}
-          />
-          <Route
-            path={routeResolver.getRoute('journals._id')}
-            render={({match}) => <JournalView match={match} etesync={context} />}
-          />
-        </Switch>
-      </JournalFetcher>
+      <JournalFetcher etesync={this.props.credentials.value} />
     );
   }
 }

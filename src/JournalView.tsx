@@ -9,15 +9,15 @@ import JournalViewEntries from './JournalViewEntries';
 import JournalViewAddressBook from './JournalViewAddressBook';
 import JournalViewCalendar from './JournalViewCalendar';
 
-import { store, StoreState, JournalsType, EntriesType, CredentialsData, fetchEntries } from './store';
+import { store, StoreState, JournalsData, EntriesType, CredentialsData, fetchEntries } from './store';
 
 interface PropsType {
+  journals: JournalsData;
   etesync: CredentialsData;
   match: any;
 }
 
 interface PropsTypeInner extends PropsType {
-  journals: JournalsType;
   entries: EntriesType;
 }
 
@@ -42,12 +42,11 @@ class JournalView extends React.Component {
     const journalUid = this.props.match.params.journalUid;
     const entries = this.props.entries[journalUid];
 
-    if ((this.props.journals.value === null) ||
-      (!entries) || (entries.value === null)) {
+    if ((!entries) || (entries.value === null)) {
       return (<div>Loading</div>);
     }
 
-    const journal = this.props.journals.value.find((x) => (x.uid === journalUid));
+    const journal = this.props.journals.find((x) => (x.uid === journalUid));
 
     if (journal === undefined) {
       return (<div>Journal not found!</div>);
@@ -99,7 +98,6 @@ class JournalView extends React.Component {
 
 const mapStateToProps = (state: StoreState, props: PropsType) => {
   return {
-    journals: state.cache.journals,
     entries: state.cache.entries,
   };
 };

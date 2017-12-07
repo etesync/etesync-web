@@ -1,12 +1,17 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { Switch, Route, Redirect, withRouter } from 'react-router';
+import LoadingIndicator from './LoadingIndicator';
+
+import JournalList from './JournalList';
+import JournalView from './JournalView';
+
+import { routeResolver } from './App';
 
 import { store, JournalsType, fetchJournals, StoreState, CredentialsData } from './store';
 
 interface PropsType {
   etesync: CredentialsData;
-  children: any;
 }
 
 interface PropsTypeInner extends PropsType {
@@ -26,10 +31,29 @@ class JournalFetcher extends React.Component {
 
   render() {
     if (this.props.journals.value === null) {
-      return (<div/>);
+      return (<LoadingIndicator />);
     }
 
-    return this.props.children;
+    const journals = this.props.journals.value;
+
+    return (
+      <Switch>
+        <Route
+          path={routeResolver.getRoute('home')}
+          exact={true}
+          render={() => <Redirect to={routeResolver.getRoute('journals')} />}
+        />
+        <Route
+          path={routeResolver.getRoute('journals')}
+          exact={true}
+          render={() => <JournalList etesync={this.props.etesync} journals={journals} />}
+        />
+        <Route
+          path={routeResolver.getRoute('journals._id')}
+          render={({match}) => <JournalView match={match} etesync={this.props.etesync} journals={journals} />}
+        />
+      </Switch>
+    );
   }
 }
 

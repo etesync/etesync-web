@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { List, ListItem } from 'material-ui/List';
@@ -9,30 +7,21 @@ import Paper from 'material-ui/Paper';
 import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
-import { JournalsType, StoreState, CredentialsData } from './store';
-
-interface PropsType {
-  etesync: CredentialsData;
-}
-
-interface PropsTypeInner extends PropsType {
-  journals: JournalsType;
-}
+import { JournalsData, CredentialsData } from './store';
 
 class JournalList extends React.Component {
-  props: PropsTypeInner;
+  props: {
+    etesync: CredentialsData;
+    journals: JournalsData;
+  };
 
   constructor(props: any) {
     super(props);
   }
 
   render() {
-    if (this.props.journals.value === null) {
-      return (<div/>);
-    }
-
     const derived = this.props.etesync.encryptionKey;
-    const journalMap = this.props.journals.value.filter((x) => (
+    const journalMap = this.props.journals.filter((x) => (
         // Skip shared journals for now.
         !x.key
       )).reduce(
@@ -79,12 +68,4 @@ class JournalList extends React.Component {
   }
 }
 
-const mapStateToProps = (state: StoreState, props: PropsType) => {
-  return {
-    journals: state.cache.journals,
-  };
-};
-
-export default withRouter(connect(
-  mapStateToProps
-)(JournalList));
+export default JournalList;
