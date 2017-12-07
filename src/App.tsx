@@ -41,17 +41,14 @@ export function getPalette(part: string): string {
 export const routeResolver = new RouteResolver({
   home: '',
   journals: {
-    _base: 'journals',
     _id: {
       _base: ':journalUid',
       items: {
-        _base: 'items',
         _id: {
           _base: ':itemUid',
         },
       },
       entries: {
-        _base: 'entries',
         _id: {
           _base: ':entryUid',
         },

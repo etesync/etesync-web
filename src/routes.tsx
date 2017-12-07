@@ -12,7 +12,7 @@ export class RouteResolver {
 
     let path: string[] = [];
     name.split('.').forEach((key) => {
-      const val = (typeof dict[key] === 'string') ? dict[key] : dict[key]._base;
+      const val = (typeof dict[key] === 'string') ? dict[key] : (dict[key]._base) ? dict[key]._base : key;
       path.push(val);
 
       dict = dict[key];
