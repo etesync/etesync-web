@@ -5,6 +5,8 @@ import * as ICAL from 'ical.js';
 
 import * as EteSync from './api/EteSync';
 
+import { syncEntryToEntriesProps } from './journal-processors';
+
 import { routeResolver } from './App';
 
 import AddressBook from './AddressBook';
@@ -13,7 +15,7 @@ import Contact from './Contact';
 class JournalAddressBook extends React.Component {
   props: {
     journal: EteSync.Journal,
-    entries: Array<EteSync.SyncEntry>,
+    entries: Map<string, ICAL.Component>,
     history?: any,
   };
 
@@ -34,20 +36,7 @@ class JournalAddressBook extends React.Component {
       return (<div>Loading</div>);
     }
 
-    let items: Map<string, ICAL.Component> = new Map();
-
-    for (const syncEntry of this.props.entries) {
-      let comp = new ICAL.Component(ICAL.parse(syncEntry.content));
-
-      const uid = comp.getFirstPropertyValue('uid');
-
-      if ((syncEntry.action === EteSync.SyncEntryAction.Add) ||
-        (syncEntry.action === EteSync.SyncEntryAction.Change)) {
-        items.set(uid, comp);
-      } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
-        items.delete(uid);
-      }
-    }
+    let items = this.props.entries;
 
     return (
       <div>
@@ -56,7 +45,7 @@ class JournalAddressBook extends React.Component {
             path={routeResolver.getRoute('journals._id')}
             exact={true}
             render={() => (
-                <AddressBook entries={items} onItemClick={this.contactClicked} />
+                <AddressBook entries={Array.from(items.values())} onItemClick={this.contactClicked} />
               )
             }
           />
@@ -76,4 +65,4 @@ class JournalAddressBook extends React.Component {
   }
 }
 
-export default withRouter(JournalAddressBook);
+export default syncEntryToEntriesProps(withRouter(JournalAddressBook));

@@ -5,12 +5,12 @@ import * as ICAL from 'ical.js';
 
 class AddressBook extends React.Component {
   props: {
-    entries: Map<string, ICAL.Component>,
+    entries: Array<ICAL.Component>,
     onItemClick: (contact: ICAL.Component) => void,
   };
 
   render() {
-    let entries = Array.from(this.props.entries.values()).sort((_a, _b) => {
+    let entries = this.props.entries.sort((_a, _b) => {
       const a = _a.getFirstPropertyValue('fn');
       const b = _b.getFirstPropertyValue('fn');
 
