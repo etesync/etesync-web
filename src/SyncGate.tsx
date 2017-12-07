@@ -1,18 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Tabs, Tab } from 'material-ui/Tabs';
 
 import LoadingIndicator from './LoadingIndicator';
 
-import * as EteSync from './api/EteSync';
-
-import AddressBook from './AddressBook';
-import Calendar from './Calendar';
+import Main from './Main';
 
 import { store, JournalsType, EntriesType, fetchJournals, fetchEntries, StoreState, CredentialsData } from './store';
-
-import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
 
 interface PropsType {
   etesync: CredentialsData;
@@ -68,54 +62,8 @@ class SyncGate extends React.Component {
       return (<LoadingIndicator />);
     }
 
-    const derived = this.props.etesync.encryptionKey;
-
-    let syncEntriesCalendar: EteSync.SyncEntry[] = [];
-    let syncEntriesAddressBook: EteSync.SyncEntry[] = [];
-    for (const journal of this.props.journals.value) {
-      const journalEntries = this.props.entries[journal.uid].value;
-      const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-
-      let prevUid: string | null = null;
-
-      if (!journalEntries) {
-        continue;
-      }
-
-      // FIXME: Skip shared journals for now
-      if (journal.key) {
-        continue;
-      }
-
-      const collectionInfo = journal.getInfo(cryptoManager);
-
-      const syncEntries = journalEntries.map((entry) => {
-        let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
-        prevUid = entry.uid;
-
-        return syncEntry;
-      });
-
-      if (collectionInfo.type === 'ADDRESS_BOOK') {
-        syncEntriesAddressBook = syncEntriesAddressBook.concat(syncEntries);
-      } else if (collectionInfo.type === 'CALENDAR') {
-        syncEntriesCalendar = syncEntriesCalendar.concat(syncEntries);
-      }
-
-    }
-
-    let addressBookItems = syncEntriesToItemMap(syncEntriesAddressBook);
-    let calendarItems = syncEntriesToCalendarItemMap(syncEntriesCalendar);
-
     return (
-      <Tabs>
-        <Tab label="Address Book">
-          <AddressBook entries={Array.from(addressBookItems.values())} onItemClick={this.contactClicked} />
-        </Tab>
-        <Tab label="Calendar">
-          <Calendar entries={Array.from(calendarItems.values())} onItemClick={this.eventClicked} />
-        </Tab>
-      </Tabs>
+      <Main etesync={this.props.etesync} journals={this.props.journals.value} entries={this.props.entries} />
     );
   }
 }
