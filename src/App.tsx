@@ -41,8 +41,12 @@ export function getPalette(part: string): string {
 export const routeResolver = new RouteResolver({
   home: '',
   pim: {
-    contacts: 'contacts/:contactUid',
-    events: 'events/:contactUid',
+    contacts: {
+      _id: ':contactUid',
+    },
+    events: {
+      _id: ':eventUid',
+    },
   },
   journals: {
     _id: {

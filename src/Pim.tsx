@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Tabs, Tab } from 'material-ui/Tabs';
+import { Route, Switch } from 'react-router';
 
 import * as EteSync from './api/EteSync';
 
-import AddressBook from './AddressBook';
-import Calendar from './Calendar';
+import Contact from './Contact';
+import PimMain from './PimMain';
+
+import { routeResolver } from './App';
 
 import { JournalsData, EntriesType, CredentialsData } from './store';
 
@@ -20,16 +22,6 @@ class Pim extends React.Component {
 
   constructor(props: any) {
     super(props);
-    this.eventClicked = this.eventClicked.bind(this);
-    this.contactClicked = this.contactClicked.bind(this);
-  }
-
-  eventClicked(contact: any) {
-    // FIXME
-  }
-
-  contactClicked(contact: any) {
-    // FIXME
   }
 
   render() {
@@ -73,14 +65,26 @@ class Pim extends React.Component {
     let calendarItems = syncEntriesToCalendarItemMap(syncEntriesCalendar);
 
     return (
-      <Tabs>
-        <Tab label="Address Book">
-          <AddressBook entries={Array.from(addressBookItems.values())} onItemClick={this.contactClicked} />
-        </Tab>
-        <Tab label="Calendar">
-          <Calendar entries={Array.from(calendarItems.values())} onItemClick={this.eventClicked} />
-        </Tab>
-      </Tabs>
+      <Switch>
+        <Route
+          path={routeResolver.getRoute('pim')}
+          exact={true}
+          render={({history}) => (
+            <PimMain
+              contacts={Array.from(addressBookItems.values())}
+              events={Array.from(calendarItems.values())}
+              history={history}
+            />
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('pim.contacts._id')}
+          exact={true}
+          render={({match}) => (
+            <Contact contact={addressBookItems.get(match.params.contactUid)} />
+          )}
+        />
+      </Switch>
     );
   }
 }
