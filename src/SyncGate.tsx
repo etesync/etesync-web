@@ -7,7 +7,7 @@ import { routeResolver } from './App';
 import LoadingIndicator from './LoadingIndicator';
 
 import Journal from './Journal';
-import Main from './Main';
+import Pim from './Pim';
 
 import { store, JournalsType, EntriesType, fetchJournals, fetchEntries, StoreState, CredentialsData } from './store';
 
@@ -69,7 +69,7 @@ class SyncGate extends React.Component {
         <Route
           path={routeResolver.getRoute('pim')}
           render={({match}) => (
-            <Main etesync={this.props.etesync} journals={journals} entries={this.props.entries} match={match} />
+            <Pim etesync={this.props.etesync} journals={journals} entries={this.props.entries} match={match} />
           )}
         />
         <Route

@@ -10,7 +10,7 @@ import { JournalsData, EntriesType, CredentialsData } from './store';
 
 import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
 
-class Main extends React.Component {
+class Pim extends React.Component {
   props: {
     etesync: CredentialsData;
     journals: JournalsData;
@@ -85,4 +85,4 @@ class Main extends React.Component {
   }
 }
 
-export default Main;
+export default Pim;
