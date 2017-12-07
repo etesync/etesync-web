@@ -13,7 +13,7 @@ import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import './App.css';
 
 import SideMenu from './SideMenu';
-import EteSyncContext from './EteSyncContext';
+import Root from './Root';
 import { RouteResolver } from './routes';
 
 import * as C from './Constants';
@@ -105,7 +105,7 @@ class App extends React.Component {
             <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
           </Drawer>
 
-          <EteSyncContext />
+          <Root />
         </div>
         </HashRouter>
       </MuiThemeProvider>

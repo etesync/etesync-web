@@ -9,7 +9,7 @@ import LoadingIndicator from './LoadingIndicator';
 
 import { store, StoreState, CredentialsType, fetchCredentials } from './store';
 
-class EteSyncContext extends React.Component {
+class Root extends React.Component {
   props: {
     credentials: CredentialsType;
   };
@@ -56,4 +56,4 @@ const mapStateToProps = (state: StoreState) => {
 
 export default withRouter(connect(
   mapStateToProps
-)(EteSyncContext));
+)(Root));
