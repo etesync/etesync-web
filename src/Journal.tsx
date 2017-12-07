@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import * as EteSync from './api/EteSync';
@@ -12,16 +10,16 @@ import LoadingIndicator from './LoadingIndicator';
 
 import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
 
-import { store, StoreState, JournalsData, EntriesType, CredentialsData, fetchEntries } from './store';
+import { JournalsData, EntriesType, CredentialsData } from './store';
 
 interface PropsType {
   journals: JournalsData;
+  entries: EntriesType;
   etesync: CredentialsData;
   match: any;
 }
 
 interface PropsTypeInner extends PropsType {
-  entries: EntriesType;
 }
 
 class Journal extends React.Component {
@@ -33,12 +31,6 @@ class Journal extends React.Component {
 
   constructor(props: any) {
     super(props);
-  }
-
-  componentDidMount() {
-    const journal = this.props.match.params.journalUid;
-
-    store.dispatch(fetchEntries(this.props.etesync, journal, null));
   }
 
   render() {
@@ -99,12 +91,4 @@ class Journal extends React.Component {
   }
 }
 
-const mapStateToProps = (state: StoreState, props: PropsType) => {
-  return {
-    entries: state.cache.entries,
-  };
-};
-
-export default withRouter(connect(
-  mapStateToProps
-)(Journal));
+export default Journal;

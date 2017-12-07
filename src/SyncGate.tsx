@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { Route, Switch, withRouter } from 'react-router';
+
+import { routeResolver } from './App';
 
 import LoadingIndicator from './LoadingIndicator';
 
+import Journal from './Journal';
 import Main from './Main';
 
 import { store, JournalsType, EntriesType, fetchJournals, fetchEntries, StoreState, CredentialsData } from './store';
@@ -57,13 +60,30 @@ class SyncGate extends React.Component {
       return this.props.entries[key].value;
     });
 
-    if ((this.props.journals.value === null) ||
+    const journals = this.props.journals.value;
+
+    if ((journals === null) ||
       (entryArrays.length === 0) || !entryArrays.every((x: any) => (x !== null))) {
       return (<LoadingIndicator />);
     }
 
     return (
-      <Main etesync={this.props.etesync} journals={this.props.journals.value} entries={this.props.entries} />
+      <Switch>
+        <Route
+          path={routeResolver.getRoute('home')}
+          exact={true}
+          render={() => (
+            <Main etesync={this.props.etesync} journals={journals} entries={this.props.entries} />
+            )
+          }
+        />
+        <Route
+          path={routeResolver.getRoute('journals._id')}
+          render={({match}) => (
+            <Journal etesync={this.props.etesync} journals={journals} entries={this.props.entries} match={match} />
+            )}
+        />
+      </Switch>
     );
   }
 }
