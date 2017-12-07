@@ -8,6 +8,7 @@ import * as EteSync from './api/EteSync';
 import JournalViewEntries from './JournalViewEntries';
 import JournalViewAddressBook from './JournalViewAddressBook';
 import JournalViewCalendar from './JournalViewCalendar';
+import LoadingIndicator from './LoadingIndicator';
 
 import { store, StoreState, JournalsData, EntriesType, CredentialsData, fetchEntries } from './store';
 
@@ -43,7 +44,7 @@ class JournalView extends React.Component {
     const entries = this.props.entries[journalUid];
 
     if ((!entries) || (entries.value === null)) {
-      return (<div>Loading</div>);
+      return (<LoadingIndicator />);
     }
 
     const journal = this.props.journals.find((x) => (x.uid === journalUid));
