@@ -25,16 +25,6 @@ class SyncGate extends React.Component {
 
   constructor(props: any) {
     super(props);
-    this.eventClicked = this.eventClicked.bind(this);
-    this.contactClicked = this.contactClicked.bind(this);
-  }
-
-  eventClicked(contact: any) {
-    // FIXME
-  }
-
-  contactClicked(contact: any) {
-    // FIXME
   }
 
   componentDidMount() {
