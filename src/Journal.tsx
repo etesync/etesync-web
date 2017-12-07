@@ -5,9 +5,9 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 
 import * as EteSync from './api/EteSync';
 
-import JournalViewEntries from './JournalViewEntries';
-import JournalViewAddressBook from './JournalViewAddressBook';
-import JournalViewCalendar from './JournalViewCalendar';
+import JournalEntries from './JournalEntries';
+import AddressBook from './AddressBook';
+import Calendar from './Calendar';
 import LoadingIndicator from './LoadingIndicator';
 
 import { store, StoreState, JournalsData, EntriesType, CredentialsData, fetchEntries } from './store';
@@ -22,7 +22,7 @@ interface PropsTypeInner extends PropsType {
   entries: EntriesType;
 }
 
-class JournalView extends React.Component {
+class Journal extends React.Component {
   static defaultProps = {
     prevUid: null,
   };
@@ -68,10 +68,10 @@ class JournalView extends React.Component {
     let itemsTitle: string;
     let itemsView: JSX.Element;
     if (collectionInfo.type === 'CALENDAR') {
-      itemsView = <JournalViewCalendar journal={journal} entries={syncEntries} />;
+      itemsView = <Calendar journal={journal} entries={syncEntries} />;
       itemsTitle = 'Events';
     } else if (collectionInfo.type === 'ADDRESS_BOOK') {
-      itemsView = <JournalViewAddressBook journal={journal} entries={syncEntries} />;
+      itemsView = <AddressBook journal={journal} entries={syncEntries} />;
       itemsTitle = 'Contacts';
     } else {
       itemsView = <div>Unsupported type</div>;
@@ -90,7 +90,7 @@ class JournalView extends React.Component {
           label="Journal Entries"
         >
             <h2>{collectionInfo.displayName}</h2>
-            <JournalViewEntries journal={journal} entries={syncEntries} />;
+            <JournalEntries journal={journal} entries={syncEntries} />;
         </Tab>
       </Tabs>
     );
@@ -105,4 +105,4 @@ const mapStateToProps = (state: StoreState, props: PropsType) => {
 
 export default withRouter(connect(
   mapStateToProps
-)(JournalView));
+)(Journal));

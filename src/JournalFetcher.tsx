@@ -4,7 +4,7 @@ import { Switch, Route, Redirect, withRouter } from 'react-router';
 import LoadingIndicator from './LoadingIndicator';
 
 import JournalList from './JournalList';
-import JournalView from './JournalView';
+import Journal from './Journal';
 
 import { routeResolver } from './App';
 
@@ -50,7 +50,7 @@ class JournalFetcher extends React.Component {
         />
         <Route
           path={routeResolver.getRoute('journals._id')}
-          render={({match}) => <JournalView match={match} etesync={this.props.etesync} journals={journals} />}
+          render={({match}) => <Journal match={match} etesync={this.props.etesync} journals={journals} />}
         />
       </Switch>
     );
