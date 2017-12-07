@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 
-import JournalFetcher from './JournalFetcher';
+import SyncGate from './SyncGate';
 import LoginForm from './LoginForm';
 import LoadingIndicator from './LoadingIndicator';
 
@@ -43,7 +43,7 @@ class Root extends React.Component {
     }
 
     return (
-      <JournalFetcher etesync={this.props.credentials.value} />
+      <SyncGate etesync={this.props.credentials.value} />
     );
   }
 }
