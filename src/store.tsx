@@ -231,7 +231,7 @@ let middleware = [
   promiseMiddleware,
 ];
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
   middleware.push(createLogger());
 }
 
