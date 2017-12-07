@@ -1,4 +1,5 @@
 import * as React from 'react';
+const Fragment = (React as any).Fragment;
 import { Link } from 'react-router-dom';
 
 import { List, ListItem } from 'material-ui/List';
@@ -21,28 +22,39 @@ class JournalList extends React.Component {
 
   render() {
     const derived = this.props.etesync.encryptionKey;
-    const journalMap = this.props.journals.filter((x) => (
-        // Skip shared journals for now.
-        !x.key
-      )).reduce(
+    const journalMap = this.props.journals.reduce(
       (ret, journal) => {
-        let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-        let info = journal.getInfo(cryptoManager);
-        ret[info.type] = ret[info.type] || [];
-        ret[info.type].push(
-          <Link
-            key={journal.uid}
-            to={routeResolver.getRoute('journals._id', { journalUid: journal.uid })}
-          >
-            <ListItem>
-              {info.displayName} ({journal.uid.slice(0, 5)})
+        if (journal.key) {
+          const key = 'UNSUPPORTED';
+          ret[key] = ret[key] || [];
+          ret[key].push(
+            <ListItem
+              key={journal.uid}
+            >
+              {journal.uid.slice(0, 20)}
             </ListItem>
-          </Link>
-        );
+          );
+        } else {
+          let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
+          let info = journal.getInfo(cryptoManager);
+          ret[info.type] = ret[info.type] || [];
+          ret[info.type].push(
+            <Link
+              key={journal.uid}
+              to={routeResolver.getRoute('journals._id', { journalUid: journal.uid })}
+            >
+              <ListItem>
+                {info.displayName} ({journal.uid.slice(0, 5)})
+              </ListItem>
+            </Link>
+          );
+        }
+
         return ret;
       },
       { CALENDAR: [],
-        ADDRESS_BOOK: []});
+        ADDRESS_BOOK: [],
+        UNSUPPORTED: [] as Array<JSX.Element>});
 
     const styles = {
       paper: {
@@ -63,6 +75,15 @@ class JournalList extends React.Component {
         <List>
           {journalMap.CALENDAR}
         </List>
+
+        { journalMap.UNSUPPORTED && (
+          <Fragment>
+            <h2>Unsupported</h2>
+            <List>
+              {journalMap.UNSUPPORTED}
+            </List>
+          </Fragment>
+        )}
       </Paper>
     );
   }
