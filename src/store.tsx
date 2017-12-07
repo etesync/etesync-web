@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore, createTransform } from 'redux-persist';
 import { createActions, handleAction, handleActions, combineActions } from 'redux-actions';
+import * as localforage from 'localforage';
 import session from 'redux-persist/lib/storage/session';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
@@ -152,12 +153,65 @@ const credentialsPersistConfig = {
   whitelist: ['value'],
 };
 
+const journalsSerialize = (state: JournalsData) => {
+  if (state === null) {
+    return null;
+  }
+
+  return state.map((x) => x.serialize());
+};
+
+const journalsDeserialize = (state: EteSync.JournalJson[]) => {
+  if (state === null) {
+    return null;
+  }
+
+  return state.map((x: any) => {
+    let ret = new EteSync.Journal(x.version);
+    ret.deserialize(x);
+    return ret;
+  });
+};
+
+const cacheJournalsPersistConfig = {
+  key: 'journals',
+  storage: localforage,
+  transforms: [createTransform(journalsSerialize, journalsDeserialize)],
+  whitelist: ['value'],
+};
+
+const entriesSerialize = (state: FetchType<EntriesData>, key: string) => {
+  if ((state === null) || (state.value == null)) {
+    return null;
+  }
+
+  return state.value.map((x) => x.serialize());
+};
+
+const entriesDeserialize = (state: EteSync.EntryJson[], key: string): FetchType<EntriesData> => {
+  if (state === null) {
+    return {value: null};
+  }
+
+  return {value: state.map((x: any) => {
+    let ret = new EteSync.Entry();
+    ret.deserialize(x);
+    return ret;
+  })};
+};
+
+const cacheEntriesPersistConfig = {
+  key: 'entries',
+  storage: localforage,
+  transforms: [createTransform(entriesSerialize, entriesDeserialize)],
+};
+
 const reducers = combineReducers({
   fetchCount,
   credentials: persistReducer(credentialsPersistConfig, credentials),
   cache: combineReducers({
-    journals,
-    entries,
+    journals: persistReducer(cacheJournalsPersistConfig, journals),
+    entries: persistReducer(cacheEntriesPersistConfig, entries),
   })
 });
 

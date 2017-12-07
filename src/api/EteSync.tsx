@@ -109,7 +109,7 @@ class BaseJournal<T extends BaseJson> {
   }
 }
 
-interface JournalJson extends BaseJson {
+export interface JournalJson extends BaseJson {
   version: number;
   owner: string;
   key?: base64;
@@ -180,7 +180,7 @@ export class SyncEntry {
   }
 }
 
-interface EntryJson extends BaseJson {
+export interface EntryJson extends BaseJson {
 }
 
 export class Entry extends BaseJournal<EntryJson> {
