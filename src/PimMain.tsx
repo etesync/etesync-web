@@ -21,8 +21,11 @@ class Pim extends React.Component {
     this.contactClicked = this.contactClicked.bind(this);
   }
 
-  eventClicked(contact: any) {
-    // FIXME
+  eventClicked(event: ICAL.Event) {
+    const uid = event.uid;
+
+    this.props.history.push(
+      routeResolver.getRoute('pim.events._id', { eventUid: uid }));
   }
 
   contactClicked(contact: ICAL.Component) {

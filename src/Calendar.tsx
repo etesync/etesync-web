@@ -7,27 +7,18 @@ import * as ICAL from 'ical.js';
 
 BigCalendar.momentLocalizer(moment);
 
-class EventWrapper {
-  event: ICAL.Event;
-
-  constructor(event: ICAL.Event) {
-    this.event = event;
-  }
-
-  get summary() {
-    return this.event.summary;
-  }
+class EventWrapper extends ICAL.Event {
 
   get title() {
     return this.summary;
   }
 
   get start() {
-      return this.event.startDate.toJSDate();
+      return this.startDate.toJSDate();
   }
 
   get end() {
-      return this.event.endDate.toJSDate();
+      return this.endDate.toJSDate();
   }
 }
 
@@ -38,7 +29,7 @@ class Calendar extends React.Component {
 
   props: {
     entries: Array<ICAL.Component>,
-    onItemClick: (contact: ICAL.Component) => void,
+    onItemClick: (contact: ICAL.Event) => void,
   };
 
   constructor(props: any) {
@@ -48,7 +39,7 @@ class Calendar extends React.Component {
 
   render() {
     let entries = this.props.entries.map((value) => (
-      new EventWrapper(new ICAL.Event(value))
+      new EventWrapper(value)
     )).sort((a, b) => {
       if (a.summary < b.summary) {
         return -1;
@@ -63,6 +54,9 @@ class Calendar extends React.Component {
       <div style={{width: '100%', height: 500}}>
         <BigCalendar
           events={entries}
+          onSelectEvent={(event: any) => {
+            this.props.onItemClick(event);
+          }}
           {...{culture: 'en-GB'}}
           date={this.state.currentDate}
           onNavigate={(currentDate: Date) => { this.setState({currentDate}); }}

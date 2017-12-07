@@ -1,7 +1,10 @@
 import * as React from 'react';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Route, Switch, withRouter } from 'react-router';
+
+import { routeResolver } from './App';
 
 import Calendar from './Calendar';
+import Event from './Event';
 
 import * as ICAL from 'ical.js';
 
@@ -19,19 +22,39 @@ class JournalCalendar extends React.Component {
     this.eventClicked = this.eventClicked.bind(this);
   }
 
-  eventClicked(contact: ICAL.Component) {
-    // FIXME: do something
+  eventClicked(event: ICAL.Event) {
+    const uid = event.uid;
+
+    this.props.history.push(
+      routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid }));
   }
 
   render() {
     let items = this.props.entries;
 
     return (
-      <div style={{width: '100%', height: 500}}>
-        <Calendar entries={Array.from(items.values())} onItemClick={this.eventClicked} />
-      </div>
+      <Switch>
+        <Route
+          path={routeResolver.getRoute('journals._id')}
+          exact={true}
+          render={() => (
+              <Calendar entries={Array.from(items.values())} onItemClick={this.eventClicked} />
+            )
+          }
+        />
+        <Route
+          path={routeResolver.getRoute('journals._id.items._id')}
+          exact={true}
+          render={({match}) => {
+
+            return (
+              <Event event={new ICAL.Event(items.get(match.params.itemUid))} />
+            );
+          }}
+        />
+      </Switch>
     );
   }
 }
 
-export default JournalCalendar;
+export default withRouter(JournalCalendar);
