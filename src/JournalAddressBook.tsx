@@ -10,7 +10,7 @@ import * as EteSync from './api/EteSync';
 import { routeResolver } from './App';
 import Contact from './Contact';
 
-class AddressBook extends React.Component {
+class JournalAddressBook extends React.Component {
   static defaultProps = {
     prevUid: null,
   };
@@ -95,4 +95,4 @@ class AddressBook extends React.Component {
   }
 }
 
-export default AddressBook;
+export default JournalAddressBook;

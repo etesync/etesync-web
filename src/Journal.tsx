@@ -6,8 +6,8 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import * as EteSync from './api/EteSync';
 
 import JournalEntries from './JournalEntries';
-import AddressBook from './AddressBook';
-import Calendar from './Calendar';
+import JournalAddressBook from './JournalAddressBook';
+import JournalCalendar from './JournalCalendar';
 import LoadingIndicator from './LoadingIndicator';
 
 import { store, StoreState, JournalsData, EntriesType, CredentialsData, fetchEntries } from './store';
@@ -68,10 +68,10 @@ class Journal extends React.Component {
     let itemsTitle: string;
     let itemsView: JSX.Element;
     if (collectionInfo.type === 'CALENDAR') {
-      itemsView = <Calendar journal={journal} entries={syncEntries} />;
+      itemsView = <JournalCalendar journal={journal} entries={syncEntries} />;
       itemsTitle = 'Events';
     } else if (collectionInfo.type === 'ADDRESS_BOOK') {
-      itemsView = <AddressBook journal={journal} entries={syncEntries} />;
+      itemsView = <JournalAddressBook journal={journal} entries={syncEntries} />;
       itemsTitle = 'Contacts';
     } else {
       itemsView = <div>Unsupported type</div>;
