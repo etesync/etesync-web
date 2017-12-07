@@ -8,7 +8,6 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import { List, ListItem } from 'material-ui/List';
-import FlatButton from 'material-ui/FlatButton';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import ActionCode from 'material-ui/svg-icons/action/code';
@@ -103,8 +102,8 @@ class App extends React.Component {
 
   render() {
     const username = (this.props.credentials && this.props.credentials.value) ?
-      <FlatButton label={this.props.credentials.value.credentials.email} />
-       : undefined;
+      this.props.credentials.value.credentials.email
+      : C.appName;
 
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
@@ -113,7 +112,6 @@ class App extends React.Component {
           <AppBar
             title={C.appName}
             iconElementLeft={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
-            iconElementRight={username}
           />
           <Drawer
             docked={false}
@@ -124,7 +122,7 @@ class App extends React.Component {
             <div className="App-drawer-header">
               <img className="App-drawer-logo" src={logo} />
               <div style={{color: getPalette('alternateTextColor')}} >
-                {C.appName}
+                {username}
               </div>
             </div>
             <List>
