@@ -30,6 +30,7 @@ class ViewContact extends React.Component {
           key={idx}
           leftIcon={<CommunicationCall />}
           rightIcon={<CommunicationChatBubble />}
+          href={'tel:' + val}
           primaryText={val}
           secondaryText={json[1].type}
         />
@@ -43,6 +44,7 @@ class ViewContact extends React.Component {
         <ListItem
           key={idx}
           leftIcon={<CommunicationEmail color={indigo500} />}
+          href={'mailto:' + val}
           primaryText={val}
           secondaryText={json[1].type}
         />
@@ -60,7 +62,7 @@ class ViewContact extends React.Component {
           <ListItem
             key={idx}
             insetChildren={true}
-            primaryText={(window as any).me = val}
+            primaryText={val}
             secondaryText={prop.name}
           />
         );
