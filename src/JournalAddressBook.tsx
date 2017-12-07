@@ -30,10 +30,6 @@ class JournalAddressBook extends React.Component {
   }
 
   render() {
-    if (this.props.journal === undefined) {
-      return (<div>Loading</div>);
-    }
-
     let items = this.props.entries;
 
     return (

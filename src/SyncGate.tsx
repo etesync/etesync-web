@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { Tabs, Tab } from 'material-ui/Tabs';
+
 import LoadingIndicator from './LoadingIndicator';
 
 import * as EteSync from './api/EteSync';
 
 import AddressBook from './AddressBook';
+import Calendar from './Calendar';
 
 import { store, JournalsType, EntriesType, fetchJournals, fetchEntries, StoreState, CredentialsData } from './store';
 
-import { syncEntriesToItemMap } from './journal-processors';
+import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
 
 interface PropsType {
   etesync: CredentialsData;
@@ -25,7 +28,12 @@ class SyncGate extends React.Component {
 
   constructor(props: any) {
     super(props);
+    this.eventClicked = this.eventClicked.bind(this);
     this.contactClicked = this.contactClicked.bind(this);
+  }
+
+  eventClicked(contact: any) {
+    // FIXME
   }
 
   contactClicked(contact: any) {
@@ -56,7 +64,8 @@ class SyncGate extends React.Component {
 
     const derived = this.props.etesync.encryptionKey;
 
-    let syncEntries: EteSync.SyncEntry[] = [];
+    let syncEntriesCalendar: EteSync.SyncEntry[] = [];
+    let syncEntriesAddressBook: EteSync.SyncEntry[] = [];
     for (const journal of this.props.journals.value) {
       const journalEntries = this.props.entries[journal.uid].value;
       const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
@@ -74,23 +83,33 @@ class SyncGate extends React.Component {
 
       const collectionInfo = journal.getInfo(cryptoManager);
 
-      if (collectionInfo.type !== 'ADDRESS_BOOK') {
-        continue;
-      }
-
-      syncEntries = syncEntries.concat(journalEntries.map((entry) => {
+      const syncEntries = journalEntries.map((entry) => {
         let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
         prevUid = entry.uid;
 
         return syncEntry;
-      }));
+      });
+
+      if (collectionInfo.type === 'ADDRESS_BOOK') {
+        syncEntriesAddressBook = syncEntriesAddressBook.concat(syncEntries);
+      } else if (collectionInfo.type === 'CALENDAR') {
+        syncEntriesCalendar = syncEntriesCalendar.concat(syncEntries);
+      }
 
     }
 
-    let items = syncEntriesToItemMap(syncEntries);
+    let addressBookItems = syncEntriesToItemMap(syncEntriesAddressBook);
+    let calendarItems = syncEntriesToCalendarItemMap(syncEntriesCalendar);
 
     return (
-      <AddressBook entries={Array.from(items.values())} onItemClick={this.contactClicked} />
+      <Tabs>
+        <Tab label="Address Book">
+          <AddressBook entries={Array.from(addressBookItems.values())} onItemClick={this.contactClicked} />
+        </Tab>
+        <Tab label="Calendar">
+          <Calendar entries={Array.from(calendarItems.values())} onItemClick={this.eventClicked} />
+        </Tab>
+      </Tabs>
     );
   }
 }
