@@ -8,7 +8,7 @@ import { indigo500 } from 'material-ui/styles/colors';
 
 import * as ICAL from 'ical.js';
 
-class ViewContact extends React.Component {
+class Contact extends React.Component {
   props: {
     contact?: ICAL.Component,
   };
@@ -98,4 +98,4 @@ class ViewContact extends React.Component {
   }
 }
 
-export default ViewContact;
+export default Contact;
