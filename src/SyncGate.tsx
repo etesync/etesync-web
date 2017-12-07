@@ -47,7 +47,13 @@ class SyncGate extends React.Component {
   componentWillReceiveProps(nextProps: PropsTypeInner) {
     if (nextProps.journals.value && (this.props.journals.value !== nextProps.journals.value)) {
       for (const journal of nextProps.journals.value) {
-        store.dispatch(fetchEntries(this.props.etesync, journal.uid, null));
+        let prevUid: string | null = null;
+        const entries = this.props.entries[journal.uid];
+        if (entries && entries.value && (entries.value.length > 0)) {
+          prevUid = entries.value[entries.value.length - 1].uid;
+        }
+
+        store.dispatch(fetchEntries(this.props.etesync, journal.uid, prevUid));
       }
     }
   }

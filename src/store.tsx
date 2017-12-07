@@ -41,7 +41,7 @@ export interface StoreState {
   };
 }
 
-function fetchTypeIdentityReducer(state: FetchType<any>, action: any) {
+function fetchTypeIdentityReducer(state: FetchType<any>, action: any, extend: boolean = false) {
   if (action.error) {
     return {
       value: null,
@@ -49,9 +49,18 @@ function fetchTypeIdentityReducer(state: FetchType<any>, action: any) {
     };
   } else {
     const fetching = (action.payload === undefined) ? true : undefined;
+    const payload = (action.payload === undefined) ? null : action.payload;
+    let value = state.value;
+    if (extend && (value !== null)) {
+      if (payload !== null) {
+        value = value.concat(payload);
+      }
+    } else {
+      value = payload;
+    }
     return {
       fetching,
-      value: (action.payload === undefined) ? null : action.payload,
+      value,
     };
   }
 }
@@ -118,8 +127,10 @@ const credentials = handleActions(
 const entries = handleAction(
   fetchEntries,
   (state: EntriesType, action: any) => {
+    const prevState = state[action.meta.journal];
+    const extend = action.meta.prevUid != null;
     return { ...state,
-      [action.meta.journal]: fetchTypeIdentityReducer(state[action.meta.journal], action)
+      [action.meta.journal]: fetchTypeIdentityReducer(prevState, action, extend)
     };
   },
   {}
