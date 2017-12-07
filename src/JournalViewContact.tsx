@@ -1,4 +1,5 @@
 import * as React from 'react';
+const Fragment = (React as any).Fragment;
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
@@ -66,17 +67,28 @@ class JournalViewContact extends React.Component {
       });
       return values;
     });
+
+    function listIfNotEmpty(items: Array<Array<JSX.Element>>) {
+      if (items.length > 0) {
+        return (
+          <Fragment>
+            <List>
+              {items}
+            </List>
+            <Divider inset={true} />
+          </Fragment>
+        );
+      } else {
+        return undefined;
+      }
+    }
+
     return (
       <div>
-        <h3>{name} <small>{uid}</small></h3>
-        <List>
-          {phoneNumbers}
-        </List>
-        <Divider inset={true} />
-        <List>
-          {emails}
-        </List>
-        <Divider inset={true} />
+        <h3>{name}</h3>
+        <span>{uid}</span>
+        {listIfNotEmpty(phoneNumbers)}
+        {listIfNotEmpty(emails)}
         <List>
           {theRest}
         </List>
