@@ -1,24 +1,33 @@
 import * as React from 'react';
-import { Route, Switch } from 'react-router';
-import { List, ListItem } from 'material-ui/List';
-import { Link } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router';
 
 import * as ICAL from 'ical.js';
 
 import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
+
+import AddressBook from './AddressBook';
 import Contact from './Contact';
 
 class JournalAddressBook extends React.Component {
-  static defaultProps = {
-    prevUid: null,
-  };
-
   props: {
     journal: EteSync.Journal,
     entries: Array<EteSync.SyncEntry>,
+    history?: any,
   };
+
+  constructor(props: any) {
+    super(props);
+    this.contactClicked = this.contactClicked.bind(this);
+  }
+
+  contactClicked(contact: ICAL.Component) {
+    const uid = contact.getFirstPropertyValue('uid');
+
+    this.props.history.push(
+      routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid }));
+  }
 
   render() {
     if (this.props.journal === undefined) {
@@ -40,32 +49,6 @@ class JournalAddressBook extends React.Component {
       }
     }
 
-    let entries = Array.from(items.values()).sort((_a, _b) => {
-      const a = _a.getFirstPropertyValue('fn');
-      const b = _b.getFirstPropertyValue('fn');
-
-      if (a < b) {
-        return -1;
-      } else if (a > b) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-
-    let itemList = entries.map((entry) => {
-      const uid = entry.getFirstPropertyValue('uid');
-      const name = entry.getFirstPropertyValue('fn');
-      return (
-        <Link
-          key={uid}
-          to={routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid })}
-        >
-          <ListItem primaryText={name} />
-        </Link>
-      );
-    });
-
     return (
       <div>
         <Switch>
@@ -73,9 +56,7 @@ class JournalAddressBook extends React.Component {
             path={routeResolver.getRoute('journals._id')}
             exact={true}
             render={() => (
-                <List>
-                  {itemList}
-                </List>
+                <AddressBook entries={items} onItemClick={this.contactClicked} />
               )
             }
           />
@@ -95,4 +76,4 @@ class JournalAddressBook extends React.Component {
   }
 }
 
-export default JournalAddressBook;
+export default withRouter(JournalAddressBook);
