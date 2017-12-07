@@ -15,7 +15,7 @@ class Contact extends React.Component {
 
   render() {
     if (this.props.contact === undefined) {
-      return (<div>Loading</div>);
+      throw Error('Contact should be defined!');
     }
 
     const contact = this.props.contact;
