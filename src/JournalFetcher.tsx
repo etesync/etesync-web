@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route, Redirect, withRouter } from 'react-router';
+import { Switch, Route, withRouter } from 'react-router';
 import LoadingIndicator from './LoadingIndicator';
 
-import JournalList from './JournalList';
 import Journal from './Journal';
 
 import { routeResolver } from './App';
@@ -38,16 +37,6 @@ class JournalFetcher extends React.Component {
 
     return (
       <Switch>
-        <Route
-          path={routeResolver.getRoute('home')}
-          exact={true}
-          render={() => <Redirect to={routeResolver.getRoute('journals')} />}
-        />
-        <Route
-          path={routeResolver.getRoute('journals')}
-          exact={true}
-          render={() => <JournalList etesync={this.props.etesync} journals={journals} />}
-        />
         <Route
           path={routeResolver.getRoute('journals._id')}
           render={({match}) => <Journal match={match} etesync={this.props.etesync} journals={journals} />}
