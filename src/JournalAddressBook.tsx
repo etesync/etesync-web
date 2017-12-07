@@ -5,8 +5,6 @@ import * as ICAL from 'ical.js';
 
 import * as EteSync from './api/EteSync';
 
-import { syncEntryToEntriesProps } from './journal-processors';
-
 import { routeResolver } from './App';
 
 import AddressBook from './AddressBook';
@@ -65,4 +63,4 @@ class JournalAddressBook extends React.Component {
   }
 }
 
-export default syncEntryToEntriesProps(withRouter(JournalAddressBook));
+export default withRouter(JournalAddressBook);
