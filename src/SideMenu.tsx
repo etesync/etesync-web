@@ -17,7 +17,7 @@ import SideMenuJournals from './SideMenuJournals';
 
 import { routeResolver, getPalette } from './App';
 
-import { store, logout, JournalsType, fetchJournals, StoreState, CredentialsData } from './store';
+import { store, logout, JournalsType, StoreState, CredentialsData } from './store';
 
 import * as C from './Constants';
 
@@ -41,22 +41,6 @@ class SideMenu extends React.Component {
   logout() {
     store.dispatch(logout());
     this.props.onCloseDrawerRequest();
-  }
-
-  fetchJournals() {
-    if (this.props.etesync !== null) {
-      store.dispatch(fetchJournals(this.props.etesync));
-    }
-  }
-
-  componentDidMount() {
-    this.fetchJournals();
-  }
-
-  componentWillReceiveProps(nextProps: PropsTypeInner) {
-    if (this.props.etesync !== nextProps.etesync) {
-      this.fetchJournals();
-    }
   }
 
   render() {
