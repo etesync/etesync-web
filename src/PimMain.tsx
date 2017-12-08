@@ -10,6 +10,8 @@ import { EventType, ContactType } from './pim-types';
 
 import { routeResolver } from './App';
 
+import { historyPersistor } from './persist-state-history';
+
 const addressBookTitle = 'Address Book';
 const calendarTitle = 'Calendar';
 
@@ -17,6 +19,7 @@ class PimMain extends React.Component {
   props: {
     contacts: Array<ContactType>,
     events: Array<EventType>,
+    location?: any,
     history?: any,
   };
 
@@ -46,6 +49,7 @@ class PimMain extends React.Component {
   }
 
   render() {
+    const PersistCalendar = historyPersistor(Calendar, 'Calendar');
 
     return (
       <Tabs
@@ -62,11 +66,11 @@ class PimMain extends React.Component {
           value={calendarTitle}
           label={calendarTitle}
         >
-          <Calendar entries={this.props.events} onItemClick={this.eventClicked} />
+          <PersistCalendar entries={this.props.events} onItemClick={this.eventClicked} />
         </Tab>
       </Tabs>
     );
   }
 }
 
-export default PimMain;
+export default historyPersistor(PimMain, 'PimMain');

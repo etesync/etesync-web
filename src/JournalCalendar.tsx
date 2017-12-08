@@ -3,6 +3,8 @@ import { Route, Switch, withRouter } from 'react-router';
 
 import { routeResolver } from './App';
 
+import { historyPersistor } from './persist-state-history';
+
 import Calendar from './Calendar';
 import Event from './Event';
 
@@ -30,6 +32,7 @@ class JournalCalendar extends React.Component {
   }
 
   render() {
+    const PersistCalendar = historyPersistor(Calendar, 'Calendar');
     let items = this.props.entries;
 
     return (
@@ -38,7 +41,7 @@ class JournalCalendar extends React.Component {
           path={routeResolver.getRoute('journals._id')}
           exact={true}
           render={() => (
-              <Calendar entries={Array.from(items.values())} onItemClick={this.eventClicked} />
+              <PersistCalendar entries={Array.from(items.values())} onItemClick={this.eventClicked} />
             )
           }
         />
