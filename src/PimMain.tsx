@@ -10,6 +10,9 @@ import { EventType, ContactType } from './pim-types';
 
 import { routeResolver } from './App';
 
+const addressBookTitle = 'Address Book';
+const calendarTitle = 'Calendar';
+
 class Pim extends React.Component {
   props: {
     contacts: Array<ContactType>,
@@ -17,8 +20,13 @@ class Pim extends React.Component {
     history?: any,
   };
 
+  state: {
+    tab?: string;
+  };
+
   constructor(props: any) {
     super(props);
+    this.state = {};
     this.eventClicked = this.eventClicked.bind(this);
     this.contactClicked = this.contactClicked.bind(this);
   }
@@ -40,11 +48,20 @@ class Pim extends React.Component {
   render() {
 
     return (
-      <Tabs>
-        <Tab label="Address Book">
+      <Tabs
+        value={this.state.tab}
+        onChange={(value) => this.setState({tab: value})}
+      >
+        <Tab
+          value={addressBookTitle}
+          label={addressBookTitle}
+        >
           <AddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
         </Tab>
-        <Tab label="Calendar">
+        <Tab
+          value={calendarTitle}
+          label={calendarTitle}
+        >
           <Calendar entries={this.props.events} onItemClick={this.eventClicked} />
         </Tab>
       </Tabs>
