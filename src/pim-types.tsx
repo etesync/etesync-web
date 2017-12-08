@@ -1,6 +1,8 @@
 import * as ICAL from 'ical.js';
 
 export class EventType extends ICAL.Event {
+  color: string;
+
   get title() {
     return this.summary;
   }

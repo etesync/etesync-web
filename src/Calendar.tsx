@@ -33,6 +33,14 @@ class Calendar extends React.Component {
       }
     });
 
+    function eventPropGetter(event: EventType) {
+      return {
+        style: {
+          backgroundColor: event.color,
+        }
+      };
+    }
+
     return (
       <div style={{width: '100%', height: 500, padding: 10}}>
         <BigCalendar
@@ -41,6 +49,7 @@ class Calendar extends React.Component {
             this.props.onItemClick(event);
           }}
           {...{culture: 'en-GB'}}
+          eventPropGetter={eventPropGetter}
           date={this.state.currentDate}
           onNavigate={(currentDate: Date) => { this.setState({currentDate}); }}
         />

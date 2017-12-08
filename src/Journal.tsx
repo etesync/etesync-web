@@ -66,10 +66,12 @@ class Journal extends React.Component {
     let itemsTitle: string;
     let itemsView: JSX.Element;
     if (collectionInfo.type === 'CALENDAR') {
-      itemsView = <JournalCalendar journal={journal} entries={syncEntriesToCalendarItemMap(syncEntries)} />;
+      itemsView =
+        <JournalCalendar journal={journal} entries={syncEntriesToCalendarItemMap(collectionInfo, syncEntries)} />;
       itemsTitle = 'Events';
     } else if (collectionInfo.type === 'ADDRESS_BOOK') {
-      itemsView = <JournalAddressBook journal={journal} entries={syncEntriesToItemMap(syncEntries)} />;
+      itemsView =
+        <JournalAddressBook journal={journal} entries={syncEntriesToItemMap(collectionInfo, syncEntries)} />;
       itemsTitle = 'Contacts';
     } else {
       itemsView = <div>Unsupported type</div>;

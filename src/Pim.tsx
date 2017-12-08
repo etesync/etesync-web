@@ -61,9 +61,9 @@ class Pim extends React.Component {
       });
 
       if (collectionInfo.type === 'ADDRESS_BOOK') {
-        syncEntriesAddressBook.push(syncEntriesToItemMap(syncEntries));
+        syncEntriesAddressBook.push(syncEntriesToItemMap(collectionInfo, syncEntries));
       } else if (collectionInfo.type === 'CALENDAR') {
-        syncEntriesCalendar.push(syncEntriesToCalendarItemMap(syncEntries));
+        syncEntriesCalendar.push(syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
       }
 
     }
