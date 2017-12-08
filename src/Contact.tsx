@@ -32,18 +32,18 @@ class Contact extends React.Component {
     function getAllType(
       propName: string,
       props: any,
-      valueToHref?: (value: string) => string,
-      primaryTransform?: (value: string) => string,
-      secondaryTransform?: (value: string) => string) {
+      valueToHref?: (value: string, type: string) => string,
+      primaryTransform?: (value: string, type: string) => string,
+      secondaryTransform?: (value: string, type: string) => string) {
 
       return contact.comp.getAllProperties(propName).map((prop, idx) => {
-        const json = prop.toJSON();
+        const type = prop.toJSON()[1].type;
         const values = prop.getValues().map((val) => (
           <ListItem
             key={idx}
-            href={valueToHref ? valueToHref(val) : undefined}
-            primaryText={primaryTransform ? primaryTransform(val) : val}
-            secondaryText={json[1].type}
+            href={valueToHref ? valueToHref(val, type) : undefined}
+            primaryText={primaryTransform ? primaryTransform(val, type) : val}
+            secondaryText={secondaryTransform ? secondaryTransform(val, type) : type}
             {...props}
           />
         ));
@@ -75,6 +75,7 @@ class Contact extends React.Component {
       },
       (x) => x,
       (x) => (x.substring(x.indexOf(':') + 1)),
+      (x) => (x.substring(0, x.indexOf(':'))),
     ));
 
     lists.push(getAllType(
@@ -91,6 +92,7 @@ class Contact extends React.Component {
       },
       undefined,
       ((x) => moment(x).format('dddd, LL')),
+      () => 'Birthday',
     ));
 
     const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
