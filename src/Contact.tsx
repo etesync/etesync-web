@@ -6,6 +6,8 @@ import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bu
 import CommunicationEmail from 'material-ui/svg-icons/communication/email';
 import { indigo500 } from 'material-ui/styles/colors';
 
+import PimItemHeader from './PimItemHeader';
+
 import { ContactType } from './pim-types';
 
 class Contact extends React.Component {
@@ -106,7 +108,7 @@ class Contact extends React.Component {
 
     return (
       <div>
-        <h3>{name}</h3>
+        <PimItemHeader text={name} />
         {lists.map((list, idx) => (
           <React.Fragment key={idx}>
             {listIfNotEmpty(list)}

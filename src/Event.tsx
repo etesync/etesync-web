@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as moment from 'moment';
 
+import PimItemHeader from './PimItemHeader';
+
 import * as ICAL from 'ical.js';
 
 import { EventType } from './pim-types';
@@ -43,14 +45,25 @@ class Event extends React.Component {
       throw Error('Event should be defined!');
     }
 
+    const style = {
+      content: {
+        padding: 15,
+      },
+    };
+
     return (
-      <div>
-        <h2>{this.props.event.summary}</h2>
-        <div>{formatDateRange(this.props.event.startDate, this.props.event.endDate)}</div>
-        <div><u>{this.props.event.location}</u></div>
-        <div>{this.props.event.description}</div>
-        <div>Attendees: {this.props.event.attendees.map((x) => (x.getFirstValue())).join(', ')}</div>
-      </div>
+      <React.Fragment>
+        <PimItemHeader text={this.props.event.summary}>
+          <div>{formatDateRange(this.props.event.startDate, this.props.event.endDate)}</div>
+          <br/>
+          <div><u>{this.props.event.location}</u></div>
+        </PimItemHeader>
+        <div style={style.content}>
+          <div>{this.props.event.description}</div>
+          {(this.props.event.attendees.length > 0) && (
+            <div>Attendees: {this.props.event.attendees.map((x) => (x.getFirstValue())).join(', ')}</div>)}
+        </div>
+      </React.Fragment>
     );
   }
 }
