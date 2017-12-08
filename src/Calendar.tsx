@@ -34,7 +34,7 @@ class Calendar extends React.Component {
     });
 
     return (
-      <div style={{width: '100%', height: 500}}>
+      <div style={{width: '100%', height: 500, padding: 10}}>
         <BigCalendar
           events={entries}
           onSelectEvent={(event: any) => {
