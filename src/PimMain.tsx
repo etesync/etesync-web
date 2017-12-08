@@ -13,7 +13,7 @@ import { routeResolver } from './App';
 const addressBookTitle = 'Address Book';
 const calendarTitle = 'Calendar';
 
-class Pim extends React.Component {
+class PimMain extends React.Component {
   props: {
     contacts: Array<ContactType>,
     events: Array<EventType>,
@@ -69,4 +69,4 @@ class Pim extends React.Component {
   }
 }
 
-export default Pim;
+export default PimMain;
