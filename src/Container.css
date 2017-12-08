@@ -1,11 +1,11 @@
 .Container {
-  padding-right: 15px;
-  padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
 }
 @media (min-width: 768px) {
   .Container {
+    margin-top: 40px;
+    margin-bottom: 40px;
     width: 750px;
   }
 }
@@ -18,4 +18,8 @@
   .Container {
     width: 1170px;
   }
+}
+
+.Container-inner {
+  padding: 15px;
 }
