@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { amber500, amber700, lightBlue500, darkBlack, white } from 'material-ui/styles/colors';
@@ -95,7 +95,7 @@ class App extends React.Component {
 
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
-        <HashRouter>
+        <BrowserRouter>
         <div>
           <AppBar
             title={C.appName}
@@ -112,7 +112,7 @@ class App extends React.Component {
 
           <Root />
         </div>
-        </HashRouter>
+        </BrowserRouter>
       </MuiThemeProvider>
     );
   }
