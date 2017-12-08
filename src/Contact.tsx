@@ -67,7 +67,7 @@ class Contact extends React.Component {
     lists.push(getAllType(
       'impp',
       {
-          insetChildren: true,
+        leftIcon: <CommunicationChatBubble />
       },
       (x) => x,
       (x) => (x.substring(x.indexOf(':') + 1)),
