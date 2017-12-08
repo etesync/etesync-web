@@ -1,6 +1,10 @@
 import * as React from 'react';
+import * as moment from 'moment';
+
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
+import IconHome from 'material-ui/svg-icons/action/home';
+import IconDate from 'material-ui/svg-icons/action/date-range';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import CommunicationEmail from 'material-ui/svg-icons/communication/email';
@@ -73,7 +77,23 @@ class Contact extends React.Component {
       (x) => (x.substring(x.indexOf(':') + 1)),
     ));
 
-    const skips = ['tel', 'email', 'impp', 'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
+    lists.push(getAllType(
+      'adr',
+      {
+        leftIcon: <IconHome />
+      },
+    ));
+
+    lists.push(getAllType(
+      'bday',
+      {
+        leftIcon: <IconDate />
+      },
+      undefined,
+      ((x) => moment(x).format('dddd, LL')),
+    ));
+
+    const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
       )).map((prop, idx) => {
