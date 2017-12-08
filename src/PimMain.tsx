@@ -3,6 +3,8 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 
 import * as ICAL from 'ical.js';
 
+import Container from './Container';
+
 import AddressBook from './AddressBook';
 import Calendar from './Calendar';
 
@@ -60,13 +62,17 @@ class PimMain extends React.Component {
           value={addressBookTitle}
           label={addressBookTitle}
         >
-          <AddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
+          <Container>
+            <AddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
+          </Container>
         </Tab>
         <Tab
           value={calendarTitle}
           label={calendarTitle}
         >
-          <PersistCalendar entries={this.props.events} onItemClick={this.eventClicked} />
+          <Container>
+            <PersistCalendar entries={this.props.events} onItemClick={this.eventClicked} />
+          </Container>
         </Tab>
       </Tabs>
     );

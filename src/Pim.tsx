@@ -3,6 +3,8 @@ import { Route, Switch } from 'react-router';
 
 import * as EteSync from './api/EteSync';
 
+import Container from './Container';
+
 import Contact from './Contact';
 import Event from './Event';
 import PimMain from './PimMain';
@@ -82,14 +84,18 @@ class Pim extends React.Component {
           path={routeResolver.getRoute('pim.contacts._id')}
           exact={true}
           render={({match}) => (
-            <Contact contact={addressBookItems.get(match.params.contactUid)} />
+            <Container>
+              <Contact contact={addressBookItems.get(match.params.contactUid)} />
+            </Container>
           )}
         />
         <Route
           path={routeResolver.getRoute('pim.events._id')}
           exact={true}
           render={({match}) => (
-            <Event event={calendarItems.get(match.params.eventUid)} />
+            <Container>
+              <Event event={calendarItems.get(match.params.eventUid)} />
+            </Container>
           )}
         />
       </Switch>
