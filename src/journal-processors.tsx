@@ -5,7 +5,7 @@ import { EventType, ContactType } from './pim-types';
 import * as EteSync from './api/EteSync';
 
 export function syncEntriesToItemMap(entries: EteSync.SyncEntry[]) {
-  let items: Map<string, ContactType> = new Map();
+  let items: {[key: string]: ContactType} = {};
 
   for (const syncEntry of entries) {
     let comp = new ContactType(new ICAL.Component(ICAL.parse(syncEntry.content)));
@@ -14,9 +14,9 @@ export function syncEntriesToItemMap(entries: EteSync.SyncEntry[]) {
 
     if ((syncEntry.action === EteSync.SyncEntryAction.Add) ||
       (syncEntry.action === EteSync.SyncEntryAction.Change)) {
-      items.set(uid, comp);
+      items[uid] = comp;
     } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
-      items.delete(uid);
+      delete items[uid];
     }
   }
 
@@ -24,7 +24,7 @@ export function syncEntriesToItemMap(entries: EteSync.SyncEntry[]) {
 }
 
 export function syncEntriesToCalendarItemMap(entries: EteSync.SyncEntry[]) {
-  let items: Map<string, EventType> = new Map();
+  let items: {[key: string]: EventType} = {};
 
   for (const syncEntry of entries) {
     let comp = new EventType(new ICAL.Component(ICAL.parse(syncEntry.content)).getFirstSubcomponent('vevent'));
@@ -37,9 +37,9 @@ export function syncEntriesToCalendarItemMap(entries: EteSync.SyncEntry[]) {
 
     if ((syncEntry.action === EteSync.SyncEntryAction.Add) ||
       (syncEntry.action === EteSync.SyncEntryAction.Change)) {
-      items.set(uid, comp);
+      items[uid] = comp;
     } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
-      items.delete(uid);
+      delete items[uid];
     }
   }
 

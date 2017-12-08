@@ -10,10 +10,14 @@ import Contact from './Contact';
 
 import { ContactType } from './pim-types';
 
+function objValues(obj: any) {
+  return Object.keys(obj).map((x) => obj[x]);
+}
+
 class JournalAddressBook extends React.Component {
   props: {
     journal: EteSync.Journal,
-    entries: Map<string, ContactType>,
+    entries: {[key: string]: ContactType},
     history?: any,
   };
 
@@ -38,7 +42,7 @@ class JournalAddressBook extends React.Component {
           path={routeResolver.getRoute('journals._id')}
           exact={true}
           render={() => (
-              <AddressBook entries={Array.from(items.values())} onItemClick={this.contactClicked} />
+            <AddressBook entries={objValues(items)} onItemClick={this.contactClicked} />
             )
           }
         />
@@ -48,7 +52,7 @@ class JournalAddressBook extends React.Component {
           render={({match}) => {
 
             return (
-              <Contact contact={items.get(match.params.itemUid)} />
+              <Contact contact={items[match.params.itemUid]} />
             );
           }}
         />

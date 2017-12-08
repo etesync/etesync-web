@@ -12,10 +12,14 @@ import { EventType } from './pim-types';
 
 import * as EteSync from './api/EteSync';
 
+function objValues(obj: any) {
+  return Object.keys(obj).map((x) => obj[x]);
+}
+
 class JournalCalendar extends React.Component {
   props: {
     journal: EteSync.Journal,
-    entries: Map<string, EventType>,
+    entries: {[key: string]: EventType},
     history?: any,
   };
 
@@ -41,7 +45,7 @@ class JournalCalendar extends React.Component {
           path={routeResolver.getRoute('journals._id')}
           exact={true}
           render={() => (
-              <PersistCalendar entries={Array.from(items.values())} onItemClick={this.eventClicked} />
+              <PersistCalendar entries={objValues(items)} onItemClick={this.eventClicked} />
             )
           }
         />
@@ -49,7 +53,7 @@ class JournalCalendar extends React.Component {
           path={routeResolver.getRoute('journals._id.items._id')}
           exact={true}
           render={({match}) => (
-            <Event event={items.get(match.params.itemUid)} />
+            <Event event={items[match.params.itemUid]} />
           )}
         />
       </Switch>

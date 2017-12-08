@@ -15,6 +15,10 @@ import { JournalsData, EntriesType, CredentialsData } from './store';
 
 import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
 
+function objValues(obj: any) {
+  return Object.keys(obj).map((x) => obj[x]);
+}
+
 class Pim extends React.Component {
   props: {
     etesync: CredentialsData;
@@ -74,8 +78,8 @@ class Pim extends React.Component {
           exact={true}
           render={({history}) => (
             <PimMain
-              contacts={Array.from(addressBookItems.values())}
-              events={Array.from(calendarItems.values())}
+              contacts={objValues(addressBookItems)}
+              events={objValues(calendarItems)}
               history={history}
             />
           )}
@@ -85,7 +89,7 @@ class Pim extends React.Component {
           exact={true}
           render={({match}) => (
             <Container>
-              <Contact contact={addressBookItems.get(match.params.contactUid)} />
+              <Contact contact={addressBookItems[match.params.contactUid]} />
             </Container>
           )}
         />
@@ -94,7 +98,7 @@ class Pim extends React.Component {
           exact={true}
           render={({match}) => (
             <Container>
-              <Event event={calendarItems.get(match.params.eventUid)} />
+              <Event event={calendarItems[match.params.eventUid]} />
             </Container>
           )}
         />
