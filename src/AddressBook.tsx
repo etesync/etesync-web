@@ -1,5 +1,8 @@
 import * as React from 'react';
+import Avatar from 'material-ui/Avatar';
 import { List, ListItem } from 'material-ui/List';
+
+import * as colors from 'material-ui/styles/colors';
 
 import { ContactType } from './pim-types';
 
@@ -23,12 +26,56 @@ class AddressBook extends React.Component {
       }
     });
 
-    let itemList = entries.map((entry) => {
+    function nameToColor(name: string) {
+      const colorOptions = [
+        colors.red500,
+        colors.pink500,
+        colors.purple500,
+        colors.deepPurple500,
+        colors.indigo500,
+        colors.blue500,
+        colors.lightBlue500,
+        colors.cyan500,
+        colors.teal500,
+        colors.green500,
+        colors.lightGreen500,
+        colors.lime500,
+        colors.yellow500,
+        colors.amber500,
+        colors.orange500,
+        colors.deepOrange500,
+      ];
+
+      let sum = 0;
+      for (let i = 0 ; i < name.length ; i++) {
+        sum += name.charCodeAt(i);
+      }
+
+      return colorOptions[sum % colorOptions.length];
+    }
+
+    let itemList = entries.map((entry, idx, array) => {
       const uid = entry.uid;
       const name = entry.fn;
 
+      let itemProps: any = {
+        leftAvatar: (
+          <Avatar
+            backgroundColor={nameToColor(name)}
+            style={{left: 8}}
+          >
+          {name[0].toUpperCase()}
+          </Avatar>
+        ),
+      };
+
       return (
-        <ListItem key={uid} primaryText={name} onClick={() => (this.props.onItemClick(entry))} />
+        <ListItem
+          key={uid}
+          primaryText={name}
+          onClick={() => (this.props.onItemClick(entry))}
+          {...itemProps}
+        />
       );
     });
 
