@@ -53,7 +53,7 @@ class Event extends React.Component {
 
     return (
       <React.Fragment>
-        <PimItemHeader text={this.props.event.summary}>
+        <PimItemHeader text={this.props.event.summary} backgroundColor={this.props.event.color}>
           <div>{formatDateRange(this.props.event.startDate, this.props.event.endDate)}</div>
           <br/>
           <div><u>{this.props.event.location}</u></div>

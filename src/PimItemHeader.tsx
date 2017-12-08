@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import { getPalette } from './App';
 
-export default (props: {text: string, children?: any}) => {
+export default (props: {text: string, backgroundColor?: string, children?: any}) => {
     const style = {
       header: {
-        backgroundColor: getPalette('accent1Color'),
+        backgroundColor: (props.backgroundColor !== undefined) ? props.backgroundColor : getPalette('accent1Color'),
         color: getPalette('alternateTextColor'),
         padding: 15,
       },
