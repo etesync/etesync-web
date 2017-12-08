@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
 
-import * as ICAL from 'ical.js';
-
 import * as EteSync from './api/EteSync';
 
 import Contact from './Contact';
@@ -91,7 +89,7 @@ class Pim extends React.Component {
           path={routeResolver.getRoute('pim.events._id')}
           exact={true}
           render={({match}) => (
-            <Event event={new ICAL.Event(calendarItems.get(match.params.eventUid))} />
+            <Event event={calendarItems.get(match.params.eventUid)} />
           )}
         />
       </Switch>

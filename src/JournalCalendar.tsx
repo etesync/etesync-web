@@ -6,14 +6,14 @@ import { routeResolver } from './App';
 import Calendar from './Calendar';
 import Event from './Event';
 
-import * as ICAL from 'ical.js';
+import { EventType } from './pim-types';
 
 import * as EteSync from './api/EteSync';
 
 class JournalCalendar extends React.Component {
   props: {
     journal: EteSync.Journal,
-    entries: Map<string, ICAL.Component>,
+    entries: Map<string, EventType>,
     history?: any,
   };
 
@@ -22,7 +22,7 @@ class JournalCalendar extends React.Component {
     this.eventClicked = this.eventClicked.bind(this);
   }
 
-  eventClicked(event: ICAL.Event) {
+  eventClicked(event: EventType) {
     const uid = event.uid;
 
     this.props.history.push(
@@ -48,7 +48,7 @@ class JournalCalendar extends React.Component {
           render={({match}) => {
 
             return (
-              <Event event={new ICAL.Event(items.get(match.params.itemUid))} />
+              <Event event={items.get(match.params.itemUid)} />
             );
           }}
         />

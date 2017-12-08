@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Route, Switch, withRouter } from 'react-router';
 
-import * as ICAL from 'ical.js';
-
 import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
@@ -10,10 +8,12 @@ import { routeResolver } from './App';
 import AddressBook from './AddressBook';
 import Contact from './Contact';
 
+import { ContactType } from './pim-types';
+
 class JournalAddressBook extends React.Component {
   props: {
     journal: EteSync.Journal,
-    entries: Map<string, ICAL.Component>,
+    entries: Map<string, ContactType>,
     history?: any,
   };
 
@@ -22,8 +22,8 @@ class JournalAddressBook extends React.Component {
     this.contactClicked = this.contactClicked.bind(this);
   }
 
-  contactClicked(contact: ICAL.Component) {
-    const uid = contact.getFirstPropertyValue('uid');
+  contactClicked(contact: ContactType) {
+    const uid = contact.uid;
 
     this.props.history.push(
       routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid }));

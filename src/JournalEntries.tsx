@@ -8,6 +8,8 @@ import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 import * as ICAL from 'ical.js';
 
+import { EventType, ContactType } from './pim-types';
+
 import * as EteSync from './api/EteSync';
 
 class JournalEntries extends React.Component {
@@ -49,13 +51,13 @@ class JournalEntries extends React.Component {
       let name;
       let uid;
       if (comp.name === 'vcalendar') {
-        const vevent = new ICAL.Event(comp.getFirstSubcomponent('vevent'));
+        const vevent = new EventType(comp.getFirstSubcomponent('vevent'));
         name = vevent.summary;
         uid = vevent.uid;
       } else if (comp.name === 'vcard') {
-        const vcard = comp;
-        name = vcard.getFirstPropertyValue('fn');
-        uid = vcard.getFirstPropertyValue('uid');
+        const vcard = new ContactType(comp);
+        name = vcard.fn;
+        uid = vcard.uid;
       } else {
         name = 'Error processing entry';
         uid = '';

@@ -6,12 +6,14 @@ import * as ICAL from 'ical.js';
 import AddressBook from './AddressBook';
 import Calendar from './Calendar';
 
+import { EventType, ContactType } from './pim-types';
+
 import { routeResolver } from './App';
 
 class Pim extends React.Component {
   props: {
-    contacts: Array<ICAL.Component>,
-    events: Array<ICAL.Component>,
+    contacts: Array<ContactType>,
+    events: Array<EventType>,
     history?: any,
   };
 
@@ -28,8 +30,8 @@ class Pim extends React.Component {
       routeResolver.getRoute('pim.events._id', { eventUid: uid }));
   }
 
-  contactClicked(contact: ICAL.Component) {
-    const uid = contact.getFirstPropertyValue('uid');
+  contactClicked(contact: ContactType) {
+    const uid = contact.uid;
 
     this.props.history.push(
       routeResolver.getRoute('pim.contacts._id', { contactUid: uid }));

@@ -3,6 +3,8 @@ import * as moment from 'moment';
 
 import * as ICAL from 'ical.js';
 
+import { EventType } from './pim-types';
+
 function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
   const mStart = moment(start.toJSDate());
   const mEnd = moment(end.toJSDate());
@@ -33,7 +35,7 @@ function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
 
 class Event extends React.Component {
   props: {
-    event?: ICAL.Event,
+    event?: EventType,
   };
 
   render() {

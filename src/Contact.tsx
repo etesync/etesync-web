@@ -6,11 +6,11 @@ import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bu
 import CommunicationEmail from 'material-ui/svg-icons/communication/email';
 import { indigo500 } from 'material-ui/styles/colors';
 
-import * as ICAL from 'ical.js';
+import { ContactType } from './pim-types';
 
 class Contact extends React.Component {
   props: {
-    contact?: ICAL.Component,
+    contact?: ContactType,
   };
 
   render() {
@@ -19,10 +19,10 @@ class Contact extends React.Component {
     }
 
     const contact = this.props.contact;
-    const uid = contact.getFirstPropertyValue('uid');
-    const name = contact.getFirstPropertyValue('fn');
+    const uid = contact.comp.getFirstPropertyValue('uid');
+    const name = contact.comp.getFirstPropertyValue('fn');
 
-    const phoneNumbers = contact.getAllProperties('tel').map((prop, idx) => {
+    const phoneNumbers = contact.comp.getAllProperties('tel').map((prop, idx) => {
       const json = prop.toJSON();
       const values = prop.getValues().map((val) => (
         <ListItem
@@ -37,7 +37,7 @@ class Contact extends React.Component {
       return values;
     });
 
-    const emails = contact.getAllProperties('email').map((prop, idx) => {
+    const emails = contact.comp.getAllProperties('email').map((prop, idx) => {
       const json = prop.toJSON();
       const values = prop.getValues().map((val) => (
         <ListItem
@@ -52,7 +52,7 @@ class Contact extends React.Component {
     });
 
     const skips = ['tel', 'email', 'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
-    const theRest = contact.getAllProperties().filter((prop) => (
+    const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
       )).map((prop, idx) => {
       const values = prop.getValues().map((_val) => {

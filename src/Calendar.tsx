@@ -3,24 +3,9 @@ import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import * as moment from 'moment';
 
-import * as ICAL from 'ical.js';
+import { EventType } from './pim-types';
 
 BigCalendar.momentLocalizer(moment);
-
-class EventWrapper extends ICAL.Event {
-
-  get title() {
-    return this.summary;
-  }
-
-  get start() {
-      return this.startDate.toJSDate();
-  }
-
-  get end() {
-      return this.endDate.toJSDate();
-  }
-}
 
 class Calendar extends React.Component {
   state: {
@@ -28,8 +13,8 @@ class Calendar extends React.Component {
   };
 
   props: {
-    entries: Array<ICAL.Component>,
-    onItemClick: (contact: ICAL.Event) => void,
+    entries: Array<EventType>,
+    onItemClick: (contact: EventType) => void,
   };
 
   constructor(props: any) {
@@ -38,9 +23,7 @@ class Calendar extends React.Component {
   }
 
   render() {
-    let entries = this.props.entries.map((value) => (
-      new EventWrapper(value)
-    )).sort((a, b) => {
+    let entries = this.props.entries.sort((a, b) => {
       if (a.summary < b.summary) {
         return -1;
       } else if (a.summary > b.summary) {
