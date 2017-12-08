@@ -95,7 +95,18 @@ class Contact extends React.Component {
       () => 'Birthday',
     ));
 
-    const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
+    lists.push(getAllType(
+      'anniversary',
+      {
+        leftIcon: <IconDate />
+      },
+      undefined,
+      ((x) => moment(x).format('dddd, LL')),
+      () => 'Anniversary',
+    ));
+
+    const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'anniversary',
+      'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
       )).map((prop, idx) => {
