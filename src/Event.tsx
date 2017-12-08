@@ -41,8 +41,6 @@ class Event extends React.Component {
       throw Error('Event should be defined!');
     }
 
-    (window as any).me = this.props.event;
-
     return (
       <div>
         <h2>{this.props.event.summary}</h2>
