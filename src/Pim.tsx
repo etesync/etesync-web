@@ -34,8 +34,8 @@ class Pim extends React.Component {
   render() {
     const derived = this.props.etesync.encryptionKey;
 
-    let syncEntriesCalendar: EteSync.SyncEntry[] = [];
-    let syncEntriesAddressBook: EteSync.SyncEntry[] = [];
+    let syncEntriesCalendar = [];
+    let syncEntriesAddressBook = [];
     for (const journal of this.props.journals) {
       const journalEntries = this.props.entries[journal.uid];
       const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
@@ -61,15 +61,15 @@ class Pim extends React.Component {
       });
 
       if (collectionInfo.type === 'ADDRESS_BOOK') {
-        syncEntriesAddressBook = syncEntriesAddressBook.concat(syncEntries);
+        syncEntriesAddressBook.push(syncEntriesToItemMap(syncEntries));
       } else if (collectionInfo.type === 'CALENDAR') {
-        syncEntriesCalendar = syncEntriesCalendar.concat(syncEntries);
+        syncEntriesCalendar.push(syncEntriesToCalendarItemMap(syncEntries));
       }
 
     }
 
-    let addressBookItems = syncEntriesToItemMap(syncEntriesAddressBook);
-    let calendarItems = syncEntriesToCalendarItemMap(syncEntriesCalendar);
+    let addressBookItems = syncEntriesAddressBook.reduce((base, x) => Object.assign(base, x), {});
+    let calendarItems = syncEntriesCalendar.reduce((base, x) => Object.assign(base, x), {});
 
     return (
       <Switch>
