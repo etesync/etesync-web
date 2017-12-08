@@ -48,12 +48,9 @@ class JournalCalendar extends React.Component {
         <Route
           path={routeResolver.getRoute('journals._id.items._id')}
           exact={true}
-          render={({match}) => {
-
-            return (
-              <Event event={items.get(match.params.itemUid)} />
-            );
-          }}
+          render={({match}) => (
+            <Event event={items.get(match.params.itemUid)} />
+          )}
         />
       </Switch>
     );

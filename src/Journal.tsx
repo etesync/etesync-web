@@ -3,12 +3,16 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 
 import * as EteSync from './api/EteSync';
 
+import Container from './Container';
+
 import JournalEntries from './JournalEntries';
 import JournalAddressBook from './JournalAddressBook';
 import JournalCalendar from './JournalCalendar';
 import LoadingIndicator from './LoadingIndicator';
 
 import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
+
+import { getPalette } from './App';
 
 import { JournalsData, EntriesType, CredentialsData } from './store';
 
@@ -72,21 +76,42 @@ class Journal extends React.Component {
       itemsTitle = 'Items';
     }
 
+    const style = {
+      header: {
+        backgroundColor: getPalette('primary1Color'),
+        color: getPalette('alternateTextColor'),
+        padding: 15,
+        textAlign: 'center',
+      },
+      headerText: {
+        margin: 0,
+      },
+    };
+
     return (
-      <Tabs>
-        <Tab
-          label={itemsTitle}
-        >
-            <h2>{collectionInfo.displayName}</h2>
-            {itemsView}
-        </Tab>
-        <Tab
-          label="Journal Entries"
-        >
-            <h2>{collectionInfo.displayName}</h2>
-            <JournalEntries journal={journal} entries={syncEntries} />;
-        </Tab>
-      </Tabs>
+      <React.Fragment>
+        <div style={style.header}>
+          <Container>
+            <h2 style={style.headerText}>{collectionInfo.displayName}</h2>
+          </Container>
+        </div>
+        <Tabs>
+          <Tab
+            label={itemsTitle}
+          >
+            <Container>
+              {itemsView}
+            </Container>
+          </Tab>
+          <Tab
+            label="Journal Entries"
+          >
+            <Container>
+              <JournalEntries journal={journal} entries={syncEntries} />;
+            </Container>
+          </Tab>
+        </Tabs>
+      </React.Fragment>
     );
   }
 }
