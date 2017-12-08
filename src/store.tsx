@@ -41,7 +41,7 @@ export interface StoreState {
   };
 }
 
-function fetchTypeIdentityReducer(state: FetchType<any>, action: any, extend: boolean = false) {
+function fetchTypeIdentityReducer(state: FetchType<any> = {value: null}, action: any, extend: boolean = false) {
   if (action.error) {
     return {
       value: null,
