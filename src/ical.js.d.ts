@@ -15,8 +15,11 @@ declare module 'ical.js' {
   class Event {
     uid: string;
     summary: string;
-    startDate: any;
-    endDate: any;
+    startDate: Time;
+    endDate: Time;
+    description: string;
+    location: string;
+    attendees: Array<Property>;
 
     constructor(component?: Component | null,
                 options?: {strictExceptions: boolean, exepctions: Array<Component|Event>});
@@ -26,7 +29,14 @@ declare module 'ical.js' {
     name: string;
     type: string;
 
+    getFirstValue(): string;
     getValues(): Array<any>;
     toJSON(): any;
+  }
+
+  class Time {
+    isDate: boolean;
+
+    toJSDate(): Date;
   }
 }
