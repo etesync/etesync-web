@@ -7,8 +7,9 @@ declare module 'ical.js' {
 
     getFirstSubcomponent(name?: string): Component | null;
 
-    getFirstPropertyValue(name?: string): string;
+    getFirstPropertyValue(name?: string): any;
 
+    getFirstProperty(name?: string): Property;
     getAllProperties(name?: string): Array<Property>;
   }
 
@@ -29,7 +30,7 @@ declare module 'ical.js' {
     name: string;
     type: string;
 
-    getFirstValue(): string;
+    getFirstValue(): any;
     getValues(): Array<any>;
     toJSON(): any;
   }

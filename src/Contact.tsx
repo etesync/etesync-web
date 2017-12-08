@@ -27,6 +27,10 @@ class Contact extends React.Component {
     const contact = this.props.contact;
     const name = contact.fn;
 
+    const revProp = contact.comp.getFirstProperty('rev');
+    const lastModified = (revProp !== undefined) ?
+      'Modified: ' + moment(revProp.getFirstValue().toJSDate()).format('LLLL') : undefined;
+
     let lists = [];
 
     function getAllType(
@@ -105,7 +109,7 @@ class Contact extends React.Component {
       () => 'Anniversary',
     ));
 
-    const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'anniversary',
+    const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'anniversary', 'rev',
       'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
@@ -141,7 +145,11 @@ class Contact extends React.Component {
 
     return (
       <div>
-        <PimItemHeader text={name} />
+        <PimItemHeader text={name}>
+          {lastModified && (
+            <span style={{fontSize: '90%'}}>{lastModified}</span>
+          )}
+        </PimItemHeader>
         {lists.map((list, idx) => (
           <React.Fragment key={idx}>
             {listIfNotEmpty(list)}
