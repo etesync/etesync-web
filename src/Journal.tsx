@@ -5,14 +5,14 @@ import * as EteSync from './api/EteSync';
 
 import Container from './Container';
 
+import SecondaryHeader from './SecondaryHeader';
+
 import JournalEntries from './JournalEntries';
 import JournalAddressBook from './JournalAddressBook';
 import JournalCalendar from './JournalCalendar';
 import LoadingIndicator from './LoadingIndicator';
 
 import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
-
-import { getPalette } from './App';
 
 import { JournalsData, EntriesType, CredentialsData } from './store';
 
@@ -76,25 +76,9 @@ class Journal extends React.Component {
       itemsTitle = 'Items';
     }
 
-    const style = {
-      header: {
-        backgroundColor: getPalette('primary1Color'),
-        color: getPalette('alternateTextColor'),
-        padding: 15,
-        textAlign: 'center',
-      },
-      headerText: {
-        margin: 0,
-      },
-    };
-
     return (
       <React.Fragment>
-        <div style={style.header}>
-          <Container>
-            <h2 style={style.headerText}>{collectionInfo.displayName}</h2>
-          </Container>
-        </div>
+        <SecondaryHeader text={collectionInfo.displayName} />
         <Tabs>
           <Tab
             label={itemsTitle}
