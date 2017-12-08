@@ -19,39 +19,59 @@ class Contact extends React.Component {
     }
 
     const contact = this.props.contact;
-    const uid = contact.comp.getFirstPropertyValue('uid');
-    const name = contact.comp.getFirstPropertyValue('fn');
+    const name = contact.fn;
 
-    const phoneNumbers = contact.comp.getAllProperties('tel').map((prop, idx) => {
-      const json = prop.toJSON();
-      const values = prop.getValues().map((val) => (
-        <ListItem
-          key={idx}
-          leftIcon={<CommunicationCall />}
-          rightIcon={<CommunicationChatBubble />}
-          href={'tel:' + val}
-          primaryText={val}
-          secondaryText={json[1].type}
-        />
-      ));
-      return values;
-    });
+    let lists = [];
 
-    const emails = contact.comp.getAllProperties('email').map((prop, idx) => {
-      const json = prop.toJSON();
-      const values = prop.getValues().map((val) => (
-        <ListItem
-          key={idx}
-          leftIcon={<CommunicationEmail color={indigo500} />}
-          href={'mailto:' + val}
-          primaryText={val}
-          secondaryText={json[1].type}
-        />
-      ));
-      return values;
-    });
+    function getAllType(
+      propName: string,
+      props: any,
+      valueToHref?: (value: string) => string,
+      primaryTransform?: (value: string) => string,
+      secondaryTransform?: (value: string) => string) {
 
-    const skips = ['tel', 'email', 'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
+      return contact.comp.getAllProperties(propName).map((prop, idx) => {
+        const json = prop.toJSON();
+        const values = prop.getValues().map((val) => (
+          <ListItem
+            key={idx}
+            href={valueToHref ? valueToHref(val) : undefined}
+            primaryText={primaryTransform ? primaryTransform(val) : val}
+            secondaryText={json[1].type}
+            {...props}
+          />
+        ));
+        return values;
+      });
+    }
+
+    lists.push(getAllType(
+      'tel',
+      {
+        leftIcon: <CommunicationCall />,
+        rightIcon: <CommunicationChatBubble />
+      },
+      (x) => ('tel:' + x),
+    ));
+
+    lists.push(getAllType(
+      'email',
+      {
+        leftIcon: <CommunicationEmail color={indigo500} />,
+      },
+      (x) => ('mailto:' + x),
+    ));
+
+    lists.push(getAllType(
+      'impp',
+      {
+          insetChildren: true,
+      },
+      (x) => x,
+      (x) => (x.substring(x.indexOf(':') + 1)),
+    ));
+
+    const skips = ['tel', 'email', 'impp', 'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
       )).map((prop, idx) => {
@@ -87,9 +107,11 @@ class Contact extends React.Component {
     return (
       <div>
         <h3>{name}</h3>
-        <span>{uid}</span>
-        {listIfNotEmpty(phoneNumbers)}
-        {listIfNotEmpty(emails)}
+        {lists.map((list, idx) => (
+          <React.Fragment key={idx}>
+            {listIfNotEmpty(list)}
+          </React.Fragment>
+          ))}
         <List>
           {theRest}
         </List>
