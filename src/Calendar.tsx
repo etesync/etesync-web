@@ -43,6 +43,11 @@ class Calendar extends React.Component {
       };
     }
 
+    function agendaHeaderFormat(date: {start: Date, end: Date}, culture: string, localizer: any) {
+      const format = 'll';
+      return localizer.format(date.start, format) + ' - ' + localizer.format(date.end, format);
+    }
+
     return (
       <div style={{width: '100%', height: 500, padding: 10}}>
         <BigCalendar
@@ -50,6 +55,7 @@ class Calendar extends React.Component {
           onSelectEvent={(event: any) => {
             this.props.onItemClick(event);
           }}
+          formats={{agendaHeaderFormat: agendaHeaderFormat}}
           eventPropGetter={eventPropGetter}
           date={this.state.currentDate}
           onNavigate={(currentDate: Date) => { this.setState({currentDate}); }}
