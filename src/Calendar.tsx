@@ -2,9 +2,11 @@ import * as React from 'react';
 import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import * as moment from 'moment';
+import 'moment/locale/en-gb';
 
 import { EventType } from './pim-types';
 
+moment.locale('en-gb');
 BigCalendar.momentLocalizer(moment);
 
 class Calendar extends React.Component {
@@ -48,7 +50,6 @@ class Calendar extends React.Component {
           onSelectEvent={(event: any) => {
             this.props.onItemClick(event);
           }}
-          {...{culture: 'en-GB'}}
           eventPropGetter={eventPropGetter}
           date={this.state.currentDate}
           onNavigate={(currentDate: Date) => { this.setState({currentDate}); }}
