@@ -8,6 +8,8 @@ import LoginForm from './LoginForm';
 
 import { store, StoreState, CredentialsType, fetchCredentials } from './store';
 
+import * as C from './Constants';
+
 class Root extends React.Component {
   props: {
     credentials: CredentialsType;
@@ -30,15 +32,23 @@ class Root extends React.Component {
           maxWidth: 400,
           padding: 20,
         },
+        isSafe: {
+          marginTop: 20,
+          textDecoration: 'none',
+        },
       };
 
       return (
         <Paper zDepth={2} style={style.holder}>
+          <h2>Please Log In</h2>
           <LoginForm
             onSubmit={this.onFormSubmit}
             error={this.props.credentials.error}
             loading={this.props.credentials.fetching}
           />
+          <div style={style.isSafe}>
+            <a style={style.isSafe} href={C.faq + '#web-client'}>Is the web client safe to use?</a>
+          </div>
         </Paper>
       );
     }

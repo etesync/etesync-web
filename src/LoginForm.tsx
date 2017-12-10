@@ -122,7 +122,6 @@ class LoginForm extends React.Component {
     return (
       <Fragment>
         {(this.props.error) && (<div>Error! {this.props.error.message}</div>)}
-        <h2>Please Log In</h2>
         <form style={styles.form} onSubmit={this.generateEncryption}>
           <TextField
             type="email"
