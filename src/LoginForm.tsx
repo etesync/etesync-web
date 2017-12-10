@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 
-import {  getPalette } from './App';
+import { getPalette } from './App';
 
 import * as C from './Constants';
 
@@ -28,6 +28,7 @@ class LoginForm extends React.Component {
 
   props: {
     onSubmit: (username: string, password: string, encryptionPassword: string, serviceApiUrl: string) => void;
+    loading?: boolean;
     error?: Error;
   };
 
@@ -76,8 +77,6 @@ class LoginForm extends React.Component {
       this.setState({errors: errors});
       return;
     }
-
-    this.setState({password: '', encryptionPassword: ''});
 
     this.props.onSubmit(username, password, encryptionPassword, server);
   }
@@ -159,8 +158,14 @@ class LoginForm extends React.Component {
             onToggle={this.toggleAdvancedSettings}
           />
           {advancedSettings}
+
           <div style={styles.submit}>
-            <RaisedButton type="submit" label="Log In" secondary={true} />
+            <RaisedButton
+              type="submit"
+              label={this.props.loading ? 'Loading…' : 'Log In'}
+              secondary={true}
+              disabled={this.props.loading}
+            />
           </div>
         </form>
       </Fragment>

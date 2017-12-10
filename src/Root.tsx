@@ -5,7 +5,6 @@ import Paper from 'material-ui/Paper';
 
 import SyncGate from './SyncGate';
 import LoginForm from './LoginForm';
-import LoadingIndicator from './LoadingIndicator';
 
 import { store, StoreState, CredentialsType, fetchCredentials } from './store';
 
@@ -24,9 +23,7 @@ class Root extends React.Component {
   }
 
   render() {
-    if (this.props.credentials.fetching) {
-      return (<LoadingIndicator />);
-    } else if (this.props.credentials.value === null) {
+    if (this.props.credentials.value === null) {
       const style = {
         holder: {
           margin: 'auto',
@@ -37,7 +34,11 @@ class Root extends React.Component {
 
       return (
         <Paper zDepth={2} style={style.holder}>
-          <LoginForm onSubmit={this.onFormSubmit} error={this.props.credentials.error} />
+          <LoginForm
+            onSubmit={this.onFormSubmit}
+            error={this.props.credentials.error}
+            loading={this.props.credentials.fetching}
+          />
         </Paper>
       );
     }
