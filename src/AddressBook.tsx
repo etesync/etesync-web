@@ -26,7 +26,7 @@ class AddressBook extends React.Component {
       }
     });
 
-    function nameToColor(name: string) {
+    function getContactColor(contact: ContactType) {
       const colorOptions = [
         colors.red500,
         colors.pink500,
@@ -47,8 +47,9 @@ class AddressBook extends React.Component {
       ];
 
       let sum = 0;
-      for (let i = 0 ; i < name.length ; i++) {
-        sum += name.charCodeAt(i);
+      const uid = contact.uid;
+      for (let i = 0 ; i < uid.length ; i++) {
+        sum += uid.charCodeAt(i);
       }
 
       return colorOptions[sum % colorOptions.length];
@@ -61,7 +62,7 @@ class AddressBook extends React.Component {
       let itemProps: any = {
         leftAvatar: (
           <Avatar
-            backgroundColor={nameToColor(name)}
+            backgroundColor={getContactColor(entry)}
             style={{left: 8}}
           >
           {name[0].toUpperCase()}
