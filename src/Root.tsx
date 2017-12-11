@@ -31,11 +31,16 @@ class Root extends React.Component {
           margin: 'auto',
           maxWidth: 400,
           padding: 20,
+          marginTop: 20,
         },
         isSafe: {
-          marginTop: 20,
           textDecoration: 'none',
+          display: 'block',
         },
+        divider: {
+          margin: '30px 0',
+          color: '#00000025',
+        }
       };
 
       return (
@@ -46,9 +51,11 @@ class Root extends React.Component {
             error={this.props.credentials.error}
             loading={this.props.credentials.fetching}
           />
-          <div style={style.isSafe}>
-            <a style={style.isSafe} href={C.faq + '#web-client'}>Is the web client safe to use?</a>
-          </div>
+          <hr style={style.divider}/>
+          <ul>
+            <li><a style={style.isSafe} href={C.faq + '#web-client'}>Is the web client safe to use?</a></li>
+            <li><a style={style.isSafe} href={C.sourceCode}>Source code</a></li>
+          </ul>
         </Paper>
       );
     }
