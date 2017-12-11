@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Paper from 'material-ui/Paper';
 
+import Container from './Container';
 import SyncGate from './SyncGate';
 import LoginForm from './LoginForm';
 
@@ -27,12 +27,6 @@ class Root extends React.Component {
   render() {
     if (this.props.credentials.value === null) {
       const style = {
-        holder: {
-          margin: 'auto',
-          maxWidth: 400,
-          padding: 20,
-          marginTop: 20,
-        },
         isSafe: {
           textDecoration: 'none',
           display: 'block',
@@ -44,7 +38,7 @@ class Root extends React.Component {
       };
 
       return (
-        <Paper zDepth={2} style={style.holder}>
+        <Container style={{maxWidth: 400}}>
           <h2>Please Log In</h2>
           <LoginForm
             onSubmit={this.onFormSubmit}
@@ -56,7 +50,7 @@ class Root extends React.Component {
             <li><a style={style.isSafe} href={C.faq + '#web-client'}>Is the web client safe to use?</a></li>
             <li><a style={style.isSafe} href={C.sourceCode}>Source code</a></li>
           </ul>
-        </Paper>
+        </Container>
       );
     }
 
