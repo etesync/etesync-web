@@ -51,7 +51,7 @@ class JournalEntries extends React.Component {
       let name;
       let uid;
       if (comp.name === 'vcalendar') {
-        const vevent = new EventType(comp.getFirstSubcomponent('vevent'));
+        const vevent = EventType.fromVCalendar(comp);
         name = vevent.summary;
         uid = vevent.uid;
       } else if (comp.name === 'vcard') {

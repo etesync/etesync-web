@@ -14,6 +14,10 @@ export class EventType extends ICAL.Event {
   get end() {
       return this.endDate.toJSDate();
   }
+
+  static fromVCalendar(comp: ICAL.Component) {
+    return new EventType(comp.getFirstSubcomponent('vevent'));
+  }
 }
 
 export class ContactType {

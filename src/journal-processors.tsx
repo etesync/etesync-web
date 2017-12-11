@@ -50,7 +50,7 @@ export function syncEntriesToCalendarItemMap(collection: EteSync.CollectionInfo,
   const color = colorIntToHtml(collection.color);
 
   for (const syncEntry of entries) {
-    let comp = new EventType(new ICAL.Component(ICAL.parse(syncEntry.content)).getFirstSubcomponent('vevent'));
+    let comp = EventType.fromVCalendar(new ICAL.Component(ICAL.parse(syncEntry.content)));
 
     if (comp === null) {
       continue;
