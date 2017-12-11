@@ -43,9 +43,11 @@ export const routeResolver = new RouteResolver({
   pim: {
     contacts: {
       _id: ':contactUid',
+      new: 'new',
     },
     events: {
       _id: ':eventUid',
+      new: 'new',
     },
   },
   journals: {
