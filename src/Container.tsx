@@ -3,11 +3,11 @@ import Paper from 'material-ui/Paper';
 
 import './Container.css';
 
-export default ({children}: {children: any}) => (
-  <div className="Container">
+export default (props: {style?: any, children: any}) => (
+  <div className="Container" style={props.style}>
     <Paper zDepth={2}>
       <div className="Container-inner">
-        {children}
+        {props.children}
       </div>
     </Paper>
   </div>
