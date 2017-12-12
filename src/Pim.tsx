@@ -40,7 +40,7 @@ class Pim extends React.Component {
     this.onEventSave = this.onEventSave.bind(this);
   }
 
-  onEventSave(event: EventType, journalUid: string) {
+  onEventSave(event: EventType, journalUid: string, originalEvent?: EventType) {
     const journal = this.props.journals.find((x) => (x.uid === journalUid));
 
     if (journal === undefined) {
@@ -53,7 +53,9 @@ class Pim extends React.Component {
       return;
     }
 
-    let saveEvent = store.dispatch(createJournalEntry(this.props.etesync, journal, entries.value, event.toIcal()));
+    let action = (originalEvent === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
+    let saveEvent = store.dispatch(
+      createJournalEntry(this.props.etesync, journal, entries.value, action, event.toIcal()));
     (saveEvent as any).then(() => {
       this.props.history.goBack();
     });

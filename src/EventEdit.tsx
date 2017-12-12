@@ -30,7 +30,7 @@ class EventEdit extends React.Component {
     collections: Array<EteSync.CollectionInfo>,
     initialCollection?: string,
     event?: EventType,
-    onSave: (event: EventType, journalUid: string) => void;
+    onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
   };
 
   constructor(props: any) {
@@ -108,7 +108,7 @@ class EventEdit extends React.Component {
     event.location = this.state.location;
     event.description = this.state.description;
 
-    this.props.onSave(event, this.state.journalUid);
+    this.props.onSave(event, this.state.journalUid, this.props.event);
   }
 
   render() {

@@ -6,10 +6,11 @@ export function createJournalEntry(
   etesync: CredentialsData,
   journal: EteSync.Journal,
   existingEntries: Array<EteSync.Entry>,
+  action: EteSync.SyncEntryAction,
   content: string) {
 
   let syncEntry = new EteSync.SyncEntry();
-  syncEntry.action = EteSync.SyncEntryAction.Add;
+  syncEntry.action = action;
 
   syncEntry.content = content;
 
