@@ -92,7 +92,7 @@ export const { fetchCredentials, logout } = createActions({
   LOGOUT: () => undefined,
 });
 
-export const { fetchJournals, fetchEntries } = createActions({
+export const { fetchJournals } = createActions({
   FETCH_JOURNALS: (etesync: CredentialsData) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
@@ -100,16 +100,31 @@ export const { fetchJournals, fetchEntries } = createActions({
 
     return journalManager.list();
   },
+});
+
+export const { fetchEntries, createEntries } = createActions({
   FETCH_ENTRIES: [
     (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
       const creds = etesync.credentials;
       const apiBase = etesync.serviceApiUrl;
       let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
 
-      return entryManager.list(prevUid) as any;
+      return entryManager.list(prevUid);
     },
     (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
       return { journal: journalUid, prevUid };
+    }
+  ],
+  CREATE_ENTRIES: [
+    (etesync: CredentialsData, journalUid: string, newEntries: Array<EteSync.Entry>, prevUid: string | null) => {
+      const creds = etesync.credentials;
+      const apiBase = etesync.serviceApiUrl;
+      let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
+
+      return entryManager.create(newEntries, prevUid).then(response => newEntries);
+    },
+    (etesync: CredentialsData, journalUid: string, newEntries: Array<EteSync.Entry>, prevUid: string | null) => {
+      return { journal: journalUid, entries: newEntries, prevUid };
     }
   ]
 });
@@ -124,8 +139,8 @@ const credentials = handleActions(
   {value: null}
 );
 
-const entries = handleAction(
-  fetchEntries,
+export const entries = handleAction(
+  combineActions(fetchEntries, createEntries),
   (state: EntriesType, action: any) => {
     const prevState = state[action.meta.journal];
     const extend = action.meta.prevUid != null;
