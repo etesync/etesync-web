@@ -1,4 +1,6 @@
 import * as React from 'react';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import * as ICAL from 'ical.js';
@@ -26,14 +28,15 @@ class PimMain extends React.Component {
   };
 
   state: {
-    tab?: string;
+    tab: string;
   };
 
   constructor(props: any) {
     super(props);
-    this.state = {};
+    this.state = {tab: addressBookTitle};
     this.eventClicked = this.eventClicked.bind(this);
     this.contactClicked = this.contactClicked.bind(this);
+    this.floatingButtonClicked = this.floatingButtonClicked.bind(this);
   }
 
   eventClicked(event: ICAL.Event) {
@@ -50,31 +53,63 @@ class PimMain extends React.Component {
       routeResolver.getRoute('pim.contacts._id', { contactUid: uid }));
   }
 
+  floatingButtonClicked() {
+    if (this.state.tab === addressBookTitle) {
+      this.props.history.push(
+        routeResolver.getRoute('pim.contacts.new')
+      );
+    } else if (this.state.tab === calendarTitle) {
+      this.props.history.push(
+        routeResolver.getRoute('pim.events.new')
+      );
+    }
+  }
+
   render() {
+    const style = {
+      floatingButton: {
+        margin: 0,
+        top: 'auto',
+        right: 20,
+        bottom: 20,
+        left: 'auto',
+        position: 'fixed',
+      } as any,
+    };
+
     const PersistCalendar = historyPersistor(Calendar, 'Calendar');
 
     return (
-      <Tabs
-        value={this.state.tab}
-        onChange={(value) => this.setState({tab: value})}
-      >
-        <Tab
-          value={addressBookTitle}
-          label={addressBookTitle}
+      <React.Fragment>
+        <Tabs
+          value={this.state.tab}
+          onChange={(value) => this.setState({tab: value})}
         >
-          <Container>
-            <AddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
-          </Container>
-        </Tab>
-        <Tab
-          value={calendarTitle}
-          label={calendarTitle}
+          <Tab
+            value={addressBookTitle}
+            label={addressBookTitle}
+          >
+            <Container>
+              <AddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
+            </Container>
+          </Tab>
+          <Tab
+            value={calendarTitle}
+            label={calendarTitle}
+          >
+            <Container>
+              <PersistCalendar entries={this.props.events} onItemClick={this.eventClicked} />
+            </Container>
+          </Tab>
+        </Tabs>
+
+        <FloatingActionButton
+          style={style.floatingButton}
+          onClick={this.floatingButtonClicked}
         >
-          <Container>
-            <PersistCalendar entries={this.props.events} onItemClick={this.eventClicked} />
-          </Container>
-        </Tab>
-      </Tabs>
+          <ContentAdd />
+        </FloatingActionButton>
+      </React.Fragment>
     );
   }
 }
