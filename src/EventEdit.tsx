@@ -7,6 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 import DateTimePicker from './DateTimePicker';
 
+import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
 
 import * as EteSync from './api/EteSync';
@@ -15,6 +16,7 @@ import { EventType } from './pim-types';
 
 class EventEdit extends React.Component {
   state: {
+    uid: string,
     title: string;
     allDay: boolean;
     start: string;
@@ -34,6 +36,7 @@ class EventEdit extends React.Component {
   constructor(props: any) {
     super(props);
     this.state = {
+      uid: '',
       title: '',
       allDay: false,
       location: '',
@@ -45,12 +48,15 @@ class EventEdit extends React.Component {
     if (this.props.event !== undefined) {
       const event = this.props.event;
 
+      this.state.uid = event.uid;
       this.state.title = event.title ? event.title : '';
       this.state.allDay = event.startDate.isDate;
       this.state.start = event.startDate.toString();
       this.state.end = event.endDate.toString();
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
+    } else {
+      this.state.uid = uuid.v4();
     }
 
     if (props.journalUid) {
@@ -89,6 +95,7 @@ class EventEdit extends React.Component {
     }
 
     let event = new EventType();
+    event.uid = this.state.uid;
     event.summary = this.state.title;
     event.startDate = ICAL.Time.fromString(this.state.start);
     event.endDate = ICAL.Time.fromString(this.state.end);

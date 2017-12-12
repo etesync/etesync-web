@@ -20,7 +20,8 @@
     "redux-persist": "^5.4.0",
     "redux-thunk": "^2.2.0",
     "sjcl": "git+https://github.com/etesync/sjcl",
-    "urijs": "^1.16.1"
+    "urijs": "^1.16.1",
+    "uuid": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -42,6 +43,7 @@
     "@types/redux-actions": "^2.2.3",
     "@types/redux-logger": "^3.0.5",
     "@types/sjcl": "^1.0.28",
-    "@types/urijs": "^1.15.34"
+    "@types/urijs": "^1.15.34",
+    "@types/uuid": "^3.4.3"
   }
 }
