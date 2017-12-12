@@ -3,15 +3,20 @@ import { Route, Switch } from 'react-router';
 
 import * as EteSync from './api/EteSync';
 
+import { EventType } from './pim-types';
+
 import Container from './Container';
 
 import Contact from './Contact';
+import EventEdit from './EventEdit';
 import Event from './Event';
 import PimMain from './PimMain';
 
 import { routeResolver } from './App';
 
-import { JournalsData, EntriesType, CredentialsData } from './store';
+import { store, JournalsData, EntriesType, CredentialsData } from './store';
+
+import { createJournalEntry } from './etesync-helpers';
 
 import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
 
@@ -29,11 +34,29 @@ class Pim extends React.Component {
 
   constructor(props: any) {
     super(props);
+    this.onEventSave = this.onEventSave.bind(this);
+  }
+
+  onEventSave(event: EventType, journalUid: string) {
+    const journal = this.props.journals.find((x) => (x.uid === journalUid));
+
+    if (journal === undefined) {
+      return;
+    }
+
+    const entries = this.props.entries[journal.uid];
+
+    if (entries.value === null) {
+      return;
+    }
+
+    store.dispatch(createJournalEntry(this.props.etesync, journal, entries.value, event.toIcal()));
   }
 
   render() {
     const derived = this.props.etesync.encryptionKey;
 
+    let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
     let syncEntriesCalendar = [];
     let syncEntriesAddressBook = [];
     for (const journal of this.props.journals) {
@@ -64,6 +87,7 @@ class Pim extends React.Component {
         syncEntriesAddressBook.push(syncEntriesToItemMap(collectionInfo, syncEntries));
       } else if (collectionInfo.type === 'CALENDAR') {
         syncEntriesCalendar.push(syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
+        collectionsCalendar.push(collectionInfo);
       }
 
     }
@@ -90,6 +114,15 @@ class Pim extends React.Component {
           render={({match}) => (
             <Container>
               <Contact contact={addressBookItems[match.params.contactUid]} />
+            </Container>
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('pim.events.new')}
+          exact={true}
+          render={({match}) => (
+            <Container style={{maxWidth: 400}}>
+              <EventEdit collections={collectionsCalendar} onSave={this.onEventSave} />
             </Container>
           )}
         />

@@ -59,15 +59,21 @@ class EventEdit extends React.Component {
       this.state.uid = uuid.v4();
     }
 
-    if (props.journalUid) {
-      this.state.journalUid = props.journalUid;
-    } else {
+    if (this.props.collections[0]) {
       this.state.journalUid = props.collections[0].uid;
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.toggleAllDay = this.toggleAllDay.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps: any) {
+    if (this.props.collections !== nextProps.collections) {
+      if (nextProps.collections[0]) {
+        this.setState({journalUid: nextProps.collections[0].uid});
+      }
+    }
   }
 
   handleChange(name: string, value: string) {
