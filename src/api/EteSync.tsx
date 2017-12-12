@@ -143,7 +143,9 @@ export class Journal extends BaseJournal<JournalJson> {
       this._content = JSON.parse(cryptoManager.decrypt(this.encryptedContent()));
     }
 
-    return new CollectionInfo(this._content);
+    let ret = new CollectionInfo(this._content);
+    ret.uid = this.uid;
+    return ret;
   }
 
   calculateHmac(cryptoManager: CryptoManager, encrypted: byte[]): byte[] {
