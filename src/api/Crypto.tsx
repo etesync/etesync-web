@@ -5,6 +5,8 @@ import { byte, base64 } from './Helpers';
 
 (sjcl as any).beware['CBC mode is dangerous because it doesn\'t protect message integrity.']();
 
+sjcl.random.startCollectors();
+
 export const HMAC_SIZE_BYTES = 32;
 
 export function deriveKey(salt: string, password: string): string {
@@ -47,9 +49,7 @@ export class CryptoManager {
   }
 
   encrypt(content: string): byte[] {
-    // FIXME!!!  Use a fixed size iv for testing
-    // switch to:  sjcl.random.randomWords(this.cipherWords);
-    const iv = [1, 1, 1, 1];
+    const iv = sjcl.random.randomWords(this.cipherWords);
 
     let prp = new sjcl.cipher.aes(this.cipherKey);
     let cipherText = sjcl.mode.cbc.encrypt(prp, sjcl.codec.utf8String.toBits(content), iv);
