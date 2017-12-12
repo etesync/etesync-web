@@ -75,7 +75,7 @@ it('Journal Entry sync', async () => {
   let entries = await entryManager.list(null);
   expect(entries.length).toBe(0);
 
-  const syncEntry = new EteSync.SyncEntry({content: 'bla'});
+  const syncEntry = new EteSync.SyncEntry({action: 'ADD', content: 'bla'});
   let prevUid = null;
   let entry = new EteSync.Entry();
   entry.setSyncEntry(cryptoManager, syncEntry, prevUid);
@@ -83,6 +83,12 @@ it('Journal Entry sync', async () => {
   entries = [entry];
   await expect(entryManager.create(entries, prevUid)).resolves.toBeDefined();
   prevUid = entry.uid;
+
+  // Verify we get back what we sent
+  entries = await entryManager.list(null);
+  expect(entries[0].serialize()).toEqual(entry.serialize());
+  syncEntry.uid = entries[0].uid;
+  expect(entries[0].getSyncEntry(cryptoManager, null)).toEqual(syncEntry);
 
   let entry2 = new EteSync.Entry();
   entry2.setSyncEntry(cryptoManager, syncEntry, prevUid);

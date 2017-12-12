@@ -73,7 +73,7 @@ interface BaseJson {
 class BaseJournal<T extends BaseJson> {
   protected _json: T;
   protected _encrypted: byte[];
-  protected _content?: string;
+  protected _content?: object;
 
   constructor() {
     this._json = {} as any;
@@ -131,8 +131,8 @@ export class Journal extends BaseJournal<JournalJson> {
 
   setInfo(cryptoManager: CryptoManager, info: CollectionInfo) {
     this._json.uid = info.uid;
-    this._content = JSON.stringify(info);
-    const encrypted = cryptoManager.encrypt(this._content);
+    this._content = info;
+    const encrypted = cryptoManager.encrypt(JSON.stringify(this._content));
     this._encrypted = this.calculateHmac(cryptoManager, encrypted).concat(encrypted);
   }
 
@@ -185,8 +185,8 @@ export interface EntryJson extends BaseJson {
 
 export class Entry extends BaseJournal<EntryJson> {
   setSyncEntry(cryptoManager: CryptoManager, info: SyncEntry, prevUid: string | null) {
-    this._content = JSON.stringify(info);
-    this._encrypted = cryptoManager.encrypt(this._content);
+    this._content = info;
+    this._encrypted = cryptoManager.encrypt(JSON.stringify(this._content));
     this._json.uid = hmacToHex(this.calculateHmac(cryptoManager, this._encrypted, prevUid));
   }
 
