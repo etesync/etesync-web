@@ -142,6 +142,7 @@ class EventEdit extends React.Component {
           <SelectField
             style={styles.fullWidth}
             value={this.state.journalUid}
+            floatingLabelText="Saving to"
             disabled={this.props.event !== undefined}
             onChange={(event: object, key: number, payload: any) => this.handleChange('journalUid', payload)}
           >
