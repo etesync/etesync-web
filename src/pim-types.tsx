@@ -8,11 +8,11 @@ export class EventType extends ICAL.Event {
   }
 
   get start() {
-      return this.startDate.toJSDate();
+    return this.startDate.toJSDate();
   }
 
   get end() {
-      return this.endDate.toJSDate();
+    return this.endDate.toJSDate();
   }
 
   static fromVCalendar(comp: ICAL.Component) {
