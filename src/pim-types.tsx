@@ -3,6 +3,10 @@ import * as ICAL from 'ical.js';
 export class EventType extends ICAL.Event {
   color: string;
 
+  static fromVCalendar(comp: ICAL.Component) {
+    return new EventType(comp.getFirstSubcomponent('vevent'));
+  }
+
   get title() {
     return this.summary;
   }
@@ -15,8 +19,12 @@ export class EventType extends ICAL.Event {
     return this.endDate.toJSDate();
   }
 
-  static fromVCalendar(comp: ICAL.Component) {
-    return new EventType(comp.getFirstSubcomponent('vevent'));
+  toIcal() {
+    let comp = new ICAL.Component(['vcalendar', [], []]);
+    comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
+
+    comp.addSubcomponent(this.component);
+    return comp.toString();
   }
 }
 

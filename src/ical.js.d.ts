@@ -11,6 +11,10 @@ declare module 'ical.js' {
 
     getFirstProperty(name?: string): Property;
     getAllProperties(name?: string): Array<Property>;
+
+    updatePropertyWithValue(name: string, value: string | number | object): Property;
+
+    addSubcomponent(component: Component): Component;
   }
 
   class Event {
@@ -21,6 +25,8 @@ declare module 'ical.js' {
     description: string;
     location: string;
     attendees: Array<Property>;
+
+    component: Component;
 
     constructor(component?: Component | null,
                 options?: {strictExceptions: boolean, exepctions: Array<Component|Event>});
