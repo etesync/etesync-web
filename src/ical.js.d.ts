@@ -38,6 +38,20 @@ declare module 'ical.js' {
   class Time {
     isDate: boolean;
 
+    static fromString(str: string): Time;
+
+    constructor(data?: {
+      year?: number,
+      month?: number,
+      day?: number,
+      hour?: number,
+      minute?: number,
+      second?: number,
+      isDate?: boolean
+    });
+
+    fromJSDate(aDate: Date | null, useUTC: boolean): void;
+
     toJSDate(): Date;
   }
 }
