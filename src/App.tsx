@@ -42,11 +42,17 @@ export const routeResolver = new RouteResolver({
   home: '',
   pim: {
     contacts: {
-      _id: ':contactUid',
+      _id: {
+        _base: ':contactUid',
+        edit: 'edit',
+      },
       new: 'new',
     },
     events: {
-      _id: ':eventUid',
+      _id: {
+        _base: ':eventUid',
+        edit: 'edit',
+      },
       new: 'new',
     },
   },

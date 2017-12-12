@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
+import RaisedButton from 'material-ui/RaisedButton';
+import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 import * as EteSync from './api/EteSync';
 
@@ -127,10 +129,35 @@ class Pim extends React.Component {
           )}
         />
         <Route
-          path={routeResolver.getRoute('pim.events._id')}
+          path={routeResolver.getRoute('pim.events._id.edit')}
           exact={true}
           render={({match}) => (
+            <Container style={{maxWidth: 400}}>
+              <EventEdit
+                event={calendarItems[match.params.eventUid]}
+                collections={collectionsCalendar}
+                onSave={this.onEventSave}
+              />
+            </Container>
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('pim.events._id')}
+          exact={true}
+          render={({match, history}) => (
             <Container>
+              <div style={{textAlign: 'right'}}>
+                <RaisedButton
+                  label="Edit"
+                  secondary={true}
+                  icon={<IconEdit />}
+                  onClick={() =>
+                    history.push(routeResolver.getRoute(
+                      'pim.events._id.edit',
+                      {eventUid: match.params.eventUid}))
+                  }
+                />
+              </div>
               <Event event={calendarItems[match.params.eventUid]} />
             </Container>
           )}
