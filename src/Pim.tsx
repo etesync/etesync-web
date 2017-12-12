@@ -32,6 +32,7 @@ class Pim extends React.Component {
     journals: JournalsData;
     entries: EntriesType;
     match: any;
+    history: any;
   };
 
   constructor(props: any) {
@@ -52,7 +53,10 @@ class Pim extends React.Component {
       return;
     }
 
-    store.dispatch(createJournalEntry(this.props.etesync, journal, entries.value, event.toIcal()));
+    let saveEvent = store.dispatch(createJournalEntry(this.props.etesync, journal, entries.value, event.toIcal()));
+    (saveEvent as any).then(() => {
+      this.props.history.goBack();
+    });
   }
 
   render() {

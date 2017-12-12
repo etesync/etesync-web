@@ -68,8 +68,14 @@ class SyncGate extends React.Component {
         />
         <Route
           path={routeResolver.getRoute('pim')}
-          render={({match}) => (
-            <Pim etesync={this.props.etesync} journals={journals} entries={this.props.entries} match={match} />
+          render={({match, history}) => (
+            <Pim
+              etesync={this.props.etesync}
+              journals={journals}
+              entries={this.props.entries}
+              match={match}
+              history={history}
+            />
           )}
         />
         <Route
