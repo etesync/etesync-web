@@ -2,8 +2,9 @@ An EteSync web client. Use EteSync from the browser
 
 # Usage
 
-**Note:** This is still in an early stage. It should perfectly safe to use (though
-plase refer to the warning at the bottom) but you should expect bugs/bad design.
+**Note:** This is still in an early stage, but it should be safe to use. It uses the battle
+tested [sjcl](https://crypto.stanford.edu/sjcl/) javascript crypto library for encryption,
+so that should be fine too.
 
 A live isntance is available on: https://client.etesync.com
 
@@ -30,11 +31,3 @@ the build directory.
 
 Alternatively, you can run the debug server just to verify everything works. To do that,
 run `yarn start`.
-
-# Important!
-
-There are some rough edges at the moment, this project is still in early alpha!
-
-While it's OK to use it for **accessing** your data, do **NOT** use it to create
-new contacts/calendars while this notice is here! It uses a static IV for all
-encryption operations at the moment, which is very bad!
