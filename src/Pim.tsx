@@ -39,6 +39,7 @@ class Pim extends React.Component {
   constructor(props: any) {
     super(props);
     this.onEventSave = this.onEventSave.bind(this);
+    this.onContactSave = this.onContactSave.bind(this);
   }
 
   onEventSave(event: EventType, journalUid: string, originalEvent?: EventType) {
