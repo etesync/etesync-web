@@ -19,6 +19,7 @@ const TypeSelector = (props: any) => {
   const types = [
     {type: 'Home'},
     {type: 'Work'},
+    {type: 'Cell'},
     {type: 'Other'},
   ];
 
@@ -110,11 +111,26 @@ class ContactEdit extends React.Component {
 
       journalUid: '',
     };
+
     if (this.props.contact !== undefined) {
       const contact = this.props.contact;
 
       this.state.uid = contact.uid;
       this.state.fn = contact.fn ? contact.fn : '';
+
+      // FIXME: Am I really getting all the values this way?
+      const propToValueType = (comp: ICAL.Component, propName: string) => (
+        comp.getAllProperties(propName).map((prop) => (
+          new ValueType(
+            prop.toJSON()[1].type,
+            prop.getFirstValue()
+          )
+        ))
+      );
+
+      this.state.phones = propToValueType(contact.comp, 'tel');
+      this.state.emails = propToValueType(contact.comp, 'email');
+
     } else {
       this.state.uid = uuid.v4();
     }
@@ -185,11 +201,31 @@ class ContactEdit extends React.Component {
   }
 
   onSubmit(e: any) {
-    e.prcontactDefault();
+    e.preventDefault();
 
-    let contact = new ContactType(new ICAL.Component(['vcard', []]));
-    //    contact.uid = this.state.uid;
-    // contact.fn = this.state.fn;
+    let contact = (this.props.contact) ?
+      this.props.contact.clone()
+      :
+      new ContactType(new ICAL.Component(['vcard', [], []]))
+    ;
+
+    let comp = contact.comp;
+    comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
+    comp.updatePropertyWithValue('uid', this.state.uid);
+    comp.updatePropertyWithValue('fn', this.state.fn);
+
+    function setProperties(name: string, source: ValueType[]) {
+      comp.removeAllProperties(name);
+      source.forEach((x) => {
+        let prop = new ICAL.Property(name, comp);
+        prop.setParameter('type', x.type);
+        prop.setValue(x.value);
+        comp.addProperty(prop);
+      });
+    }
+
+    setProperties('tel', this.state.phones);
+    setProperties('email', this.state.emails);
 
     this.props.onSave(contact, this.state.journalUid, this.props.contact);
   }
