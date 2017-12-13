@@ -103,6 +103,9 @@ class ContactEdit extends React.Component {
     phone: ValueType[];
     email: ValueType[];
     address: ValueType[];
+    org: string;
+    note: string;
+    title: string;
 
     journalUid: string;
   };
@@ -122,6 +125,9 @@ class ContactEdit extends React.Component {
       phone: [new ValueType()],
       email: [new ValueType()],
       address: [new ValueType()],
+      org: '',
+      note: '',
+      title: '',
 
       journalUid: '',
     };
@@ -145,6 +151,15 @@ class ContactEdit extends React.Component {
       this.state.phone = propToValueType(contact.comp, 'tel');
       this.state.email = propToValueType(contact.comp, 'email');
       this.state.address = propToValueType(contact.comp, 'adr');
+
+      const propToStringType = (comp: ICAL.Component, propName: string) => {
+        const val = comp.getFirstPropertyValue(propName);
+        return val ? val : '';
+      };
+
+      this.state.org = propToStringType(contact.comp, 'org');
+      this.state.title = propToStringType(contact.comp, 'title');
+      this.state.note = propToStringType(contact.comp, 'note');
 
     } else {
       this.state.uid = uuid.v4();
@@ -252,6 +267,14 @@ class ContactEdit extends React.Component {
     setProperties('tel', this.state.phone);
     setProperties('email', this.state.email);
     setProperties('adr', this.state.address);
+
+    function setProperty(name: string, value: string) {
+      comp.updatePropertyWithValue(name, value);
+    }
+
+    setProperty('org', this.state.org);
+    setProperty('title', this.state.title);
+    setProperty('note', this.state.note);
 
     this.props.onSave(contact, this.state.journalUid, this.props.contact);
   }
@@ -364,6 +387,31 @@ class ContactEdit extends React.Component {
               )}
             />
           ))}
+
+          <TextField
+            name="org"
+            hintText="Organization"
+            style={styles.fullWidth}
+            value={this.state.org}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="title"
+            hintText="Title"
+            style={styles.fullWidth}
+            value={this.state.title}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="note"
+            multiLine={true}
+            hintText="Note"
+            style={styles.fullWidth}
+            value={this.state.note}
+            onChange={this.handleInputChange}
+          />
 
           <div style={styles.submit}>
             <RaisedButton
