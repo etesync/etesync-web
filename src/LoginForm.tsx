@@ -73,9 +73,18 @@ class LoginForm extends React.Component {
     if (!encryptionPassword) {
       errors.errorEncryptionPassword = fieldRequired;
     }
+
+    if (process.env.NODE_ENV !== 'development') {
+      if (this.state.showAdvanced && !this.state.server.startsWith('https://')) {
+        errors.errorServer = 'Server URI must start with https://';
+      }
+    }
+
     if (Object.keys(errors).length) {
       this.setState({errors: errors});
       return;
+    } else {
+      this.setState({errors: {}});
     }
 
     this.props.onSubmit(username, password, encryptionPassword, server);
