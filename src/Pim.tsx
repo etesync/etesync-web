@@ -89,44 +89,47 @@ class Pim extends React.Component {
 
     let collectionsAddressBook: Array<EteSync.CollectionInfo> = [];
     let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
-    let syncEntriesCalendar = [];
-    let syncEntriesAddressBook = [];
-    for (const journal of this.props.journals) {
-      const journalEntries = this.props.entries[journal.uid];
-      const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
+    const journalMap = this.props.journals.reduce(
+      (ret, journal) => {
+        const journalEntries = this.props.entries[journal.uid];
+        const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
 
-      let prevUid: string | null = null;
+        let prevUid: string | null = null;
 
-      if (!journalEntries || !journalEntries.value) {
-        continue;
-      }
+        if (!journalEntries || !journalEntries.value) {
+          return ret;
+        }
 
-      // FIXME: Skip shared journals for now
-      if (journal.key) {
-        continue;
-      }
+        // FIXME: Skip shared journals for now
+        if (journal.key) {
+          return ret;
+        }
 
-      const collectionInfo = journal.getInfo(cryptoManager);
+        const collectionInfo = journal.getInfo(cryptoManager);
 
-      const syncEntries = journalEntries.value.map((entry: EteSync.Entry) => {
-        let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
-        prevUid = entry.uid;
+        const syncEntries = journalEntries.value.map((entry: EteSync.Entry) => {
+          let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
+          prevUid = entry.uid;
 
-        return syncEntry;
-      });
+          return syncEntry;
+        });
 
-      if (collectionInfo.type === 'ADDRESS_BOOK') {
-        syncEntriesAddressBook.push(syncEntriesToItemMap(collectionInfo, syncEntries));
-        collectionsAddressBook.push(collectionInfo);
-      } else if (collectionInfo.type === 'CALENDAR') {
-        syncEntriesCalendar.push(syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
-        collectionsCalendar.push(collectionInfo);
-      }
+        if (collectionInfo.type === 'ADDRESS_BOOK') {
+          ret.ADDRESS_BOOK.push(syncEntriesToItemMap(collectionInfo, syncEntries));
+          collectionsAddressBook.push(collectionInfo);
+        } else if (collectionInfo.type === 'CALENDAR') {
+          ret.CALENDAR.push(syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
+          collectionsCalendar.push(collectionInfo);
+        }
 
-    }
+        return ret;
+      },
+      { CALENDAR: [] as Array<{[key: string]: EventType}>,
+        ADDRESS_BOOK: [] as Array<{[key: string]: ContactType}>,
+        UNSUPPORTED: [] as Array<any>});
 
-    let addressBookItems = syncEntriesAddressBook.reduce((base, x) => Object.assign(base, x), {});
-    let calendarItems = syncEntriesCalendar.reduce((base, x) => Object.assign(base, x), {});
+    let addressBookItems = journalMap.ADDRESS_BOOK.reduce((base, x) => Object.assign(base, x), {});
+    let calendarItems = journalMap.CALENDAR.reduce((base, x) => Object.assign(base, x), {});
 
     return (
       <Switch>
