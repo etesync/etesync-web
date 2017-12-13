@@ -3,7 +3,11 @@ declare module 'ical.js' {
   class Component {
     name: string;
 
+    static fromString(str: string): Component;
+
     constructor(jCal: Array<any> | string, parent?: Component);
+
+    toJSON(): Array<any>;
 
     getFirstSubcomponent(name?: string): Component | null;
 

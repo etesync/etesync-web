@@ -39,6 +39,10 @@ export class ContactType {
     return this.comp.toString();
   }
 
+  clone() {
+    return new ContactType(new ICAL.Component(this.comp.toJSON()));
+  }
+
   get uid() {
     return this.comp.getFirstPropertyValue('uid');
   }
