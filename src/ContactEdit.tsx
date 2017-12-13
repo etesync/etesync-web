@@ -233,6 +233,10 @@ class ContactEdit extends React.Component {
     function setProperties(name: string, source: ValueType[]) {
       comp.removeAllProperties(name);
       source.forEach((x) => {
+        if (x.value === '') {
+          return;
+        }
+
         let prop = new ICAL.Property(name, comp);
         prop.setParameter('type', x.type);
         prop.setValue(x.value);
