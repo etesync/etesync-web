@@ -27,6 +27,10 @@ export class EventType extends ICAL.Event {
     comp.addSubcomponent(this.component);
     return comp.toString();
   }
+
+  clone() {
+    return new EventType(new ICAL.Component(this.component.toJSON()));
+  }
 }
 
 export class ContactType {

@@ -106,7 +106,11 @@ class EventEdit extends React.Component {
       return;
     }
 
-    let event = new EventType();
+    let event = (this.props.event) ?
+      this.props.event.clone()
+      :
+      new EventType()
+    ;
     event.uid = this.state.uid;
     event.summary = this.state.title;
     event.startDate = ICAL.Time.fromString(this.state.start);
@@ -203,6 +207,11 @@ class EventEdit extends React.Component {
               label="Save"
               secondary={true}
             />
+          </div>
+
+          <div>
+            Not all types are supported at the moment. If you are editing a contact,
+            the unsupported types will be copied as is.
           </div>
         </form>
       </React.Fragment>
