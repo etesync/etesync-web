@@ -70,6 +70,13 @@ declare module 'ical.js' {
       isDate?: boolean
     });
 
+    compare(aOther: Time): number;
+
+    clone(): Time;
+
+    adjust(
+      aExtraDays: number, aExtraHours: number, aExtraMinutes: number, aExtraSeconds: number, aTimeopt?: Time): void;
+
     fromJSDate(aDate: Date | null, useUTC: boolean): void;
 
     toJSDate(): Date;

@@ -48,11 +48,18 @@ class EventEdit extends React.Component {
     if (this.props.event !== undefined) {
       const event = this.props.event;
 
+      const allDay = event.startDate.isDate;
+      let endDate = event.endDate.clone();
+
+      if (allDay) {
+        endDate.adjust(-1, 0, 0, 0);
+      }
+
       this.state.uid = event.uid;
       this.state.title = event.title ? event.title : '';
-      this.state.allDay = event.startDate.isDate;
+      this.state.allDay = allDay;
       this.state.start = event.startDate.toString();
-      this.state.end = event.endDate.toString();
+      this.state.end = endDate.toString();
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
     } else {
@@ -105,6 +112,16 @@ class EventEdit extends React.Component {
     if ((this.state.start === '') || (this.state.end === '')) {
       return;
     }
+    const startDate = ICAL.Time.fromString(this.state.start);
+    let endDate = ICAL.Time.fromString(this.state.end);
+
+    if (startDate.compare(endDate) >= 0) {
+      return;
+    }
+
+    if (this.state.allDay) {
+      endDate.adjust(1, 0, 0, 0);
+    }
 
     let event = (this.props.event) ?
       this.props.event.clone()
@@ -113,8 +130,8 @@ class EventEdit extends React.Component {
     ;
     event.uid = this.state.uid;
     event.summary = this.state.title;
-    event.startDate = ICAL.Time.fromString(this.state.start);
-    event.endDate = ICAL.Time.fromString(this.state.end);
+    event.startDate = startDate;
+    event.endDate = endDate;
     event.location = this.state.location;
     event.description = this.state.description;
 
