@@ -226,6 +226,7 @@ class ContactEdit extends React.Component {
 
     let comp = contact.comp;
     comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
+    comp.updatePropertyWithValue('version', '4.0');
     comp.updatePropertyWithValue('uid', this.state.uid);
     comp.updatePropertyWithValue('fn', this.state.fn);
 

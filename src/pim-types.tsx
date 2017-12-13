@@ -22,6 +22,7 @@ export class EventType extends ICAL.Event {
   toIcal() {
     let comp = new ICAL.Component(['vcalendar', [], []]);
     comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
+    comp.updatePropertyWithValue('version', '4.0');
 
     comp.addSubcomponent(this.component);
     return comp.toString();
