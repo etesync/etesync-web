@@ -135,6 +135,8 @@ class EventEdit extends React.Component {
     event.location = this.state.location;
     event.description = this.state.description;
 
+    event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
+
     this.props.onSave(event, this.state.journalUid, this.props.event);
   }
 

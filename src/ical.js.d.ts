@@ -60,6 +60,8 @@ declare module 'ical.js' {
 
     static fromString(str: string): Time;
 
+    static now(): Time;
+
     constructor(data?: {
       year?: number,
       month?: number,

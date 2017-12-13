@@ -259,6 +259,7 @@ class ContactEdit extends React.Component {
     comp.updatePropertyWithValue('version', '4.0');
     comp.updatePropertyWithValue('uid', this.state.uid);
     comp.updatePropertyWithValue('fn', this.state.fn);
+    comp.updatePropertyWithValue('rev', ICAL.Time.now());
 
     function setProperties(name: string, source: ValueType[]) {
       comp.removeAllProperties(name);
