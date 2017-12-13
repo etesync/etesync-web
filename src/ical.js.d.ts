@@ -16,7 +16,12 @@ declare module 'ical.js' {
     getFirstProperty(name?: string): Property;
     getAllProperties(name?: string): Array<Property>;
 
+    addProperty(property: Property): Property;
+    addPropertyWithValue(name: string, value: string | number | object): Property;
+
     updatePropertyWithValue(name: string, value: string | number | object): Property;
+
+    removeAllProperties(name?: string): boolean;
 
     addSubcomponent(component: Component): Component;
   }
@@ -40,8 +45,13 @@ declare module 'ical.js' {
     name: string;
     type: string;
 
+    constructor(jCal: Array<any> | string, parent?: Component);
+
     getFirstValue(): any;
     getValues(): Array<any>;
+
+    setParameter(name: string, value: string | Array<string>): void;
+    setValue(value: string | object): void;
     toJSON(): any;
   }
 
