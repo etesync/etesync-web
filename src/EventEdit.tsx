@@ -24,6 +24,8 @@ class EventEdit extends React.Component {
     location: string;
     description: string;
     journalUid: string;
+
+    error?: string;
   };
 
   props: {
@@ -41,9 +43,10 @@ class EventEdit extends React.Component {
       allDay: false,
       location: '',
       description: '',
-      journalUid: '',
       start: '',
-      end: ''
+      end: '',
+
+      journalUid: '',
     };
     if (this.props.event !== undefined) {
       const event = this.props.event;
@@ -110,12 +113,14 @@ class EventEdit extends React.Component {
     e.preventDefault();
 
     if ((this.state.start === '') || (this.state.end === '')) {
+      this.setState({error: 'Both start and end time must be set!'});
       return;
     }
     const startDate = ICAL.Time.fromString(this.state.start);
     let endDate = ICAL.Time.fromString(this.state.end);
 
     if (startDate.compare(endDate) >= 0) {
+      this.setState({error: 'End time must be later than start time!'});
       return;
     }
 
@@ -159,6 +164,9 @@ class EventEdit extends React.Component {
         <h2>
           {this.props.event ? 'Edit Event' : 'New Event'}
         </h2>
+        {this.state.error && (
+          <div>ERROR! {this.state.error}</div>
+        )}
         <form style={styles.form} onSubmit={this.onSubmit}>
           <TextField
             name="title"
