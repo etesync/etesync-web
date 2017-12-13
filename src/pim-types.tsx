@@ -35,6 +35,10 @@ export class ContactType {
     this.comp = comp;
   }
 
+  toIcal() {
+    return this.comp.toString();
+  }
+
   get uid() {
     return this.comp.getFirstPropertyValue('uid');
   }

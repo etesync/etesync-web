@@ -5,10 +5,11 @@ import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 import * as EteSync from './api/EteSync';
 
-import { EventType } from './pim-types';
+import { ContactType, EventType } from './pim-types';
 
 import Container from './Container';
 
+import ContactEdit from './ContactEdit';
 import Contact from './Contact';
 import EventEdit from './EventEdit';
 import Event from './Event';
@@ -61,9 +62,31 @@ class Pim extends React.Component {
     });
   }
 
+  onContactSave(contact: ContactType, journalUid: string, originalContact?: ContactType) {
+    const journal = this.props.journals.find((x) => (x.uid === journalUid));
+
+    if (journal === undefined) {
+      return;
+    }
+
+    const entries = this.props.entries[journal.uid];
+
+    if (entries.value === null) {
+      return;
+    }
+
+    let action = (originalContact === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
+    let saveContact = store.dispatch(
+      createJournalEntry(this.props.etesync, journal, entries.value, action, contact.toIcal()));
+    (saveContact as any).then(() => {
+      this.props.history.goBack();
+    });
+  }
+
   render() {
     const derived = this.props.etesync.encryptionKey;
 
+    let collectionsAddressBook: Array<EteSync.CollectionInfo> = [];
     let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
     let syncEntriesCalendar = [];
     let syncEntriesAddressBook = [];
@@ -93,6 +116,7 @@ class Pim extends React.Component {
 
       if (collectionInfo.type === 'ADDRESS_BOOK') {
         syncEntriesAddressBook.push(syncEntriesToItemMap(collectionInfo, syncEntries));
+        collectionsAddressBook.push(collectionInfo);
       } else if (collectionInfo.type === 'CALENDAR') {
         syncEntriesCalendar.push(syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
         collectionsCalendar.push(collectionInfo);
@@ -117,10 +141,44 @@ class Pim extends React.Component {
           )}
         />
         <Route
-          path={routeResolver.getRoute('pim.contacts._id')}
+          path={routeResolver.getRoute('pim.contacts.new')}
           exact={true}
           render={({match}) => (
+            <Container style={{maxWidth: 400}}>
+              <ContactEdit collections={collectionsAddressBook} onSave={this.onContactSave} />
+            </Container>
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('pim.contacts._id.edit')}
+          exact={true}
+          render={({match}) => (
+            <Container style={{maxWidth: 400}}>
+              <ContactEdit
+                contact={addressBookItems[match.params.contactUid]}
+                collections={collectionsAddressBook}
+                onSave={this.onContactSave}
+              />
+            </Container>
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('pim.contacts._id')}
+          exact={true}
+          render={({match, history}) => (
             <Container>
+              <div style={{textAlign: 'right'}}>
+                <RaisedButton
+                  label="Edit"
+                  secondary={true}
+                  icon={<IconEdit />}
+                  onClick={() =>
+                    history.push(routeResolver.getRoute(
+                      'pim.contacts._id.edit',
+                      {contactUid: match.params.contactUid}))
+                  }
+                />
+              </div>
               <Contact contact={addressBookItems[match.params.contactUid]} />
             </Container>
           )}
