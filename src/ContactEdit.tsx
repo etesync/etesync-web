@@ -15,13 +15,23 @@ import * as EteSync from './api/EteSync';
 
 import { ContactType } from './pim-types';
 
+const telTypes = [
+  {type: 'Home'},
+  {type: 'Work'},
+  {type: 'Cell'},
+  {type: 'Other'},
+];
+
+const emailTypes = telTypes;
+
+const addressTypes = [
+  {type: 'Home'},
+  {type: 'Work'},
+  {type: 'Other'},
+];
+
 const TypeSelector = (props: any) => {
-  const types = [
-    {type: 'Home'},
-    {type: 'Work'},
-    {type: 'Cell'},
-    {type: 'Other'},
-  ];
+  const types = props.types as {type: string}[];
 
   return (
     <SelectField
@@ -50,6 +60,7 @@ interface ValueTypeComponentProps {
   type?: string;
   style?: object;
 
+  types: {type: string}[];
   name: string;
   hintText: string;
   value: ValueType;
@@ -76,6 +87,7 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
       </IconButton>
       <TypeSelector
         value={props.value.type}
+        types={props.types}
         onChange={
           (contact: object, key: number, payload: any) => props.onChange(props.name, payload, props.value.value)
         }
@@ -88,8 +100,9 @@ class ContactEdit extends React.Component {
   state: {
     uid: string,
     fn: string;
-    phones: ValueType[];
-    emails: ValueType[];
+    phone: ValueType[];
+    email: ValueType[];
+    address: ValueType[];
 
     journalUid: string;
   };
@@ -106,8 +119,9 @@ class ContactEdit extends React.Component {
     this.state = {
       uid: '',
       fn: '',
-      phones: [new ValueType()],
-      emails: [new ValueType()],
+      phone: [new ValueType()],
+      email: [new ValueType()],
+      address: [new ValueType()],
 
       journalUid: '',
     };
@@ -128,8 +142,9 @@ class ContactEdit extends React.Component {
         ))
       );
 
-      this.state.phones = propToValueType(contact.comp, 'tel');
-      this.state.emails = propToValueType(contact.comp, 'email');
+      this.state.phone = propToValueType(contact.comp, 'tel');
+      this.state.email = propToValueType(contact.comp, 'email');
+      this.state.address = propToValueType(contact.comp, 'adr');
 
     } else {
       this.state.uid = uuid.v4();
@@ -224,8 +239,9 @@ class ContactEdit extends React.Component {
       });
     }
 
-    setProperties('tel', this.state.phones);
-    setProperties('email', this.state.emails);
+    setProperties('tel', this.state.phone);
+    setProperties('email', this.state.email);
+    setProperties('adr', this.state.address);
 
     this.props.onSave(contact, this.state.journalUid, this.props.contact);
   }
@@ -273,18 +289,19 @@ class ContactEdit extends React.Component {
           <div>
             Phone numbers
             <IconButton
-              onClick={() => this.addValueType('phones')}
+              onClick={() => this.addValueType('phone')}
               tooltip="Add phone number"
             >
               <IconAdd />
             </IconButton>
           </div>
-          {this.state.phones.map((x, idx) => (
+          {this.state.phone.map((x, idx) => (
             <ValueTypeComponent
               key={idx}
-              name="phones"
+              name="phone"
               hintText="Phone"
-              value={this.state.phones[idx]}
+              types={telTypes}
+              value={this.state.phone[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
                 this.handleValueTypeChange(name, idx, {type, value})
@@ -295,18 +312,42 @@ class ContactEdit extends React.Component {
           <div>
             Emails
             <IconButton
-              onClick={() => this.addValueType('emails')}
+              onClick={() => this.addValueType('email')}
               tooltip="Add email address"
             >
               <IconAdd />
             </IconButton>
           </div>
-          {this.state.emails.map((x, idx) => (
+          {this.state.email.map((x, idx) => (
             <ValueTypeComponent
               key={idx}
-              name="emails"
+              name="email"
               hintText="Email"
-              value={this.state.emails[idx]}
+              types={emailTypes}
+              value={this.state.email[idx]}
+              onClearRequest={(name: string) => this.removeValueType(name, idx)}
+              onChange={(name: string, type: string, value: string) => (
+                this.handleValueTypeChange(name, idx, {type, value})
+              )}
+            />
+          ))}
+
+          <div>
+            Addresses
+            <IconButton
+              onClick={() => this.addValueType('address')}
+              tooltip="Add address"
+            >
+              <IconAdd />
+            </IconButton>
+          </div>
+          {this.state.address.map((x, idx) => (
+            <ValueTypeComponent
+              key={idx}
+              name="address"
+              hintText="Email"
+              types={addressTypes}
+              value={this.state.address[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
                 this.handleValueTypeChange(name, idx, {type, value})
