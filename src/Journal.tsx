@@ -93,7 +93,7 @@ class Journal extends React.Component {
             label="Journal Entries"
           >
             <Container>
-              <JournalEntries journal={journal} entries={syncEntries} />;
+              <JournalEntries journal={journal} entries={syncEntries} />
             </Container>
           </Tab>
         </Tabs>
