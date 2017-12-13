@@ -30,6 +30,12 @@ const addressTypes = [
   {type: 'Other'},
 ];
 
+const imppTypes = [
+  {type: 'Jabber'},
+  {type: 'Hangouts'},
+  {type: 'Other'},
+];
+
 const TypeSelector = (props: any) => {
   const types = props.types as {type: string}[];
 
@@ -103,6 +109,7 @@ class ContactEdit extends React.Component {
     phone: ValueType[];
     email: ValueType[];
     address: ValueType[];
+    impp: ValueType[];
     org: string;
     note: string;
     title: string;
@@ -125,6 +132,7 @@ class ContactEdit extends React.Component {
       phone: [new ValueType()],
       email: [new ValueType()],
       address: [new ValueType()],
+      impp: [new ValueType()],
       org: '',
       note: '',
       title: '',
@@ -151,6 +159,7 @@ class ContactEdit extends React.Component {
       this.state.phone = propToValueType(contact.comp, 'tel');
       this.state.email = propToValueType(contact.comp, 'email');
       this.state.address = propToValueType(contact.comp, 'adr');
+      this.state.impp = propToValueType(contact.comp, 'impp');
 
       const propToStringType = (comp: ICAL.Component, propName: string) => {
         const val = comp.getFirstPropertyValue(propName);
@@ -189,10 +198,11 @@ class ContactEdit extends React.Component {
     }
   }
 
-  addValueType(name: string) {
+  addValueType(name: string, _type?: string) {
+    const type = _type ? _type : 'home';
     this.setState((prevState, props) => {
       let newArray = prevState[name].slice(0);
-      newArray.push(new ValueType());
+      newArray.push(new ValueType(type));
       return {
         ...prevState,
         [name]: newArray,
@@ -267,6 +277,9 @@ class ContactEdit extends React.Component {
     setProperties('tel', this.state.phone);
     setProperties('email', this.state.email);
     setProperties('adr', this.state.address);
+    setProperties('impp', this.state.impp.map((x) => (
+      {type: x.type, value: x.type + ':' + x.value}
+    )));
 
     function setProperty(name: string, value: string) {
       comp.updatePropertyWithValue(name, value);
@@ -366,6 +379,29 @@ class ContactEdit extends React.Component {
           ))}
 
           <div>
+            IMPP
+            <IconButton
+              onClick={() => this.addValueType('impp', 'jabber')}
+              tooltip="Add impp address"
+            >
+              <IconAdd />
+            </IconButton>
+          </div>
+          {this.state.impp.map((x, idx) => (
+            <ValueTypeComponent
+              key={idx}
+              name="impp"
+              hintText="IMPP"
+              types={imppTypes}
+              value={this.state.impp[idx]}
+              onClearRequest={(name: string) => this.removeValueType(name, idx)}
+              onChange={(name: string, type: string, value: string) => (
+                this.handleValueTypeChange(name, idx, {type, value})
+              )}
+            />
+          ))}
+
+          <div>
             Addresses
             <IconButton
               onClick={() => this.addValueType('address')}
@@ -378,7 +414,7 @@ class ContactEdit extends React.Component {
             <ValueTypeComponent
               key={idx}
               name="address"
-              hintText="Email"
+              hintText="Address"
               types={addressTypes}
               value={this.state.address[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
