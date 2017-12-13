@@ -1,3 +1,5 @@
+import * as Immutable from 'immutable';
+
 import * as React from 'react';
 import { List, ListItem } from 'material-ui/List';
 import Dialog from 'material-ui/Dialog';
@@ -23,7 +25,7 @@ class JournalEntries extends React.Component {
 
   props: {
     journal: EteSync.Journal,
-    entries: Array<EteSync.SyncEntry>,
+    entries: Immutable.List<EteSync.SyncEntry>,
   };
 
   constructor(props: any) {

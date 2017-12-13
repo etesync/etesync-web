@@ -1,10 +1,12 @@
+import { List } from 'immutable';
+
 import * as ICAL from 'ical.js';
 
 import { EventType, ContactType } from './pim-types';
 
 import * as EteSync from './api/EteSync';
 
-export function syncEntriesToItemMap(collection: EteSync.CollectionInfo, entries: EteSync.SyncEntry[]) {
+export function syncEntriesToItemMap(collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>) {
   let items: {[key: string]: ContactType} = {};
 
   for (const syncEntry of entries) {
@@ -47,7 +49,7 @@ function colorIntToHtml(color: number) {
     ((alpha > 0) ? toHex(alpha) : '');
 }
 
-export function syncEntriesToCalendarItemMap(collection: EteSync.CollectionInfo, entries: EteSync.SyncEntry[]) {
+export function syncEntriesToCalendarItemMap(collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>) {
   let items: {[key: string]: EventType} = {};
 
   const color = colorIntToHtml(collection.color);

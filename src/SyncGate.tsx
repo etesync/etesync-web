@@ -35,9 +35,10 @@ class SyncGate extends React.Component {
     if (nextProps.journals.value && (this.props.journals.value !== nextProps.journals.value)) {
       for (const journal of nextProps.journals.value) {
         let prevUid: string | null = null;
-        const entries = this.props.entries[journal.uid];
-        if (entries && entries.value && (entries.value.length > 0)) {
-          prevUid = entries.value[entries.value.length - 1].uid;
+        const entries = this.props.entries.get(journal.uid);
+        if (entries && entries.value) {
+          const last = entries.value.last();
+          prevUid = (last) ? last.uid : null;
         }
 
         store.dispatch(fetchEntries(this.props.etesync, journal.uid, prevUid));
@@ -46,14 +47,11 @@ class SyncGate extends React.Component {
   }
 
   render() {
-    const entryArrays = Object.keys(this.props.entries).map((key) => {
-      return this.props.entries[key].value;
-    });
-
+    const entryArrays = this.props.entries;
     const journals = this.props.journals.value;
 
     if ((journals === null) ||
-      (entryArrays.length === 0) || !entryArrays.every((x: any) => (x !== null))) {
+      (entryArrays.size === 0) || !entryArrays.every((x: any) => (x.value !== null))) {
       return (<LoadingIndicator />);
     }
 

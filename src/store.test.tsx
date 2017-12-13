@@ -1,10 +1,12 @@
-import { entries, createEntries, fetchEntries } from './store';
+import { entries, createEntries, fetchEntries, EntriesTypeImmutable } from './store';
+
+import { Map } from 'immutable';
 
 import * as EteSync from './api/EteSync';
 
 it('Entries reducer', () => {
   const jId = '24324324324';
-  let state = {};
+  let state = Map({}) as EntriesTypeImmutable;
 
   let entry = new EteSync.Entry();
   entry.deserialize({
@@ -18,21 +20,30 @@ it('Entries reducer', () => {
     payload: [entry],
   };
 
+  let journal;
+  let entry2;
+
   state = entries(state, action as any);
-  expect(state[jId].value[0].serialize()).toEqual(entry.serialize());
+  journal = state.get(jId) as any;
+  entry2 = journal.value.get(0);
+  expect(entry2.serialize()).toEqual(entry.serialize());
 
   // We replace if there's no prevUid
   state = entries(state, action as any);
-  expect(state[jId].value[0].serialize()).toEqual(entry.serialize());
-  expect(state[jId].value.length).toBe(1);
+  journal = state.get(jId) as any;
+  entry2 = journal.value.get(0);
+  expect(entry2.serialize()).toEqual(entry.serialize());
+  expect(journal.value.size).toBe(1);
 
   // We extend if prevUid is set
   action.meta.prevUid = entry.uid;
   state = entries(state, action as any);
-  expect(state[jId].value.length).toBe(2);
+  journal = state.get(jId) as any;
+  expect(journal.value.size).toBe(2);
 
   // Creating entries should also work the same
   action.type = createEntries.toString();
   state = entries(state, action as any);
-  expect(state[jId].value.length).toBe(3);
+  journal = state.get(jId) as any;
+  expect(journal.value.size).toBe(3);
 });

@@ -6,11 +6,13 @@ import session from 'redux-persist/lib/storage/session';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
+import { List, Map, Record } from 'immutable';
+
 import promiseMiddleware from './promise-middleware';
 
 import * as EteSync from './api/EteSync';
 
-export interface FetchType<T> {
+interface FetchTypeInterface<T> {
   value: T | null;
   fetching?: boolean;
   error?: Error;
@@ -22,15 +24,27 @@ export interface CredentialsData {
   encryptionKey: string;
 }
 
+type FetchType<T> = FetchTypeInterface<T>;
+
+function fetchTypeRecord<T>() {
+  return Record<FetchTypeInterface<T>>({
+    value: null as T | null,
+  });
+}
+
 export type CredentialsType = FetchType<CredentialsData>;
 
-export type JournalsData = Array<EteSync.Journal>;
+export type JournalsData = List<EteSync.Journal>;
 
+const JournalsFetchRecord = fetchTypeRecord<JournalsData>();
 export type JournalsType = FetchType<JournalsData>;
 
-export type EntriesData = Array<EteSync.Entry>;
+export type EntriesData = List<EteSync.Entry>;
 
-export type EntriesType = {[key: string]: FetchType<EntriesData>};
+const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
+
+export type EntriesTypeImmutable = Map<string, Record<FetchType<EntriesData>>>;
+export type EntriesType = Map<string, FetchType<EntriesData>>;
 
 export interface StoreState {
   fetchCount: number;
@@ -41,7 +55,7 @@ export interface StoreState {
   };
 }
 
-function fetchTypeIdentityReducer(state: FetchType<any> = {value: null}, action: any, extend: boolean = false) {
+function credentialsIdentityReducer(state: CredentialsType = {value: null}, action: any, extend: boolean = false) {
   if (action.error) {
     return {
       value: null,
@@ -50,18 +64,32 @@ function fetchTypeIdentityReducer(state: FetchType<any> = {value: null}, action:
   } else {
     const fetching = (action.payload === undefined) ? true : undefined;
     const payload = (action.payload === undefined) ? null : action.payload;
-    let value = state.value;
-    if (extend && (value !== null)) {
-      if (payload !== null) {
-        value = value.concat(payload);
-      }
-    } else {
-      value = payload;
-    }
+    let value = payload;
     return {
       fetching,
       value,
     };
+  }
+}
+
+function fetchTypeIdentityReducer(
+  state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend: boolean = false) {
+  if (action.error) {
+    return state.set('value', null).set('error', action.payload);
+  } else {
+    const fetching = (action.payload === undefined) ? true : undefined;
+    const payload = (action.payload === undefined) ? null : action.payload;
+    let value = state.get('value', null);
+    if (extend && (value !== null)) {
+      if (payload !== null) {
+        value = value.concat(payload);
+      }
+    } else if (payload !== null) {
+      value = List(payload);
+    } else {
+      value = null;
+    }
+    return state.set('value', value).set('fetching', fetching);
   }
 }
 
@@ -131,7 +159,7 @@ export const { fetchEntries, createEntries } = createActions({
 
 const credentials = handleActions(
   {
-    [fetchCredentials.toString()]: fetchTypeIdentityReducer,
+    [fetchCredentials.toString()]: credentialsIdentityReducer,
     [logout.toString()]: (state: CredentialsType, action: any) => {
       return {out: true, value: null};
     },
@@ -141,20 +169,19 @@ const credentials = handleActions(
 
 export const entries = handleAction(
   combineActions(fetchEntries, createEntries),
-  (state: EntriesType, action: any) => {
-    const prevState = state[action.meta.journal];
+  (state: EntriesTypeImmutable, action: any) => {
+    const prevState = state.get(action.meta.journal);
     const extend = action.meta.prevUid != null;
-    return { ...state,
-      [action.meta.journal]: fetchTypeIdentityReducer(prevState, action, extend)
-    };
+    return state.set(action.meta.journal,
+                     fetchTypeIdentityReducer(prevState, action, extend));
   },
-  {}
+  Map({})
 );
 
 const journals = handleAction(
   fetchJournals,
   fetchTypeIdentityReducer,
-  {value: null}
+  JournalsFetchRecord(),
 );
 
 const fetchCount = handleAction(
@@ -184,7 +211,7 @@ const journalsSerialize = (state: JournalsData) => {
     return null;
   }
 
-  return state.map((x) => x.serialize());
+  return state.map((x) => x.serialize()).toJS();
 };
 
 const journalsDeserialize = (state: EteSync.JournalJson[]) => {
@@ -192,53 +219,74 @@ const journalsDeserialize = (state: EteSync.JournalJson[]) => {
     return null;
   }
 
-  return state.map((x: any) => {
+  return List(state.map((x: any) => {
     let ret = new EteSync.Journal(x.version);
     ret.deserialize(x);
     return ret;
-  });
+  }));
 };
 
-const cacheJournalsPersistConfig = {
-  key: 'journals',
-  storage: localforage,
-  transforms: [createTransform(journalsSerialize, journalsDeserialize)],
-  whitelist: ['value'],
-};
-
-const entriesSerialize = (state: FetchType<EntriesData>, key: string) => {
+const entriesSerialize = (state: FetchType<EntriesData>) => {
   if ((state === null) || (state.value == null)) {
     return null;
   }
 
-  return state.value.map((x) => x.serialize());
+  return state.value.map((x) => x.serialize()).toJS();
 };
 
-const entriesDeserialize = (state: EteSync.EntryJson[], key: string): FetchType<EntriesData> => {
+const entriesDeserialize = (state: EteSync.EntryJson[]): FetchType<EntriesData> => {
   if (state === null) {
-    return {value: null};
+    return EntriesFetchRecord({value: null});
   }
 
-  return {value: state.map((x: any) => {
+  return EntriesFetchRecord({value: List(state.map((x: any) => {
     let ret = new EteSync.Entry();
     ret.deserialize(x);
     return ret;
-  })};
+  }))});
 };
 
-const cacheEntriesPersistConfig = {
-  key: 'entries',
+const cacheSerialize = (state: any, key: string) => {
+  if (key === 'entries') {
+    let ret = {};
+    state.forEach((value: FetchType<EntriesData>, mapKey: string) => {
+      ret[mapKey] = entriesSerialize(value);
+    });
+    return ret;
+  } else if (key === 'journals') {
+    return journalsSerialize(state.value);
+  }
+
+  return state;
+};
+
+const cacheDeserialize = (state: any, key: string) => {
+  if (key === 'entries') {
+    let ret = {};
+    Object.keys(state).forEach((mapKey) => {
+      ret[mapKey] = entriesDeserialize(state[mapKey]);
+    });
+    return Map(ret);
+  } else if (key === 'journals') {
+    return JournalsFetchRecord({value: journalsDeserialize(state)});
+  }
+
+  return state;
+};
+
+const cachePersistConfig = {
+  key: 'cache',
   storage: localforage,
-  transforms: [createTransform(entriesSerialize, entriesDeserialize)],
+  transforms: [createTransform(cacheSerialize, cacheDeserialize)],
 };
 
 const reducers = combineReducers({
   fetchCount,
   credentials: persistReducer(credentialsPersistConfig, credentials),
-  cache: combineReducers({
-    journals: persistReducer(cacheJournalsPersistConfig, journals),
-    entries: persistReducer(cacheEntriesPersistConfig, entries),
-  })
+  cache: persistReducer(cachePersistConfig, combineReducers({
+    entries,
+    journals,
+  })),
 });
 
 let middleware = [

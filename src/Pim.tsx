@@ -49,7 +49,11 @@ class Pim extends React.Component {
       return;
     }
 
-    const entries = this.props.entries[journal.uid];
+    const entries = this.props.entries.get(journal.uid);
+
+    if (!entries) {
+      return;
+    }
 
     if (entries.value === null) {
       return;
@@ -91,7 +95,7 @@ class Pim extends React.Component {
     let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
     const journalMap = this.props.journals.reduce(
       (ret, journal) => {
-        const journalEntries = this.props.entries[journal.uid];
+        const journalEntries = this.props.entries.get(journal.uid);
         const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
 
         let prevUid: string | null = null;

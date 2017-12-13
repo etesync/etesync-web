@@ -39,7 +39,7 @@ class Journal extends React.Component {
 
   render() {
     const journalUid = this.props.match.params.journalUid;
-    const entries = this.props.entries[journalUid];
+    const entries = this.props.entries.get(journalUid);
 
     if ((!entries) || (entries.value === null)) {
       return (<LoadingIndicator />);

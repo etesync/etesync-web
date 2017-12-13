@@ -1,3 +1,5 @@
+import { List } from 'immutable';
+
 import * as EteSync from './api/EteSync';
 
 import { CredentialsData, createEntries } from './store';
@@ -5,7 +7,7 @@ import { CredentialsData, createEntries } from './store';
 export function createJournalEntry(
   etesync: CredentialsData,
   journal: EteSync.Journal,
-  existingEntries: Array<EteSync.Entry>,
+  existingEntries: List<EteSync.Entry>,
   action: EteSync.SyncEntryAction,
   content: string) {
 
@@ -18,8 +20,9 @@ export function createJournalEntry(
   let prevUid: string | null = null;
 
   const entries = existingEntries;
-  if (entries.length > 0) {
-    prevUid = entries[entries.length - 1].uid;
+  const last = entries.last();
+  if (last) {
+    prevUid = last.uid;
   }
 
   const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
