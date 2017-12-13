@@ -156,6 +156,7 @@ class Pim extends React.Component {
           render={({match}) => (
             <Container style={{maxWidth: 400}}>
               <ContactEdit
+                initialCollection={(addressBookItems[match.params.contactUid] as any).journalUid}
                 contact={addressBookItems[match.params.contactUid]}
                 collections={collectionsAddressBook}
                 onSave={this.onContactSave}
@@ -199,6 +200,7 @@ class Pim extends React.Component {
           render={({match}) => (
             <Container style={{maxWidth: 400}}>
               <EventEdit
+                initialCollection={(calendarItems[match.params.eventUid] as any).journalUid}
                 event={calendarItems[match.params.eventUid]}
                 collections={collectionsCalendar}
                 onSave={this.onEventSave}

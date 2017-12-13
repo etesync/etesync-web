@@ -150,7 +150,9 @@ class ContactEdit extends React.Component {
       this.state.uid = uuid.v4();
     }
 
-    if (props.collections[0]) {
+    if (props.initialCollection) {
+      this.state.journalUid = props.initialCollection;
+    } else if (props.collections[0]) {
       this.state.journalUid = props.collections[0].uid;
     }
     this.onSubmit = this.onSubmit.bind(this);
@@ -162,9 +164,12 @@ class ContactEdit extends React.Component {
   }
 
   componentWillReceiveProps(nextProps: any) {
-    if (this.props.collections !== nextProps.collections) {
-      if (nextProps.collections[0]) {
-        this.setState({journalUid: nextProps.collections[0].uid});
+    if ((this.props.collections !== nextProps.collections) ||
+      (this.props.initialCollection !== nextProps.initialCollection)) {
+      if (nextProps.initialCollection) {
+        this.state.journalUid = nextProps.initialCollection;
+      } else if (nextProps.collections[0]) {
+        this.state.journalUid = nextProps.collections[0].uid;
       }
     }
   }

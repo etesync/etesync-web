@@ -12,6 +12,9 @@ export function syncEntriesToItemMap(collection: EteSync.CollectionInfo, entries
 
     const uid = comp.uid;
 
+    // FIXME:Hack
+    (comp as any).journalUid = collection.uid;
+
     if ((syncEntry.action === EteSync.SyncEntryAction.Add) ||
       (syncEntry.action === EteSync.SyncEntryAction.Change)) {
       items[uid] = comp;
@@ -59,6 +62,9 @@ export function syncEntriesToCalendarItemMap(collection: EteSync.CollectionInfo,
     comp.color = color;
 
     const uid = comp.uid;
+
+    // FIXME:Hack
+    (comp as any).journalUid = collection.uid;
 
     if ((syncEntry.action === EteSync.SyncEntryAction.Add) ||
       (syncEntry.action === EteSync.SyncEntryAction.Change)) {
