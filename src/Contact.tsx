@@ -28,7 +28,7 @@ class Contact extends React.Component {
     const name = contact.fn;
 
     const revProp = contact.comp.getFirstProperty('rev');
-    const lastModified = (revProp !== undefined) ?
+    const lastModified = (revProp) ?
       'Modified: ' + moment(revProp.getFirstValue().toJSDate()).format('LLLL') : undefined;
 
     let lists = [];
