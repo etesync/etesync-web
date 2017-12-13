@@ -283,7 +283,10 @@ class ContactEdit extends React.Component {
     )));
 
     function setProperty(name: string, value: string) {
-      comp.updatePropertyWithValue(name, value);
+      comp.removeAllProperties(name);
+      if (value !== '') {
+        comp.updatePropertyWithValue(name, value);
+      }
     }
 
     setProperty('org', this.state.org);
