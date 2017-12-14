@@ -2,6 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect, withRouter } from 'react-router';
 
+import { List, Map } from 'immutable';
+
 import { routeResolver } from './App';
 
 import LoadingIndicator from './LoadingIndicator';
@@ -9,7 +11,18 @@ import LoadingIndicator from './LoadingIndicator';
 import Journal from './Journal';
 import Pim from './Pim';
 
+import * as EteSync from './api/EteSync';
+
 import { store, JournalsType, EntriesType, fetchJournals, fetchEntries, StoreState, CredentialsData } from './store';
+
+export interface SyncInfoJournal {
+  journal: EteSync.Journal;
+  journalEntries: List<EteSync.Entry>;
+  collection: EteSync.CollectionInfo;
+  entries: List<EteSync.SyncEntry>;
+}
+
+export type SyncInfo = Map<string, SyncInfoJournal>;
 
 interface PropsType {
   etesync: CredentialsData;
@@ -55,6 +68,43 @@ class SyncGate extends React.PureComponent {
       return (<LoadingIndicator />);
     }
 
+    const derived = this.props.etesync.encryptionKey;
+
+    const journalMap = journals.reduce(
+      (ret, journal) => {
+        const journalEntries = this.props.entries.get(journal.uid);
+        const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
+
+        let prevUid: string | null = null;
+
+        if (!journalEntries || !journalEntries.value) {
+          return ret;
+        }
+
+        // FIXME: Skip shared journals for now
+        if (journal.key) {
+          return ret;
+        }
+
+        const collectionInfo = journal.getInfo(cryptoManager);
+
+        const syncEntries = journalEntries.value.map((entry: EteSync.Entry) => {
+          let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
+          prevUid = entry.uid;
+
+          return syncEntry;
+        });
+
+        return ret.set(journal.uid, {
+          entries: syncEntries,
+          collection: collectionInfo,
+          journal,
+          journalEntries: journalEntries.value,
+        });
+      },
+      Map<string, SyncInfoJournal>()
+    );
+
     return (
       <Switch>
         <Route
@@ -69,8 +119,7 @@ class SyncGate extends React.PureComponent {
           render={({match, history}) => (
             <Pim
               etesync={this.props.etesync}
-              journals={journals}
-              entries={this.props.entries}
+              syncInfo={journalMap}
               match={match}
               history={history}
             />
@@ -79,8 +128,11 @@ class SyncGate extends React.PureComponent {
         <Route
           path={routeResolver.getRoute('journals._id')}
           render={({match}) => (
-            <Journal etesync={this.props.etesync} journals={journals} entries={this.props.entries} match={match} />
-            )}
+            <Journal
+              syncInfo={journalMap}
+              match={match}
+            />
+          )}
         />
       </Switch>
     );

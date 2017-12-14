@@ -17,7 +17,9 @@ import PimMain from './PimMain';
 
 import { routeResolver } from './App';
 
-import { store, JournalsData, EntriesType, CredentialsData } from './store';
+import { store, CredentialsData } from './store';
+
+import { SyncInfo } from './SyncGate';
 
 import { createJournalEntry } from './etesync-helpers';
 
@@ -30,8 +32,7 @@ function objValues(obj: any) {
 class Pim extends React.PureComponent {
   props: {
     etesync: CredentialsData;
-    journals: JournalsData;
-    entries: EntriesType;
+    syncInfo: SyncInfo;
     match: any;
     history: any;
   };
@@ -43,97 +44,68 @@ class Pim extends React.PureComponent {
   }
 
   onEventSave(event: EventType, journalUid: string, originalEvent?: EventType) {
-    const journal = this.props.journals.find((x) => (x.uid === journalUid));
+    const syncJournal = this.props.syncInfo.get(journalUid);
 
-    if (journal === undefined) {
+    if (syncJournal === undefined) {
       return;
     }
 
-    const entries = this.props.entries.get(journal.uid);
-
-    if (!entries) {
-      return;
-    }
-
-    if (entries.value === null) {
-      return;
-    }
+    const journal = syncJournal.journal;
 
     let action = (originalEvent === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
     let saveEvent = store.dispatch(
-      createJournalEntry(this.props.etesync, journal, entries.value, action, event.toIcal()));
+      createJournalEntry(this.props.etesync, journal, syncJournal.journalEntries, action, event.toIcal()));
     (saveEvent as any).then(() => {
       this.props.history.goBack();
     });
   }
 
   onContactSave(contact: ContactType, journalUid: string, originalContact?: ContactType) {
-    const journal = this.props.journals.find((x) => (x.uid === journalUid));
+    const syncJournal = this.props.syncInfo.get(journalUid);
 
-    if (journal === undefined) {
+    if (syncJournal === undefined) {
       return;
     }
 
-    const entries = this.props.entries[journal.uid];
-
-    if (entries.value === null) {
-      return;
-    }
+    const journal = syncJournal.journal;
 
     let action = (originalContact === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
     let saveContact = store.dispatch(
-      createJournalEntry(this.props.etesync, journal, entries.value, action, contact.toIcal()));
+      createJournalEntry(this.props.etesync, journal, syncJournal.journalEntries, action, contact.toIcal()));
     (saveContact as any).then(() => {
       this.props.history.goBack();
     });
   }
 
   render() {
-    const derived = this.props.etesync.encryptionKey;
-
     let collectionsAddressBook: Array<EteSync.CollectionInfo> = [];
     let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
-    const journalMap = this.props.journals.reduce(
-      (ret, journal) => {
-        const journalEntries = this.props.entries.get(journal.uid);
-        const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-
-        let prevUid: string | null = null;
-
-        if (!journalEntries || !journalEntries.value) {
-          return ret;
-        }
+    let entriesAddressBook: Array<{[key: string]: ContactType}> = [];
+    let entriesCalendar: Array<{[key: string]: EventType}> = [];
+    this.props.syncInfo.forEach(
+      (syncJournal) => {
+        const syncEntries = syncJournal.entries;
+        const journal = syncJournal.journal;
 
         // FIXME: Skip shared journals for now
         if (journal.key) {
-          return ret;
+          return;
         }
 
-        const collectionInfo = journal.getInfo(cryptoManager);
-
-        const syncEntries = journalEntries.value.map((entry: EteSync.Entry) => {
-          let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
-          prevUid = entry.uid;
-
-          return syncEntry;
-        });
+        const collectionInfo = syncJournal.collection;
 
         if (collectionInfo.type === 'ADDRESS_BOOK') {
-          ret.ADDRESS_BOOK.push(syncEntriesToItemMap(collectionInfo, syncEntries));
+          entriesAddressBook.push(syncEntriesToItemMap(collectionInfo, syncEntries));
           collectionsAddressBook.push(collectionInfo);
         } else if (collectionInfo.type === 'CALENDAR') {
-          ret.CALENDAR.push(syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
+          entriesCalendar.push(syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
           collectionsCalendar.push(collectionInfo);
         }
+      }
+    );
 
-        return ret;
-      },
-      { CALENDAR: [] as Array<{[key: string]: EventType}>,
-        ADDRESS_BOOK: [] as Array<{[key: string]: ContactType}>,
-        UNSUPPORTED: [] as Array<any>});
-
-    let addressBookItems = journalMap.ADDRESS_BOOK.reduce((base, x) => Object.assign(base, x), {});
-    let calendarItems = journalMap.CALENDAR.reduce((base, x) => Object.assign(base, x), {});
+    let addressBookItems = entriesAddressBook.reduce((base, x) => Object.assign(base, x), {});
+    let calendarItems = entriesCalendar.reduce((base, x) => Object.assign(base, x), {});
 
     return (
       <Switch>
