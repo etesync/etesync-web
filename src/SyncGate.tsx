@@ -120,7 +120,6 @@ class SyncGate extends React.PureComponent {
             <Pim
               etesync={this.props.etesync}
               syncInfo={journalMap}
-              match={match}
               history={history}
             />
           )}

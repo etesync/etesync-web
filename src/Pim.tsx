@@ -33,7 +33,6 @@ class Pim extends React.PureComponent {
   props: {
     etesync: CredentialsData;
     syncInfo: SyncInfo;
-    match: any;
     history: any;
   };
 
