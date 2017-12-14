@@ -33,7 +33,7 @@ class SyncGate extends React.PureComponent {
 
   componentWillReceiveProps(nextProps: PropsTypeInner) {
     if (nextProps.journals.value && (this.props.journals.value !== nextProps.journals.value)) {
-      for (const journal of nextProps.journals.value) {
+      nextProps.journals.value.forEach((journal) => {
         let prevUid: string | null = null;
         const entries = this.props.entries.get(journal.uid);
         if (entries && entries.value) {
@@ -42,7 +42,7 @@ class SyncGate extends React.PureComponent {
         }
 
         store.dispatch(fetchEntries(this.props.etesync, journal.uid, prevUid));
-      }
+      });
     }
   }
 

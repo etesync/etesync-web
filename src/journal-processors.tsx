@@ -9,7 +9,7 @@ import * as EteSync from './api/EteSync';
 export function syncEntriesToItemMap(collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>) {
   let items: {[key: string]: ContactType} = {};
 
-  for (const syncEntry of entries) {
+  entries.forEach((syncEntry) => {
     let comp = new ContactType(new ICAL.Component(ICAL.parse(syncEntry.content)));
 
     const uid = comp.uid;
@@ -23,7 +23,7 @@ export function syncEntriesToItemMap(collection: EteSync.CollectionInfo, entries
     } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
       delete items[uid];
     }
-  }
+  });
 
   return items;
 }
@@ -54,11 +54,11 @@ export function syncEntriesToCalendarItemMap(collection: EteSync.CollectionInfo,
 
   const color = colorIntToHtml(collection.color);
 
-  for (const syncEntry of entries) {
+  entries.forEach((syncEntry) => {
     let comp = EventType.fromVCalendar(new ICAL.Component(ICAL.parse(syncEntry.content)));
 
     if (comp === null) {
-      continue;
+      return;
     }
 
     comp.color = color;
@@ -74,7 +74,7 @@ export function syncEntriesToCalendarItemMap(collection: EteSync.CollectionInfo,
     } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
       delete items[uid];
     }
-  }
+  });
 
   return items;
 }
