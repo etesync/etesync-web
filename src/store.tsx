@@ -181,7 +181,7 @@ export const entries = handleAction(
 const journals = handleAction(
   fetchJournals,
   fetchTypeIdentityReducer,
-  JournalsFetchRecord(),
+  new JournalsFetchRecord(),
 );
 
 const fetchCount = handleAction(
@@ -236,10 +236,10 @@ const entriesSerialize = (state: FetchType<EntriesData>) => {
 
 const entriesDeserialize = (state: EteSync.EntryJson[]): FetchType<EntriesData> => {
   if (state === null) {
-    return EntriesFetchRecord({value: null});
+    return new EntriesFetchRecord({value: null});
   }
 
-  return EntriesFetchRecord({value: List(state.map((x: any) => {
+  return new EntriesFetchRecord({value: List(state.map((x: any) => {
     let ret = new EteSync.Entry();
     ret.deserialize(x);
     return ret;
@@ -268,7 +268,7 @@ const cacheDeserialize = (state: any, key: string) => {
     });
     return Map(ret);
   } else if (key === 'journals') {
-    return JournalsFetchRecord({value: journalsDeserialize(state)});
+    return new JournalsFetchRecord({value: journalsDeserialize(state)});
   }
 
   return state;
