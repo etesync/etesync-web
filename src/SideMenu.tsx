@@ -30,7 +30,7 @@ interface PropsTypeInner extends PropsType {
   history: any;
 }
 
-class SideMenu extends React.Component {
+class SideMenu extends React.PureComponent {
   props: PropsTypeInner;
 
   constructor(props: any) {

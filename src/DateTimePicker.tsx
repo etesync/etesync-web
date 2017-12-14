@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-class DateTimePicker extends React.Component {
+class DateTimePicker extends React.PureComponent {
   state: {
     date: string,
     time: string,

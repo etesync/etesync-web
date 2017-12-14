@@ -14,7 +14,7 @@ import * as EteSync from './api/EteSync';
 
 import { EventType } from './pim-types';
 
-class EventEdit extends React.Component {
+class EventEdit extends React.PureComponent {
   state: {
     uid: string,
     title: string;

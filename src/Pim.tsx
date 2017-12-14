@@ -27,7 +27,7 @@ function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
 }
 
-class Pim extends React.Component {
+class Pim extends React.PureComponent {
   props: {
     etesync: CredentialsData;
     journals: JournalsData;

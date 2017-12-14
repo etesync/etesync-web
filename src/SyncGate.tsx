@@ -20,7 +20,7 @@ interface PropsTypeInner extends PropsType {
   entries: EntriesType;
 }
 
-class SyncGate extends React.Component {
+class SyncGate extends React.PureComponent {
   props: PropsTypeInner;
 
   constructor(props: any) {

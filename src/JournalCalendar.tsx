@@ -16,7 +16,7 @@ function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
 }
 
-class JournalCalendar extends React.Component {
+class JournalCalendar extends React.PureComponent {
   props: {
     journal: EteSync.Journal,
     entries: {[key: string]: EventType},

@@ -9,7 +9,7 @@ import { EventType } from './pim-types';
 moment.locale('en-gb');
 BigCalendar.momentLocalizer(moment);
 
-class Calendar extends React.Component {
+class Calendar extends React.PureComponent {
   state: {
     currentDate?: Date;
   };

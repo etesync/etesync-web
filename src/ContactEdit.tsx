@@ -102,7 +102,7 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
   );
 };
 
-class ContactEdit extends React.Component {
+class ContactEdit extends React.PureComponent {
   state: {
     uid: string,
     fn: string;

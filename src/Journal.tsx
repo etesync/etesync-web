@@ -26,7 +26,7 @@ interface PropsType {
 interface PropsTypeInner extends PropsType {
 }
 
-class Journal extends React.Component {
+class Journal extends React.PureComponent {
   static defaultProps = {
     prevUid: null,
   };

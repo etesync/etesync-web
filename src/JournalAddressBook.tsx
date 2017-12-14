@@ -14,7 +14,7 @@ function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
 }
 
-class JournalAddressBook extends React.Component {
+class JournalAddressBook extends React.PureComponent {
   props: {
     journal: EteSync.Journal,
     entries: {[key: string]: ContactType},

@@ -10,7 +10,7 @@ import { store, StoreState, CredentialsType, fetchCredentials } from './store';
 
 import * as C from './Constants';
 
-class Root extends React.Component {
+class Root extends React.PureComponent {
   props: {
     credentials: CredentialsType;
   };

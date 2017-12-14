@@ -19,7 +19,7 @@ import { historyPersistor } from './persist-state-history';
 const addressBookTitle = 'Address Book';
 const calendarTitle = 'Calendar';
 
-class PimMain extends React.Component {
+class PimMain extends React.PureComponent {
   props: {
     contacts: Array<ContactType>,
     events: Array<EventType>,

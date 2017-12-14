@@ -15,7 +15,7 @@ interface FormErrors {
   errorServer?: string;
 }
 
-class LoginForm extends React.Component {
+class LoginForm extends React.PureComponent {
   state: {
     showAdvanced?: boolean;
     errors: FormErrors;

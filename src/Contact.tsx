@@ -14,7 +14,7 @@ import PimItemHeader from './PimItemHeader';
 
 import { ContactType } from './pim-types';
 
-class Contact extends React.Component {
+class Contact extends React.PureComponent {
   props: {
     contact?: ContactType,
   };

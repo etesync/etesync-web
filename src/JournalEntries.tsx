@@ -14,7 +14,7 @@ import { EventType, ContactType } from './pim-types';
 
 import * as EteSync from './api/EteSync';
 
-class JournalEntries extends React.Component {
+class JournalEntries extends React.PureComponent {
   static defaultProps = {
     prevUid: null,
   };

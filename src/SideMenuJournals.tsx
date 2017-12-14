@@ -6,7 +6,7 @@ import * as EteSync from './api/EteSync';
 
 import { JournalsData, CredentialsData } from './store';
 
-class SideMenuJournals extends React.Component {
+class SideMenuJournals extends React.PureComponent {
   props: {
     etesync: CredentialsData;
     journals: JournalsData;

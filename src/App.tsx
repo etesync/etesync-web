@@ -73,7 +73,7 @@ export const routeResolver = new RouteResolver({
   },
 });
 
-class App extends React.Component {
+class App extends React.PureComponent {
   state: {
     drawerOpen: boolean,
   };

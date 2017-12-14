@@ -6,7 +6,7 @@ import * as colors from 'material-ui/styles/colors';
 
 import { ContactType } from './pim-types';
 
-class AddressBook extends React.Component {
+class AddressBook extends React.PureComponent {
   props: {
     entries: Array<ContactType>,
     onItemClick: (contact: ContactType) => void,

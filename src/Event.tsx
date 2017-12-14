@@ -35,7 +35,7 @@ function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
   return strStart + ' - ' + strEnd;
 }
 
-class Event extends React.Component {
+class Event extends React.PureComponent {
   props: {
     event?: EventType,
   };
