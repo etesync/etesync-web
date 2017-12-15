@@ -90,6 +90,12 @@
   dependencies:
     redux "^3.6.0"
 
+"@types/reselect@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@types/reselect/-/reselect-2.2.0.tgz#c667206cfdc38190e1d379babe08865b2288575f"
+  dependencies:
+    reselect "*"
+
 "@types/sjcl@^1.0.28":
   version "1.0.28"
   resolved "https://registry.yarnpkg.com/@types/sjcl/-/sjcl-1.0.28.tgz#4693eb6943e385e844a70fb25b4699db286c7214"
@@ -5020,6 +5026,10 @@ require-main-filename@^1.0.1:
 requires-port@1.0.x, requires-port@1.x.x, requires-port@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+
+reselect@*, reselect@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
 
 resolve-dir@^1.0.0:
   version "1.0.1"

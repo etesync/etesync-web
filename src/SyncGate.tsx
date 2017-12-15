@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect, withRouter } from 'react-router';
 
 import { List, Map } from 'immutable';
+import { createSelector } from 'reselect';
 
 import { routeResolver } from './App';
 
@@ -32,6 +33,49 @@ interface PropsTypeInner extends PropsType {
   journals: JournalsType;
   entries: EntriesType;
 }
+
+const syncInfoSelector = createSelector(
+  (props: PropsTypeInner) => props.etesync,
+  (props: PropsTypeInner) => props.journals.value as List<EteSync.Journal>,
+  (props: PropsTypeInner) => props.entries,
+  (etesync, journals, entries) => {
+    return journals.reduce(
+      (ret, journal) => {
+        const derived = etesync.encryptionKey;
+        const journalEntries = entries.get(journal.uid);
+        const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
+
+        let prevUid: string | null = null;
+
+        if (!journalEntries || !journalEntries.value) {
+          return ret;
+        }
+
+        // FIXME: Skip shared journals for now
+        if (journal.key) {
+          return ret;
+        }
+
+        const collectionInfo = journal.getInfo(cryptoManager);
+
+        const syncEntries = journalEntries.value.map((entry: EteSync.Entry) => {
+          let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
+          prevUid = entry.uid;
+
+          return syncEntry;
+        });
+
+        return ret.set(journal.uid, {
+          entries: syncEntries,
+          collection: collectionInfo,
+          journal,
+          journalEntries: journalEntries.value,
+        });
+      },
+      Map<string, SyncInfoJournal>()
+    );
+  },
+);
 
 class SyncGate extends React.PureComponent {
   props: PropsTypeInner;
@@ -68,42 +112,10 @@ class SyncGate extends React.PureComponent {
       return (<LoadingIndicator />);
     }
 
-    const derived = this.props.etesync.encryptionKey;
+    const journalMap = syncInfoSelector(this.props);
 
-    const journalMap = journals.reduce(
-      (ret, journal) => {
-        const journalEntries = this.props.entries.get(journal.uid);
-        const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-
-        let prevUid: string | null = null;
-
-        if (!journalEntries || !journalEntries.value) {
-          return ret;
-        }
-
-        // FIXME: Skip shared journals for now
-        if (journal.key) {
-          return ret;
-        }
-
-        const collectionInfo = journal.getInfo(cryptoManager);
-
-        const syncEntries = journalEntries.value.map((entry: EteSync.Entry) => {
-          let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
-          prevUid = entry.uid;
-
-          return syncEntry;
-        });
-
-        return ret.set(journal.uid, {
-          entries: syncEntries,
-          collection: collectionInfo,
-          journal,
-          journalEntries: journalEntries.value,
-        });
-      },
-      Map<string, SyncInfoJournal>()
-    );
+    const PimRouter = withRouter(Pim);
+    const JournalRouter = withRouter(Journal);
 
     return (
       <Switch>
@@ -117,7 +129,7 @@ class SyncGate extends React.PureComponent {
         <Route
           path={routeResolver.getRoute('pim')}
           render={({match, history}) => (
-            <Pim
+            <PimRouter
               etesync={this.props.etesync}
               syncInfo={journalMap}
               history={history}
@@ -127,7 +139,7 @@ class SyncGate extends React.PureComponent {
         <Route
           path={routeResolver.getRoute('journals._id')}
           render={({match}) => (
-            <Journal
+            <JournalRouter
               syncInfo={journalMap}
               match={match}
             />
@@ -145,7 +157,7 @@ const mapStateToProps = (state: StoreState, props: PropsType) => {
   };
 };
 
-// FIXME: withRouter is only needed here because of https://github.com/ReactTraining/react-router/issues/5795
+// FIXME: this and withRouters are only needed here because of https://github.com/ReactTraining/react-router/issues/5795
 export default withRouter(connect(
   mapStateToProps
 )(SyncGate));
