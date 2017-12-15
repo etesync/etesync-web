@@ -51,10 +51,10 @@ const itemsSelector = createSelector(
         const collectionInfo = syncJournal.collection;
 
         if (collectionInfo.type === 'ADDRESS_BOOK') {
-          addressBookItems = Object.assign(addressBookItems, syncEntriesToItemMap(collectionInfo, syncEntries));
+          addressBookItems = syncEntriesToItemMap(collectionInfo, syncEntries, addressBookItems);
           collectionsAddressBook.push(collectionInfo);
         } else if (collectionInfo.type === 'CALENDAR') {
-          calendarItems = Object.assign(calendarItems, syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
+          calendarItems = syncEntriesToCalendarItemMap(collectionInfo, syncEntries, calendarItems);
           collectionsCalendar.push(collectionInfo);
         }
       }

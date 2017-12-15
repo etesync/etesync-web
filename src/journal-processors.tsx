@@ -6,8 +6,9 @@ import { EventType, ContactType } from './pim-types';
 
 import * as EteSync from './api/EteSync';
 
-export function syncEntriesToItemMap(collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>) {
-  let items: {[key: string]: ContactType} = {};
+export function syncEntriesToItemMap(
+  collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: ContactType} = {}) {
+  let items = base;
 
   entries.forEach((syncEntry) => {
     let comp = new ContactType(new ICAL.Component(ICAL.parse(syncEntry.content)));
@@ -49,8 +50,9 @@ function colorIntToHtml(color: number) {
     ((alpha > 0) ? toHex(alpha) : '');
 }
 
-export function syncEntriesToCalendarItemMap(collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>) {
-  let items: {[key: string]: EventType} = {};
+export function syncEntriesToCalendarItemMap(
+  collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: EventType} = {}) {
+  let items = base;
 
   const color = colorIntToHtml(collection.color);
 
