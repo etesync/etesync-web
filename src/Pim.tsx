@@ -5,6 +5,8 @@ import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 import * as EteSync from './api/EteSync';
 
+import { createSelector } from 'reselect';
+
 import { ContactType, EventType } from './pim-types';
 
 import Container from './Container';
@@ -29,6 +31,38 @@ function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
 }
 
+const itemsSelector = createSelector(
+  (props: {syncInfo: SyncInfo}) => props.syncInfo,
+  (syncInfo) => {
+    let collectionsAddressBook: Array<EteSync.CollectionInfo> = [];
+    let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
+    let addressBookItems: {[key: string]: ContactType} = {};
+    let calendarItems: {[key: string]: EventType} = {};
+    syncInfo.forEach(
+      (syncJournal) => {
+        const syncEntries = syncJournal.entries;
+        const journal = syncJournal.journal;
+
+        // FIXME: Skip shared journals for now
+        if (journal.key) {
+          return;
+        }
+
+        const collectionInfo = syncJournal.collection;
+
+        if (collectionInfo.type === 'ADDRESS_BOOK') {
+          addressBookItems = Object.assign(addressBookItems, syncEntriesToItemMap(collectionInfo, syncEntries));
+          collectionsAddressBook.push(collectionInfo);
+        } else if (collectionInfo.type === 'CALENDAR') {
+          calendarItems = Object.assign(calendarItems, syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
+          collectionsCalendar.push(collectionInfo);
+        }
+      }
+    );
+
+    return { collectionsAddressBook, collectionsCalendar, addressBookItems, calendarItems };
+  },
+);
 class Pim extends React.PureComponent {
   props: {
     etesync: CredentialsData;
@@ -77,34 +111,7 @@ class Pim extends React.PureComponent {
   }
 
   render() {
-    let collectionsAddressBook: Array<EteSync.CollectionInfo> = [];
-    let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
-    let entriesAddressBook: Array<{[key: string]: ContactType}> = [];
-    let entriesCalendar: Array<{[key: string]: EventType}> = [];
-    this.props.syncInfo.forEach(
-      (syncJournal) => {
-        const syncEntries = syncJournal.entries;
-        const journal = syncJournal.journal;
-
-        // FIXME: Skip shared journals for now
-        if (journal.key) {
-          return;
-        }
-
-        const collectionInfo = syncJournal.collection;
-
-        if (collectionInfo.type === 'ADDRESS_BOOK') {
-          entriesAddressBook.push(syncEntriesToItemMap(collectionInfo, syncEntries));
-          collectionsAddressBook.push(collectionInfo);
-        } else if (collectionInfo.type === 'CALENDAR') {
-          entriesCalendar.push(syncEntriesToCalendarItemMap(collectionInfo, syncEntries));
-          collectionsCalendar.push(collectionInfo);
-        }
-      }
-    );
-
-    let addressBookItems = entriesAddressBook.reduce((base, x) => Object.assign(base, x), {});
-    let calendarItems = entriesCalendar.reduce((base, x) => Object.assign(base, x), {});
+    const { collectionsAddressBook, collectionsCalendar, addressBookItems, calendarItems } = itemsSelector(this.props);
 
     return (
       <Switch>
