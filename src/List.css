@@ -1,0 +1,14 @@
+.List {
+  list-style: none;
+  padding: 0;
+}
+
+.ListItem {
+  padding: 10px;
+}
+
+.ListItem:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+

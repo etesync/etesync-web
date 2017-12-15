@@ -1,8 +1,8 @@
 import * as React from 'react';
-import Avatar from 'material-ui/Avatar';
-import { List, ListItem } from 'material-ui/List';
 
 import * as colors from 'material-ui/styles/colors';
+
+import { List, ListItem } from './List';
 
 import { ContactType } from './pim-types';
 
@@ -61,22 +61,34 @@ class AddressBook extends React.PureComponent {
 
       let itemProps: any = {
         leftAvatar: (
-          <Avatar
-            backgroundColor={getContactColor(entry)}
-            style={{left: 8}}
+          <div
+            style={{
+              backgroundColor: getContactColor(entry),
+              color: 'white',
+              display: 'inline-flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '50%',
+              height: 40,
+              width: 40,
+              marginRight: 15,
+            }}
           >
           {name[0].toUpperCase()}
-          </Avatar>
+          </div>
         ),
       };
 
       return (
         <ListItem
           key={uid}
-          primaryText={name}
-          onClick={() => (this.props.onItemClick(entry))}
-          {...itemProps}
-        />
+          onClick={(e: any) => {
+            e.preventDefault();
+            this.props.onItemClick(entry);
+          }}
+        >
+          {itemProps.leftAvatar} {name}
+        </ListItem>
       );
     });
 
