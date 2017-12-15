@@ -74,6 +74,12 @@
   version "16.0.25"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.25.tgz#bf696b83fe480c5e0eff4335ee39ebc95884a1ed"
 
+"@types/recompose@^0.24.4":
+  version "0.24.4"
+  resolved "https://registry.yarnpkg.com/@types/recompose/-/recompose-0.24.4.tgz#39de3048382d39f0808a1780d3aa2fdb839986cd"
+  dependencies:
+    "@types/react" "*"
+
 "@types/redux-actions@^2.2.3":
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/@types/redux-actions/-/redux-actions-2.2.3.tgz#a11777808ec37ef7246f70bed770cab3510cf926"

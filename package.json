@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/recompose": "^0.24.4",
     "ical.js": "^1.2.2",
     "immutable": "^4.0.0-rc.9",
     "isomorphic-fetch": "^2.1.1",
@@ -16,6 +17,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.8.0",
+    "recompose": "^0.26.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-logger": "^3.0.6",
