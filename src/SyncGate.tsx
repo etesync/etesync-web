@@ -145,6 +145,7 @@ const mapStateToProps = (state: StoreState, props: PropsType) => {
   };
 };
 
+// FIXME: withRouter is only needed here because of https://github.com/ReactTraining/react-router/issues/5795
 export default withRouter(connect(
   mapStateToProps
 )(SyncGate));
