@@ -78,6 +78,9 @@ const syncInfoSelector = createSelector(
   },
 );
 
+const PimRouter = withRouter(Pim);
+const JournalRouter = withRouter(Journal);
+
 class SyncGate extends React.PureComponent {
   props: PropsTypeInner;
 
@@ -134,9 +137,6 @@ class SyncGate extends React.PureComponent {
     }
 
     const journalMap = syncInfoSelector(this.props);
-
-    const PimRouter = withRouter(Pim);
-    const JournalRouter = withRouter(Journal);
 
     return (
       <Switch>
