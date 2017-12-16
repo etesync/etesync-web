@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import * as colors from 'material-ui/styles/colors';
 
-import { Avatar } from './widgets/Avatar';
-import { List, ListItem } from './widgets/List';
+import { Avatar } from '../widgets/Avatar';
+import { List, ListItem } from '../widgets/List';
 
-import { ContactType } from './pim-types';
+import { ContactType } from '../pim-types';
 
 class AddressBook extends React.PureComponent {
   props: {

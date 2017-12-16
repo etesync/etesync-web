@@ -5,8 +5,8 @@ import * as EteSync from './api/EteSync';
 
 import { routeResolver } from './App';
 
-import AddressBook from './AddressBook';
-import Contact from './Contact';
+import AddressBook from './components/AddressBook';
+import Contact from './components/Contact';
 
 import { ContactType } from './pim-types';
 

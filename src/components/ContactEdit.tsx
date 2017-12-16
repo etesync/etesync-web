@@ -11,9 +11,9 @@ import IconClear from 'material-ui/svg-icons/content/clear';
 import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
-import { ContactType } from './pim-types';
+import { ContactType } from '../pim-types';
 
 const telTypes = [
   {type: 'Home'},

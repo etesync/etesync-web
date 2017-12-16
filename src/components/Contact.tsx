@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 
-import { List, ListItem, ListDivider as Divider } from './widgets/List';
+import { List, ListItem, ListDivider as Divider } from '../widgets/List';
 import IconHome from 'material-ui/svg-icons/action/home';
 import IconDate from 'material-ui/svg-icons/action/date-range';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
@@ -11,7 +11,7 @@ import { indigo500 } from 'material-ui/styles/colors';
 
 import PimItemHeader from './PimItemHeader';
 
-import { ContactType } from './pim-types';
+import { ContactType } from '../pim-types';
 
 class Contact extends React.PureComponent {
   props: {

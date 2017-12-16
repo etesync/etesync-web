@@ -5,7 +5,7 @@ import PimItemHeader from './PimItemHeader';
 
 import * as ICAL from 'ical.js';
 
-import { EventType } from './pim-types';
+import { EventType } from '../pim-types';
 
 function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
   const mStart = moment(start.toJSDate());

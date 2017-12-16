@@ -3,9 +3,9 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 
 import Container from './widgets/Container';
 
-import SecondaryHeader from './SecondaryHeader';
+import SecondaryHeader from './components/SecondaryHeader';
 
-import JournalEntries from './JournalEntries';
+import JournalEntries from './components/JournalEntries';
 import JournalAddressBook from './JournalAddressBook';
 import JournalCalendar from './JournalCalendar';
 

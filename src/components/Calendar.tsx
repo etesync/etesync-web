@@ -4,7 +4,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
 
-import { EventType } from './pim-types';
+import { EventType } from '../pim-types';
 
 moment.locale('en-gb');
 BigCalendar.momentLocalizer(moment);

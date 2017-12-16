@@ -7,8 +7,8 @@ import * as ICAL from 'ical.js';
 
 import Container from './widgets/Container';
 
-import AddressBook from './AddressBook';
-import Calendar from './Calendar';
+import AddressBook from './components/AddressBook';
+import Calendar from './components/Calendar';
 
 import { EventType, ContactType } from './pim-types';
 

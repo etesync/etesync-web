@@ -5,8 +5,8 @@ import { routeResolver } from './App';
 
 import { historyPersistor } from './persist-state-history';
 
-import Calendar from './Calendar';
-import Event from './Event';
+import Calendar from './components/Calendar';
+import Event from './components/Event';
 
 import { EventType } from './pim-types';
 

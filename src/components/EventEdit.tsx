@@ -5,14 +5,14 @@ import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
-import DateTimePicker from './widgets/DateTimePicker';
+import DateTimePicker from '../widgets/DateTimePicker';
 
 import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
-import { EventType } from './pim-types';
+import { EventType } from '../pim-types';
 
 class EventEdit extends React.PureComponent {
   state: {

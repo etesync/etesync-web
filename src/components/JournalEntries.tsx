@@ -1,7 +1,7 @@
 import * as Immutable from 'immutable';
 
 import * as React from 'react';
-import { List, ListItem } from './widgets/List';
+import { List, ListItem } from '../widgets/List';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import IconAdd from 'material-ui/svg-icons/content/add';
@@ -10,9 +10,9 @@ import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 import * as ICAL from 'ical.js';
 
-import { EventType, ContactType } from './pim-types';
+import { EventType, ContactType } from '../pim-types';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
 class JournalEntries extends React.PureComponent {
   static defaultProps = {

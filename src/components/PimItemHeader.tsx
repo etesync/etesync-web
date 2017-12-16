@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { getPalette } from './App';
+import { getPalette } from '../App';
 
 export default (props: {text: string, backgroundColor?: string, children?: any}) => {
     const style = {

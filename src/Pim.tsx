@@ -11,10 +11,10 @@ import { ContactType, EventType } from './pim-types';
 
 import Container from './widgets/Container';
 
-import ContactEdit from './ContactEdit';
-import Contact from './Contact';
-import EventEdit from './EventEdit';
-import Event from './Event';
+import ContactEdit from './components/ContactEdit';
+import Contact from './components/Contact';
+import EventEdit from './components/EventEdit';
+import Event from './components/Event';
 import PimMain from './PimMain';
 
 import { routeResolver } from './App';
