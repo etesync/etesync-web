@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
-import Container from './widgets/Container';
+import Container from '../widgets/Container';
 
-import SecondaryHeader from './components/SecondaryHeader';
+import SecondaryHeader from '../components/SecondaryHeader';
 
-import JournalEntries from './components/JournalEntries';
+import JournalEntries from '../components/JournalEntries';
 import JournalAddressBook from './JournalAddressBook';
 import JournalCalendar from './JournalCalendar';
 
-import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
+import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from '../journal-processors';
 
-import { SyncInfo } from './SyncGate';
+import { SyncInfo } from '../SyncGate';
 
 interface PropsType {
   syncInfo: SyncInfo;

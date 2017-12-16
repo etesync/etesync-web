@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Route, Switch, withRouter } from 'react-router';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
-import { routeResolver } from './App';
+import { routeResolver } from '../App';
 
-import AddressBook from './components/AddressBook';
-import Contact from './components/Contact';
+import AddressBook from '../components/AddressBook';
+import Contact from '../components/Contact';
 
-import { ContactType } from './pim-types';
+import { ContactType } from '../pim-types';
 
 function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);

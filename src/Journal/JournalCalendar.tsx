@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { Route, Switch, withRouter } from 'react-router';
 
-import { routeResolver } from './App';
+import { routeResolver } from '../App';
 
-import { historyPersistor } from './persist-state-history';
+import { historyPersistor } from '../persist-state-history';
 
-import Calendar from './components/Calendar';
-import Event from './components/Event';
+import Calendar from '../components/Calendar';
+import Event from '../components/Event';
 
-import { EventType } from './pim-types';
+import { EventType } from '../pim-types';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
 function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
