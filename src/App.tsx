@@ -13,7 +13,7 @@ import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import './App.css';
 
 import SideMenu from './SideMenu';
-import Root from './Root';
+import LoginGate from './LoginGate';
 import { RouteResolver } from './routes';
 
 import * as C from './constants';
@@ -118,7 +118,7 @@ class App extends React.PureComponent {
             <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
           </Drawer>
 
-          <Root />
+          <LoginGate />
         </div>
         </BrowserRouter>
       </MuiThemeProvider>
