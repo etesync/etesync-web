@@ -1,11 +1,61 @@
 import * as React from 'react';
 
+import { pure } from 'recompose';
+
 import * as colors from 'material-ui/styles/colors';
 
 import { Avatar } from '../widgets/Avatar';
 import { List, ListItem } from '../widgets/List';
 
 import { ContactType } from '../pim-types';
+
+function getContactColor(contact: ContactType) {
+  const colorOptions = [
+    colors.red500,
+    colors.pink500,
+    colors.purple500,
+    colors.deepPurple500,
+    colors.indigo500,
+    colors.blue500,
+    colors.lightBlue500,
+    colors.cyan500,
+    colors.teal500,
+    colors.green500,
+    colors.lightGreen500,
+    colors.lime500,
+    colors.yellow500,
+    colors.amber500,
+    colors.orange500,
+    colors.deepOrange500,
+  ];
+
+  let sum = 0;
+  const uid = contact.uid;
+  for (let i = 0 ; i < uid.length ; i++) {
+    sum += uid.charCodeAt(i);
+  }
+
+  return colorOptions[sum % colorOptions.length];
+}
+
+const AddressBookItem = pure((_props: any) => {
+  const {
+    entry,
+    onClick,
+  } = _props;
+  const name = entry.fn;
+
+  return (
+    <ListItem
+      leftIcon={
+        <Avatar style={{backgroundColor: getContactColor(entry)}}>
+          {name[0].toUpperCase()}
+        </Avatar>}
+      primaryText={name}
+      onClick={() => onClick(entry)}
+    />
+  );
+});
 
 class AddressBook extends React.PureComponent {
   props: {
@@ -27,48 +77,14 @@ class AddressBook extends React.PureComponent {
       }
     });
 
-    function getContactColor(contact: ContactType) {
-      const colorOptions = [
-        colors.red500,
-        colors.pink500,
-        colors.purple500,
-        colors.deepPurple500,
-        colors.indigo500,
-        colors.blue500,
-        colors.lightBlue500,
-        colors.cyan500,
-        colors.teal500,
-        colors.green500,
-        colors.lightGreen500,
-        colors.lime500,
-        colors.yellow500,
-        colors.amber500,
-        colors.orange500,
-        colors.deepOrange500,
-      ];
-
-      let sum = 0;
-      const uid = contact.uid;
-      for (let i = 0 ; i < uid.length ; i++) {
-        sum += uid.charCodeAt(i);
-      }
-
-      return colorOptions[sum % colorOptions.length];
-    }
-
     let itemList = entries.map((entry, idx, array) => {
       const uid = entry.uid;
-      const name = entry.fn;
 
       return (
-        <ListItem
+        <AddressBookItem
           key={uid}
-          leftIcon={
-            <Avatar style={{backgroundColor: getContactColor(entry)}}>
-              {name[0].toUpperCase()}
-            </Avatar>}
-          primaryText={name}
-          onClick={(e: any) => this.props.onItemClick(entry)}
+          entry={entry}
+          onClick={this.props.onItemClick}
         />
       );
     });
