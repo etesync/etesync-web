@@ -67,10 +67,17 @@ function credentialsIdentityReducer(state: CredentialsType = {value: null}, acti
 function fetchTypeIdentityReducer(
   state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend: boolean = false) {
   if (action.error) {
-    return state.set('value', null).set('error', action.payload);
+    return state.set('error', action.payload);
   } else {
     const fetching = (action.payload === undefined) ? true : undefined;
     const payload = (action.payload === undefined) ? null : action.payload;
+
+    state = state.set('error', undefined);
+
+    if (fetching) {
+      return state.set('fetching', fetching);
+    }
+
     let value = state.get('value', null);
     if (extend && (value !== null)) {
       if (payload !== null) {
@@ -81,7 +88,10 @@ function fetchTypeIdentityReducer(
     } else {
       value = null;
     }
-    return state.set('value', value).set('fetching', fetching);
+    return state.merge({
+      value,
+      fetching,
+    });
   }
 }
 
