@@ -1,16 +1,15 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { persistReducer, persistStore, createTransform } from 'redux-persist';
-import { createActions, handleAction, handleActions, combineActions } from 'redux-actions';
+import { combineReducers } from 'redux';
+import { persistReducer, createTransform } from 'redux-persist';
+import { handleAction, handleActions, combineActions } from 'redux-actions';
+
 import * as localforage from 'localforage';
 import session from 'redux-persist/lib/storage/session';
-import thunkMiddleware from 'redux-thunk';
-import { createLogger } from 'redux-logger';
 
 import { List, Map, Record } from 'immutable';
 
-import promiseMiddleware from './promise-middleware';
+import * as EteSync from '../api/EteSync';
 
-import * as EteSync from './api/EteSync';
+import * as actions from './actions';
 
 interface FetchTypeInterface<T> {
   value: T | null;
@@ -24,7 +23,7 @@ export interface CredentialsData {
   encryptionKey: string;
 }
 
-type FetchType<T> = FetchTypeInterface<T>;
+export type FetchType<T> = FetchTypeInterface<T>;
 
 function fetchTypeRecord<T>() {
   return Record<FetchTypeInterface<T>>({
@@ -47,15 +46,6 @@ const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
 
 export type EntriesTypeImmutable = Map<string, Record<FetchType<EntriesData>>>;
 export type EntriesType = Map<string, FetchType<EntriesData>>;
-
-export interface StoreState {
-  fetchCount: number;
-  credentials: CredentialsType;
-  cache: {
-    journals: JournalsType;
-    entries: EntriesType;
-  };
-}
 
 function credentialsIdentityReducer(state: CredentialsType = {value: null}, action: any, extend: boolean = false) {
   if (action.error) {
@@ -95,74 +85,10 @@ function fetchTypeIdentityReducer(
   }
 }
 
-export const { fetchCredentials, logout } = createActions({
-  FETCH_CREDENTIALS: (username: string, password: string, encryptionPassword: string, server: string) => {
-    const authenticator = new EteSync.Authenticator(server);
-
-    return new Promise((resolve, reject) => {
-      authenticator.getAuthToken(username, password).then(
-        (authToken) => {
-          const creds = new EteSync.Credentials(username, authToken);
-          const derived = EteSync.deriveKey(username, encryptionPassword);
-
-          const context = {
-            serviceApiUrl: server,
-            credentials: creds,
-            encryptionKey: derived,
-          };
-
-          resolve(context);
-        },
-        (error) => {
-          reject(error);
-        }
-      );
-    });
-  },
-  LOGOUT: () => undefined,
-});
-
-export const { fetchJournals } = createActions({
-  FETCH_JOURNALS: (etesync: CredentialsData) => {
-    const creds = etesync.credentials;
-    const apiBase = etesync.serviceApiUrl;
-    let journalManager = new EteSync.JournalManager(creds, apiBase);
-
-    return journalManager.list();
-  },
-});
-
-export const { fetchEntries, createEntries } = createActions({
-  FETCH_ENTRIES: [
-    (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
-      const creds = etesync.credentials;
-      const apiBase = etesync.serviceApiUrl;
-      let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
-
-      return entryManager.list(prevUid);
-    },
-    (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
-      return { journal: journalUid, prevUid };
-    }
-  ],
-  CREATE_ENTRIES: [
-    (etesync: CredentialsData, journalUid: string, newEntries: Array<EteSync.Entry>, prevUid: string | null) => {
-      const creds = etesync.credentials;
-      const apiBase = etesync.serviceApiUrl;
-      let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
-
-      return entryManager.create(newEntries, prevUid).then(response => newEntries);
-    },
-    (etesync: CredentialsData, journalUid: string, newEntries: Array<EteSync.Entry>, prevUid: string | null) => {
-      return { journal: journalUid, entries: newEntries, prevUid };
-    }
-  ]
-});
-
 const credentials = handleActions(
   {
-    [fetchCredentials.toString()]: credentialsIdentityReducer,
-    [logout.toString()]: (state: CredentialsType, action: any) => {
+    [actions.fetchCredentials.toString()]: credentialsIdentityReducer,
+    [actions.logout.toString()]: (state: CredentialsType, action: any) => {
       return {out: true, value: null};
     },
   },
@@ -170,7 +96,7 @@ const credentials = handleActions(
 );
 
 export const entries = handleAction(
-  combineActions(fetchEntries, createEntries),
+  combineActions(actions.fetchEntries, actions.createEntries),
   (state: EntriesTypeImmutable, action: any) => {
     const prevState = state.get(action.meta.journal);
     const extend = action.meta.prevUid != null;
@@ -181,16 +107,16 @@ export const entries = handleAction(
 );
 
 const journals = handleAction(
-  fetchJournals,
+  actions.fetchJournals,
   fetchTypeIdentityReducer,
   new JournalsFetchRecord(),
 );
 
 const fetchCount = handleAction(
   combineActions(
-    fetchCredentials,
-    fetchJournals,
-    fetchEntries
+    actions.fetchCredentials,
+    actions.fetchJournals,
+    actions.fetchEntries
   ),
   (state: number, action: any) => {
     if (action.payload === undefined) {
@@ -291,18 +217,4 @@ const reducers = combineReducers({
   })),
 });
 
-let middleware = [
-  thunkMiddleware,
-  promiseMiddleware,
-];
-
-if (process.env.NODE_ENV === 'development') {
-  middleware.push(createLogger());
-}
-
-export const store = createStore(
-  reducers,
-  applyMiddleware(...middleware)
-);
-
-export const persistor = persistStore(store);
+export default reducers;

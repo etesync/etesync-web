@@ -1,8 +1,9 @@
-import { entries, createEntries, fetchEntries, EntriesTypeImmutable } from './store';
+import { createEntries, fetchEntries } from './actions';
+import { entries, EntriesTypeImmutable } from './reducers';
 
 import { Map } from 'immutable';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
 it('Entries reducer', () => {
   const jId = '24324324324';

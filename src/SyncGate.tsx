@@ -14,7 +14,8 @@ import Pim from './Pim';
 
 import * as EteSync from './api/EteSync';
 
-import { store, JournalsType, EntriesType, fetchJournals, fetchEntries, StoreState, CredentialsData } from './store';
+import { store, JournalsType, EntriesType, StoreState, CredentialsData } from './store';
+import { fetchJournals, fetchEntries } from './store/actions';
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;

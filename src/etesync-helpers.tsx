@@ -2,7 +2,8 @@ import { List } from 'immutable';
 
 import * as EteSync from './api/EteSync';
 
-import { CredentialsData, createEntries } from './store';
+import { CredentialsData } from './store';
+import { createEntries } from './store/actions';
 
 export function createJournalEntry(
   etesync: CredentialsData,

@@ -6,7 +6,8 @@ import Container from './Container';
 import SyncGate from './SyncGate';
 import LoginForm from './LoginForm';
 
-import { store, StoreState, CredentialsType, fetchCredentials } from './store';
+import { store, StoreState, CredentialsType } from './store';
+import { fetchCredentials } from './store/actions';
 
 import * as C from './Constants';
 

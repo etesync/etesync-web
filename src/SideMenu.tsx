@@ -14,7 +14,8 @@ import SideMenuJournals from './SideMenuJournals';
 
 import { routeResolver, getPalette } from './App';
 
-import { store, logout, JournalsType, StoreState, CredentialsData } from './store';
+import { store, JournalsType, StoreState, CredentialsData } from './store';
+import { logout } from './store/actions';
 
 import * as C from './Constants';
 
