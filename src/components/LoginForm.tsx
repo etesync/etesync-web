@@ -3,9 +3,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 
-import { getPalette } from './App';
+import { getPalette } from '../App';
 
-import * as C from './constants';
+import * as C from '../constants';
 
 interface FormErrors {
   errorEmail?: string;

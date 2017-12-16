@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 
 import Container from './widgets/Container';
 import SyncGate from './SyncGate';
-import LoginForm from './LoginForm';
+import LoginForm from './components/LoginForm';
 
 import { store, StoreState, CredentialsType } from './store';
 import { fetchCredentials } from './store/actions';
