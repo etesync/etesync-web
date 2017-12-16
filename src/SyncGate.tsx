@@ -107,8 +107,28 @@ class SyncGate extends React.PureComponent {
     const entryArrays = this.props.entries;
     const journals = this.props.journals.value;
 
+    if (this.props.journals.error) {
+      return this.props.journals.error.toString();
+    } else {
+      let errors: Array<{journal: string, error: Error}> = [];
+      this.props.entries.forEach((entry, journal) => {
+        if (entry.error) {
+          errors.push({journal, error: entry.error});
+        }
+      });
+
+      if (errors.length > 0) {
+        return (
+          <ul>
+            {errors.map((error) => (<li>{error.journal}: {error.error.toString()}</li>))}
+          </ul>
+        );
+      }
+    }
+
     if ((journals === null) ||
-      (entryArrays.size === 0) || !entryArrays.every((x: any) => (x.value !== null))) {
+      (entryArrays.size === 0) ||
+      !entryArrays.every((x: any) => (x.value !== null))) {
       return (<LoadingIndicator />);
     }
 
