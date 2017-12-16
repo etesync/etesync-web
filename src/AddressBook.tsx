@@ -63,16 +63,13 @@ class AddressBook extends React.PureComponent {
       return (
         <ListItem
           key={uid}
-          onClick={(e: any) => {
-            e.preventDefault();
-            this.props.onItemClick(entry);
-          }}
-        >
-        <Avatar style={{backgroundColor: getContactColor(entry)}}>
-          {name[0].toUpperCase()}
-        </Avatar>
-        {name}
-        </ListItem>
+          leftIcon={
+            <Avatar style={{backgroundColor: getContactColor(entry)}}>
+              {name[0].toUpperCase()}
+            </Avatar>}
+          primaryText={name}
+          onClick={(e: any) => this.props.onItemClick(entry)}
+        />
       );
     });
 

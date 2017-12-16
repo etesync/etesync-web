@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { List, ListItem } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
+import { List, ListItem, ListSubheader, ListDivider } from './List';
 import ActionCode from 'material-ui/svg-icons/action/code';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import ActionBugReport from 'material-ui/svg-icons/action/bug-report';
@@ -52,8 +50,8 @@ class SideMenu extends React.PureComponent {
     if (this.props.etesync) {
       const journals = (this.props.journals && this.props.journals.value) && (
         <React.Fragment>
-          <Divider />
-          <Subheader>Journals</Subheader>
+          <ListDivider />
+          <ListSubheader>Journals</ListSubheader>
           <SideMenuJournals
             etesync={this.props.etesync}
             journals={this.props.journals.value}
@@ -91,8 +89,8 @@ class SideMenu extends React.PureComponent {
             }}
           />
           {loggedInItems}
-          <Divider />
-          <Subheader>External Links</Subheader>
+          <ListDivider />
+          <ListSubheader>External Links</ListSubheader>
           <ListItem primaryText="Website" leftIcon={<ActionHome />} href={C.homePage} />
           <ListItem primaryText="FAQ" leftIcon={<ActionQuestionAnswer />} href={C.faq} />
           <ListItem primaryText="Source Code" leftIcon={<ActionCode />} href={C.sourceCode} />

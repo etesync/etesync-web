@@ -15,7 +15,6 @@ export const Avatar = pure((props: { children: React.ReactNode[] | React.ReactNo
         borderRadius: '50%',
         height: size,
         width: size,
-        marginRight: 15,
         ...props.style,
       }}
     >

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 
-import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
+import { List, ListItem, ListDivider as Divider } from './List';
 import IconHome from 'material-ui/svg-icons/action/home';
 import IconDate from 'material-ui/svg-icons/action/date-range';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
@@ -150,6 +149,7 @@ class Contact extends React.PureComponent {
             <span style={{fontSize: '90%'}}>{lastModified}</span>
           )}
         </PimItemHeader>
+        <div style={{padding: 8}} />
         {lists.map((list, idx) => (
           <React.Fragment key={idx}>
             {listIfNotEmpty(list)}
