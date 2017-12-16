@@ -17,7 +17,7 @@ import { routeResolver, getPalette } from './App';
 import { store, JournalsType, StoreState, CredentialsData } from './store';
 import { logout } from './store/actions';
 
-import * as C from './Constants';
+import * as C from './constants';
 
 interface PropsType {
   etesync: CredentialsData | null;

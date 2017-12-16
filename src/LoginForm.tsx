@@ -6,7 +6,7 @@ import Toggle from 'material-ui/Toggle';
 
 import { getPalette } from './App';
 
-import * as C from './Constants';
+import * as C from './constants';
 
 interface FormErrors {
   errorEmail?: string;

@@ -16,7 +16,7 @@ import SideMenu from './SideMenu';
 import Root from './Root';
 import { RouteResolver } from './routes';
 
-import * as C from './Constants';
+import * as C from './constants';
 import * as store from './store';
 
 const muiTheme = getMuiTheme({

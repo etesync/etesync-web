@@ -9,7 +9,7 @@ import LoginForm from './LoginForm';
 import { store, StoreState, CredentialsType } from './store';
 import { fetchCredentials } from './store/actions';
 
-import * as C from './Constants';
+import * as C from './constants';
 
 class Root extends React.PureComponent {
   props: {
