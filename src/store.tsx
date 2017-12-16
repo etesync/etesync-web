@@ -29,6 +29,8 @@ type FetchType<T> = FetchTypeInterface<T>;
 function fetchTypeRecord<T>() {
   return Record<FetchTypeInterface<T>>({
     value: null as T | null,
+    error: undefined,
+    fetching: undefined,
   });
 }
 
