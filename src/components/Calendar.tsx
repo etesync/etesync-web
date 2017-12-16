@@ -35,6 +35,12 @@ class Calendar extends React.PureComponent {
   constructor(props: any) {
     super(props);
     this.state = {};
+
+    this.onNavigate = this.onNavigate.bind(this);
+  }
+
+  onNavigate(currentDate: Date) {
+    this.setState({currentDate});
   }
 
   render() {
@@ -42,13 +48,11 @@ class Calendar extends React.PureComponent {
       <div style={{width: '100%', height: 500, padding: 10}}>
         <BigCalendar
           events={this.props.entries}
-          onSelectEvent={(event: any) => {
-            this.props.onItemClick(event);
-          }}
+          onSelectEvent={this.props.onItemClick as any}
           formats={{agendaHeaderFormat: agendaHeaderFormat}}
           eventPropGetter={eventPropGetter}
           date={this.state.currentDate}
-          onNavigate={(currentDate: Date) => { this.setState({currentDate}); }}
+          onNavigate={this.onNavigate}
         />
       </div>
     );
