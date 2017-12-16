@@ -54,15 +54,22 @@ export const ListSubheader = pure((props: any) => (
   </li>
 ));
 
-export const ListDivider = pure((props: any) => (
-  <li>
-    <hr className={'ListDivider ' + (props.inset ? 'ListDivider-inset' : '')} {...props} />
-  </li>
-));
+export const ListDivider = pure((_props: any) => {
+  const {
+    inset,
+    ...props,
+  } = _props;
+  return (
+    <li>
+      <hr className={'ListDivider ' + (inset ? 'ListDivider-inset' : '')} {...props} />
+    </li>
+  );
+});
 
 export const ListItem = pure((_props: any) => {
   const {
     leftIcon,
+    rightIcon,
     primaryText,
     secondaryText,
     children,
