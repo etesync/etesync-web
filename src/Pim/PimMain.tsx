@@ -5,16 +5,16 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 
 import * as ICAL from 'ical.js';
 
-import Container from './widgets/Container';
+import Container from '../widgets/Container';
 
-import AddressBook from './components/AddressBook';
-import Calendar from './components/Calendar';
+import AddressBook from '../components/AddressBook';
+import Calendar from '../components/Calendar';
 
-import { EventType, ContactType } from './pim-types';
+import { EventType, ContactType } from '../pim-types';
 
-import { routeResolver } from './App';
+import { routeResolver } from '../App';
 
-import { historyPersistor } from './persist-state-history';
+import { historyPersistor } from '../persist-state-history';
 
 const addressBookTitle = 'Address Book';
 const calendarTitle = 'Calendar';

@@ -3,29 +3,29 @@ import { Route, Switch } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
 import { createSelector } from 'reselect';
 
-import { ContactType, EventType } from './pim-types';
+import { ContactType, EventType } from '../pim-types';
 
-import Container from './widgets/Container';
+import Container from '../widgets/Container';
 
-import ContactEdit from './components/ContactEdit';
-import Contact from './components/Contact';
-import EventEdit from './components/EventEdit';
-import Event from './components/Event';
+import ContactEdit from '../components/ContactEdit';
+import Contact from '../components/Contact';
+import EventEdit from '../components/EventEdit';
+import Event from '../components/Event';
 import PimMain from './PimMain';
 
-import { routeResolver } from './App';
+import { routeResolver } from '../App';
 
-import { store, CredentialsData } from './store';
+import { store, CredentialsData } from '../store';
 
-import { SyncInfo } from './SyncGate';
+import { SyncInfo } from '../SyncGate';
 
-import { createJournalEntry } from './etesync-helpers';
+import { createJournalEntry } from '../etesync-helpers';
 
-import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from './journal-processors';
+import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from '../journal-processors';
 
 function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
