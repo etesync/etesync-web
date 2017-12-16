@@ -35,11 +35,17 @@ class SideMenu extends React.PureComponent {
   constructor(props: any) {
     super(props);
     this.logout = this.logout.bind(this);
+    this.journalClicked = this.journalClicked.bind(this);
   }
 
   logout() {
     store.dispatch(logout());
     this.props.onCloseDrawerRequest();
+  }
+
+  journalClicked(journalUid: string) {
+    this.props.onCloseDrawerRequest();
+    this.props.history.push(routeResolver.getRoute('journals._id', { journalUid: journalUid }));
   }
 
   render() {
@@ -56,10 +62,7 @@ class SideMenu extends React.PureComponent {
           <SideMenuJournals
             etesync={this.props.etesync}
             journals={this.props.journals.value}
-            onItemClick={(journalUid: string) => {
-              this.props.onCloseDrawerRequest();
-              this.props.history.push(routeResolver.getRoute('journals._id', { journalUid: journalUid }));
-            }}
+            onItemClick={this.journalClicked}
           />
         </React.Fragment>
       );
