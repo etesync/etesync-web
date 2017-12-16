@@ -99,7 +99,7 @@ class EventEdit extends React.PureComponent {
 
   }
 
-  handleInputChange(event: any) {
+  handleInputChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
     this.handleChange(name, value);
@@ -109,7 +109,7 @@ class EventEdit extends React.PureComponent {
     this.setState({allDay: !this.state.allDay});
   }
 
-  onSubmit(e: any) {
+  onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
     if ((this.state.start === '') || (this.state.end === '')) {

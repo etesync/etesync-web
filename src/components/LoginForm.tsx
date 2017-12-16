@@ -45,7 +45,7 @@ class LoginForm extends React.PureComponent {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleInputChange(event: any) {
+  handleInputChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
     this.setState({

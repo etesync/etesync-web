@@ -83,7 +83,7 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
         hintText={props.hintText}
         style={props.style}
         value={props.value.value}
-        onChange={(event: any) => props.onChange(props.name, props.value.type, event.target.value)}
+        onChange={(event: React.ChangeEvent<any>) => props.onChange(props.name, props.value.type, event.target.value)}
       />
       <IconButton
         onClick={() => props.onClearRequest(props.name)}
@@ -245,7 +245,7 @@ class ContactEdit extends React.PureComponent {
     this.handleChange(name, value);
   }
 
-  onSubmit(e: any) {
+  onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
     let contact = (this.props.contact) ?
