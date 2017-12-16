@@ -151,7 +151,6 @@ class Contact extends React.PureComponent {
             <span style={{fontSize: '90%'}}>{lastModified}</span>
           )}
         </PimItemHeader>
-        <div style={{padding: 8}} />
         {lists.map((list, idx) => (
           <React.Fragment key={idx}>
             {listIfNotEmpty(list)}
