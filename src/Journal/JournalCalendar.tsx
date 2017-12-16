@@ -36,7 +36,7 @@ class JournalCalendar extends React.PureComponent {
   }
 
   render() {
-    const PersistCalendar = historyPersistor(Calendar, 'Calendar');
+    const PersistCalendar = historyPersistor('Calendar')(Calendar);
     let items = this.props.entries;
 
     return (

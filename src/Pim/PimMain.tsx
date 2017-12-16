@@ -77,7 +77,7 @@ class PimMain extends React.PureComponent {
       } as any,
     };
 
-    const PersistCalendar = historyPersistor(Calendar, 'Calendar');
+    const PersistCalendar = historyPersistor('Calendar')(Calendar);
 
     return (
       <React.Fragment>
@@ -114,4 +114,4 @@ class PimMain extends React.PureComponent {
   }
 }
 
-export default historyPersistor(PimMain, 'PimMain');
+export default historyPersistor('PimMain')(PimMain);
