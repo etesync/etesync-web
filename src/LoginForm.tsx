@@ -26,7 +26,7 @@ class LoginForm extends React.PureComponent {
   };
 
   props: {
-    onSubmit: (username: string, password: string, encryptionPassword: string, serviceApiUrl: string) => void;
+    onSubmit: (username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) => void;
     loading?: boolean;
     error?: Error;
   };
@@ -55,7 +55,7 @@ class LoginForm extends React.PureComponent {
 
   generateEncryption(e: any) {
     e.preventDefault();
-    const server = this.state.showAdvanced ? this.state.server : C.serviceApiBase;
+    const server = this.state.showAdvanced ? this.state.server : undefined;
 
     const username = this.state.username;
     const password = this.state.password;

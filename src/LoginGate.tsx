@@ -21,7 +21,8 @@ class Root extends React.PureComponent {
     this.onFormSubmit = this.onFormSubmit.bind(this);
   }
 
-  onFormSubmit(username: string, password: string, encryptionPassword: string, serviceApiUrl: string) {
+  onFormSubmit(username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) {
+    serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
     store.dispatch(fetchCredentials(username, password, encryptionPassword, serviceApiUrl));
   }
 
