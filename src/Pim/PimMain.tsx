@@ -19,6 +19,8 @@ import { historyPersistor } from '../persist-state-history';
 const addressBookTitle = 'Address Book';
 const calendarTitle = 'Calendar';
 
+const PersistCalendar = historyPersistor('Calendar')(Calendar);
+
 class PimMain extends React.PureComponent {
   props: {
     contacts: Array<ContactType>,
@@ -76,8 +78,6 @@ class PimMain extends React.PureComponent {
         position: 'fixed',
       } as any,
     };
-
-    const PersistCalendar = historyPersistor('Calendar')(Calendar);
 
     return (
       <React.Fragment>

@@ -16,6 +16,8 @@ function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
 }
 
+const PersistCalendar = historyPersistor('Calendar')(Calendar);
+
 class JournalCalendar extends React.PureComponent {
   props: {
     journal: EteSync.Journal,
@@ -36,7 +38,6 @@ class JournalCalendar extends React.PureComponent {
   }
 
   render() {
-    const PersistCalendar = historyPersistor('Calendar')(Calendar);
     let items = this.props.entries;
 
     return (
