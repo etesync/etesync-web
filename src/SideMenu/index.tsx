@@ -10,6 +10,8 @@ import LogoutIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 const logo = require('../images/logo.svg');
 
+import { History } from 'history';
+
 import SideMenuJournals from './SideMenuJournals';
 
 import { routeResolver, getPalette } from '../App';
@@ -26,7 +28,7 @@ interface PropsType {
 
 interface PropsTypeInner extends PropsType {
   journals: JournalsType;
-  history: any;
+  history: History;
 }
 
 class SideMenu extends React.PureComponent {

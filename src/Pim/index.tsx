@@ -7,6 +7,8 @@ import * as EteSync from '../api/EteSync';
 
 import { createSelector } from 'reselect';
 
+import { History } from 'history';
+
 import { ContactType, EventType } from '../pim-types';
 
 import Container from '../widgets/Container';
@@ -67,7 +69,7 @@ class Pim extends React.PureComponent {
   props: {
     etesync: CredentialsData;
     syncInfo: SyncInfo;
-    history: any;
+    history: History;
   };
 
   constructor(props: any) {

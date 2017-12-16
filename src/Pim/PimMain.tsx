@@ -5,6 +5,8 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 
 import * as ICAL from 'ical.js';
 
+import { Location, History } from 'history';
+
 import Container from '../widgets/Container';
 
 import AddressBook from '../components/AddressBook';
@@ -25,8 +27,8 @@ class PimMain extends React.PureComponent {
   props: {
     contacts: Array<ContactType>,
     events: Array<EventType>,
-    location?: any,
-    history?: any,
+    location?: Location,
+    history?: History,
   };
 
   state: {
@@ -44,24 +46,24 @@ class PimMain extends React.PureComponent {
   eventClicked(event: ICAL.Event) {
     const uid = event.uid;
 
-    this.props.history.push(
+    this.props.history!.push(
       routeResolver.getRoute('pim.events._id', { eventUid: uid }));
   }
 
   contactClicked(contact: ContactType) {
     const uid = contact.uid;
 
-    this.props.history.push(
+    this.props.history!.push(
       routeResolver.getRoute('pim.contacts._id', { contactUid: uid }));
   }
 
   floatingButtonClicked() {
     if (this.state.tab === addressBookTitle) {
-      this.props.history.push(
+      this.props.history!.push(
         routeResolver.getRoute('pim.contacts.new')
       );
     } else if (this.state.tab === calendarTitle) {
-      this.props.history.push(
+      this.props.history!.push(
         routeResolver.getRoute('pim.events.new')
       );
     }

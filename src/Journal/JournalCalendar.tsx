@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Route, Switch, withRouter } from 'react-router';
 
+import { History } from 'history';
+
 import { routeResolver } from '../App';
 
 import { historyPersistor } from '../persist-state-history';
@@ -22,7 +24,7 @@ class JournalCalendar extends React.PureComponent {
   props: {
     journal: EteSync.Journal,
     entries: {[key: string]: EventType},
-    history?: any,
+    history?: History,
   };
 
   constructor(props: any) {
@@ -33,7 +35,7 @@ class JournalCalendar extends React.PureComponent {
   eventClicked(event: EventType) {
     const uid = event.uid;
 
-    this.props.history.push(
+    this.props.history!.push(
       routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid }));
   }
 

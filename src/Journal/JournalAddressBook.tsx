@@ -5,6 +5,8 @@ import * as EteSync from '../api/EteSync';
 
 import { routeResolver } from '../App';
 
+import { History } from 'history';
+
 import AddressBook from '../components/AddressBook';
 import Contact from '../components/Contact';
 
@@ -18,7 +20,7 @@ class JournalAddressBook extends React.PureComponent {
   props: {
     journal: EteSync.Journal,
     entries: {[key: string]: ContactType},
-    history?: any,
+    history?: History,
   };
 
   constructor(props: any) {
@@ -29,7 +31,7 @@ class JournalAddressBook extends React.PureComponent {
   contactClicked(contact: ContactType) {
     const uid = contact.uid;
 
-    this.props.history.push(
+    this.props.history!.push(
       routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid }));
   }
 

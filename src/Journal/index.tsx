@@ -13,9 +13,11 @@ import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from '../journal-p
 
 import { SyncInfo } from '../SyncGate';
 
+import { match } from 'react-router';
+
 interface PropsType {
   syncInfo: SyncInfo;
-  match: any;
+  match: match<any>;
 }
 
 interface PropsTypeInner extends PropsType {
