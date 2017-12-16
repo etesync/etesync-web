@@ -15,7 +15,7 @@ import Pim from './Pim';
 import * as EteSync from './api/EteSync';
 
 import { store, JournalsType, EntriesType, StoreState, CredentialsData } from './store';
-import { fetchJournals, fetchEntries } from './store/actions';
+import { fetchAll } from './store/actions';
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -89,22 +89,7 @@ class SyncGate extends React.PureComponent {
   }
 
   componentDidMount() {
-    store.dispatch(fetchJournals(this.props.etesync));
-  }
-
-  componentWillReceiveProps(nextProps: PropsTypeInner) {
-    if (nextProps.journals.value && (this.props.journals.value !== nextProps.journals.value)) {
-      nextProps.journals.value.forEach((journal) => {
-        let prevUid: string | null = null;
-        const entries = this.props.entries.get(journal.uid);
-        if (entries && entries.value) {
-          const last = entries.value.last();
-          prevUid = (last) ? last.uid : null;
-        }
-
-        store.dispatch(fetchEntries(this.props.etesync, journal.uid, prevUid));
-      });
-    }
+    store.dispatch(fetchAll(this.props.etesync, this.props.entries));
   }
 
   render() {
