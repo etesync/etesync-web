@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { ListItem } from './widgets/List';
+import { ListItem } from '../widgets/List';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
-import { JournalsData, CredentialsData } from './store';
+import { JournalsData, CredentialsData } from '../store';
 
 class SideMenuJournals extends React.PureComponent {
   props: {

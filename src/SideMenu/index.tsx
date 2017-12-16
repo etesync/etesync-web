@@ -1,23 +1,23 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { List, ListItem, ListSubheader, ListDivider } from './widgets/List';
+import { List, ListItem, ListSubheader, ListDivider } from '../widgets/List';
 import ActionCode from 'material-ui/svg-icons/action/code';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import ActionBugReport from 'material-ui/svg-icons/action/bug-report';
 import ActionQuestionAnswer from 'material-ui/svg-icons/action/question-answer';
 import LogoutIcon from 'material-ui/svg-icons/action/power-settings-new';
 
-const logo = require('./images/logo.svg');
+const logo = require('../images/logo.svg');
 
 import SideMenuJournals from './SideMenuJournals';
 
-import { routeResolver, getPalette } from './App';
+import { routeResolver, getPalette } from '../App';
 
-import { store, JournalsType, StoreState, CredentialsData } from './store';
-import { logout } from './store/actions';
+import { store, JournalsType, StoreState, CredentialsData } from '../store';
+import { logout } from '../store/actions';
 
-import * as C from './constants';
+import * as C from '../constants';
 
 interface PropsType {
   etesync: CredentialsData | null;
