@@ -1,5 +1,4 @@
 import * as React from 'react';
-const Fragment = (React as any).Fragment;
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
@@ -98,7 +97,7 @@ class LoginForm extends React.PureComponent {
     let advancedSettings = null;
     if (this.state.showAdvanced) {
       advancedSettings = (
-          <Fragment>
+          <React.Fragment>
             <TextField
               type="url"
               errorText={this.state.errors.errorServer}
@@ -108,7 +107,7 @@ class LoginForm extends React.PureComponent {
               onChange={this.handleInputChange}
             />
             <br />
-          </Fragment>
+          </React.Fragment>
       );
     }
 
@@ -129,7 +128,7 @@ class LoginForm extends React.PureComponent {
     };
 
     return (
-      <Fragment>
+      <React.Fragment>
         {(this.props.error) && (<div>Error! {this.props.error.message}</div>)}
         <form style={styles.form} onSubmit={this.generateEncryption}>
           <TextField
@@ -176,7 +175,7 @@ class LoginForm extends React.PureComponent {
             />
           </div>
         </form>
-      </Fragment>
+      </React.Fragment>
     );
   }
 }
