@@ -39,6 +39,7 @@ export type JournalsData = List<EteSync.Journal>;
 
 const JournalsFetchRecord = fetchTypeRecord<JournalsData>();
 export type JournalsType = FetchType<JournalsData>;
+export type JournalsTypeImmutable = Record<JournalsType>;
 
 export type EntriesData = List<EteSync.Entry>;
 
@@ -118,7 +119,30 @@ export const entries = handleAction(
 
 const journals = handleAction(
   actions.fetchJournals,
-  fetchTypeIdentityReducer,
+  (state: JournalsTypeImmutable, action: any) => {
+    const newState = fetchTypeIdentityReducer(state, action);
+    // Compare the states and see if they are really different
+    const oldJournals = state.get('value', null);
+    const newJournals = newState.get('value', null);
+
+    if (!oldJournals || !newJournals || (oldJournals.size !== newJournals.size)) {
+      return newState;
+    }
+
+    let oldJournalHash = {};
+    oldJournals.forEach((x) => {
+      oldJournalHash[x.uid] = x.serialize();
+    });
+
+    if (newJournals.every((journal: EteSync.Journal) => (
+      (journal.uid in oldJournalHash) &&
+      (journal.serialize().content === oldJournalHash[journal.uid].content)
+    ))) {
+      return state;
+    } else {
+      return newState;
+    }
+  },
   new JournalsFetchRecord(),
 );
 
