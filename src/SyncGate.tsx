@@ -7,7 +7,7 @@ import { createSelector } from 'reselect';
 
 import { routeResolver } from './App';
 
-import LoadingIndicator from './LoadingIndicator';
+import LoadingIndicator from './widgets/LoadingIndicator';
 
 import Journal from './Journal';
 import Pim from './Pim';

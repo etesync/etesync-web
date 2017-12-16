@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { List, ListItem, ListSubheader, ListDivider } from './List';
+import { List, ListItem, ListSubheader, ListDivider } from './widgets/List';
 import ActionCode from 'material-ui/svg-icons/action/code';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import ActionBugReport from 'material-ui/svg-icons/action/bug-report';

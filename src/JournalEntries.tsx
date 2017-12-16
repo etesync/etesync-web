@@ -1,7 +1,7 @@
 import * as Immutable from 'immutable';
 
 import * as React from 'react';
-import { List, ListItem } from './List';
+import { List, ListItem } from './widgets/List';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import IconAdd from 'material-ui/svg-icons/content/add';

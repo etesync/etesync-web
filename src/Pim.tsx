@@ -9,7 +9,7 @@ import { createSelector } from 'reselect';
 
 import { ContactType, EventType } from './pim-types';
 
-import Container from './Container';
+import Container from './widgets/Container';
 
 import ContactEdit from './ContactEdit';
 import Contact from './Contact';

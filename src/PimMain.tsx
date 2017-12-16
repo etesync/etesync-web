@@ -5,7 +5,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 
 import * as ICAL from 'ical.js';
 
-import Container from './Container';
+import Container from './widgets/Container';
 
 import AddressBook from './AddressBook';
 import Calendar from './Calendar';

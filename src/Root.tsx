@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import Container from './Container';
+import Container from './widgets/Container';
 import SyncGate from './SyncGate';
 import LoginForm from './LoginForm';
 

@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import * as colors from 'material-ui/styles/colors';
 
-import { Avatar } from './Avatar';
-import { List, ListItem } from './List';
+import { Avatar } from './widgets/Avatar';
+import { List, ListItem } from './widgets/List';
 
 import { ContactType } from './pim-types';
 

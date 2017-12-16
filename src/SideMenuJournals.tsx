@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ListItem } from './List';
+import { ListItem } from './widgets/List';
 
 import * as EteSync from './api/EteSync';
 
