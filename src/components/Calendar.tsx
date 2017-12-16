@@ -25,16 +25,6 @@ class Calendar extends React.PureComponent {
   }
 
   render() {
-    let entries = this.props.entries.sort((a, b) => {
-      if (a.summary < b.summary) {
-        return -1;
-      } else if (a.summary > b.summary) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-
     function eventPropGetter(event: EventType) {
       return {
         style: {
@@ -51,7 +41,7 @@ class Calendar extends React.PureComponent {
     return (
       <div style={{width: '100%', height: 500, padding: 10}}>
         <BigCalendar
-          events={entries}
+          events={this.props.entries}
           onSelectEvent={(event: any) => {
             this.props.onItemClick(event);
           }}
