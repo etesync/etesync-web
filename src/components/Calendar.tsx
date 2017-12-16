@@ -9,6 +9,19 @@ import { EventType } from '../pim-types';
 moment.locale('en-gb');
 BigCalendar.momentLocalizer(moment);
 
+function eventPropGetter(event: EventType) {
+  return {
+    style: {
+      backgroundColor: event.color,
+    }
+  };
+}
+
+function agendaHeaderFormat(date: {start: Date, end: Date}, culture: string, localizer: any) {
+  const format = 'll';
+  return localizer.format(date.start, format) + ' - ' + localizer.format(date.end, format);
+}
+
 class Calendar extends React.PureComponent {
   state: {
     currentDate?: Date;
@@ -25,19 +38,6 @@ class Calendar extends React.PureComponent {
   }
 
   render() {
-    function eventPropGetter(event: EventType) {
-      return {
-        style: {
-          backgroundColor: event.color,
-        }
-      };
-    }
-
-    function agendaHeaderFormat(date: {start: Date, end: Date}, culture: string, localizer: any) {
-      const format = 'll';
-      return localizer.format(date.start, format) + ' - ' + localizer.format(date.end, format);
-    }
-
     return (
       <div style={{width: '100%', height: 500, padding: 10}}>
         <BigCalendar
