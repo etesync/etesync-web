@@ -29,7 +29,6 @@ function fetchTypeRecord<T>() {
   return Record<FetchTypeInterface<T>>({
     value: null as T | null,
     error: undefined,
-    fetching: undefined,
   });
 }
 
@@ -70,13 +69,12 @@ function fetchTypeIdentityReducer(
   if (action.error) {
     return state.set('error', action.payload);
   } else {
-    const fetching = (action.payload === undefined) ? true : undefined;
     const payload = (action.payload === undefined) ? null : action.payload;
 
     state = state.set('error', undefined);
 
-    if (fetching) {
-      return state.set('fetching', fetching);
+    if (action.payload === undefined) {
+      return state;
     }
 
     let value = state.get('value', null);
@@ -89,10 +87,7 @@ function fetchTypeIdentityReducer(
     } else {
       value = null;
     }
-    return state.merge({
-      value,
-      fetching,
-    });
+    return state.set('value', value);
   }
 }
 
