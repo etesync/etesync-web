@@ -55,7 +55,9 @@ export const ListSubheader = pure((props: any) => (
 ));
 
 export const ListDivider = pure((props: any) => (
-  <hr className={'ListDivider ' + (props.inset ? 'ListDivider-inset' : '')} {...props} />
+  <li>
+    <hr className={'ListDivider ' + (props.inset ? 'ListDivider-inset' : '')} {...props} />
+  </li>
 ));
 
 export const ListItem = pure((_props: any) => {
