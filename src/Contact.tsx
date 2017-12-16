@@ -134,7 +134,9 @@ class Contact extends React.PureComponent {
             <List>
               {items}
             </List>
-            <Divider inset={true} />
+            <List>
+              <Divider inset={true} />
+            </List>
           </React.Fragment>
         );
       } else {
