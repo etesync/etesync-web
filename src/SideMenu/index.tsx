@@ -57,7 +57,7 @@ class SideMenu extends React.PureComponent {
 
     let loggedInItems;
     if (this.props.etesync) {
-      const journals = (this.props.journals && this.props.journals.value) && (
+      const journals = (this.props.etesync.encryptionKey && this.props.journals && this.props.journals.value) && (
         <React.Fragment>
           <ListDivider />
           <ListSubheader>Journals</ListSubheader>
