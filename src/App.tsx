@@ -94,6 +94,7 @@ const AppBarWitHistory = withRouter(
 
     canGoBack() {
       return (
+        (this.props.history!.length > 1) &&
         (this.props.history!.location.pathname !== routeResolver.getRoute('pim')) &&
         (this.props.history!.location.pathname !== routeResolver.getRoute('home'))
       );
