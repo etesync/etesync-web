@@ -80,16 +80,6 @@ function fetchTypeIdentityReducer(
 
 const encryptionKeyReducer = handleActions(
   {
-    [actions.fetchCredentials.toString()]: (
-      state: {key: string | null}, action: any) => {
-      if (action.error) {
-        return {key: null};
-      } else if (action.payload === undefined) {
-        return {key: null};
-      } else {
-        return {key: action.payload.encryptionKey};
-      }
-    },
     [actions.deriveKey.toString()]: (state: {key: string | null}, action: any) => (
       {key: action.payload}
     ),

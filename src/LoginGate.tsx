@@ -7,7 +7,7 @@ import LoginForm from './components/LoginForm';
 import EncryptionLoginForm from './components/EncryptionLoginForm';
 
 import { store, CredentialsType } from './store';
-import { fetchCredentials, deriveKey } from './store/actions';
+import { login, deriveKey } from './store/actions';
 
 import * as C from './constants';
 
@@ -24,7 +24,7 @@ class LoginGate extends React.Component {
 
   onFormSubmit(username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) {
     serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
-    store.dispatch(fetchCredentials(username, password, encryptionPassword, serviceApiUrl));
+    store.dispatch(login(username, password, encryptionPassword, serviceApiUrl));
   }
 
   onEncryptionFormSubmit(encryptionPassword: string) {

@@ -5,19 +5,17 @@ import * as EteSync from '../api/EteSync';
 import { CredentialsData, EntriesType } from './';
 
 export const { fetchCredentials, logout } = createActions({
-  FETCH_CREDENTIALS: (username: string, password: string, encryptionPassword: string, server: string) => {
+  FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
     const authenticator = new EteSync.Authenticator(server);
 
     return new Promise((resolve, reject) => {
       authenticator.getAuthToken(username, password).then(
         (authToken) => {
           const creds = new EteSync.Credentials(username, authToken);
-          const derived = EteSync.deriveKey(username, encryptionPassword);
 
           const context = {
             serviceApiUrl: server,
             credentials: creds,
-            encryptionKey: derived,
           };
 
           resolve(context);
@@ -31,12 +29,19 @@ export const { fetchCredentials, logout } = createActions({
   LOGOUT: () => undefined,
 });
 
-// FIXME: This is duplicating behaviour from the fetchCredentials above
 export const { deriveKey } = createActions({
   DERIVE_KEY: (username: string, encryptionPassword: string) => {
     return EteSync.deriveKey(username, encryptionPassword);
   },
 });
+
+export const login = (username: string, password: string, encryptionPassword: string, server: string) => {
+  return (dispatch: any) => {
+    dispatch(fetchCredentials(username, password, server)).then(() =>
+      dispatch(deriveKey(username, encryptionPassword))
+    );
+  };
+};
 
 export const { fetchJournals } = createActions({
   FETCH_JOURNALS: (etesync: CredentialsData) => {
