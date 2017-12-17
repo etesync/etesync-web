@@ -3,6 +3,9 @@ body {
   padding: 0;
   font-family: sans-serif;
   background-color: #ffc107;
+
+  /* Chrome only at the moment, disable pull to refresh in PWA */
+  overscroll-behavior-y: contain;
 }
 
 body:before {
