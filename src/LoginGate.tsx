@@ -10,7 +10,7 @@ import { fetchCredentials } from './store/actions';
 
 import * as C from './constants';
 
-class Root extends React.Component {
+class LoginGate extends React.Component {
   props: {
     credentials: CredentialsType;
   };
@@ -63,4 +63,4 @@ class Root extends React.Component {
   }
 }
 
-export default Root;
+export default LoginGate;
