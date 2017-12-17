@@ -1,18 +1,16 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 
 import Container from './widgets/Container';
 import ExternalLink from './widgets/ExternalLink';
 import SyncGate from './SyncGate';
 import LoginForm from './components/LoginForm';
 
-import { store, StoreState, CredentialsType } from './store';
+import { store, CredentialsType } from './store';
 import { fetchCredentials } from './store/actions';
 
 import * as C from './constants';
 
-class Root extends React.PureComponent {
+class Root extends React.Component {
   props: {
     credentials: CredentialsType;
   };
@@ -65,13 +63,4 @@ class Root extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state: StoreState) => {
-  return {
-    credentials: state.credentials,
-  };
-};
-
-// FIXME: withRouter is only needed here because of https://github.com/ReactTraining/react-router/issues/5795
-export default withRouter(connect(
-  mapStateToProps
-)(Root));
+export default Root;

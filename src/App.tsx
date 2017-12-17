@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+import { createSelector } from 'reselect';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { amber500, amber700, lightBlue500, darkBlack, white } from 'material-ui/styles/colors';
@@ -130,7 +131,7 @@ class App extends React.PureComponent {
   };
 
   props: {
-    credentials?: store.CredentialsType;
+    credentials: store.CredentialsType;
   };
 
   constructor(props: any) {
@@ -170,7 +171,7 @@ class App extends React.PureComponent {
             <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
           </Drawer>
 
-          <LoginGate />
+          <LoginGate credentials={this.props.credentials} />
         </div>
         </BrowserRouter>
       </MuiThemeProvider>
@@ -178,9 +179,30 @@ class App extends React.PureComponent {
   }
 }
 
+const credentialsSelector = createSelector(
+  (state: store.StoreState) => state.credentials.value,
+  (state: store.StoreState) => state.credentials.error,
+  (state: store.StoreState) => state.credentials.fetching,
+  (state: store.StoreState) => state.encryptionKey.key,
+  (value, error, fetching, encryptionKey) => {
+    if (value === null) {
+      return {value, error, fetching};
+    }
+
+    return {
+      error: error,
+      fetching: fetching,
+      value: {
+        ...value,
+        encryptionKey: encryptionKey,
+      }
+    };
+  }
+);
+
 const mapStateToProps = (state: store.StoreState) => {
   return {
-    credentials: state.credentials,
+    credentials: credentialsSelector(state),
   };
 };
 

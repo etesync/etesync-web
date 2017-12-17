@@ -17,9 +17,12 @@ interface FetchTypeInterface<T> {
   error?: Error;
 }
 
-export interface CredentialsData {
+export interface CredentialsDataRemote {
   serviceApiUrl: string;
   credentials: EteSync.Credentials;
+}
+
+export interface CredentialsData extends CredentialsDataRemote {
   encryptionKey: string;
 }
 
@@ -33,6 +36,7 @@ function fetchTypeRecord<T>() {
 }
 
 export type CredentialsType = FetchType<CredentialsData>;
+export type CredentialsTypeRemote = FetchType<CredentialsDataRemote>;
 
 export type JournalsData = List<EteSync.Journal>;
 
@@ -46,23 +50,6 @@ const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
 
 export type EntriesTypeImmutable = Map<string, Record<FetchType<EntriesData>>>;
 export type EntriesType = Map<string, FetchType<EntriesData>>;
-
-function credentialsIdentityReducer(state: CredentialsType = {value: null}, action: any, extend: boolean = false) {
-  if (action.error) {
-    return {
-      value: null,
-      error: action.payload,
-    };
-  } else {
-    const fetching = (action.payload === undefined) ? true : undefined;
-    const payload = (action.payload === undefined) ? null : action.payload;
-    let value = payload;
-    return {
-      fetching,
-      value,
-    };
-  }
-}
 
 function fetchTypeIdentityReducer(
   state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend: boolean = false) {
@@ -91,10 +78,50 @@ function fetchTypeIdentityReducer(
   }
 }
 
+const encryptionKeyReducer = handleActions(
+  {
+    [actions.fetchCredentials.toString()]: (
+      state: {key: string | null}, action: any) => {
+      if (action.error) {
+        return {key: null};
+      } else if (action.payload === undefined) {
+        return {key: null};
+      } else {
+        return {key: action.payload.encryptionKey};
+      }
+    },
+    [actions.logout.toString()]: (state: {key: string | null}, action: any) => {
+      return {out: true, key: null};
+    },
+  },
+  {key: null}
+);
+
 const credentials = handleActions(
   {
-    [actions.fetchCredentials.toString()]: credentialsIdentityReducer,
-    [actions.logout.toString()]: (state: CredentialsType, action: any) => {
+    [actions.fetchCredentials.toString()]: (
+      state: CredentialsTypeRemote, action: any, extend: boolean = false) => {
+      if (action.error) {
+        return {
+          value: null,
+          error: action.payload,
+        };
+      } else if (action.payload === undefined) {
+        return {
+          fetching: true,
+          value: null,
+        };
+      } else {
+        const {
+          encryptionKey, // We don't want to set encryption key here.
+          ...payload
+        } = action.payload;
+        return {
+          value: payload,
+        };
+      }
+    },
+    [actions.logout.toString()]: (state: CredentialsTypeRemote, action: any) => {
       return {out: true, value: null};
     },
   },
@@ -159,8 +186,13 @@ const fetchCount = handleAction(
 
 const credentialsPersistConfig = {
   key: 'credentials',
-  storage: session,
+  storage: localforage,
   whitelist: ['value'],
+};
+
+const encryptionKeyPersistConfig = {
+  key: 'encryptionKey',
+  storage: session,
 };
 
 const journalsSerialize = (state: JournalsData) => {
@@ -240,6 +272,7 @@ const cachePersistConfig = {
 const reducers = combineReducers({
   fetchCount,
   credentials: persistReducer(credentialsPersistConfig, credentials),
+  encryptionKey: persistReducer(encryptionKeyPersistConfig, encryptionKeyReducer),
   cache: persistReducer(cachePersistConfig, combineReducers({
     entries,
     journals,
