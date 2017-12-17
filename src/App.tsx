@@ -12,15 +12,18 @@ import IconButton from 'material-ui/IconButton';
 
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import NavigationBack from 'material-ui/svg-icons/navigation/arrow-back';
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 
 import './App.css';
 
+import withSpin from './widgets/withSpin';
 import SideMenu from './SideMenu';
 import LoginGate from './LoginGate';
 import { RouteResolver } from './routes';
 
 import * as C from './constants';
 import * as store from './store';
+import * as actions from './store/actions';
 
 import { History } from 'history';
 
@@ -85,6 +88,7 @@ const AppBarWitHistory = withRouter(
       toggleDrawerIcon: any,
       history?: History;
       staticContext?: any;
+      iconElementRight: any,
     };
 
     constructor(props: any) {
@@ -125,6 +129,8 @@ const AppBarWitHistory = withRouter(
   }
 );
 
+const IconRefreshWithSpin = withSpin(NavigationRefresh);
+
 class App extends React.PureComponent {
   state: {
     drawerOpen: boolean,
@@ -132,6 +138,8 @@ class App extends React.PureComponent {
 
   props: {
     credentials: store.CredentialsType;
+    entries: store.EntriesType;
+    fetchCount: number;
   };
 
   constructor(props: any) {
@@ -140,6 +148,7 @@ class App extends React.PureComponent {
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   toggleDrawer() {
@@ -150,8 +159,14 @@ class App extends React.PureComponent {
     this.setState({drawerOpen: false});
   }
 
+  refresh() {
+    store.store.dispatch(actions.fetchAll(this.props.credentials.value!, this.props.entries));
+  }
+
   render() {
     const credentials = (this.props.credentials) ? this.props.credentials.value : null;
+
+    const fetching = this.props.fetchCount > 0;
 
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
@@ -160,6 +175,10 @@ class App extends React.PureComponent {
           <AppBarWitHistory
             title={C.appName}
             toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
+            iconElementRight={
+              <IconButton disabled={!credentials || fetching} onClick={this.refresh}>
+                <IconRefreshWithSpin spin={fetching} />
+              </IconButton>}
 
           />
           <Drawer
@@ -203,6 +222,8 @@ const credentialsSelector = createSelector(
 const mapStateToProps = (state: store.StoreState) => {
   return {
     credentials: credentialsSelector(state),
+    entries: state.cache.entries,
+    fetchCount: state.fetchCount,
   };
 };
 
