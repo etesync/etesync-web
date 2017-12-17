@@ -168,7 +168,7 @@ class Pim extends React.PureComponent {
                   }
                 />
               </div>
-              <Contact contact={addressBookItems[match.params.contactUid]} />
+              <Contact item={addressBookItems[match.params.contactUid]} />
             </Container>
           )}
         />
@@ -212,7 +212,7 @@ class Pim extends React.PureComponent {
                   }
                 />
               </div>
-              <Event event={calendarItems[match.params.eventUid]} />
+              <Event item={calendarItems[match.params.eventUid]} />
             </Container>
           )}
         />

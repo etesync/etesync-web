@@ -37,11 +37,11 @@ function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
 
 class Event extends React.PureComponent {
   props: {
-    event?: EventType,
+    item?: EventType,
   };
 
   render() {
-    if (this.props.event === undefined) {
+    if (this.props.item === undefined) {
       throw Error('Event should be defined!');
     }
 
@@ -53,15 +53,15 @@ class Event extends React.PureComponent {
 
     return (
       <React.Fragment>
-        <PimItemHeader text={this.props.event.summary} backgroundColor={this.props.event.color}>
-          <div>{formatDateRange(this.props.event.startDate, this.props.event.endDate)}</div>
+        <PimItemHeader text={this.props.item.summary} backgroundColor={this.props.item.color}>
+          <div>{formatDateRange(this.props.item.startDate, this.props.item.endDate)}</div>
           <br/>
-          <div><u>{this.props.event.location}</u></div>
+          <div><u>{this.props.item.location}</u></div>
         </PimItemHeader>
         <div style={style.content}>
-          <div>{this.props.event.description}</div>
-          {(this.props.event.attendees.length > 0) && (
-            <div>Attendees: {this.props.event.attendees.map((x) => (x.getFirstValue())).join(', ')}</div>)}
+          <div>{this.props.item.description}</div>
+          {(this.props.item.attendees.length > 0) && (
+            <div>Attendees: {this.props.item.attendees.map((x) => (x.getFirstValue())).join(', ')}</div>)}
         </div>
       </React.Fragment>
     );

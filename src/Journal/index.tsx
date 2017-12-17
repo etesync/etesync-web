@@ -1,19 +1,25 @@
 import * as React from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
+import AddressBook from '../components/AddressBook';
+import Contact from '../components/Contact';
+import Calendar from '../components/Calendar';
+import Event from '../components/Event';
+
 import Container from '../widgets/Container';
 
 import SecondaryHeader from '../components/SecondaryHeader';
 
 import JournalEntries from '../components/JournalEntries';
-import JournalAddressBook from './JournalAddressBook';
-import JournalCalendar from './JournalCalendar';
+import journalView from './journalView';
 
 import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from '../journal-processors';
 
 import { SyncInfo } from '../SyncGate';
 
 import { match } from 'react-router';
+
+import { historyPersistor } from '../persist-state-history';
 
 interface PropsType {
   syncInfo: SyncInfo;
@@ -22,6 +28,10 @@ interface PropsType {
 
 interface PropsTypeInner extends PropsType {
 }
+
+const JournalAddressBook = journalView(AddressBook, Contact);
+const PersistCalendar = historyPersistor('Calendar')(Calendar);
+const JournalCalendar = journalView(PersistCalendar, Event);
 
 class Journal extends React.PureComponent {
   static defaultProps = {

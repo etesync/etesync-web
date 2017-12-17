@@ -15,15 +15,15 @@ import { ContactType } from '../pim-types';
 
 class Contact extends React.PureComponent {
   props: {
-    contact?: ContactType,
+    item?: ContactType,
   };
 
   render() {
-    if (this.props.contact === undefined) {
+    if (this.props.item === undefined) {
       throw Error('Contact should be defined!');
     }
 
-    const contact = this.props.contact;
+    const contact = this.props.item;
     const name = contact.fn;
 
     const revProp = contact.comp.getFirstProperty('rev');
