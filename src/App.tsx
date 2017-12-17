@@ -93,7 +93,10 @@ const AppBarWitHistory = withRouter(
     }
 
     canGoBack() {
-      return this.props.history!.location.pathname !== routeResolver.getRoute('pim');
+      return (
+        (this.props.history!.location.pathname !== routeResolver.getRoute('pim')) &&
+        (this.props.history!.location.pathname !== routeResolver.getRoute('home'))
+      );
     }
 
     goBack() {
