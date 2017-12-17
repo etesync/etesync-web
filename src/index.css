@@ -13,3 +13,7 @@ body:before {
   z-index: -1;
   background-color: white;
 }
+
+#root {
+  background-color: white;
+}
