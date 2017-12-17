@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -9,6 +10,7 @@ import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
+import NavigationBack from 'material-ui/svg-icons/navigation/arrow-back';
 
 import './App.css';
 
@@ -18,6 +20,8 @@ import { RouteResolver } from './routes';
 
 import * as C from './constants';
 import * as store from './store';
+
+import { History } from 'history';
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -73,6 +77,49 @@ export const routeResolver = new RouteResolver({
   },
 });
 
+const AppBarWitHistory = withRouter(
+  class extends React.PureComponent {
+    props: {
+      title: string,
+      toggleDrawerIcon: any,
+      history?: History;
+      staticContext?: any;
+    };
+
+    constructor(props: any) {
+      super(props);
+      this.goBack = this.goBack.bind(this);
+      this.canGoBack = this.canGoBack.bind(this);
+    }
+
+    canGoBack() {
+      return this.props.history!.location.pathname !== routeResolver.getRoute('pim');
+    }
+
+    goBack() {
+      this.props.history!.goBack();
+    }
+
+    render() {
+      const {
+        staticContext,
+        toggleDrawerIcon,
+        history,
+        ...props
+      } = this.props;
+      return (
+        <AppBar
+          iconElementLeft={!this.canGoBack() ?
+            toggleDrawerIcon :
+            <IconButton onClick={this.goBack}><NavigationBack /></IconButton>
+          }
+          {...props}
+        />
+      );
+    }
+  }
+);
+
 class App extends React.PureComponent {
   state: {
     drawerOpen: boolean,
@@ -105,9 +152,10 @@ class App extends React.PureComponent {
       <MuiThemeProvider muiTheme={muiTheme}>
         <BrowserRouter>
         <div>
-          <AppBar
+          <AppBarWitHistory
             title={C.appName}
-            iconElementLeft={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
+            toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
+
           />
           <Drawer
             docked={false}
