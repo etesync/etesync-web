@@ -90,6 +90,9 @@ const encryptionKeyReducer = handleActions(
         return {key: action.payload.encryptionKey};
       }
     },
+    [actions.deriveKey.toString()]: (state: {key: string | null}, action: any) => (
+      {key: action.payload}
+    ),
     [actions.logout.toString()]: (state: {key: string | null}, action: any) => {
       return {out: true, key: null};
     },

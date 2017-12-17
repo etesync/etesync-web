@@ -31,6 +31,13 @@ export const { fetchCredentials, logout } = createActions({
   LOGOUT: () => undefined,
 });
 
+// FIXME: This is duplicating behaviour from the fetchCredentials above
+export const { deriveKey } = createActions({
+  DERIVE_KEY: (username: string, encryptionPassword: string) => {
+    return EteSync.deriveKey(username, encryptionPassword);
+  },
+});
+
 export const { fetchJournals } = createActions({
   FETCH_JOURNALS: (etesync: CredentialsData) => {
     const creds = etesync.credentials;
