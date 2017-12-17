@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { pure } from 'recompose';
 
+import ExternalLink from './ExternalLink';
+
 import './List.css';
 
 export const ListItemRaw = pure((_props: any) => {
@@ -14,9 +16,9 @@ export const ListItemRaw = pure((_props: any) => {
 
   const inner = href ?
     (
-      <a href={href} className="ListItem-href">
+      <ExternalLink href={href} className="ListItem-href">
         {children}
-      </a>
+      </ExternalLink>
     ) :
     children
   ;

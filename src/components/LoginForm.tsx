@@ -3,6 +3,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 
+import ExternalLink from '../widgets/ExternalLink';
+
 import { getPalette } from '../App';
 
 import * as C from '../constants';
@@ -148,7 +150,7 @@ class LoginForm extends React.PureComponent {
             onChange={this.handleInputChange}
           />
           <div style={styles.forgotPassword}>
-            <a href={C.forgotPassword}>Forgot password?</a>
+            <ExternalLink href={C.forgotPassword}>Forgot password?</ExternalLink>
           </div>
           <TextField
             type="password"

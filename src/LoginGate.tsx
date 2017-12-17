@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import Container from './widgets/Container';
+import ExternalLink from './widgets/ExternalLink';
 import SyncGate from './SyncGate';
 import LoginForm from './components/LoginForm';
 
@@ -49,8 +50,10 @@ class Root extends React.PureComponent {
           />
           <hr style={style.divider}/>
           <ul>
-            <li><a style={style.isSafe} href={C.faq + '#web-client'}>Is the web client safe to use?</a></li>
-            <li><a style={style.isSafe} href={C.sourceCode}>Source code</a></li>
+            <li><ExternalLink style={style.isSafe} href={C.faq + '#web-client'}>
+                Is the web client safe to use?
+            </ExternalLink></li>
+            <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>
           </ul>
         </Container>
       );
