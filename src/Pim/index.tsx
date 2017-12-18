@@ -4,6 +4,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
 import IconChangeHistory from 'material-ui/svg-icons/action/change-history';
 
+import { withRouter } from 'react-router';
+
 import * as EteSync from '../api/EteSync';
 
 import { createSelector } from 'reselect';
@@ -90,6 +92,100 @@ const ItemChangeLog = pure((props: any) => {
   );
 });
 
+const CollectionRoutes = withRouter(
+  class CollectionRoutesInner extends React.PureComponent {
+    props: {
+      syncInfo: SyncInfo,
+      routePrefix: string,
+      collections: Array<EteSync.CollectionInfo>,
+      componentEdit: any,
+      componentView: any,
+      items: {[key: string]: any},
+      onItemSave: (item: Object, journalUid: string, originalContact?: Object) => void;
+    };
+
+    render() {
+      const props = this.props;
+      const ComponentEdit = props.componentEdit;
+      const ComponentView = props.componentView;
+
+      return (
+        <Switch>
+          <Route
+            path={routeResolver.getRoute(props.routePrefix + '.new')}
+            exact={true}
+            render={({match}) => (
+              <Container style={{maxWidth: 400}}>
+                <ComponentEdit collections={props.collections} onSave={props.onItemSave} />
+              </Container>
+            )}
+          />
+          <Route
+            path={routeResolver.getRoute(props.routePrefix + '._id.edit')}
+            exact={true}
+            render={({match}) => (
+              <Container style={{maxWidth: 400}}>
+                <ComponentEdit
+                  initialCollection={(props.items[match.params.itemUid] as any).journalUid}
+                  item={props.items[match.params.itemUid]}
+                  collections={props.collections}
+                  onSave={props.onItemSave}
+                />
+              </Container>
+            )}
+          />
+          <Route
+            path={routeResolver.getRoute(props.routePrefix + '._id.log')}
+            exact={true}
+            render={({match}) => (
+              <Container>
+                <ItemChangeLog
+                  syncInfo={props.syncInfo}
+                  items={props.items}
+                  uid={match.params.itemUid}
+                />
+              </Container>
+            )}
+          />
+          <Route
+            path={routeResolver.getRoute(props.routePrefix + '._id')}
+            exact={true}
+            render={({match, history}) => (
+              <Container>
+                <div style={{textAlign: 'right', marginBottom: 15}}>
+                  <RaisedButton
+                    label="Change History"
+                    style={{marginLeft: 15}}
+                    icon={<IconChangeHistory />}
+                    onClick={() =>
+                      history.push(routeResolver.getRoute(
+                        props.routePrefix + '._id.log',
+                        {itemUid: match.params.itemUid}))
+                    }
+                  />
+
+                  <RaisedButton
+                    label="Edit"
+                    secondary={true}
+                    style={{marginLeft: 15}}
+                    icon={<IconEdit />}
+                    onClick={() =>
+                      history.push(routeResolver.getRoute(
+                        props.routePrefix + '._id.edit',
+                        {itemUid: match.params.itemUid}))
+                    }
+                  />
+                </div>
+                <ComponentView item={props.items[match.params.itemUid]} />
+              </Container>
+            )}
+          />
+        </Switch>
+      );
+    }
+  }
+);
+
 class Pim extends React.PureComponent {
   props: {
     etesync: CredentialsData;
@@ -154,141 +250,31 @@ class Pim extends React.PureComponent {
           )}
         />
         <Route
-          path={routeResolver.getRoute('pim.contacts.new')}
-          exact={true}
-          render={({match}) => (
-            <Container style={{maxWidth: 400}}>
-              <ContactEdit collections={collectionsAddressBook} onSave={this.onContactSave} />
-            </Container>
+          path={routeResolver.getRoute('pim.contacts')}
+          render={() => (
+            <CollectionRoutes
+              syncInfo={this.props.syncInfo}
+              routePrefix="pim.contacts"
+              collections={collectionsAddressBook}
+              items={addressBookItems}
+              componentEdit={ContactEdit}
+              componentView={Contact}
+              onItemSave={this.onContactSave}
+            />
           )}
         />
         <Route
-          path={routeResolver.getRoute('pim.contacts._id.edit')}
-          exact={true}
-          render={({match}) => (
-            <Container style={{maxWidth: 400}}>
-              <ContactEdit
-                initialCollection={(addressBookItems[match.params.itemUid] as any).journalUid}
-                item={addressBookItems[match.params.itemUid]}
-                collections={collectionsAddressBook}
-                onSave={this.onContactSave}
-              />
-            </Container>
-          )}
-        />
-        <Route
-          path={routeResolver.getRoute('pim.contacts._id.log')}
-          exact={true}
-          render={({match}) => (
-            <Container>
-              <ItemChangeLog
-                syncInfo={this.props.syncInfo}
-                items={addressBookItems}
-                uid={match.params.itemUid}
-              />
-            </Container>
-          )}
-        />
-        <Route
-          path={routeResolver.getRoute('pim.contacts._id')}
-          exact={true}
-          render={({match, history}) => (
-            <Container>
-              <div style={{textAlign: 'right', marginBottom: 15}}>
-                <RaisedButton
-                  label="Change History"
-                  style={{marginLeft: 15}}
-                  icon={<IconChangeHistory />}
-                  onClick={() =>
-                    history.push(routeResolver.getRoute(
-                      'pim.contacts._id.log',
-                      {itemUid: match.params.itemUid}))
-                  }
-                />
-
-                <RaisedButton
-                  label="Edit"
-                  secondary={true}
-                  style={{marginLeft: 15}}
-                  icon={<IconEdit />}
-                  onClick={() =>
-                    history.push(routeResolver.getRoute(
-                      'pim.contacts._id.edit',
-                      {itemUid: match.params.itemUid}))
-                  }
-                />
-              </div>
-              <Contact item={addressBookItems[match.params.itemUid]} />
-            </Container>
-          )}
-        />
-        <Route
-          path={routeResolver.getRoute('pim.events.new')}
-          exact={true}
-          render={({match}) => (
-            <Container style={{maxWidth: 400}}>
-              <EventEdit collections={collectionsCalendar} onSave={this.onEventSave} />
-            </Container>
-          )}
-        />
-        <Route
-          path={routeResolver.getRoute('pim.events._id.edit')}
-          exact={true}
-          render={({match}) => (
-            <Container style={{maxWidth: 400}}>
-              <EventEdit
-                initialCollection={(calendarItems[match.params.itemUid] as any).journalUid}
-                item={calendarItems[match.params.itemUid]}
-                collections={collectionsCalendar}
-                onSave={this.onEventSave}
-              />
-            </Container>
-          )}
-        />
-        <Route
-          path={routeResolver.getRoute('pim.events._id.log')}
-          exact={true}
-          render={({match}) => (
-            <Container>
-              <ItemChangeLog
-                syncInfo={this.props.syncInfo}
-                items={calendarItems}
-                uid={match.params.itemUid}
-              />
-            </Container>
-          )}
-        />
-        <Route
-          path={routeResolver.getRoute('pim.events._id')}
-          exact={true}
-          render={({match, history}) => (
-            <Container>
-              <div style={{textAlign: 'right', marginBottom: 15}}>
-                <RaisedButton
-                  label="Change History"
-                  style={{marginLeft: 15}}
-                  icon={<IconChangeHistory />}
-                  onClick={() =>
-                    history.push(routeResolver.getRoute(
-                      'pim.events._id.log',
-                      {itemUid: match.params.itemUid}))
-                  }
-                />
-
-                <RaisedButton
-                  label="Edit"
-                  secondary={true}
-                  style={{marginLeft: 15}}
-                  icon={<IconEdit />}
-                  onClick={() =>
-                    history.push(routeResolver.getRoute(
-                      'pim.events._id.edit',
-                      {itemUid: match.params.itemUid}))
-                  }
-                />
-              </div>
-              <Event item={calendarItems[match.params.itemUid]} />
-            </Container>
+          path={routeResolver.getRoute('pim.events')}
+          render={() => (
+            <CollectionRoutes
+              syncInfo={this.props.syncInfo}
+              routePrefix="pim.events"
+              collections={collectionsCalendar}
+              items={calendarItems}
+              componentEdit={EventEdit}
+              componentView={Event}
+              onItemSave={this.onEventSave}
+            />
           )}
         />
       </Switch>
