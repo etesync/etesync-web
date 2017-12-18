@@ -3,6 +3,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 export default (props: any) => {
   return (
-    <CircularProgress size={60} thickness={7} />
+    <CircularProgress size={60} thickness={7} {...props} />
   );
 };
