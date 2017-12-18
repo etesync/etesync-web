@@ -160,6 +160,7 @@ class Pim extends React.PureComponent {
                 <RaisedButton
                   label="Edit"
                   secondary={true}
+                  style={{marginBottom: 15}}
                   icon={<IconEdit />}
                   onClick={() =>
                     history.push(routeResolver.getRoute(
@@ -204,6 +205,7 @@ class Pim extends React.PureComponent {
                 <RaisedButton
                   label="Edit"
                   secondary={true}
+                  style={{marginBottom: 15}}
                   icon={<IconEdit />}
                   onClick={() =>
                     history.push(routeResolver.getRoute(
