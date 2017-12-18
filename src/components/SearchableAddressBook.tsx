@@ -3,6 +3,7 @@ import * as React from 'react';
 import TextField from 'material-ui/TextField';
 
 import IconButton from 'material-ui/IconButton';
+import IconSearch from 'material-ui/svg-icons/action/search';
 import IconClear from 'material-ui/svg-icons/content/clear';
 
 import { ContactType } from '../pim-types';
@@ -58,6 +59,7 @@ class SearchableAddressBook extends React.PureComponent {
             <IconClear />
           </IconButton>
         }
+        <IconSearch />
         <AddressBook entries={entries} filter={(ent: ContactType) => ent.fn.match(reg)} {...rest} />
       </React.Fragment>
     );
