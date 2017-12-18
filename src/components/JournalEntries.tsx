@@ -26,6 +26,7 @@ class JournalEntries extends React.PureComponent {
   props: {
     journal: EteSync.Journal,
     entries: Immutable.List<EteSync.SyncEntry>,
+    uid?: string,
   };
 
   constructor(props: any) {
@@ -64,6 +65,11 @@ class JournalEntries extends React.PureComponent {
         name = 'Error processing entry';
         uid = '';
       }
+
+      if (this.props.uid && (this.props.uid !== uid)) {
+        return undefined;
+      }
+
       return (
         <ListItem
           key={idx}
