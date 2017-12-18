@@ -168,8 +168,8 @@ class Pim extends React.PureComponent {
           render={({match}) => (
             <Container style={{maxWidth: 400}}>
               <ContactEdit
-                initialCollection={(addressBookItems[match.params.contactUid] as any).journalUid}
-                contact={addressBookItems[match.params.contactUid]}
+                initialCollection={(addressBookItems[match.params.itemUid] as any).journalUid}
+                contact={addressBookItems[match.params.itemUid]}
                 collections={collectionsAddressBook}
                 onSave={this.onContactSave}
               />
@@ -184,7 +184,7 @@ class Pim extends React.PureComponent {
               <ItemChangeLog
                 syncInfo={this.props.syncInfo}
                 items={addressBookItems}
-                uid={match.params.contactUid}
+                uid={match.params.itemUid}
               />
             </Container>
           )}
@@ -202,7 +202,7 @@ class Pim extends React.PureComponent {
                   onClick={() =>
                     history.push(routeResolver.getRoute(
                       'pim.contacts._id.log',
-                      {contactUid: match.params.contactUid}))
+                      {itemUid: match.params.itemUid}))
                   }
                 />
 
@@ -214,11 +214,11 @@ class Pim extends React.PureComponent {
                   onClick={() =>
                     history.push(routeResolver.getRoute(
                       'pim.contacts._id.edit',
-                      {contactUid: match.params.contactUid}))
+                      {itemUid: match.params.itemUid}))
                   }
                 />
               </div>
-              <Contact item={addressBookItems[match.params.contactUid]} />
+              <Contact item={addressBookItems[match.params.itemUid]} />
             </Container>
           )}
         />
@@ -237,8 +237,8 @@ class Pim extends React.PureComponent {
           render={({match}) => (
             <Container style={{maxWidth: 400}}>
               <EventEdit
-                initialCollection={(calendarItems[match.params.eventUid] as any).journalUid}
-                event={calendarItems[match.params.eventUid]}
+                initialCollection={(calendarItems[match.params.itemUid] as any).journalUid}
+                event={calendarItems[match.params.itemUid]}
                 collections={collectionsCalendar}
                 onSave={this.onEventSave}
               />
@@ -253,7 +253,7 @@ class Pim extends React.PureComponent {
               <ItemChangeLog
                 syncInfo={this.props.syncInfo}
                 items={calendarItems}
-                uid={match.params.eventUid}
+                uid={match.params.itemUid}
               />
             </Container>
           )}
@@ -271,7 +271,7 @@ class Pim extends React.PureComponent {
                   onClick={() =>
                     history.push(routeResolver.getRoute(
                       'pim.events._id.log',
-                      {eventUid: match.params.eventUid}))
+                      {itemUid: match.params.itemUid}))
                   }
                 />
 
@@ -283,11 +283,11 @@ class Pim extends React.PureComponent {
                   onClick={() =>
                     history.push(routeResolver.getRoute(
                       'pim.events._id.edit',
-                      {eventUid: match.params.eventUid}))
+                      {itemUid: match.params.itemUid}))
                   }
                 />
               </div>
-              <Event item={calendarItems[match.params.eventUid]} />
+              <Event item={calendarItems[match.params.itemUid]} />
             </Container>
           )}
         />

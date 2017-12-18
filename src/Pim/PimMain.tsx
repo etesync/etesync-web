@@ -47,14 +47,14 @@ class PimMain extends React.PureComponent {
     const uid = event.uid;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.events._id', { eventUid: uid }));
+      routeResolver.getRoute('pim.events._id', { itemUid: uid }));
   }
 
   contactClicked(contact: ContactType) {
     const uid = contact.uid;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.contacts._id', { contactUid: uid }));
+      routeResolver.getRoute('pim.contacts._id', { itemUid: uid }));
   }
 
   floatingButtonClicked() {

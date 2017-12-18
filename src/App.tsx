@@ -51,7 +51,7 @@ export const routeResolver = new RouteResolver({
   pim: {
     contacts: {
       _id: {
-        _base: ':contactUid',
+        _base: ':itemUid',
         edit: 'edit',
         log: 'log',
       },
@@ -59,7 +59,7 @@ export const routeResolver = new RouteResolver({
     },
     events: {
       _id: {
-        _base: ':eventUid',
+        _base: ':itemUid',
         edit: 'edit',
         log: 'log',
       },
