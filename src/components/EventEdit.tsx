@@ -31,7 +31,7 @@ class EventEdit extends React.PureComponent {
   props: {
     collections: Array<EteSync.CollectionInfo>,
     initialCollection?: string,
-    event?: EventType,
+    item?: EventType,
     onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
   };
 
@@ -48,8 +48,8 @@ class EventEdit extends React.PureComponent {
 
       journalUid: '',
     };
-    if (this.props.event !== undefined) {
-      const event = this.props.event;
+    if (this.props.item !== undefined) {
+      const event = this.props.item;
 
       const allDay = event.startDate.isDate;
       let endDate = event.endDate.clone();
@@ -128,8 +128,8 @@ class EventEdit extends React.PureComponent {
       endDate.adjust(1, 0, 0, 0);
     }
 
-    let event = (this.props.event) ?
-      this.props.event.clone()
+    let event = (this.props.item) ?
+      this.props.item.clone()
       :
       new EventType()
     ;
@@ -142,7 +142,7 @@ class EventEdit extends React.PureComponent {
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
-    this.props.onSave(event, this.state.journalUid, this.props.event);
+    this.props.onSave(event, this.state.journalUid, this.props.item);
   }
 
   render() {
@@ -162,7 +162,7 @@ class EventEdit extends React.PureComponent {
     return (
       <React.Fragment>
         <h2>
-          {this.props.event ? 'Edit Event' : 'New Event'}
+          {this.props.item ? 'Edit Event' : 'New Event'}
         </h2>
         {this.state.error && (
           <div>ERROR! {this.state.error}</div>
@@ -180,7 +180,7 @@ class EventEdit extends React.PureComponent {
             style={styles.fullWidth}
             value={this.state.journalUid}
             floatingLabelText="Saving to"
-            disabled={this.props.event !== undefined}
+            disabled={this.props.item !== undefined}
             onChange={(event: object, key: number, payload: any) => this.handleChange('journalUid', payload)}
           >
             {this.props.collections.map((x) => (

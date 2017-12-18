@@ -120,7 +120,7 @@ class ContactEdit extends React.PureComponent {
   props: {
     collections: Array<EteSync.CollectionInfo>,
     initialCollection?: string,
-    contact?: ContactType,
+    item?: ContactType,
     onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => void;
   };
 
@@ -140,8 +140,8 @@ class ContactEdit extends React.PureComponent {
       journalUid: '',
     };
 
-    if (this.props.contact !== undefined) {
-      const contact = this.props.contact;
+    if (this.props.item !== undefined) {
+      const contact = this.props.item;
 
       this.state.uid = contact.uid;
       this.state.fn = contact.fn ? contact.fn : '';
@@ -248,8 +248,8 @@ class ContactEdit extends React.PureComponent {
   onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
-    let contact = (this.props.contact) ?
-      this.props.contact.clone()
+    let contact = (this.props.item) ?
+      this.props.item.clone()
       :
       new ContactType(new ICAL.Component(['vcard', [], []]))
     ;
@@ -293,7 +293,7 @@ class ContactEdit extends React.PureComponent {
     setProperty('title', this.state.title);
     setProperty('note', this.state.note);
 
-    this.props.onSave(contact, this.state.journalUid, this.props.contact);
+    this.props.onSave(contact, this.state.journalUid, this.props.item);
   }
 
   render() {
@@ -313,14 +313,14 @@ class ContactEdit extends React.PureComponent {
     return (
       <React.Fragment>
         <h2>
-          {this.props.contact ? 'Edit Contact' : 'New Contact'}
+          {this.props.item ? 'Edit Contact' : 'New Contact'}
         </h2>
         <form style={styles.form} onSubmit={this.onSubmit}>
           <SelectField
             style={styles.fullWidth}
             value={this.state.journalUid}
             floatingLabelText="Saving to"
-            disabled={this.props.contact !== undefined}
+            disabled={this.props.item !== undefined}
             onChange={(contact: object, key: number, payload: any) => this.handleChange('journalUid', payload)}
           >
             {this.props.collections.map((x) => (

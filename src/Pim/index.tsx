@@ -169,7 +169,7 @@ class Pim extends React.PureComponent {
             <Container style={{maxWidth: 400}}>
               <ContactEdit
                 initialCollection={(addressBookItems[match.params.itemUid] as any).journalUid}
-                contact={addressBookItems[match.params.itemUid]}
+                item={addressBookItems[match.params.itemUid]}
                 collections={collectionsAddressBook}
                 onSave={this.onContactSave}
               />
@@ -238,7 +238,7 @@ class Pim extends React.PureComponent {
             <Container style={{maxWidth: 400}}>
               <EventEdit
                 initialCollection={(calendarItems[match.params.itemUid] as any).journalUid}
-                event={calendarItems[match.params.itemUid]}
+                item={calendarItems[match.params.itemUid]}
                 collections={collectionsCalendar}
                 onSave={this.onEventSave}
               />
