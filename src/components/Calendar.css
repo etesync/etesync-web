@@ -1,0 +1,9 @@
+/* Hack the layout on mobile. */
+@media (max-width: 767px) {
+  .rbc-toolbar {
+    flex-direction: column;
+  }
+  .rbc-toolbar-label {
+    margin: 10px 0;
+  }
+}

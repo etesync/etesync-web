@@ -6,6 +6,8 @@ import 'moment/locale/en-gb';
 
 import { EventType } from '../pim-types';
 
+import './Calendar.css';
+
 moment.locale('en-gb');
 BigCalendar.momentLocalizer(moment);
 
@@ -45,7 +47,7 @@ class Calendar extends React.PureComponent {
 
   render() {
     return (
-      <div style={{width: '100%', height: 500, padding: 10}}>
+      <div style={{width: '100%', height: 500}}>
         <BigCalendar
           events={this.props.entries}
           onSelectEvent={this.props.onItemClick as any}
