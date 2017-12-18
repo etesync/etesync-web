@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { pure } from 'recompose';
+import { createSelector } from 'reselect';
 
 import * as colors from 'material-ui/styles/colors';
 
@@ -57,14 +58,10 @@ const AddressBookItem = pure((_props: any) => {
   );
 });
 
-class AddressBook extends React.PureComponent {
-  props: {
-    entries: Array<ContactType>,
-    onItemClick: (contact: ContactType) => void,
-  };
-
-  render() {
-    let entries = this.props.entries.sort((_a, _b) => {
+const sortSelector = createSelector(
+  (entries: Array<ContactType>) => entries,
+  (entries) => {
+    return entries.sort((_a, _b) => {
       const a = _a.fn;
       const b = _b.fn;
 
@@ -76,6 +73,22 @@ class AddressBook extends React.PureComponent {
         return 0;
       }
     });
+  },
+);
+
+class AddressBook extends React.PureComponent {
+  props: {
+    entries: Array<ContactType>,
+    onItemClick: (contact: ContactType) => void,
+    filter?: (a: ContactType) => boolean,
+  };
+
+  render() {
+    const sortedEntries = sortSelector(this.props.entries);
+
+    const entries = (this.props.filter) ?
+      sortedEntries.filter(this.props.filter)
+      : sortedEntries;
 
     let itemList = entries.map((entry, idx, array) => {
       const uid = entry.uid;
