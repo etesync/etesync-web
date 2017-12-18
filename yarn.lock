@@ -5243,7 +5243,7 @@ simple-assign@^0.1.0:
 
 "sjcl@git+https://github.com/etesync/sjcl":
   version "1.0.7"
-  resolved "git+https://github.com/etesync/sjcl#5cdf1d4d1d9e8e19fffdf6b498b5c7c073995abb"
+  resolved "git+https://github.com/etesync/sjcl#cf7673694e75d41902a68c69eb45ecc696393945"
 
 slash@^1.0.0:
   version "1.0.0"
