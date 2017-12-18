@@ -29,5 +29,5 @@ Then it's recommended you run `yarn build` to build a production ready client yo
 You could for exapmle use the python built-in web server by runnig `python3 -m http.server` from
 the build directory.
 
-Alternatively, you can run the debug server just to verify everything works. To do that,
-run `yarn start`.
+Alternatively, you can run the debug server just to verify everything works,
+though be aware that the app will probably be quite slow. To do that, run `yarn start`.
