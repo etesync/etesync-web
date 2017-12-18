@@ -9,7 +9,7 @@ import { Location, History } from 'history';
 
 import Container from '../widgets/Container';
 
-import AddressBook from '../components/AddressBook';
+import SearchableAddressBook from '../components/SearchableAddressBook';
 import Calendar from '../components/Calendar';
 
 import { EventType, ContactType } from '../pim-types';
@@ -92,7 +92,7 @@ class PimMain extends React.PureComponent {
             label={addressBookTitle}
           >
             <Container>
-              <AddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
+              <SearchableAddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
             </Container>
           </Tab>
           <Tab

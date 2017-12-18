@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
-import AddressBook from '../components/AddressBook';
+import SearchableAddressBook from '../components/SearchableAddressBook';
 import Contact from '../components/Contact';
 import Calendar from '../components/Calendar';
 import Event from '../components/Event';
@@ -29,7 +29,7 @@ interface PropsType {
 interface PropsTypeInner extends PropsType {
 }
 
-const JournalAddressBook = journalView(AddressBook, Contact);
+const JournalAddressBook = journalView(SearchableAddressBook, Contact);
 const PersistCalendar = historyPersistor('Calendar')(Calendar);
 const JournalCalendar = journalView(PersistCalendar, Event);
 
