@@ -118,7 +118,7 @@ class SyncGate extends React.PureComponent {
     if ((journals === null) ||
       (entryArrays.size === 0) ||
       !entryArrays.every((x: any) => (x.value !== null))) {
-      return (<LoadingIndicator />);
+      return (<LoadingIndicator style={{display: 'block', margin: '40px auto'}} />);
     }
 
     const journalMap = syncInfoSelector(this.props);
