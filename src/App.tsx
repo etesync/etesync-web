@@ -53,6 +53,7 @@ export const routeResolver = new RouteResolver({
       _id: {
         _base: ':contactUid',
         edit: 'edit',
+        log: 'log',
       },
       new: 'new',
     },
@@ -60,6 +61,7 @@ export const routeResolver = new RouteResolver({
       _id: {
         _base: ':eventUid',
         edit: 'edit',
+        log: 'log',
       },
       new: 'new',
     },

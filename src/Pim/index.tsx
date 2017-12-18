@@ -2,10 +2,12 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
+import IconChangeHistory from 'material-ui/svg-icons/action/change-history';
 
 import * as EteSync from '../api/EteSync';
 
 import { createSelector } from 'reselect';
+import { pure } from 'recompose';
 
 import { History } from 'history';
 
@@ -13,6 +15,7 @@ import { ContactType, EventType } from '../pim-types';
 
 import Container from '../widgets/Container';
 
+import JournalEntries from '../components/JournalEntries';
 import ContactEdit from '../components/ContactEdit';
 import Contact from '../components/Contact';
 import EventEdit from '../components/EventEdit';
@@ -65,6 +68,28 @@ const itemsSelector = createSelector(
     return { collectionsAddressBook, collectionsCalendar, addressBookItems, calendarItems };
   },
 );
+
+const ItemChangeLog = pure((props: any) => {
+  const {
+    syncInfo,
+    items,
+    uid,
+  } = props;
+
+  const journalItem = syncInfo.get((items[uid] as any).journalUid);
+
+  return (
+    <React.Fragment>
+      <h2>Item Change History</h2>
+      <JournalEntries
+        journal={journalItem.journal}
+        entries={journalItem.entries}
+        uid={uid}
+      />
+    </React.Fragment>
+  );
+});
+
 class Pim extends React.PureComponent {
   props: {
     etesync: CredentialsData;
@@ -152,15 +177,39 @@ class Pim extends React.PureComponent {
           )}
         />
         <Route
+          path={routeResolver.getRoute('pim.contacts._id.log')}
+          exact={true}
+          render={({match}) => (
+            <Container>
+              <ItemChangeLog
+                syncInfo={this.props.syncInfo}
+                items={addressBookItems}
+                uid={match.params.contactUid}
+              />
+            </Container>
+          )}
+        />
+        <Route
           path={routeResolver.getRoute('pim.contacts._id')}
           exact={true}
           render={({match, history}) => (
             <Container>
-              <div style={{textAlign: 'right'}}>
+              <div style={{textAlign: 'right', marginBottom: 15}}>
+                <RaisedButton
+                  label="Change History"
+                  style={{marginLeft: 15}}
+                  icon={<IconChangeHistory />}
+                  onClick={() =>
+                    history.push(routeResolver.getRoute(
+                      'pim.contacts._id.log',
+                      {contactUid: match.params.contactUid}))
+                  }
+                />
+
                 <RaisedButton
                   label="Edit"
                   secondary={true}
-                  style={{marginBottom: 15}}
+                  style={{marginLeft: 15}}
                   icon={<IconEdit />}
                   onClick={() =>
                     history.push(routeResolver.getRoute(
@@ -197,15 +246,39 @@ class Pim extends React.PureComponent {
           )}
         />
         <Route
+          path={routeResolver.getRoute('pim.events._id.log')}
+          exact={true}
+          render={({match}) => (
+            <Container>
+              <ItemChangeLog
+                syncInfo={this.props.syncInfo}
+                items={calendarItems}
+                uid={match.params.eventUid}
+              />
+            </Container>
+          )}
+        />
+        <Route
           path={routeResolver.getRoute('pim.events._id')}
           exact={true}
           render={({match, history}) => (
             <Container>
-              <div style={{textAlign: 'right'}}>
+              <div style={{textAlign: 'right', marginBottom: 15}}>
+                <RaisedButton
+                  label="Change History"
+                  style={{marginLeft: 15}}
+                  icon={<IconChangeHistory />}
+                  onClick={() =>
+                    history.push(routeResolver.getRoute(
+                      'pim.events._id.log',
+                      {eventUid: match.params.eventUid}))
+                  }
+                />
+
                 <RaisedButton
                   label="Edit"
                   secondary={true}
-                  style={{marginBottom: 15}}
+                  style={{marginLeft: 15}}
                   icon={<IconEdit />}
                   onClick={() =>
                     history.push(routeResolver.getRoute(
