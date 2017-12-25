@@ -122,6 +122,7 @@ class ContactEdit extends React.PureComponent {
     initialCollection?: string,
     item?: ContactType,
     onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => void;
+    onCancel: () => void;
   };
 
   constructor(props: any) {
@@ -306,6 +307,7 @@ class ContactEdit extends React.PureComponent {
       },
       submit: {
         marginTop: 40,
+        marginBottom: 20,
         textAlign: 'right',
       },
     };
@@ -455,9 +457,15 @@ class ContactEdit extends React.PureComponent {
 
           <div style={styles.submit}>
             <RaisedButton
+              label="Cancel"
+              onClick={this.props.onCancel}
+            />
+
+            <RaisedButton
               type="submit"
               label="Save"
               secondary={true}
+              style={{marginLeft: 15}}
             />
           </div>
 

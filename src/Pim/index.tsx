@@ -102,6 +102,7 @@ const CollectionRoutes = withRouter(
       componentView: any,
       items: {[key: string]: any},
       onItemSave: (item: Object, journalUid: string, originalContact?: Object) => void;
+      onItemCancel: () => void;
     };
 
     render() {
@@ -130,6 +131,7 @@ const CollectionRoutes = withRouter(
                   item={props.items[match.params.itemUid]}
                   collections={props.collections}
                   onSave={props.onItemSave}
+                  onCancel={props.onItemCancel}
                 />
               </Container>
             )}
@@ -197,6 +199,7 @@ class Pim extends React.PureComponent {
     super(props);
     this.onEventSave = this.onEventSave.bind(this);
     this.onContactSave = this.onContactSave.bind(this);
+    this.onCancel = this.onCancel.bind(this);
   }
 
   onEventSave(event: EventType, journalUid: string, originalEvent?: EventType) {
@@ -233,6 +236,10 @@ class Pim extends React.PureComponent {
     });
   }
 
+  onCancel() {
+    this.props.history.goBack();
+  }
+
   render() {
     const { collectionsAddressBook, collectionsCalendar, addressBookItems, calendarItems } = itemsSelector(this.props);
 
@@ -260,6 +267,7 @@ class Pim extends React.PureComponent {
               componentEdit={ContactEdit}
               componentView={Contact}
               onItemSave={this.onContactSave}
+              onItemCancel={this.onCancel}
             />
           )}
         />
@@ -274,6 +282,7 @@ class Pim extends React.PureComponent {
               componentEdit={EventEdit}
               componentView={Event}
               onItemSave={this.onEventSave}
+              onItemCancel={this.onCancel}
             />
           )}
         />

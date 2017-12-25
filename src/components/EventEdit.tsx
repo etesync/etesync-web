@@ -33,6 +33,7 @@ class EventEdit extends React.PureComponent {
     initialCollection?: string,
     item?: EventType,
     onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
+    onCancel: () => void;
   };
 
   constructor(props: any) {
@@ -155,6 +156,7 @@ class EventEdit extends React.PureComponent {
       },
       submit: {
         marginTop: 40,
+        marginBottom: 20,
         textAlign: 'right',
       },
     };
@@ -230,9 +232,15 @@ class EventEdit extends React.PureComponent {
 
           <div style={styles.submit}>
             <RaisedButton
+              label="Cancel"
+              onClick={this.props.onCancel}
+            />
+
+            <RaisedButton
               type="submit"
               label="Save"
               secondary={true}
+              style={{marginLeft: 15}}
             />
           </div>
 
