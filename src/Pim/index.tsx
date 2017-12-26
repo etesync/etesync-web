@@ -48,12 +48,6 @@ const itemsSelector = createSelector(
     syncInfo.forEach(
       (syncJournal) => {
         const syncEntries = syncJournal.entries;
-        const journal = syncJournal.journal;
-
-        // FIXME: Skip shared journals for now
-        if (journal.key) {
-          return;
-        }
 
         const collectionInfo = syncJournal.collection;
 
