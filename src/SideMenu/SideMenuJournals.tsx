@@ -21,7 +21,8 @@ class SideMenuJournals extends React.PureComponent {
     const derived = this.props.etesync.encryptionKey;
     const journalMap = this.props.journals.reduce(
       (ret, journal) => {
-        if (journal.key) {
+        // FIXME: Skip shared journals for now
+        if (journal.key && (journal.owner !== this.props.etesync.credentials.email)) {
           const key = 'UNSUPPORTED';
           ret[key] = ret[key] || [];
           ret[key].push(
