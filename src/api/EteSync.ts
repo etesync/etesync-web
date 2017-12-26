@@ -89,7 +89,7 @@ class BaseJournal<T extends BaseJson> {
     return this._json.uid;
   }
 
-  serialize(): BaseJson {
+  serialize(): T {
     return Object.assign(
       {},
       this._json,
