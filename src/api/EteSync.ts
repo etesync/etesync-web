@@ -125,6 +125,10 @@ export class Journal extends BaseJournal<JournalJson> {
     return this._json.key;
   }
 
+  get owner(): string | undefined {
+    return this._json.owner;
+  }
+
   get version(): number {
     return this._json.version;
   }
