@@ -53,7 +53,7 @@ const syncInfoSelector = createSelector(
         }
 
         // FIXME: Skip shared journals for now
-        if (journal.key && (journal.owner !== etesync.credentials.email)) {
+        if (journal.key) {
           return ret;
         }
 

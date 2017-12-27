@@ -22,7 +22,7 @@ class SideMenuJournals extends React.PureComponent {
     const journalMap = this.props.journals.reduce(
       (ret, journal) => {
         // FIXME: Skip shared journals for now
-        if (journal.key && (journal.owner !== this.props.etesync.credentials.email)) {
+        if (journal.key) {
           const key = 'UNSUPPORTED';
           ret[key] = ret[key] || [];
           ret[key].push(
