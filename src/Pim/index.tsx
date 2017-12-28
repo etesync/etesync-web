@@ -96,6 +96,7 @@ const CollectionRoutes = withRouter(
       componentView: any,
       items: {[key: string]: any},
       onItemSave: (item: Object, journalUid: string, originalContact?: Object) => void;
+      onItemDelete: (item: Object, journalUid: string) => void;
       onItemCancel: () => void;
     };
 
@@ -111,7 +112,11 @@ const CollectionRoutes = withRouter(
             exact={true}
             render={({match}) => (
               <Container style={{maxWidth: 400}}>
-                <ComponentEdit collections={props.collections} onSave={props.onItemSave} />
+                <ComponentEdit
+                  collections={props.collections}
+                  onSave={props.onItemSave}
+                  onDelete={props.onItemDelete}
+                />
               </Container>
             )}
           />
@@ -120,13 +125,16 @@ const CollectionRoutes = withRouter(
             exact={true}
             render={({match}) => (
               <Container style={{maxWidth: 400}}>
-                <ComponentEdit
-                  initialCollection={(props.items[match.params.itemUid] as any).journalUid}
-                  item={props.items[match.params.itemUid]}
-                  collections={props.collections}
-                  onSave={props.onItemSave}
-                  onCancel={props.onItemCancel}
-                />
+                {(match.params.itemUid in props.items) &&
+                  <ComponentEdit
+                    initialCollection={(props.items[match.params.itemUid] as any).journalUid}
+                    item={props.items[match.params.itemUid]}
+                    collections={props.collections}
+                    onSave={props.onItemSave}
+                    onDelete={props.onItemDelete}
+                    onCancel={props.onItemCancel}
+                  />
+                }
               </Container>
             )}
           />
@@ -194,6 +202,7 @@ class Pim extends React.PureComponent {
     this.onEventSave = this.onEventSave.bind(this);
     this.onContactSave = this.onContactSave.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onItemDelete = this.onItemDelete.bind(this);
   }
 
   onEventSave(event: EventType, journalUid: string, originalEvent?: EventType) {
@@ -230,6 +239,23 @@ class Pim extends React.PureComponent {
     });
   }
 
+  onItemDelete(item: any, journalUid: string) {
+    const syncJournal = this.props.syncInfo.get(journalUid);
+
+    if (syncJournal === undefined) {
+      return;
+    }
+
+    const journal = syncJournal.journal;
+
+    let action = EteSync.SyncEntryAction.Delete;
+    let deleteItem = store.dispatch(
+      createJournalEntry(this.props.etesync, journal, syncJournal.journalEntries, action, item.toIcal()));
+    (deleteItem as any).then(() => {
+      this.props.history.push(routeResolver.getRoute('pim'));
+    });
+  }
+
   onCancel() {
     this.props.history.goBack();
   }
@@ -261,6 +287,7 @@ class Pim extends React.PureComponent {
               componentEdit={ContactEdit}
               componentView={Contact}
               onItemSave={this.onContactSave}
+              onItemDelete={this.onItemDelete}
               onItemCancel={this.onCancel}
             />
           )}
@@ -276,6 +303,7 @@ class Pim extends React.PureComponent {
               componentEdit={EventEdit}
               componentView={Event}
               onItemSave={this.onEventSave}
+              onItemDelete={this.onItemDelete}
               onItemCancel={this.onCancel}
             />
           )}

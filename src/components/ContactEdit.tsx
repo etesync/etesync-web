@@ -4,11 +4,15 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import { red500, fullWhite } from 'material-ui/styles/colors';
+import IconDelete from 'material-ui/svg-icons/action/delete';
 
 import IconAdd from 'material-ui/svg-icons/content/add';
 import IconClear from 'material-ui/svg-icons/content/clear';
 import IconCancel from 'material-ui/svg-icons/content/clear';
 import IconSave from 'material-ui/svg-icons/content/save';
+
+import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
 import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
@@ -117,6 +121,7 @@ class ContactEdit extends React.PureComponent {
     title: string;
 
     journalUid: string;
+    showDeleteDialog: boolean;
   };
 
   props: {
@@ -124,6 +129,7 @@ class ContactEdit extends React.PureComponent {
     initialCollection?: string,
     item?: ContactType,
     onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => void;
+    onDelete: (contact: ContactType, journalUid: string) => void;
     onCancel: () => void;
   };
 
@@ -141,6 +147,7 @@ class ContactEdit extends React.PureComponent {
       title: '',
 
       journalUid: '',
+      showDeleteDialog: false,
     };
 
     if (this.props.item !== undefined) {
@@ -188,6 +195,7 @@ class ContactEdit extends React.PureComponent {
     this.handleValueTypeChange = this.handleValueTypeChange.bind(this);
     this.addValueType = this.addValueType.bind(this);
     this.removeValueType = this.removeValueType.bind(this);
+    this.onDeleteRequest = this.onDeleteRequest.bind(this);
   }
 
   componentWillReceiveProps(nextProps: any) {
@@ -297,6 +305,12 @@ class ContactEdit extends React.PureComponent {
     setProperty('note', this.state.note);
 
     this.props.onSave(contact, this.state.journalUid, this.props.item);
+  }
+
+  onDeleteRequest() {
+    this.setState({
+      showDeleteDialog: true
+    });
   }
 
   render() {
@@ -464,6 +478,17 @@ class ContactEdit extends React.PureComponent {
               icon={<IconCancel />}
             />
 
+            {this.props.item &&
+              <RaisedButton
+                label="Delete"
+                labelColor={fullWhite}
+                backgroundColor={red500}
+                style={{marginLeft: 15}}
+                icon={<IconDelete color={fullWhite} />}
+                onClick={this.onDeleteRequest}
+              />
+            }
+
             <RaisedButton
               type="submit"
               label="Save"
@@ -478,6 +503,15 @@ class ContactEdit extends React.PureComponent {
             the unsupported types will be copied as is.
           </div>
         </form>
+
+      <ConfirmationDialog
+        title="Delete Confirmation"
+        open={this.state.showDeleteDialog}
+        onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
+        onCancel={() => this.setState({showDeleteDialog: false})}
+      >
+        Are you sure you would like to delete this contact?
+      </ConfirmationDialog>
       </React.Fragment>
     );
   }

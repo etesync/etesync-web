@@ -4,11 +4,15 @@ import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import { red500, fullWhite } from 'material-ui/styles/colors';
+import IconDelete from 'material-ui/svg-icons/action/delete';
 
 import IconCancel from 'material-ui/svg-icons/content/clear';
 import IconSave from 'material-ui/svg-icons/content/save';
 
 import DateTimePicker from '../widgets/DateTimePicker';
+
+import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
 import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
@@ -29,6 +33,7 @@ class EventEdit extends React.PureComponent {
     journalUid: string;
 
     error?: string;
+    showDeleteDialog: boolean;
   };
 
   props: {
@@ -36,6 +41,7 @@ class EventEdit extends React.PureComponent {
     initialCollection?: string,
     item?: EventType,
     onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
+    onDelete: (event: EventType, journalUid: string) => void;
     onCancel: () => void;
   };
 
@@ -51,6 +57,7 @@ class EventEdit extends React.PureComponent {
       end: '',
 
       journalUid: '',
+      showDeleteDialog: false,
     };
     if (this.props.item !== undefined) {
       const event = this.props.item;
@@ -83,6 +90,7 @@ class EventEdit extends React.PureComponent {
     this.handleChange = this.handleChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.toggleAllDay = this.toggleAllDay.bind(this);
+    this.onDeleteRequest = this.onDeleteRequest.bind(this);
   }
 
   componentWillReceiveProps(nextProps: any) {
@@ -147,6 +155,12 @@ class EventEdit extends React.PureComponent {
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
     this.props.onSave(event, this.state.journalUid, this.props.item);
+  }
+
+  onDeleteRequest() {
+    this.setState({
+      showDeleteDialog: true
+    });
   }
 
   render() {
@@ -240,6 +254,17 @@ class EventEdit extends React.PureComponent {
               onClick={this.props.onCancel}
             />
 
+            {this.props.item &&
+              <RaisedButton
+                label="Delete"
+                labelColor={fullWhite}
+                backgroundColor={red500}
+                style={{marginLeft: 15}}
+                icon={<IconDelete color={fullWhite} />}
+                onClick={this.onDeleteRequest}
+              />
+            }
+
             <RaisedButton
               type="submit"
               label="Save"
@@ -254,6 +279,15 @@ class EventEdit extends React.PureComponent {
             the unsupported types will be copied as is.
           </div>
         </form>
+
+      <ConfirmationDialog
+        title="Delete Confirmation"
+        open={this.state.showDeleteDialog}
+        onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
+        onCancel={() => this.setState({showDeleteDialog: false})}
+      >
+        Are you sure you would like to delete this contact?
+      </ConfirmationDialog>
       </React.Fragment>
     );
   }
