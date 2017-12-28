@@ -199,13 +199,12 @@ class Pim extends React.PureComponent {
 
   constructor(props: any) {
     super(props);
-    this.onEventSave = this.onEventSave.bind(this);
-    this.onContactSave = this.onContactSave.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.onItemDelete = this.onItemDelete.bind(this);
+    this.onItemSave = this.onItemSave.bind(this);
   }
 
-  onEventSave(event: EventType, journalUid: string, originalEvent?: EventType) {
+  onItemSave(item: any, journalUid: string, originalEvent?: any) {
     const syncJournal = this.props.syncInfo.get(journalUid);
 
     if (syncJournal === undefined) {
@@ -216,25 +215,8 @@ class Pim extends React.PureComponent {
 
     let action = (originalEvent === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
     let saveEvent = store.dispatch(
-      createJournalEntry(this.props.etesync, journal, syncJournal.journalEntries, action, event.toIcal()));
+      createJournalEntry(this.props.etesync, journal, syncJournal.journalEntries, action, item.toIcal()));
     (saveEvent as any).then(() => {
-      this.props.history.goBack();
-    });
-  }
-
-  onContactSave(contact: ContactType, journalUid: string, originalContact?: ContactType) {
-    const syncJournal = this.props.syncInfo.get(journalUid);
-
-    if (syncJournal === undefined) {
-      return;
-    }
-
-    const journal = syncJournal.journal;
-
-    let action = (originalContact === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
-    let saveContact = store.dispatch(
-      createJournalEntry(this.props.etesync, journal, syncJournal.journalEntries, action, contact.toIcal()));
-    (saveContact as any).then(() => {
       this.props.history.goBack();
     });
   }
@@ -286,7 +268,7 @@ class Pim extends React.PureComponent {
               items={addressBookItems}
               componentEdit={ContactEdit}
               componentView={Contact}
-              onItemSave={this.onContactSave}
+              onItemSave={this.onItemSave}
               onItemDelete={this.onItemDelete}
               onItemCancel={this.onCancel}
             />
@@ -302,7 +284,7 @@ class Pim extends React.PureComponent {
               items={calendarItems}
               componentEdit={EventEdit}
               componentView={Event}
-              onItemSave={this.onEventSave}
+              onItemSave={this.onItemSave}
               onItemDelete={this.onItemDelete}
               onItemCancel={this.onCancel}
             />
