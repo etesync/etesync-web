@@ -9,6 +9,7 @@ export default pure((_props: any) => {
   const {
     onCancel,
     onOk,
+    labelOk,
     ...props,
   } = _props;
   const actions = [
@@ -24,7 +25,7 @@ export default pure((_props: any) => {
     (
       <FlatButton
         key="2"
-        label="Submit"
+        label={labelOk || 'Confirm'}
         primary={true}
         onClick={onOk}
       />

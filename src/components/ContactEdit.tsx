@@ -506,6 +506,7 @@ class ContactEdit extends React.PureComponent {
 
       <ConfirmationDialog
         title="Delete Confirmation"
+        labelOk="Delete"
         open={this.state.showDeleteDialog}
         onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
         onCancel={() => this.setState({showDeleteDialog: false})}
