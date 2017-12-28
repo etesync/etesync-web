@@ -7,6 +7,8 @@ import MenuItem from 'material-ui/MenuItem';
 
 import IconAdd from 'material-ui/svg-icons/content/add';
 import IconClear from 'material-ui/svg-icons/content/clear';
+import IconCancel from 'material-ui/svg-icons/content/clear';
+import IconSave from 'material-ui/svg-icons/content/save';
 
 import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
@@ -459,12 +461,14 @@ class ContactEdit extends React.PureComponent {
             <RaisedButton
               label="Cancel"
               onClick={this.props.onCancel}
+              icon={<IconCancel />}
             />
 
             <RaisedButton
               type="submit"
               label="Save"
               secondary={true}
+              icon={<IconSave />}
               style={{marginLeft: 15}}
             />
           </div>

@@ -5,6 +5,9 @@ import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
+import IconCancel from 'material-ui/svg-icons/content/clear';
+import IconSave from 'material-ui/svg-icons/content/save';
+
 import DateTimePicker from '../widgets/DateTimePicker';
 
 import * as uuid from 'uuid';
@@ -233,6 +236,7 @@ class EventEdit extends React.PureComponent {
           <div style={styles.submit}>
             <RaisedButton
               label="Cancel"
+              icon={<IconCancel />}
               onClick={this.props.onCancel}
             />
 
@@ -240,6 +244,7 @@ class EventEdit extends React.PureComponent {
               type="submit"
               label="Save"
               secondary={true}
+              icon={<IconSave />}
               style={{marginLeft: 15}}
             />
           </div>
