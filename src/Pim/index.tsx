@@ -13,7 +13,7 @@ import { pure } from 'recompose';
 
 import { History } from 'history';
 
-import { ContactType, EventType } from '../pim-types';
+import { PimType, ContactType, EventType } from '../pim-types';
 
 import Container from '../widgets/Container';
 
@@ -72,7 +72,7 @@ const ItemChangeLog = pure((props: any) => {
     uid,
   } = props;
 
-  const journalItem = syncInfo.get((items[uid] as any).journalUid);
+  const journalItem = syncInfo.get(items[uid].journalUid);
 
   return (
     <React.Fragment>
@@ -94,9 +94,9 @@ const CollectionRoutes = withRouter(
       collections: Array<EteSync.CollectionInfo>,
       componentEdit: any,
       componentView: any,
-      items: {[key: string]: any},
-      onItemSave: (item: Object, journalUid: string, originalContact?: Object) => void;
-      onItemDelete: (item: Object, journalUid: string) => void;
+      items: {[key: string]: PimType},
+      onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
+      onItemDelete: (item: PimType, journalUid: string) => void;
       onItemCancel: () => void;
     };
 
@@ -204,7 +204,7 @@ class Pim extends React.PureComponent {
     this.onItemSave = this.onItemSave.bind(this);
   }
 
-  onItemSave(item: any, journalUid: string, originalEvent?: any) {
+  onItemSave(item: PimType, journalUid: string, originalEvent?: PimType) {
     const syncJournal = this.props.syncInfo.get(journalUid);
 
     if (syncJournal === undefined) {
@@ -221,7 +221,7 @@ class Pim extends React.PureComponent {
     });
   }
 
-  onItemDelete(item: any, journalUid: string) {
+  onItemDelete(item: PimType, journalUid: string) {
     const syncJournal = this.props.syncInfo.get(journalUid);
 
     if (syncJournal === undefined) {

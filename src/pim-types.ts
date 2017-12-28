@@ -1,6 +1,12 @@
 import * as ICAL from 'ical.js';
 
-export class EventType extends ICAL.Event {
+export interface PimType {
+  uid: string;
+  toIcal(): string;
+  clone(): PimType;
+}
+
+export class EventType extends ICAL.Event implements PimType {
   color: string;
 
   static fromVCalendar(comp: ICAL.Component) {
@@ -33,7 +39,7 @@ export class EventType extends ICAL.Event {
   }
 }
 
-export class ContactType {
+export class ContactType implements PimType {
   comp: ICAL.Component;
 
   constructor(comp: ICAL.Component) {
