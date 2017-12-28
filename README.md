@@ -1,4 +1,10 @@
-An EteSync web client. Use EteSync from the browser
+# The EteSync Web App
+
+Use EteSync from the browser!
+
+
+![GitHub tag](https://img.shields.io/github/tag/etesync/etesync-web.svg)
+[![Chat on freenode](https://img.shields.io/badge/irc.freenode.net-%23EteSync-blue.svg)](https://webchat.freenode.net/?channels=#etesync)
 
 # Usage
 
