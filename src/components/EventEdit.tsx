@@ -131,13 +131,13 @@ class EventEdit extends React.PureComponent {
     const startDate = ICAL.Time.fromString(this.state.start);
     let endDate = ICAL.Time.fromString(this.state.end);
 
+    if (this.state.allDay) {
+      endDate.adjust(1, 0, 0, 0);
+    }
+
     if (startDate.compare(endDate) >= 0) {
       this.setState({error: 'End time must be later than start time!'});
       return;
-    }
-
-    if (this.state.allDay) {
-      endDate.adjust(1, 0, 0, 0);
     }
 
     let event = (this.props.item) ?
