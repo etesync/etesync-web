@@ -11,6 +11,8 @@ import { login, deriveKey } from './store/actions';
 
 import * as C from './constants';
 
+const SignedPagesBadge = require('./images/signed-pages-badge.svg');
+
 class LoginGate extends React.Component {
   props: {
     credentials: CredentialsType;
@@ -53,6 +55,9 @@ class LoginGate extends React.Component {
             loading={this.props.credentials.fetching}
           />
           <hr style={style.divider}/>
+          <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
+            <img src={SignedPagesBadge}/>
+          </ExternalLink>
           <ul>
             <li><ExternalLink style={style.isSafe} href={C.homePage}>
                 The EteSync Website
