@@ -13,6 +13,7 @@ const logo = require('../images/logo.svg');
 import { History } from 'history';
 
 import SideMenuJournals from './SideMenuJournals';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 import { routeResolver, getPalette } from '../App';
 
@@ -61,11 +62,13 @@ class SideMenu extends React.PureComponent {
         <React.Fragment>
           <ListDivider />
           <ListSubheader>Journals</ListSubheader>
-          <SideMenuJournals
-            etesync={this.props.etesync}
-            journals={this.props.journals.value}
-            onItemClick={this.journalClicked}
-          />
+          <ErrorBoundary>
+            <SideMenuJournals
+              etesync={this.props.etesync}
+              journals={this.props.journals.value}
+              onItemClick={this.journalClicked}
+            />
+          </ErrorBoundary>
         </React.Fragment>
       );
 

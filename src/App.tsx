@@ -17,6 +17,7 @@ import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import './App.css';
 
 import withSpin from './widgets/withSpin';
+import ErrorBoundary from './components/ErrorBoundary';
 import SideMenu from './SideMenu';
 import LoginGate from './LoginGate';
 import { RouteResolver } from './routes';
@@ -192,7 +193,9 @@ class App extends React.PureComponent {
             <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
           </Drawer>
 
-          <LoginGate credentials={this.props.credentials} />
+          <ErrorBoundary>
+            <LoginGate credentials={this.props.credentials} />
+          </ErrorBoundary>
         </div>
         </BrowserRouter>
       </MuiThemeProvider>
