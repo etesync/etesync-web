@@ -14,8 +14,8 @@ import Pim from './Pim';
 
 import * as EteSync from './api/EteSync';
 
-import { store, JournalsType, EntriesType, StoreState, CredentialsData } from './store';
-import { fetchAll } from './store/actions';
+import { store, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoData } from './store';
+import { fetchAll, fetchUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -33,28 +33,33 @@ interface PropsType {
 interface PropsTypeInner extends PropsType {
   journals: JournalsType;
   entries: EntriesType;
+  userInfo: UserInfoData;
 }
 
 const syncInfoSelector = createSelector(
   (props: PropsTypeInner) => props.etesync,
   (props: PropsTypeInner) => props.journals.value as List<EteSync.Journal>,
   (props: PropsTypeInner) => props.entries,
-  (etesync, journals, entries) => {
+  (props: PropsTypeInner) => props.userInfo,
+  (etesync, journals, entries, userInfo) => {
+    const derived = etesync.encryptionKey;
+    const keyPair = userInfo.getKeyPair(new EteSync.CryptoManager(derived, 'userInfo', userInfo.version));
+    const asymmetricCryptoManager = new EteSync.AsymmetricCryptoManager(keyPair);
     return journals.reduce(
       (ret, journal) => {
-        const derived = etesync.encryptionKey;
         const journalEntries = entries.get(journal.uid);
-        const cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-
         let prevUid: string | null = null;
 
         if (!journalEntries || !journalEntries.value) {
           return ret;
         }
 
-        // FIXME: Skip shared journals for now
+        let cryptoManager: EteSync.CryptoManager;
         if (journal.key) {
-          return ret;
+          const derivedJournalKey = asymmetricCryptoManager.decryptBytes(journal.key);
+          cryptoManager = EteSync.CryptoManager.fromDerivedKey(derivedJournalKey, journal.version);
+        } else {
+          cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
         }
 
         const collectionInfo = journal.getInfo(cryptoManager);
@@ -89,7 +94,16 @@ class SyncGate extends React.PureComponent {
   }
 
   componentDidMount() {
-    store.dispatch(fetchAll(this.props.etesync, this.props.entries));
+    const sync = () => {
+      store.dispatch(fetchAll(this.props.etesync, this.props.entries));
+    };
+
+    if (this.props.userInfo) {
+      sync();
+    } else {
+      const fetching = store.dispatch(fetchUserInfo(this.props.etesync, this.props.etesync.credentials.email)) as any;
+      fetching.then(sync, sync);
+    }
   }
 
   render() {
@@ -115,7 +129,7 @@ class SyncGate extends React.PureComponent {
       }
     }
 
-    if ((journals === null) ||
+    if ((this.props.userInfo === null) || (journals === null) ||
       (entryArrays.size === 0) ||
       !entryArrays.every((x: any) => (x.value !== null))) {
       return (<LoadingIndicator style={{display: 'block', margin: '40px auto'}} />);
@@ -160,6 +174,7 @@ const mapStateToProps = (state: StoreState, props: PropsType) => {
   return {
     journals: state.cache.journals,
     entries: state.cache.entries,
+    userInfo: state.cache.userInfo.value,
   };
 };
 
