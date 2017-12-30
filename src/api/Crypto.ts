@@ -48,21 +48,37 @@ export class CryptoManager {
     this.hmacKey = hmac256(sjcl.codec.utf8String.toBits('hmac'), this.key);
   }
 
-  encrypt(content: string): byte[] {
+  encryptBits(content: number[]): byte[] {
     const iv = sjcl.random.randomWords(this.cipherWords);
 
     let prp = new sjcl.cipher.aes(this.cipherKey);
-    let cipherText = sjcl.mode.cbc.encrypt(prp, sjcl.codec.utf8String.toBits(content), iv);
+    let cipherText = sjcl.mode.cbc.encrypt(prp, content, iv);
     return sjcl.codec.bytes.fromBits(iv.concat(cipherText));
   }
 
-  decrypt(content: byte[]): string {
+  decryptBits(content: byte[]): number[] {
     let cipherText = sjcl.codec.bytes.toBits(content);
     const iv = cipherText.splice(0, this.cipherWords);
 
     let prp = new sjcl.cipher.aes(this.cipherKey);
     let clearText = sjcl.mode.cbc.decrypt(prp, cipherText, iv);
-    return sjcl.codec.utf8String.fromBits(clearText);
+    return clearText;
+  }
+
+  encryptBytes(content: byte[]): byte[] {
+    return this.encryptBits(sjcl.codec.bytes.toBits(content));
+  }
+
+  decryptBytes(content: byte[]): byte[] {
+    return sjcl.codec.bytes.fromBits(this.decryptBits(content));
+  }
+
+  encrypt(content: string): byte[] {
+    return this.encryptBits(sjcl.codec.utf8String.toBits(content));
+  }
+
+  decrypt(content: byte[]): string {
+    return sjcl.codec.utf8String.fromBits(this.decryptBits(content));
   }
 
   hmac(content: byte[]): byte[] {
