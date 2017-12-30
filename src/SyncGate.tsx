@@ -157,6 +157,7 @@ class SyncGate extends React.PureComponent {
           render={({match, history}) => (
             <PimRouter
               etesync={this.props.etesync}
+              userInfo={this.props.userInfo.value!}
               syncInfo={journalMap}
               history={history}
             />

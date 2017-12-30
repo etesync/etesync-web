@@ -26,7 +26,7 @@ import PimMain from './PimMain';
 
 import { routeResolver } from '../App';
 
-import { store, CredentialsData } from '../store';
+import { store, CredentialsData, UserInfoData } from '../store';
 
 import { SyncInfo } from '../SyncGate';
 
@@ -193,6 +193,7 @@ const CollectionRoutes = withRouter(
 class Pim extends React.PureComponent {
   props: {
     etesync: CredentialsData;
+    userInfo: UserInfoData;
     syncInfo: SyncInfo;
     history: History;
   };
@@ -215,7 +216,8 @@ class Pim extends React.PureComponent {
 
     let action = (originalEvent === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
     let saveEvent = store.dispatch(
-      createJournalEntry(this.props.etesync, journal, syncJournal.journalEntries, action, item.toIcal()));
+      createJournalEntry(
+        this.props.etesync, this.props.userInfo, journal, syncJournal.journalEntries, action, item.toIcal()));
     (saveEvent as any).then(() => {
       this.props.history.goBack();
     });
@@ -232,7 +234,8 @@ class Pim extends React.PureComponent {
 
     let action = EteSync.SyncEntryAction.Delete;
     let deleteItem = store.dispatch(
-      createJournalEntry(this.props.etesync, journal, syncJournal.journalEntries, action, item.toIcal()));
+      createJournalEntry(
+        this.props.etesync, this.props.userInfo, journal, syncJournal.journalEntries, action, item.toIcal()));
     (deleteItem as any).then(() => {
       this.props.history.push(routeResolver.getRoute('pim'));
     });
