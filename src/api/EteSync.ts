@@ -276,7 +276,7 @@ export class UserInfo extends BaseItem<UserInfoJson> {
   }
 
   calculateHmac(cryptoManager: CryptoManager, encrypted: byte[]): byte[] {
-    let postfix = stringToByteArray(this._json.pubkey);
+    let postfix = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(this._json.pubkey));
     return cryptoManager.hmac(encrypted.concat(postfix));
   }
 
