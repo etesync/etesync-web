@@ -80,6 +80,16 @@ export const { fetchEntries, createEntries } = createActions({
   ]
 });
 
+export const { fetchUserInfo } = createActions({
+  FETCH_USER_INFO: (etesync: CredentialsData, owner: string) => {
+    const creds = etesync.credentials;
+    const apiBase = etesync.serviceApiUrl;
+    let userInfoManager = new EteSync.UserInfoManager(creds, apiBase);
+
+    return userInfoManager.fetch(owner);
+  },
+});
+
 export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
   return (dispatch: any) => {
     dispatch(fetchJournals(etesync)).then((journalsAction: any) => {

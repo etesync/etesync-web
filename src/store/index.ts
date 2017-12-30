@@ -6,9 +6,10 @@ import { createLogger } from 'redux-logger';
 import promiseMiddleware from './promise-middleware';
 
 import reducers from './reducers';
-import { CredentialsTypeRemote, JournalsType, EntriesType } from './reducers';
+import { CredentialsTypeRemote, JournalsType, EntriesType, UserInfoType } from './reducers';
 
-export { CredentialsType, CredentialsData, JournalsType, JournalsData, EntriesType, EntriesData } from './reducers';
+export { CredentialsType, CredentialsData, JournalsType, JournalsData,
+  EntriesType, EntriesData, UserInfoType, UserInfoData } from './reducers';
 
 export interface StoreState {
   fetchCount: number;
@@ -17,6 +18,7 @@ export interface StoreState {
   cache: {
     journals: JournalsType;
     entries: EntriesType;
+    userInfo: UserInfoType;
   };
 }
 

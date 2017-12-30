@@ -51,6 +51,12 @@ const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
 export type EntriesTypeImmutable = Map<string, Record<FetchType<EntriesData>>>;
 export type EntriesType = Map<string, FetchType<EntriesData>>;
 
+export type UserInfoData = EteSync.UserInfo;
+
+const UserInfoFetchRecord = fetchTypeRecord<UserInfoData>();
+export type UserInfoType = FetchType<UserInfoData>;
+export type UserInfoTypeImmutable = Record<UserInfoType>;
+
 function fetchTypeIdentityReducer(
   state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend: boolean = false) {
   if (action.error) {
@@ -161,6 +167,26 @@ const journals = handleAction(
   new JournalsFetchRecord(),
 );
 
+const userInfo = handleAction(
+  actions.fetchUserInfo,
+  (state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend: boolean = false) => {
+    if (action.error) {
+      return state.set('error', action.payload);
+    } else {
+      const payload = (action.payload === undefined) ? null : action.payload;
+
+      state = state.set('error', undefined);
+
+      if (action.payload === undefined) {
+        return state;
+      }
+
+      return state.set('value', payload);
+    }
+  },
+  new JournalsFetchRecord(),
+);
+
 const fetchCount = handleAction(
   combineActions(
     actions.fetchCredentials,
@@ -228,6 +254,24 @@ const entriesDeserialize = (state: EteSync.EntryJson[]): FetchType<EntriesData> 
   }))});
 };
 
+const userInfoSerialize = (state: FetchType<UserInfoData>) => {
+  if ((state === null) || (state.value == null)) {
+    return null;
+  }
+
+  return state.value.serialize();
+};
+
+const userInfoDeserialize = (state: EteSync.UserInfoJson) => {
+  if (state === null) {
+    return null;
+  }
+
+  let ret = new EteSync.UserInfo(state.owner!, state.version);
+  ret.deserialize(state);
+  return ret;
+};
+
 const cacheSerialize = (state: any, key: string) => {
   if (key === 'entries') {
     let ret = {};
@@ -237,6 +281,8 @@ const cacheSerialize = (state: any, key: string) => {
     return ret;
   } else if (key === 'journals') {
     return journalsSerialize(state.value);
+  } else if (key === 'userInfo') {
+    return userInfoSerialize(state.value);
   }
 
   return state;
@@ -251,6 +297,8 @@ const cacheDeserialize = (state: any, key: string) => {
     return Map(ret);
   } else if (key === 'journals') {
     return new JournalsFetchRecord({value: journalsDeserialize(state)});
+  } else if (key === 'userInfo') {
+    return new UserInfoFetchRecord({value: userInfoDeserialize(state)});
   }
 
   return state;
@@ -269,6 +317,7 @@ const reducers = combineReducers({
   cache: persistReducer(cachePersistConfig, combineReducers({
     entries,
     journals,
+    userInfo,
   })),
 });
 
