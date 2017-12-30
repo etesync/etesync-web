@@ -1,4 +1,4 @@
-import { CryptoManager, deriveKey } from './Crypto';
+import { CryptoManager, AsymmetricCryptoManager, deriveKey } from './Crypto';
 import { USER, PASSWORD, keyBase64 } from './TestConstants';
 
 import { stringToByteArray } from './Helpers';
@@ -26,4 +26,13 @@ it('Symmetric encryption v2', () => {
 
   const expected = 'XQ/A0gentOaE98R9wzf3zEIAHj4OH1GF8J4C6JiJupo=';
   expect(expected).toBe(cryptoManager.hmac64(stringToByteArray('Some test data')));
+});
+
+it('Asymmetric encryption', () => {
+  const keyPair = AsymmetricCryptoManager.generateKeyPair();
+  const cryptoManager = new AsymmetricCryptoManager(keyPair);
+
+  const clearText = [1, 2, 4, 5];
+  const cipher = cryptoManager.encryptBytes(keyPair.publicKey, clearText);
+  expect(clearText).toEqual(cryptoManager.decryptBytes(cipher));
 });

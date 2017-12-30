@@ -1,4 +1,5 @@
 import * as sjcl from 'sjcl';
+import * as NodeRSA from 'node-rsa';
 
 import * as Constants from './Constants';
 import { byte, base64 } from './Helpers';
@@ -112,5 +113,37 @@ export class CryptoManager {
     }
 
     return hmac256(this.hmacKey, content);
+  }
+}
+
+function bufferToArray(buffer: Buffer) {
+  return Array.prototype.slice.call(buffer);
+}
+
+export class AsymmetricCryptoManager {
+  keyPair: NodeRSA;
+
+  static generateKeyPair() {
+    const keyPair = new NodeRSA();
+    keyPair.generateKeyPair(3072, 65537);
+    const pubkey = keyPair.exportKey('pkcs1-public-der') as Buffer;
+    const privkey = keyPair.exportKey('pkcs1-private-der') as Buffer;
+    return new AsymmetricKeyPair(
+      bufferToArray(pubkey), bufferToArray(privkey));
+  }
+
+  constructor(keyPair: AsymmetricKeyPair) {
+    this.keyPair = new NodeRSA();
+    this.keyPair.importKey(Buffer.from(keyPair.privateKey), 'pkcs1-der');
+  }
+
+  encryptBytes(publicKey: byte[], content: byte[]): byte[] {
+    const key = new NodeRSA();
+    key.importKey(Buffer.from(publicKey), 'pkcs1-public-der');
+    return bufferToArray(key.encrypt(Buffer.from(content), 'buffer'));
+  }
+
+  decryptBytes(content: byte[]): byte[] {
+    return bufferToArray(this.keyPair.decrypt(Buffer.from(content), 'buffer'));
   }
 }
