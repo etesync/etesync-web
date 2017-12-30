@@ -6,8 +6,8 @@ import * as Constants from './Constants';
 import * as fetch from 'isomorphic-fetch';
 
 import { byte, base64, stringToByteArray } from './Helpers';
-import { CryptoManager, HMAC_SIZE_BYTES } from './Crypto';
-export { CryptoManager, deriveKey } from './Crypto';
+import { CryptoManager, AsymmetricKeyPair, HMAC_SIZE_BYTES } from './Crypto';
+export { CryptoManager, AsymmetricKeyPair, deriveKey } from './Crypto';
 
 class ExtendableError extends Error {
   constructor(message: any) {
@@ -226,22 +226,53 @@ export class Entry extends BaseJournal<EntryJson> {
 
 export interface UserInfoJson extends BaseItemJson {
   version?: number;
-  owner: string;
+  owner?: string;
   pubkey: base64;
 }
 
 export class UserInfo extends BaseItem<UserInfoJson> {
-  constructor(version: number = Constants.CURRENT_VERSION) {
+  _owner: string;
+
+  constructor(owner: string, version: number = Constants.CURRENT_VERSION) {
     super();
     this._json.version = version;
+    this._owner = owner;
   }
 
   get version(): number {
     return this._json.version!;
   }
 
-  get owner() {
-    return this._json.owner;
+  get owner(): string {
+    return this._owner;
+  }
+
+  get publicKey() {
+    return this._json.pubkey;
+  }
+
+  serialize(): UserInfoJson {
+    let ret = super.serialize();
+    ret.owner = this._owner;
+    return ret;
+  }
+
+  setKeyPair(cryptoManager: CryptoManager, keyPair: AsymmetricKeyPair) {
+    this._json.pubkey = sjcl.codec.base64.fromBits(sjcl.codec.bytes.toBits(keyPair.publicKey));
+    this._content = keyPair.privateKey;
+    const encrypted = cryptoManager.encryptBytes(keyPair.privateKey);
+    this._encrypted = this.calculateHmac(cryptoManager, encrypted).concat(encrypted);
+  }
+
+  getKeyPair(cryptoManager: CryptoManager): AsymmetricKeyPair {
+    this.verify(cryptoManager);
+
+    if (this._content === undefined) {
+      this._content = cryptoManager.decryptBytes(this.encryptedContent());
+    }
+
+    const pubkey = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(this._json.pubkey));
+    return new AsymmetricKeyPair(pubkey, this._content as byte[]);
   }
 
   calculateHmac(cryptoManager: CryptoManager, encrypted: byte[]): byte[] {
@@ -472,7 +503,7 @@ export class UserInfoManager extends BaseManager {
   fetch(owner: string): Promise<UserInfo> {
     return new Promise((resolve, reject) => {
       this.newCall([owner, '']).then((json: UserInfoJson) => {
-        let userInfo = new UserInfo(json.version);
+        let userInfo = new UserInfo(owner, json.version);
         userInfo.deserialize(json);
         resolve(userInfo);
       }).catch((error: Error) => {

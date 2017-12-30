@@ -9,6 +9,16 @@ sjcl.random.startCollectors();
 
 export const HMAC_SIZE_BYTES = 32;
 
+export class AsymmetricKeyPair {
+  publicKey: byte[];
+  privateKey: byte[];
+
+  constructor(publicKey: byte[], privateKey: byte[]) {
+    this.publicKey = publicKey;
+    this.privateKey = privateKey;
+  }
+}
+
 export function deriveKey(salt: string, password: string): string {
   const keySize = 190 * 8;
 
