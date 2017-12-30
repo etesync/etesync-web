@@ -39,6 +39,14 @@ export class CryptoManager {
 
   cipherWords = 4;
 
+  static fromDerivedKey(key: byte[], version: number = Constants.CURRENT_VERSION) {
+    // FIXME: Cleanup this hack
+    const ret = new CryptoManager('', '', version);
+    ret.key = sjcl.codec.bytes.toBits(key);
+    ret._updateDerivedKeys();
+    return ret;
+  }
+
   constructor(_keyBase64: base64, salt: string, version: number = Constants.CURRENT_VERSION) {
     this.version = version;
     let key = sjcl.codec.base64.toBits(_keyBase64);
