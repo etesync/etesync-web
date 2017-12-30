@@ -8,13 +8,14 @@ import { createSelector } from 'reselect';
 import { routeResolver } from './App';
 
 import LoadingIndicator from './widgets/LoadingIndicator';
+import PrettyError from './widgets/PrettyError';
 
 import Journal from './Journal';
 import Pim from './Pim';
 
 import * as EteSync from './api/EteSync';
 
-import { store, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoData } from './store';
+import { store, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoType } from './store';
 import { fetchAll, fetchUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
@@ -33,14 +34,14 @@ interface PropsType {
 interface PropsTypeInner extends PropsType {
   journals: JournalsType;
   entries: EntriesType;
-  userInfo: UserInfoData;
+  userInfo: UserInfoType;
 }
 
 const syncInfoSelector = createSelector(
   (props: PropsTypeInner) => props.etesync,
   (props: PropsTypeInner) => props.journals.value as List<EteSync.Journal>,
   (props: PropsTypeInner) => props.entries,
-  (props: PropsTypeInner) => props.userInfo,
+  (props: PropsTypeInner) => props.userInfo.value!,
   (etesync, journals, entries, userInfo) => {
     const derived = etesync.encryptionKey;
     let asymmetricCryptoManager: EteSync.AsymmetricCryptoManager;
@@ -101,7 +102,7 @@ class SyncGate extends React.PureComponent {
       store.dispatch(fetchAll(this.props.etesync, this.props.entries));
     };
 
-    if (this.props.userInfo) {
+    if (this.props.userInfo.value) {
       sync();
     } else {
       const fetching = store.dispatch(fetchUserInfo(this.props.etesync, this.props.etesync.credentials.email)) as any;
@@ -113,8 +114,10 @@ class SyncGate extends React.PureComponent {
     const entryArrays = this.props.entries;
     const journals = this.props.journals.value;
 
-    if (this.props.journals.error) {
-      return this.props.journals.error.toString();
+    if (this.props.userInfo.error) {
+      return <PrettyError error={this.props.userInfo.error} />;
+    } else if (this.props.journals.error) {
+      return <PrettyError error={this.props.journals.error} />;
     } else {
       let errors: Array<{journal: string, error: Error}> = [];
       this.props.entries.forEach((entry, journal) => {
@@ -132,7 +135,7 @@ class SyncGate extends React.PureComponent {
       }
     }
 
-    if ((this.props.userInfo === null) || (journals === null) ||
+    if ((this.props.userInfo.value === null) || (journals === null) ||
       (entryArrays.size === 0) ||
       !entryArrays.every((x: any) => (x.value !== null))) {
       return (<LoadingIndicator style={{display: 'block', margin: '40px auto'}} />);
@@ -177,7 +180,7 @@ const mapStateToProps = (state: StoreState, props: PropsType) => {
   return {
     journals: state.cache.journals,
     entries: state.cache.entries,
-    userInfo: state.cache.userInfo.value,
+    userInfo: state.cache.userInfo,
   };
 };
 
