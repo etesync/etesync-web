@@ -65,12 +65,11 @@ export class CollectionInfo {
   }
 }
 
-interface BaseJson {
-  uid: string;
+interface BaseItemJson {
   content: base64;
 }
 
-class BaseJournal<T extends BaseJson> {
+class BaseItem<T extends BaseItemJson> {
   protected _json: T;
   protected _encrypted: byte[];
   protected _content?: object;
@@ -83,10 +82,6 @@ class BaseJournal<T extends BaseJson> {
     this._json = Object.assign({}, json);
     this._encrypted = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(json.content));
     this._content = undefined;
-  }
-
-  get uid(): string {
-    return this._json.uid;
   }
 
   serialize(): T {
@@ -106,6 +101,16 @@ class BaseJournal<T extends BaseJson> {
   private hmacEqual(hmac: byte[], calculated: byte[]) {
     return (hmac.length === calculated.length) &&
       (hmac.every((v, i) => v === calculated[i]));
+  }
+}
+
+interface BaseJson extends BaseItemJson {
+  uid: string;
+}
+
+class BaseJournal<T extends BaseJson> extends BaseItem<T> {
+  get uid(): string {
+    return this._json.uid;
   }
 }
 
@@ -216,6 +221,43 @@ export class Entry extends BaseJournal<EntryJson> {
   private calculateHmac(cryptoManager: CryptoManager, encrypted: byte[], prevUid: string | null): byte[] {
     let prefix = (prevUid !== null) ? stringToByteArray(prevUid) : [];
     return cryptoManager.hmac(prefix.concat(encrypted));
+  }
+}
+
+export interface UserInfoJson extends BaseItemJson {
+  version?: number;
+  owner: string;
+  pubkey: base64;
+}
+
+export class UserInfo extends BaseItem<UserInfoJson> {
+  constructor(version: number = Constants.CURRENT_VERSION) {
+    super();
+    this._json.version = version;
+  }
+
+  get version(): number {
+    return this._json.version!;
+  }
+
+  get owner() {
+    return this._json.owner;
+  }
+
+  calculateHmac(cryptoManager: CryptoManager, encrypted: byte[]): byte[] {
+    let postfix = stringToByteArray(this._json.pubkey);
+    return cryptoManager.hmac(encrypted.concat(postfix));
+  }
+
+  verify(cryptoManager: CryptoManager) {
+    let calculated = this.calculateHmac(cryptoManager, this.encryptedContent());
+    let hmac = this._encrypted.slice(0, HMAC_SIZE_BYTES);
+
+    super.verifyBase(hmac, calculated);
+  }
+
+  private encryptedContent(): byte[] {
+    return this._encrypted.slice(HMAC_SIZE_BYTES);
   }
 }
 
@@ -419,5 +461,49 @@ export class EntryManager extends BaseManager {
     };
 
     return this.newCall(undefined, extra, apiBase);
+  }
+}
+
+export class UserInfoManager extends BaseManager {
+  constructor(credentials: Credentials, apiBase: string) {
+    super(credentials, apiBase, ['user', '']);
+  }
+
+  fetch(owner: string): Promise<UserInfo> {
+    return new Promise((resolve, reject) => {
+      this.newCall([owner, '']).then((json: UserInfoJson) => {
+        let userInfo = new UserInfo(json.version);
+        userInfo.deserialize(json);
+        resolve(userInfo);
+      }).catch((error: Error) => {
+        reject(error);
+      });
+    });
+  }
+
+  create(userInfo: UserInfo): Promise<{}> {
+    const extra = {
+      method: 'post',
+      body: JSON.stringify(userInfo.serialize()),
+    };
+
+    return this.newCall([], extra);
+  }
+
+  update(userInfo: UserInfo): Promise<{}> {
+    const extra = {
+      method: 'put',
+      body: JSON.stringify(userInfo.serialize()),
+    };
+
+    return this.newCall([userInfo.owner, ''], extra);
+  }
+
+  delete(userInfo: UserInfo): Promise<{}> {
+    const extra = {
+      method: 'delete',
+    };
+
+    return this.newCall([userInfo.owner, ''], extra);
   }
 }

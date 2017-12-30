@@ -127,3 +127,31 @@ it('Journal Entry sync', async () => {
     }
   }).toThrowError();
 });
+
+it('User info sync', async () => {
+  const userInfoManager = new EteSync.UserInfoManager(credentials, testApiBase);
+
+  // Get when there's nothing
+  await expect(userInfoManager.fetch(USER)).rejects.toBeInstanceOf(EteSync.HTTPError);
+
+  // Create
+  let userInfo = new EteSync.UserInfo();
+  userInfo.deserialize({pubkey: 'dGVzdAo=', content: 'dGVzdAo=', owner: USER});
+  await expect(userInfoManager.create(userInfo)).resolves.not.toBeNull();
+
+  // Get
+  let userInfo2 = await userInfoManager.fetch(USER);
+  expect(userInfo2).not.toBeNull();
+  expect(userInfo.serialize().content).toEqual(userInfo2!.serialize().content);
+
+  // Update
+  userInfo.deserialize({pubkey: 'dGVzdDIK', content: 'dGVzdDIK', owner: USER});
+  await userInfoManager.update(userInfo);
+  userInfo2 = await userInfoManager.fetch(USER);
+  expect(userInfo2).not.toBeNull();
+  expect(userInfo.serialize().content).toEqual(userInfo2!.serialize().content);
+
+  // Delete
+  await userInfoManager.delete(userInfo);
+  await expect(userInfoManager.fetch(USER)).rejects.toBeInstanceOf(EteSync.HTTPError);
+});
