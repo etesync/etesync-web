@@ -134,20 +134,20 @@ export class AsymmetricCryptoManager {
   static generateKeyPair() {
     const keyPair = new NodeRSA();
     keyPair.generateKeyPair(3072, 65537);
-    const pubkey = keyPair.exportKey('pkcs1-public-der') as Buffer;
-    const privkey = keyPair.exportKey('pkcs1-private-der') as Buffer;
+    const pubkey = keyPair.exportKey('pkcs8-public-der') as Buffer;
+    const privkey = keyPair.exportKey('pkcs8-private-der') as Buffer;
     return new AsymmetricKeyPair(
       bufferToArray(pubkey), bufferToArray(privkey));
   }
 
   constructor(keyPair: AsymmetricKeyPair) {
     this.keyPair = new NodeRSA();
-    this.keyPair.importKey(Buffer.from(keyPair.privateKey), 'pkcs1-der');
+    this.keyPair.importKey(Buffer.from(keyPair.privateKey), 'pkcs8-der');
   }
 
   encryptBytes(publicKey: byte[], content: byte[]): byte[] {
     const key = new NodeRSA();
-    key.importKey(Buffer.from(publicKey), 'pkcs1-public-der');
+    key.importKey(Buffer.from(publicKey), 'pkcs8-public-der');
     return bufferToArray(key.encrypt(Buffer.from(content), 'buffer'));
   }
 
