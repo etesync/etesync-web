@@ -282,7 +282,7 @@ const cacheSerialize = (state: any, key: string) => {
   } else if (key === 'journals') {
     return journalsSerialize(state.value);
   } else if (key === 'userInfo') {
-    return userInfoSerialize(state.value);
+    return userInfoSerialize(state);
   }
 
   return state;
