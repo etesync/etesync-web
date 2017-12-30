@@ -58,7 +58,7 @@ export class CryptoManager {
     this.hmacKey = hmac256(sjcl.codec.utf8String.toBits('hmac'), this.key);
   }
 
-  encryptBits(content: number[]): byte[] {
+  encryptBits(content: sjcl.BitArray): byte[] {
     const iv = sjcl.random.randomWords(this.cipherWords);
 
     let prp = new sjcl.cipher.aes(this.cipherKey);
@@ -66,7 +66,7 @@ export class CryptoManager {
     return sjcl.codec.bytes.fromBits(iv.concat(cipherText));
   }
 
-  decryptBits(content: byte[]): number[] {
+  decryptBits(content: byte[]): sjcl.BitArray {
     let cipherText = sjcl.codec.bytes.toBits(content);
     const iv = cipherText.splice(0, this.cipherWords);
 
