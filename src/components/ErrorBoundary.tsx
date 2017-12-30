@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import PrettyError from '../widgets/PrettyError';
+
 class ErrorBoundary extends React.Component {
   state: {
     error?: Error;
@@ -17,17 +19,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.error) {
       return (
-        <div>
-          <h2>Something went wrong!</h2>
-          <pre>
-            {this.state.error.message}
-          </pre>
-
-          <h3>Stack trace:</h3>
-          <pre>
-            {this.state.error.stack}
-          </pre>
-        </div>
+        <PrettyError error={this.state.error} />
       );
     }
     return this.props.children;
