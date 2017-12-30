@@ -4,12 +4,13 @@ import { ListItem } from '../widgets/List';
 
 import * as EteSync from '../api/EteSync';
 
-import { JournalsData, CredentialsData } from '../store';
+import { JournalsData, UserInfoData, CredentialsData } from '../store';
 
 class SideMenuJournals extends React.PureComponent {
   props: {
     etesync: CredentialsData;
     journals: JournalsData;
+    userInfo: UserInfoData;
     onItemClick: (journalUid: string) => void;
   };
 
@@ -19,35 +20,34 @@ class SideMenuJournals extends React.PureComponent {
 
   render() {
     const derived = this.props.etesync.encryptionKey;
+    let asymmetricCryptoManager: EteSync.AsymmetricCryptoManager;
     const journalMap = this.props.journals.reduce(
       (ret, journal) => {
-        // FIXME: Skip shared journals for now
+        let cryptoManager: EteSync.CryptoManager;
         if (journal.key) {
-          const key = 'UNSUPPORTED';
-          ret[key] = ret[key] || [];
-          ret[key].push(
-            <ListItem
-              key={journal.uid}
-            >
-              {journal.uid.slice(0, 20)}
-            </ListItem>
-          );
+          if (!asymmetricCryptoManager) {
+            const userInfo = this.props.userInfo;
+            const keyPair = userInfo.getKeyPair(new EteSync.CryptoManager(derived, 'userInfo', userInfo.version));
+            asymmetricCryptoManager = new EteSync.AsymmetricCryptoManager(keyPair);
+          }
+          const derivedJournalKey = asymmetricCryptoManager.decryptBytes(journal.key);
+          cryptoManager = EteSync.CryptoManager.fromDerivedKey(derivedJournalKey, journal.version);
         } else {
-          let cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-          let info = journal.getInfo(cryptoManager);
-          ret[info.type] = ret[info.type] || [];
-          ret[info.type].push(
-            <ListItem key={journal.uid} onClick={() => this.props.onItemClick(journal.uid)}>
-              {info.displayName} ({journal.uid.slice(0, 5)})
-            </ListItem>
-          );
+          cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
         }
+        let info = journal.getInfo(cryptoManager);
+        ret[info.type] = ret[info.type] || [];
+        ret[info.type].push(
+          <ListItem key={journal.uid} onClick={() => this.props.onItemClick(journal.uid)}>
+            {info.displayName} ({journal.uid.slice(0, 5)})
+          </ListItem>
+        );
 
         return ret;
       },
       { CALENDAR: [],
-        ADDRESS_BOOK: [],
-        UNSUPPORTED: [] as Array<JSX.Element>});
+        ADDRESS_BOOK: []
+      });
 
     return (
       <React.Fragment>
@@ -60,13 +60,6 @@ class SideMenuJournals extends React.PureComponent {
           primaryText="Calendars"
           nestedItems={journalMap.CALENDAR}
         />
-
-        { journalMap.UNSUPPORTED && (
-          <ListItem
-            primaryText="UNSUPPORTED"
-            nestedItems={journalMap.UNSUPPORTED}
-          />
-        )}
       </React.Fragment>
     );
   }

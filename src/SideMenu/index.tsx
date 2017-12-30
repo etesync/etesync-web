@@ -17,7 +17,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 import { routeResolver, getPalette } from '../App';
 
-import { store, JournalsType, StoreState, CredentialsData } from '../store';
+import { store, JournalsType, UserInfoData, StoreState, CredentialsData } from '../store';
 import { logout } from '../store/actions';
 
 import * as C from '../constants';
@@ -29,6 +29,7 @@ interface PropsType {
 
 interface PropsTypeInner extends PropsType {
   journals: JournalsType;
+  userInfo: UserInfoData;
   history: History;
 }
 
@@ -58,7 +59,9 @@ class SideMenu extends React.PureComponent {
 
     let loggedInItems;
     if (this.props.etesync) {
-      const journals = (this.props.etesync.encryptionKey && this.props.journals && this.props.journals.value) && (
+      const journals = (this.props.etesync.encryptionKey && this.props.journals && this.props.journals.value
+        && this.props.userInfo) && (
+
         <React.Fragment>
           <ListDivider />
           <ListSubheader>Journals</ListSubheader>
@@ -66,6 +69,7 @@ class SideMenu extends React.PureComponent {
             <SideMenuJournals
               etesync={this.props.etesync}
               journals={this.props.journals.value}
+              userInfo={this.props.userInfo}
               onItemClick={this.journalClicked}
             />
           </ErrorBoundary>
@@ -113,6 +117,7 @@ class SideMenu extends React.PureComponent {
 const mapStateToProps = (state: StoreState, props: PropsType) => {
   return {
     journals: state.cache.journals,
+    userInfo: state.cache.userInfo.value,
   };
 };
 
