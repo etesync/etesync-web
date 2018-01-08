@@ -25,6 +25,14 @@ export class EventType extends ICAL.Event implements PimType {
     return this.endDate.toJSDate();
   }
 
+  get allDay() {
+    return this.startDate.isDate;
+  }
+
+  get desc() {
+    return this.description;
+  }
+
   toIcal() {
     let comp = new ICAL.Component(['vcalendar', [], []]);
     comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
