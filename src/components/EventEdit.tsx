@@ -218,7 +218,7 @@ class EventEdit extends React.PureComponent {
             <DateTimePicker
               dateOnly={this.state.allDay}
               value={this.state.start}
-              onChange={(date: Date) => this.setState({start: date})}
+              onChange={(date: string) => this.setState({start: date})}
             />
           </div>
 
@@ -226,7 +226,7 @@ class EventEdit extends React.PureComponent {
             <DateTimePicker
               dateOnly={this.state.allDay}
               value={this.state.end}
-              onChange={(date: Date) => this.setState({end: date})}
+              onChange={(date: string) => this.setState({end: date})}
             />
           </div>
 

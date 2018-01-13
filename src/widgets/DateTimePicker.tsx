@@ -9,7 +9,7 @@ class DateTimePicker extends React.PureComponent {
   props: {
     value?: string,
     dateOnly?: boolean,
-    onChange: (date: Date) => void;
+    onChange: (date: string) => void;
   };
 
   constructor(props: any) {
