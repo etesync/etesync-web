@@ -26,8 +26,8 @@ class EventEdit extends React.PureComponent {
     uid: string,
     title: string;
     allDay: boolean;
-    start: string;
-    end: string;
+    start?: Date;
+    end?: Date;
     location: string;
     description: string;
     journalUid: string;
@@ -53,8 +53,6 @@ class EventEdit extends React.PureComponent {
       allDay: false,
       location: '',
       description: '',
-      start: '',
-      end: '',
 
       journalUid: '',
       showDeleteDialog: false,
@@ -72,8 +70,8 @@ class EventEdit extends React.PureComponent {
       this.state.uid = event.uid;
       this.state.title = event.title ? event.title : '';
       this.state.allDay = allDay;
-      this.state.start = event.startDate.toString();
-      this.state.end = endDate.toString();
+      this.state.start = event.startDate.toJSDate();
+      this.state.end = endDate.toJSDate();
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
     } else {
@@ -124,12 +122,24 @@ class EventEdit extends React.PureComponent {
   onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
-    if ((this.state.start === '') || (this.state.end === '')) {
+    if ((!this.state.start) || (!this.state.end)) {
       this.setState({error: 'Both start and end time must be set!'});
       return;
     }
-    const startDate = ICAL.Time.fromString(this.state.start);
-    let endDate = ICAL.Time.fromString(this.state.end);
+
+    function fromDate(date: Date, allDay: boolean) {
+      const ret = ICAL.Time.fromJSDate(date, false);
+      if (!allDay) {
+        return ret;
+      } else {
+        let data = ret.toJSON();
+        data.isDate = allDay;
+        return ICAL.Time.fromData(data);
+      }
+    }
+
+    const startDate = fromDate(this.state.start, this.state.allDay);
+    const endDate = fromDate(this.state.end, this.state.allDay);
 
     if (this.state.allDay) {
       endDate.adjust(1, 0, 0, 0);
@@ -217,16 +227,18 @@ class EventEdit extends React.PureComponent {
           <div>
             <DateTimePicker
               dateOnly={this.state.allDay}
+              placeholder="Start Date"
               value={this.state.start}
-              onChange={(date: string) => this.setState({start: date})}
+              onChange={(date?: Date) => this.setState({start: date})}
             />
           </div>
 
           <div>
             <DateTimePicker
               dateOnly={this.state.allDay}
+              placeholder="End Date"
               value={this.state.end}
-              onChange={(date: string) => this.setState({end: date})}
+              onChange={(date?: Date) => this.setState({end: date})}
             />
           </div>
 
