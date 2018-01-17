@@ -55,23 +55,26 @@ declare module 'ical.js' {
     toJSON(): any;
   }
 
+  type TimeJsonData = {
+    year?: number,
+    month?: number,
+    day?: number,
+    hour?: number,
+    minute?: number,
+    second?: number,
+    isDate?: boolean
+  };
+
   class Time {
     isDate: boolean;
 
     static fromString(str: string): Time;
     static fromJSDate(aDate: Date | null, useUTC: boolean): Time;
+    static fromData(aData: TimeJsonData): Time;
 
     static now(): Time;
 
-    constructor(data?: {
-      year?: number,
-      month?: number,
-      day?: number,
-      hour?: number,
-      minute?: number,
-      second?: number,
-      isDate?: boolean
-    });
+    constructor(data?: TimeJsonData);
 
     compare(aOther: Time): number;
 
@@ -81,5 +84,6 @@ declare module 'ical.js' {
       aExtraDays: number, aExtraHours: number, aExtraMinutes: number, aExtraSeconds: number, aTimeopt?: Time): void;
 
     toJSDate(): Date;
+    toJSON(): TimeJsonData;
   }
 }
