@@ -42,7 +42,7 @@
     "@types/node": "^8.0.53",
     "@types/node-rsa": "^0.4.1",
     "@types/react": "^16.0.25",
-    "@types/react-big-calendar": "^0.15.0",
+    "@types/react-big-calendar": "^0.18.0",
     "@types/react-dom": "^16.0.3",
     "@types/react-redux": "^5.0.14",
     "@types/react-router": "^4.0.19",

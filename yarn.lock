@@ -41,9 +41,9 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-big-calendar@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@types/react-big-calendar/-/react-big-calendar-0.15.0.tgz#3359ec60840ef8f51f506e1bb45c1eab0d337f01"
+"@types/react-big-calendar@^0.18.0":
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/@types/react-big-calendar/-/react-big-calendar-0.18.0.tgz#e86e6c06dd6aa2891873f41a8aea0afdca33a9de"
   dependencies:
     "@types/react" "*"
 

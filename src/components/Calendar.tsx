@@ -61,7 +61,7 @@ class Calendar extends React.PureComponent {
           selectable={true}
           onSelectEvent={this.props.onItemClick as any}
           onSelectSlot={this.slotClicked as any}
-          formats={{agendaHeaderFormat: agendaHeaderFormat}}
+          formats={{agendaHeaderFormat: agendaHeaderFormat as any}}
           eventPropGetter={eventPropGetter}
           date={this.state.currentDate}
           onNavigate={this.onNavigate}
