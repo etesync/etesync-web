@@ -5,6 +5,12 @@ import ExternalLink from './ExternalLink';
 
 import './List.css';
 
+export const List = pure((props: { children: React.ReactNode[] | React.ReactNode }) => (
+  <ul className="List">
+    {props.children}
+  </ul>
+));
+
 export const ListItemRaw = pure((_props: any) => {
   const {
     href,
@@ -102,9 +108,3 @@ export const ListItem = pure((_props: any) => {
     </ListItemRaw>
   );
 });
-
-export const List = pure((props: { children: React.ReactNode[] | React.ReactNode }) => (
-  <ul className="List">
-    {props.children}
-  </ul>
-));

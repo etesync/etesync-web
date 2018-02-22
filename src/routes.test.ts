@@ -26,9 +26,9 @@ it('translating routes', () => {
   expect(routeResolver.getRoute('post')).toBe('/post');
   expect(routeResolver.getRoute('post._id', { postId: 3 })).toBe('/post/3');
   expect(routeResolver.getRoute('post._id.comment',
-    { postId: 3, commentId: 5 })).toBe('/post/3/comment/5');
+                                { postId: 3, commentId: 5 })).toBe('/post/3/comment/5');
   expect(routeResolver.getRoute('post._id.revision',
-    { postId: 3, revisionId: 5, someOtherVar: 'a' })).toBe('/post/3/history/5/a/test');
+                                { postId: 3, revisionId: 5, someOtherVar: 'a' })).toBe('/post/3/history/5/a/test');
 
   // Failing basic resolves
   expect(() => {
@@ -58,4 +58,3 @@ it('translating routes', () => {
     routeResolver.getRoute('post._id.comment', { postId: 3 });
   }).toThrow();
 });
-
