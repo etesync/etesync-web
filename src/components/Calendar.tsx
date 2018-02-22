@@ -57,6 +57,7 @@ class Calendar extends React.PureComponent {
     return (
       <div style={{width: '100%', height: 500}}>
         <BigCalendar
+          defaultDate={new Date()}
           events={this.props.entries}
           selectable={true}
           onSelectEvent={this.props.onItemClick as any}
