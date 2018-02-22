@@ -14,6 +14,9 @@ import DateTimePicker from '../widgets/DateTimePicker';
 
 import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
+import { Location } from 'history';
+import { withRouter } from 'react-router';
+
 import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
 
@@ -43,6 +46,7 @@ class EventEdit extends React.PureComponent {
     onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
     onDelete: (event: EventType, journalUid: string) => void;
     onCancel: () => void;
+    location: Location;
   };
 
   constructor(props: any) {
@@ -57,6 +61,17 @@ class EventEdit extends React.PureComponent {
       journalUid: '',
       showDeleteDialog: false,
     };
+
+    const locState = this.props.location.state;
+    // FIXME: Hack to determine if all day. Should be passed as a proper state.
+    this.state.allDay = (locState.start &&
+      (locState.start.getHours() === 0) &&
+      (locState.start.getMinutes() === 0) &&
+      (locState.start.getHours() === locState.end.getHours()) &&
+      (locState.start.getMinutes() === locState.end.getMinutes()));
+    this.state.start = (locState.start) ? locState.start : undefined;
+    this.state.end = (locState.end) ? locState.end : undefined;
+
     if (this.props.item !== undefined) {
       const event = this.props.item;
 
@@ -306,4 +321,4 @@ class EventEdit extends React.PureComponent {
   }
 }
 
-export default EventEdit;
+export default withRouter(EventEdit);

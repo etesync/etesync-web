@@ -32,6 +32,7 @@ class Calendar extends React.PureComponent {
   props: {
     entries: Array<EventType>,
     onItemClick: (contact: EventType) => void,
+    onSlotClick?: (start: Date, end: Date) => void,
   };
 
   constructor(props: any) {
@@ -39,10 +40,17 @@ class Calendar extends React.PureComponent {
     this.state = {};
 
     this.onNavigate = this.onNavigate.bind(this);
+    this.slotClicked = this.slotClicked.bind(this);
   }
 
   onNavigate(currentDate: Date) {
     this.setState({currentDate});
+  }
+
+  slotClicked(slotInfo: {start: Date, end: Date}) {
+    if (this.props.onSlotClick) {
+      this.props.onSlotClick(slotInfo.start, slotInfo.end);
+    }
   }
 
   render() {
@@ -50,7 +58,9 @@ class Calendar extends React.PureComponent {
       <div style={{width: '100%', height: 500}}>
         <BigCalendar
           events={this.props.entries}
+          selectable={true}
           onSelectEvent={this.props.onItemClick as any}
+          onSelectSlot={this.slotClicked as any}
           formats={{agendaHeaderFormat: agendaHeaderFormat}}
           eventPropGetter={eventPropGetter}
           date={this.state.currentDate}

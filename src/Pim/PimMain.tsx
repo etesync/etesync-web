@@ -41,6 +41,7 @@ class PimMain extends React.PureComponent {
     this.eventClicked = this.eventClicked.bind(this);
     this.contactClicked = this.contactClicked.bind(this);
     this.floatingButtonClicked = this.floatingButtonClicked.bind(this);
+    this.newEvent = this.newEvent.bind(this);
   }
 
   eventClicked(event: ICAL.Event) {
@@ -57,15 +58,20 @@ class PimMain extends React.PureComponent {
       routeResolver.getRoute('pim.contacts._id', { itemUid: uid }));
   }
 
+  newEvent(start?: Date, end?: Date) {
+    this.props.history!.push(
+      routeResolver.getRoute('pim.events.new'),
+      {start, end}
+    );
+  }
+
   floatingButtonClicked() {
     if (this.state.tab === addressBookTitle) {
       this.props.history!.push(
         routeResolver.getRoute('pim.contacts.new')
       );
     } else if (this.state.tab === calendarTitle) {
-      this.props.history!.push(
-        routeResolver.getRoute('pim.events.new')
-      );
+      this.newEvent();
     }
   }
 
@@ -100,7 +106,11 @@ class PimMain extends React.PureComponent {
             label={calendarTitle}
           >
             <Container>
-              <PersistCalendar entries={this.props.events} onItemClick={this.eventClicked} />
+              <PersistCalendar
+                entries={this.props.events}
+                onItemClick={this.eventClicked}
+                onSlotClick={this.newEvent}
+              />
             </Container>
           </Tab>
         </Tabs>
