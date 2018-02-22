@@ -115,7 +115,7 @@ const CollectionRoutes = withRouter(
                 <ComponentEdit
                   collections={props.collections}
                   onSave={props.onItemSave}
-                  onDelete={props.onItemDelete}
+                  onCancel={props.onItemCancel}
                 />
               </Container>
             )}
