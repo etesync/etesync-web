@@ -1,5 +1,5 @@
 import * as React from 'react';
-import BigCalendar from 'react-big-calendar';
+import BigCalendar, { View } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
@@ -27,6 +27,7 @@ function agendaHeaderFormat(date: {start: Date, end: Date}, culture: string, loc
 class Calendar extends React.PureComponent {
   state: {
     currentDate?: Date;
+    view?: View;
   };
 
   props: {
@@ -40,11 +41,16 @@ class Calendar extends React.PureComponent {
     this.state = {};
 
     this.onNavigate = this.onNavigate.bind(this);
+    this.onView = this.onView.bind(this);
     this.slotClicked = this.slotClicked.bind(this);
   }
 
   onNavigate(currentDate: Date) {
     this.setState({currentDate});
+  }
+
+  onView(view: string) {
+    this.setState({view});
   }
 
   slotClicked(slotInfo: {start: Date, end: Date}) {
@@ -66,6 +72,8 @@ class Calendar extends React.PureComponent {
           eventPropGetter={eventPropGetter}
           date={this.state.currentDate}
           onNavigate={this.onNavigate}
+          view={this.state.view}
+          onView={this.onView}
         />
       </div>
     );
