@@ -12,7 +12,7 @@ Use EteSync from the browser!
 tested [sjcl](https://crypto.stanford.edu/sjcl/) javascript crypto library for encryption,
 so that should be fine too.
 
-A live isntance is available on: https://client.etesync.com
+A live instance is available on: https://client.etesync.com
 
 Please be advised that while it's probably safe enough to use the hosted client
 in many cases, it's generally not preferable. It's recommended that you use signed
