@@ -338,7 +338,11 @@ class BaseNetwork {
           if (response.ok) {
             resolve(body);
           } else {
-            reject(new HTTPError(json.detail || json.non_field_errors));
+            if (json) {
+              reject(new HTTPError(json.detail || json.non_field_errors || JSON.stringify(json)));
+            } else {
+              reject(new HTTPError(body));
+            }
           }
         }).catch((error) => {
           reject(error);
