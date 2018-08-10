@@ -61,7 +61,7 @@ class Calendar extends React.PureComponent {
 
   render() {
     return (
-      <div style={{width: '100%', height: 500}}>
+      <div style={{width: '100%', height: 'calc(100vh - 230px)', minHeight: 500}}>
         <BigCalendar
           defaultDate={new Date()}
           events={this.props.entries}
