@@ -107,10 +107,10 @@ export const createUserInfo = createAction(
 
 export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
   return (dispatch: any) => {
-    dispatch(fetchJournals(etesync)).then((journalsAction: any) => {
+    return dispatch(fetchJournals(etesync)).then((journalsAction: any) => {
       const journals: Array<EteSync.Journal> = journalsAction.payload;
-      if (!journals) {
-        return;
+      if (!journals || (journals.length === 0)) {
+        return false;
       }
 
       journals.forEach((journal) => {
@@ -123,6 +123,8 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
 
         dispatch(fetchEntries(etesync, journal.uid, prevUid));
       });
+
+      return true;
     });
   };
 }
