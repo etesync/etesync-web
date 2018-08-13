@@ -1,6 +1,7 @@
-import { createActions } from 'redux-actions';
+import { createAction, createActions } from 'redux-actions';
 
 import * as EteSync from '../api/EteSync';
+import { UserInfo } from '../api/EteSync';
 
 import { CredentialsData, EntriesType } from './';
 
@@ -89,6 +90,20 @@ export const { fetchUserInfo } = createActions({
     return userInfoManager.fetch(owner);
   },
 });
+
+export const createUserInfo = createAction(
+  'CREATE_USER_INFO',
+  (etesync: CredentialsData, userInfo: UserInfo) => {
+    const creds = etesync.credentials;
+    const apiBase = etesync.serviceApiUrl;
+    let userInfoManager = new EteSync.UserInfoManager(creds, apiBase);
+
+    return userInfoManager.create(userInfo);
+  },
+  (etesync: CredentialsData, userInfo: UserInfo) => {
+    return { userInfo };
+  },
+);
 
 export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
   return (dispatch: any) => {

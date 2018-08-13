@@ -14,9 +14,10 @@ import Journal from './Journal';
 import Pim from './Pim';
 
 import * as EteSync from './api/EteSync';
+import { CURRENT_VERSION } from './api/Constants';
 
 import { store, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoType } from './store';
-import { fetchAll, fetchUserInfo } from './store/actions';
+import { fetchAll, fetchUserInfo, createUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -98,15 +99,30 @@ class SyncGate extends React.PureComponent {
   }
 
   componentDidMount() {
-    const sync = () => {
+    const me = this.props.etesync.credentials.email;
+    const syncAll = () => {
       store.dispatch(fetchAll(this.props.etesync, this.props.entries));
     };
 
+    const sync = () => {
+      if (this.props.userInfo.value) {
+        syncAll();
+      } else {
+        const userInfo = new EteSync.UserInfo(me, CURRENT_VERSION);
+        const keyPair = EteSync.AsymmetricCryptoManager.generateKeyPair();
+        const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, 'userInfo');
+
+        userInfo.setKeyPair(cryptoManager, keyPair);
+
+        store.dispatch<any>(createUserInfo(this.props.etesync, userInfo)).then(syncAll);
+      }
+    };
+
     if (this.props.userInfo.value) {
-      sync();
+      syncAll();
     } else {
-      const fetching = store.dispatch(fetchUserInfo(this.props.etesync, this.props.etesync.credentials.email)) as any;
-      fetching.then(sync, sync);
+      const fetching = store.dispatch(fetchUserInfo(this.props.etesync, me)) as any;
+      fetching.then(sync);
     }
   }
 

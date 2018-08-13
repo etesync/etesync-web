@@ -168,18 +168,23 @@ const journals = handleAction(
 );
 
 const userInfo = handleAction(
-  actions.fetchUserInfo,
+  combineActions(
+    actions.fetchUserInfo,
+    actions.createUserInfo
+  ),
   (state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend: boolean = false) => {
     if (action.error) {
       return state.set('error', action.payload);
     } else {
-      const payload = (action.payload === undefined) ? null : action.payload;
+      let payload = (action.payload === undefined) ? null : action.payload;
 
       state = state.set('error', undefined);
 
-      if (action.payload === undefined) {
+      if (payload === null) {
         return state;
       }
+
+      payload = (action.meta === undefined) ? payload : action.meta.userInfo;
 
       return state.set('value', payload);
     }
