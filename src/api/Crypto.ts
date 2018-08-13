@@ -26,6 +26,11 @@ export function deriveKey(salt: string, password: string): string {
   return sjcl.codec.base64.fromBits((sjcl.misc as any).scrypt(password, salt, 16384, 8, 1, keySize));
 }
 
+export function genUid() {
+  const rand = sjcl.random.randomWords(4);
+  return sjcl.codec.hex.fromBits(hmac256(rand, rand));
+}
+
 function hmac256(salt: sjcl.BitArray, key: sjcl.BitArray) {
   let hmac = new sjcl.misc.hmac(salt);
   return hmac.encrypt(key);

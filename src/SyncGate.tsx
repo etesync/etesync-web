@@ -17,7 +17,7 @@ import * as EteSync from './api/EteSync';
 import { CURRENT_VERSION } from './api/Constants';
 
 import { store, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoType } from './store';
-import { fetchAll, fetchUserInfo, createUserInfo } from './store/actions';
+import { createJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -101,7 +101,25 @@ class SyncGate extends React.PureComponent {
   componentDidMount() {
     const me = this.props.etesync.credentials.email;
     const syncAll = () => {
-      store.dispatch(fetchAll(this.props.etesync, this.props.entries));
+      store.dispatch<any>(fetchAll(this.props.etesync, this.props.entries)).then((haveJournals: boolean) => {
+        if (haveJournals) {
+          return;
+        }
+
+        ['ADDRESS_BOOK', 'CALENDAR'].forEach((collectionType) => {
+          const collection = new EteSync.CollectionInfo();
+          collection.uid = EteSync.genUid();
+          collection.type = collectionType;
+          collection.displayName = 'Default';
+
+          const journal = new EteSync.Journal();
+          const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, collection.uid);
+          journal.setInfo(cryptoManager, collection);
+          store.dispatch<any>(createJournal(this.props.etesync, journal)).then(() => {
+            store.dispatch(fetchEntries(this.props.etesync, collection.uid));
+          });
+        });
+      });
     };
 
     const sync = () => {

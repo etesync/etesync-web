@@ -7,7 +7,7 @@ import * as fetch from 'isomorphic-fetch';
 
 import { byte, base64, stringToByteArray } from './Helpers';
 import { CryptoManager, AsymmetricKeyPair, HMAC_SIZE_BYTES } from './Crypto';
-export { CryptoManager, AsymmetricCryptoManager, AsymmetricKeyPair, deriveKey } from './Crypto';
+export { CryptoManager, AsymmetricCryptoManager, AsymmetricKeyPair, deriveKey, genUid } from './Crypto';
 
 class ExtendableError extends Error {
   constructor(message: any) {

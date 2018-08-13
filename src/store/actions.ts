@@ -54,6 +54,20 @@ export const { fetchJournals } = createActions({
   },
 });
 
+export const createJournal = createAction(
+  'CREATE_JOURNAL',
+  (etesync: CredentialsData, journal: EteSync.Journal) => {
+    const creds = etesync.credentials;
+    const apiBase = etesync.serviceApiUrl;
+    let journalManager = new EteSync.JournalManager(creds, apiBase);
+
+    return journalManager.create(journal);
+  },
+  (etesync: CredentialsData, journal: EteSync.Journal) => {
+    return { journal };
+  },
+);
+
 export const { fetchEntries, createEntries } = createActions({
   FETCH_ENTRIES: [
     (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
