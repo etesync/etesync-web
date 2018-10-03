@@ -134,7 +134,7 @@ class LoginForm extends React.PureComponent {
         {(this.props.error) && (<div>Error! {this.props.error.message}</div>)}
         <form style={styles.form} onSubmit={this.generateEncryption}>
           <TextField
-            type="email"
+            type="text"
             errorText={this.state.errors.errorEmail}
             floatingLabelText="Email"
             name="username"
