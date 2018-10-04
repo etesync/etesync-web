@@ -65,7 +65,7 @@ export const ListSubheader = pure((props: any) => (
 export const ListDivider = pure((_props: any) => {
   const {
     inset,
-    ...props,
+    ...props
   } = _props;
   return (
     <li>

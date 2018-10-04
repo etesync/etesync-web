@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
 import IconChangeHistory from 'material-ui/svg-icons/action/change-history';
 
-import { withRouter } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import * as EteSync from '../api/EteSync';
 
@@ -86,20 +86,20 @@ const ItemChangeLog = pure((props: any) => {
   );
 });
 
-const CollectionRoutes = withRouter(
-  class CollectionRoutesInner extends React.PureComponent {
-    props: {
-      syncInfo: SyncInfo,
-      routePrefix: string,
-      collections: Array<EteSync.CollectionInfo>,
-      componentEdit: any,
-      componentView: any,
-      items: {[key: string]: PimType},
-      onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
-      onItemDelete: (item: PimType, journalUid: string) => void;
-      onItemCancel: () => void;
-    };
+type CollectionRoutesPropsType = RouteComponentProps<{}> & {
+  syncInfo: SyncInfo,
+  routePrefix: string,
+  collections: Array<EteSync.CollectionInfo>,
+  componentEdit: any,
+  componentView: any,
+  items: {[key: string]: PimType},
+  onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
+  onItemDelete: (item: PimType, journalUid: string) => void;
+  onItemCancel: () => void;
+};
 
+const CollectionRoutes = withRouter(
+  class CollectionRoutesInner extends React.PureComponent<CollectionRoutesPropsType> {
     render() {
       const props = this.props;
       const ComponentEdit = props.componentEdit;

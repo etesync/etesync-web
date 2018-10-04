@@ -163,7 +163,7 @@ class App extends React.PureComponent {
   }
 
   refresh() {
-    store.store.dispatch(actions.fetchAll(this.props.credentials.value!, this.props.entries));
+    store.store.dispatch<any>(actions.fetchAll(this.props.credentials.value!, this.props.entries));
   }
 
   render() {

@@ -10,7 +10,7 @@ export default pure((_props: any) => {
     onCancel,
     onOk,
     labelOk,
-    ...props,
+    ...props
   } = _props;
   const actions = [
     (

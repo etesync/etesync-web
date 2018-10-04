@@ -131,7 +131,7 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
         let prevUid: string | null = null;
         const entries = currentEntries.get(journal.uid);
         if (entries && entries.value) {
-          const last = entries.value.last();
+          const last = entries.value.last() as EteSync.Entry;
           prevUid = (last) ? last.uid : null;
         }
 

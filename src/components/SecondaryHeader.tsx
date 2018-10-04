@@ -8,7 +8,7 @@ export default (props: {text: string}) => {
         backgroundColor: getPalette('primary1Color'),
         color: getPalette('alternateTextColor'),
         padding: 15,
-        textAlign: 'center',
+        textAlign: 'center' as any,
       },
       headerText: {
         margin: 0,

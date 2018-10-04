@@ -319,12 +319,12 @@ class ContactEdit extends React.PureComponent {
       },
       fullWidth: {
         width: '100%',
-        boxSizing: 'border-box',
+        boxSizing: 'border-box' as any,
       },
       submit: {
         marginTop: 40,
         marginBottom: 20,
-        textAlign: 'right',
+        textAlign: 'right' as any,
       },
     };
 

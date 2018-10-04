@@ -9,7 +9,7 @@ import { EventType } from '../pim-types';
 import './Calendar.css';
 
 moment.locale('en-gb');
-BigCalendar.momentLocalizer(moment);
+const calendarLocalizer = BigCalendar.momentLocalizer(moment);
 
 function eventPropGetter(event: EventType) {
   return {
@@ -64,6 +64,7 @@ class Calendar extends React.PureComponent {
       <div style={{width: '100%', height: 'calc(100vh - 230px)', minHeight: 500}}>
         <BigCalendar
           defaultDate={new Date()}
+          localizer={calendarLocalizer}
           events={this.props.entries}
           selectable={true}
           onSelectEvent={this.props.onItemClick as any}

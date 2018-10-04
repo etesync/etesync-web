@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Route, Switch, Redirect, withRouter } from 'react-router';
+import { Route, Switch, Redirect, RouteComponentProps, withRouter } from 'react-router';
 
 import { List, Map } from 'immutable';
 import { createSelector } from 'reselect';
@@ -32,11 +32,11 @@ interface PropsType {
   etesync: CredentialsData;
 }
 
-interface PropsTypeInner extends PropsType {
+type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
   journals: JournalsType;
   entries: EntriesType;
   userInfo: UserInfoType;
-}
+};
 
 const syncInfoSelector = createSelector(
   (props: PropsTypeInner) => props.etesync,
@@ -91,10 +91,8 @@ const syncInfoSelector = createSelector(
 const PimRouter = withRouter(Pim);
 const JournalRouter = withRouter(Journal);
 
-class SyncGate extends React.PureComponent {
-  props: PropsTypeInner;
-
-  constructor(props: any) {
+class SyncGate extends React.PureComponent<PropsTypeInner> {
+  constructor(props: PropsTypeInner) {
     super(props);
   }
 

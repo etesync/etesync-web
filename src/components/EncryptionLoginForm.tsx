@@ -63,7 +63,7 @@ class EncryptionLoginForm extends React.PureComponent {
       },
       submit: {
         marginTop: 40,
-        textAlign: 'right',
+        textAlign: 'right' as any,
       },
     };
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { List, ListItem, ListSubheader, ListDivider } from '../widgets/List';
 import ActionCode from 'material-ui/svg-icons/action/code';
 import ActionHome from 'material-ui/svg-icons/action/home';
@@ -9,8 +9,6 @@ import ActionQuestionAnswer from 'material-ui/svg-icons/action/question-answer';
 import LogoutIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 const logo = require('../images/logo.svg');
-
-import { History } from 'history';
 
 import SideMenuJournals from './SideMenuJournals';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -27,16 +25,13 @@ interface PropsType {
   onCloseDrawerRequest: () => void;
 }
 
-interface PropsTypeInner extends PropsType {
+type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
   journals: JournalsType;
   userInfo: UserInfoData;
-  history: History;
-}
+};
 
-class SideMenu extends React.PureComponent {
-  props: PropsTypeInner;
-
-  constructor(props: any) {
+class SideMenu extends React.PureComponent<PropsTypeInner> {
+  constructor(props: PropsTypeInner) {
     super(props);
     this.logout = this.logout.bind(this);
     this.journalClicked = this.journalClicked.bind(this);

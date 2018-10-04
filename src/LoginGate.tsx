@@ -26,7 +26,7 @@ class LoginGate extends React.Component {
 
   onFormSubmit(username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) {
     serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
-    store.dispatch(login(username, password, encryptionPassword, serviceApiUrl));
+    store.dispatch<any>(login(username, password, encryptionPassword, serviceApiUrl));
   }
 
   onEncryptionFormSubmit(encryptionPassword: string) {

@@ -22,7 +22,7 @@ export function createJournalEntry(
   let prevUid: string | null = null;
 
   const entries = existingEntries;
-  const last = entries.last();
+  const last = entries.last() as EteSync.Entry;
   if (last) {
     prevUid = last.uid;
   }

@@ -39,7 +39,7 @@ class SearchableAddressBook extends React.PureComponent {
   render() {
     const {
       entries,
-      ...rest,
+      ...rest
     } = this.props;
 
     const reg = new RegExp(this.state.searchQuery, 'i');
