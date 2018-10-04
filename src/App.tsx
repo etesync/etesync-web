@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { createSelector } from 'reselect';
+import { MuiThemeProvider as ThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
+import amber from '@material-ui/core/colors/amber';
+import lightBlue from '@material-ui/core/colors/lightBlue';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { amber500, amber700, lightBlue500, darkBlack, white } from 'material-ui/styles/colors';
 import AppBar from 'material-ui/AppBar';
-import Drawer from 'material-ui/Drawer';
+import Drawer from '@material-ui/core/Drawer';
 import IconButton from 'material-ui/IconButton';
 
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
@@ -28,7 +31,19 @@ import * as actions from './store/actions';
 
 import { History } from 'history';
 
-const muiTheme = getMuiTheme({
+const muiTheme = createMuiTheme({
+  palette: {
+    primary: amber,
+    secondary: {
+      light: lightBlue.A200,
+      main: lightBlue.A400,
+      dark: lightBlue.A700,
+      contrastText: white,
+    },
+  }
+});
+
+const muiThemeV0 = getMuiTheme({
   palette: {
     primary1Color: amber500,
     primary2Color: amber700,
@@ -39,7 +54,7 @@ const muiTheme = getMuiTheme({
 });
 
 export function getPalette(part: string): string {
-  const theme = muiTheme;
+  const theme = muiThemeV0;
   if ((theme.palette === undefined) || (theme.palette[part] === undefined)) {
     return '';
   }
@@ -172,33 +187,33 @@ class App extends React.PureComponent {
     const fetching = this.props.fetchCount > 0;
 
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
-        <BrowserRouter>
-        <div>
-          <AppBarWitHistory
-            title={C.appName}
-            toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
-            iconElementRight={
-              <IconButton disabled={!credentials || fetching} onClick={this.refresh}>
-                <IconRefreshWithSpin spin={fetching} />
-              </IconButton>}
+      <ThemeProvider theme={muiTheme}>
+        <MuiThemeProvider muiTheme={muiThemeV0}>
+          <BrowserRouter>
+          <div>
+            <AppBarWitHistory
+              title={C.appName}
+              toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
+              iconElementRight={
+                <IconButton disabled={!credentials || fetching} onClick={this.refresh}>
+                  <IconRefreshWithSpin spin={fetching} />
+                </IconButton>}
 
-          />
-          <Drawer
-            docked={false}
-            width={250}
-            open={this.state.drawerOpen}
-            onRequestChange={this.toggleDrawer}
-          >
-            <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
-          </Drawer>
+            />
+            <Drawer
+              open={this.state.drawerOpen}
+              onClose={this.toggleDrawer}
+            >
+              <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
+            </Drawer>
 
-          <ErrorBoundary>
-            <LoginGate credentials={this.props.credentials} />
-          </ErrorBoundary>
-        </div>
-        </BrowserRouter>
-      </MuiThemeProvider>
+            <ErrorBoundary>
+              <LoginGate credentials={this.props.credentials} />
+            </ErrorBoundary>
+          </div>
+          </BrowserRouter>
+        </MuiThemeProvider>
+      </ThemeProvider>
     );
   }
 }

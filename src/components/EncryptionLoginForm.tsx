@@ -1,6 +1,6 @@
 import * as React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 interface FormErrors {
   errorEncryptionPassword?: string;
@@ -73,20 +73,23 @@ class EncryptionLoginForm extends React.PureComponent {
         <form style={styles.form} onSubmit={this.generateEncryption}>
           <TextField
             type="password"
-            errorText={this.state.errors.errorEncryptionPassword}
-            floatingLabelText="Encryption Password"
+            error={!!this.state.errors.errorEncryptionPassword}
+            helperText={this.state.errors.errorEncryptionPassword}
+            label="Encryption Password"
             name="encryptionPassword"
             value={this.state.encryptionPassword}
             onChange={this.handleInputChange}
           />
 
           <div style={styles.submit}>
-            <RaisedButton
+            <Button
               type="submit"
-              label={this.props.loading ? 'Loading…' : 'Log In'}
-              secondary={true}
+              variant="raised"
+              color="secondary"
               disabled={this.props.loading}
-            />
+            >
+              {this.props.loading ? 'Loading…' : 'Log In'}
+            </Button>
           </div>
         </form>
       </React.Fragment>

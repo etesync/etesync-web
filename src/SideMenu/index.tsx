@@ -80,7 +80,7 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
     }
 
     return (
-      <React.Fragment>
+      <div style={{ overflowX: 'hidden', width: 250}}>
         <div className="App-drawer-header">
           <img className="App-drawer-logo" src={logo} />
           <div style={{color: getPalette('alternateTextColor')}} >
@@ -104,7 +104,7 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
           <ListItem primaryText="Source Code" leftIcon={<ActionCode />} href={C.sourceCode} />
           <ListItem primaryText="Report Issue" leftIcon={<ActionBugReport />} href={C.reportIssue} />
         </List>
-      </React.Fragment>
+      </div>
     );
   }
 }
