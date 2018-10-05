@@ -73,6 +73,7 @@ class EncryptionLoginForm extends React.PureComponent {
         <form style={styles.form} onSubmit={this.generateEncryption}>
           <TextField
             type="password"
+            autoFocus={true}
             error={!!this.state.errors.errorEncryptionPassword}
             helperText={this.state.errors.errorEncryptionPassword}
             label="Encryption Password"
