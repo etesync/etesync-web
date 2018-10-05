@@ -94,7 +94,7 @@ class Contact extends React.PureComponent {
         leftIcon: <IconDate />
       },
       undefined,
-      ((x) => moment(x).format('dddd, LL')),
+      ((x: any) => moment(x.toJSDate()).format('dddd, LL')),
       () => 'Birthday',
     ));
 
@@ -104,7 +104,7 @@ class Contact extends React.PureComponent {
         leftIcon: <IconDate />
       },
       undefined,
-      ((x) => moment(x).format('dddd, LL')),
+      ((x: any) => moment(x.toJSDate()).format('dddd, LL')),
       () => 'Anniversary',
     ));
 
