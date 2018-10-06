@@ -18,7 +18,6 @@ Please be advised that while it's probably safe enough to use the hosted client
 in many cases, it's generally not preferable. It's recommended that you use signed
 releases which's signature you manually verify and are run locally!
 
-
 More info is available on the [FAQ](https://www.etesync.com/faq/#web-client).
 
 ## Running your own
@@ -32,7 +31,7 @@ Then clone this repository `yarn`, run `yarn` and wait until all of the deps are
 
 Then it's recommended you run `yarn build` to build a production ready client you should serve
 (even if run locally!) and then just serve the `build` directory from a web server.
-You could for exapmle use the python built-in web server by runnig `python3 -m http.server` from
+You could, for example, use the python built-in web server by running `python3 -m http.server` from
 the build directory.
 
 Alternatively, you can run the debug server just to verify everything works,
