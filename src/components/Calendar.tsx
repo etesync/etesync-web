@@ -3,6 +3,7 @@ import BigCalendar, { View } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
+import * as ICAL from 'ical.js';
 
 import { EventType } from '../pim-types';
 
@@ -10,6 +11,9 @@ import './Calendar.css';
 
 moment.locale('en-gb');
 const calendarLocalizer = BigCalendar.momentLocalizer(moment);
+
+const MAX_RECURRENCE_DATE = ICAL.Time.now();
+MAX_RECURRENCE_DATE.adjust(800, 0, 0, 0);
 
 function eventPropGetter(event: EventType) {
   return {
@@ -60,12 +64,34 @@ class Calendar extends React.PureComponent {
   }
 
   render() {
+    const entries = [] as Array<EventType>;
+    this.props.entries.forEach((event) => {
+      entries.push(event);
+
+      if (event.isRecurring()) {
+        const recur = event.iterator();
+
+        let next = recur.next(); // Skip the first one
+        while ((next = recur.next())) {
+          if (next.compare(MAX_RECURRENCE_DATE) > 0) {
+            break;
+          }
+
+          const shift = next.subtractDateTz(event.startDate);
+          const ev = event.clone();
+          ev.startDate.addDuration(shift);
+          ev.endDate.addDuration(shift);
+          entries.push(ev);
+        }
+      }
+    });
+
     return (
       <div style={{width: '100%', height: 'calc(100vh - 230px)', minHeight: 500}}>
         <BigCalendar
           defaultDate={new Date()}
           localizer={calendarLocalizer}
-          events={this.props.entries}
+          events={entries}
           selectable={true}
           onSelectEvent={this.props.onItemClick as any}
           onSelectSlot={this.slotClicked as any}

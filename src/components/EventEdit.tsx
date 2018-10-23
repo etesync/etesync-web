@@ -205,11 +205,20 @@ class EventEdit extends React.PureComponent {
       },
     };
 
+    const recurring = this.props.item && this.props.item.isRecurring;
+
     return (
       <React.Fragment>
         <h2>
           {this.props.item ? 'Edit Event' : 'New Event'}
         </h2>
+        {recurring && (
+          <div>
+            <span style={{ color: 'red' }}>IMPORTANT: </span>
+            This is a recurring event, for now, only editing the whole series
+            (by editing the first instance) is supported.
+          </div>
+        )}
         {this.state.error && (
           <div>ERROR! {this.state.error}</div>
         )}

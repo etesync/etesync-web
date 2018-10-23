@@ -43,7 +43,9 @@ export class EventType extends ICAL.Event implements PimType {
   }
 
   clone() {
-    return new EventType(new ICAL.Component(this.component.toJSON()));
+    const ret = new EventType(new ICAL.Component(this.component.toJSON()));
+    ret.color = this.color;
+    return ret;
   }
 }
 
