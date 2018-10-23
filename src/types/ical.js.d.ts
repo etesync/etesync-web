@@ -37,6 +37,9 @@ declare module 'ical.js' {
 
     component: Component;
 
+    isRecurring(): boolean;
+    iterator(startTime?: Time): RecurExpansion;
+
     constructor(component?: Component | null,
                 options?: {strictExceptions: boolean, exepctions: Array<Component|Event>});
   }
@@ -83,7 +86,20 @@ declare module 'ical.js' {
     adjust(
       aExtraDays: number, aExtraHours: number, aExtraMinutes: number, aExtraSeconds: number, aTimeopt?: Time): void;
 
+    addDuration(aDuration: Duration): void;
+    subtractDateTz(aDate: Time): Duration;
+
     toJSDate(): Date;
     toJSON(): TimeJsonData;
+  }
+
+  class Duration {
+    days: number;
+  }
+
+  class RecurExpansion {
+    complete: boolean;
+
+    next(): Time;
   }
 }
