@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.1.2",
+    "@material-ui/icons": "^3.0.1",
     "ical.js": "^1.2.2",
     "immutable": "^4.0.0-rc.9",
     "isomorphic-fetch": "^2.1.1",

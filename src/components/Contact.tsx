@@ -2,12 +2,11 @@ import * as React from 'react';
 import * as moment from 'moment';
 
 import { List, ListItem, ListDivider as Divider } from '../widgets/List';
-import IconHome from 'material-ui/svg-icons/action/home';
-import IconDate from 'material-ui/svg-icons/action/date-range';
-import CommunicationCall from 'material-ui/svg-icons/communication/call';
-import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
-import CommunicationEmail from 'material-ui/svg-icons/communication/email';
-import { indigo500 } from 'material-ui/styles/colors';
+import IconHome from '@material-ui/icons/Home';
+import IconDate from '@material-ui/icons/DateRange';
+import CommunicationCall from '@material-ui/icons/Call';
+import CommunicationChatBubble from '@material-ui/icons/ChatBubble';
+import CommunicationEmail from '@material-ui/icons/Email';
 
 import PimItemHeader from './PimItemHeader';
 
@@ -66,7 +65,7 @@ class Contact extends React.PureComponent {
     lists.push(getAllType(
       'email',
       {
-        leftIcon: <CommunicationEmail color={indigo500} />,
+        leftIcon: <CommunicationEmail />,
       },
       (x) => ('mailto:' + x),
     ));
