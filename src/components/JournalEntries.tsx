@@ -2,11 +2,14 @@ import * as Immutable from 'immutable';
 
 import * as React from 'react';
 import { List, ListItem } from '../widgets/List';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import IconAdd from 'material-ui/svg-icons/content/add';
-import IconDelete from 'material-ui/svg-icons/action/delete';
-import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import IconAdd from '@material-ui/icons/Add';
+import IconDelete from '@material-ui/icons/Delete';
+import IconEdit from '@material-ui/icons/Edit';
 
 import * as ICAL from 'ical.js';
 
@@ -44,11 +47,11 @@ class JournalEntries extends React.PureComponent {
 
       let icon;
       if (syncEntry.action === EteSync.SyncEntryAction.Add) {
-        icon = (<IconAdd color="#16B14B" />);
+        icon = (<IconAdd style={{color: '#16B14B'}} />);
       } else if (syncEntry.action === EteSync.SyncEntryAction.Change) {
-        icon = (<IconEdit color="#FEB115" />);
+        icon = (<IconEdit style={{color: '#FEB115'}} />);
       } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
-        icon = (<IconDelete color="#F20C0C" />);
+        icon = (<IconDelete style={{color: '#F20C0C'}} />);
       }
 
       let name;
@@ -85,29 +88,30 @@ class JournalEntries extends React.PureComponent {
         );
     }).reverse();
 
-    const actions = [(
-      <FlatButton
-        label="Close"
-        primary={true}
-        onClick={() => {
-          this.setState({dialog: undefined});
-        }}
-      />
-      ),
-    ];
     return (
       <div>
         <Dialog
-          title="Raw Content"
-          actions={actions}
-          modal={false}
-          autoScrollBodyContent={true}
           open={this.state.dialog !== undefined}
-          onRequestClose={() => {
+          onClose={() => {
             this.setState({dialog: undefined});
           }}
         >
-          <pre>{this.state.dialog}</pre>
+          <DialogTitle>
+            Raw Content
+          </DialogTitle>
+          <DialogContent>
+            <pre>{this.state.dialog}</pre>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              color="primary"
+              onClick={() => {
+                this.setState({dialog: undefined});
+              }}
+            >
+              Close
+            </Button>
+          </DialogActions>
         </Dialog>
         <List>
           {entries}
