@@ -3,7 +3,7 @@ import * as React from 'react';
 import { pure } from 'recompose';
 import { createSelector } from 'reselect';
 
-import * as colors from 'material-ui/styles/colors';
+import * as colors from '@material-ui/core/colors';
 
 import { Avatar } from '../widgets/Avatar';
 import { List, ListItem } from '../widgets/List';
@@ -12,22 +12,22 @@ import { ContactType } from '../pim-types';
 
 function getContactColor(contact: ContactType) {
   const colorOptions = [
-    colors.red500,
-    colors.pink500,
-    colors.purple500,
-    colors.deepPurple500,
-    colors.indigo500,
-    colors.blue500,
-    colors.lightBlue500,
-    colors.cyan500,
-    colors.teal500,
-    colors.green500,
-    colors.lightGreen500,
-    colors.lime500,
-    colors.yellow500,
-    colors.amber500,
-    colors.orange500,
-    colors.deepOrange500,
+    colors.red[500],
+    colors.pink[500],
+    colors.purple[500],
+    colors.deepPurple[500],
+    colors.indigo[500],
+    colors.blue[500],
+    colors.lightBlue[500],
+    colors.cyan[500],
+    colors.teal[500],
+    colors.green[500],
+    colors.lightGreen[500],
+    colors.lime[500],
+    colors.yellow[500],
+    colors.amber[500],
+    colors.orange[500],
+    colors.deepOrange[500],
   ];
 
   let sum = 0;
