@@ -1,16 +1,18 @@
 import * as React from 'react';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import { red500, fullWhite } from 'material-ui/styles/colors';
-import IconDelete from 'material-ui/svg-icons/action/delete';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import * as colors from '@material-ui/core/colors';
 
-import IconAdd from 'material-ui/svg-icons/content/add';
-import IconClear from 'material-ui/svg-icons/content/clear';
-import IconCancel from 'material-ui/svg-icons/content/clear';
-import IconSave from 'material-ui/svg-icons/content/save';
+import IconDelete from '@material-ui/icons/Delete';
+import IconAdd from '@material-ui/icons/Add';
+import IconClear from '@material-ui/icons/Clear';
+import IconCancel from '@material-ui/icons/Clear';
+import IconSave from '@material-ui/icons/Save';
 
 import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
@@ -46,15 +48,15 @@ const TypeSelector = (props: any) => {
   const types = props.types as {type: string}[];
 
   return (
-    <SelectField
+    <Select
       style={props.style}
       value={props.value}
       onChange={props.onChange}
     >
       {types.map((x) => (
-        <MenuItem key={x.type} value={x.type.toLowerCase()} primaryText={x.type} />
+        <MenuItem key={x.type} value={x.type.toLowerCase()}>{x.type}</MenuItem>
       ))}
-    </SelectField>
+    </Select>
   );
 };
 
@@ -74,7 +76,7 @@ interface ValueTypeComponentProps {
 
   types: {type: string}[];
   name: string;
-  hintText: string;
+  placeholder: string;
   value: ValueType;
   onClearRequest: (name: string) => void;
   onChange: (name: string, type: string, value: string) => void;
@@ -86,14 +88,14 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
       <TextField
         type={props.type}
         name={props.name}
-        hintText={props.hintText}
+        placeholder={props.placeholder}
         style={props.style}
         value={props.value.value}
         onChange={(event: React.ChangeEvent<any>) => props.onChange(props.name, props.value.type, event.target.value)}
       />
       <IconButton
         onClick={() => props.onClearRequest(props.name)}
-        tooltip="Remove"
+        title="Remove"
       >
         <IconClear />
       </IconButton>
@@ -334,21 +336,23 @@ class ContactEdit extends React.PureComponent {
           {this.props.item ? 'Edit Contact' : 'New Contact'}
         </h2>
         <form style={styles.form} onSubmit={this.onSubmit}>
-          <SelectField
-            style={styles.fullWidth}
-            value={this.state.journalUid}
-            floatingLabelText="Saving to"
-            disabled={this.props.item !== undefined}
-            onChange={(contact: object, key: number, payload: any) => this.handleChange('journalUid', payload)}
-          >
-            {this.props.collections.map((x) => (
-              <MenuItem key={x.uid} value={x.uid} primaryText={x.displayName} />
-            ))}
-          </SelectField>
+          <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth} >
+            <InputLabel>
+              Saving to
+            </InputLabel>
+            <Select
+              value={this.state.journalUid}
+              onChange={this.handleInputChange}
+            >
+              {this.props.collections.map((x) => (
+                <MenuItem key={x.uid} value={x.uid}>{x.displayName}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             name="fn"
-            hintText="Name"
+            placeholder="Name"
             style={styles.fullWidth}
             value={this.state.fn}
             onChange={this.handleInputChange}
@@ -358,7 +362,7 @@ class ContactEdit extends React.PureComponent {
             Phone numbers
             <IconButton
               onClick={() => this.addValueType('phone')}
-              tooltip="Add phone number"
+              title="Add phone number"
             >
               <IconAdd />
             </IconButton>
@@ -367,7 +371,7 @@ class ContactEdit extends React.PureComponent {
             <ValueTypeComponent
               key={idx}
               name="phone"
-              hintText="Phone"
+              placeholder="Phone"
               types={telTypes}
               value={this.state.phone[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
@@ -381,7 +385,7 @@ class ContactEdit extends React.PureComponent {
             Emails
             <IconButton
               onClick={() => this.addValueType('email')}
-              tooltip="Add email address"
+              title="Add email address"
             >
               <IconAdd />
             </IconButton>
@@ -390,7 +394,7 @@ class ContactEdit extends React.PureComponent {
             <ValueTypeComponent
               key={idx}
               name="email"
-              hintText="Email"
+              placeholder="Email"
               types={emailTypes}
               value={this.state.email[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
@@ -404,7 +408,7 @@ class ContactEdit extends React.PureComponent {
             IMPP
             <IconButton
               onClick={() => this.addValueType('impp', 'jabber')}
-              tooltip="Add impp address"
+              title="Add impp address"
             >
               <IconAdd />
             </IconButton>
@@ -413,7 +417,7 @@ class ContactEdit extends React.PureComponent {
             <ValueTypeComponent
               key={idx}
               name="impp"
-              hintText="IMPP"
+              placeholder="IMPP"
               types={imppTypes}
               value={this.state.impp[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
@@ -427,7 +431,7 @@ class ContactEdit extends React.PureComponent {
             Addresses
             <IconButton
               onClick={() => this.addValueType('address')}
-              tooltip="Add address"
+              title="Add address"
             >
               <IconAdd />
             </IconButton>
@@ -436,7 +440,7 @@ class ContactEdit extends React.PureComponent {
             <ValueTypeComponent
               key={idx}
               name="address"
-              hintText="Address"
+              placeholder="Address"
               types={addressTypes}
               value={this.state.address[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
@@ -448,7 +452,7 @@ class ContactEdit extends React.PureComponent {
 
           <TextField
             name="org"
-            hintText="Organization"
+            placeholder="Organization"
             style={styles.fullWidth}
             value={this.state.org}
             onChange={this.handleInputChange}
@@ -456,7 +460,7 @@ class ContactEdit extends React.PureComponent {
 
           <TextField
             name="title"
-            hintText="Title"
+            placeholder="Title"
             style={styles.fullWidth}
             value={this.state.title}
             onChange={this.handleInputChange}
@@ -464,38 +468,42 @@ class ContactEdit extends React.PureComponent {
 
           <TextField
             name="note"
-            multiLine={true}
-            hintText="Note"
+            multiline={true}
+            placeholder="Note"
             style={styles.fullWidth}
             value={this.state.note}
             onChange={this.handleInputChange}
           />
 
           <div style={styles.submit}>
-            <RaisedButton
-              label="Cancel"
+            <Button
+              variant="raised"
               onClick={this.props.onCancel}
-              icon={<IconCancel />}
-            />
+            >
+             <IconCancel style={{marginRight: 8}} />
+              Cancel
+            </Button>
 
             {this.props.item &&
-              <RaisedButton
-                label="Delete"
-                labelColor={fullWhite}
-                backgroundColor={red500}
-                style={{marginLeft: 15}}
-                icon={<IconDelete color={fullWhite} />}
+              <Button
+                variant="raised"
+                style={{marginLeft: 15, backgroundColor: colors.red[500], color: 'white'}}
                 onClick={this.onDeleteRequest}
-              />
+              >
+                <IconDelete style={{marginRight: 8}} />
+                Delete
+              </Button>
             }
 
-            <RaisedButton
+            <Button
               type="submit"
-              label="Save"
-              secondary={true}
-              icon={<IconSave />}
+              variant="raised"
+              color="secondary"
               style={{marginLeft: 15}}
-            />
+            >
+              <IconSave style={{marginRight: 8}} />
+              Save
+            </Button>
           </div>
 
           <div>
