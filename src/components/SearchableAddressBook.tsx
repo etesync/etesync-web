@@ -1,16 +1,14 @@
 import * as React from 'react';
 
-import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 
-import IconButton from 'material-ui/IconButton';
-import IconSearch from 'material-ui/svg-icons/action/search';
-import IconClear from 'material-ui/svg-icons/content/clear';
+import IconButton from '@material-ui/core/IconButton';
+import IconSearch from '@material-ui/icons/Search';
+import IconClear from '@material-ui/icons/Clear';
 
 import { ContactType } from '../pim-types';
 
 import AddressBook from '../components/AddressBook';
-
-import { getPalette } from '../App';
 
 class SearchableAddressBook extends React.PureComponent {
   props: {
@@ -50,8 +48,7 @@ class SearchableAddressBook extends React.PureComponent {
           name="searchQuery"
           value={this.state.searchQuery}
           style={{fontSize: '120%', marginLeft: 20}}
-          hintText="Find Contacts"
-          hintStyle={{color: getPalette('accent1Color')}}
+          placeholder="Find Contacts"
           onChange={this.handleInputChange}
         />
         {this.state.searchQuery &&
