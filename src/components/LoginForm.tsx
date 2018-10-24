@@ -1,7 +1,9 @@
 import * as React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import Toggle from 'material-ui/Toggle';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 import ExternalLink from '../widgets/ExternalLink';
 
@@ -18,7 +20,7 @@ interface FormErrors {
 
 class LoginForm extends React.PureComponent {
   state: {
-    showAdvanced?: boolean;
+    showAdvanced: boolean;
     errors: FormErrors;
 
     server: string;
@@ -36,6 +38,7 @@ class LoginForm extends React.PureComponent {
   constructor(props: any) {
     super(props);
     this.state = {
+      showAdvanced: false,
       errors: {},
       server: '',
       username: '',
@@ -96,14 +99,32 @@ class LoginForm extends React.PureComponent {
   }
 
   render() {
+    const styles = {
+      form: {
+      },
+      forgotPassword: {
+        color: getPalette('accent1Color'),
+        paddingTop: 20,
+      },
+      textField: {
+        marginTop: 20,
+      },
+      submit: {
+        marginTop: 40,
+        textAlign: 'right' as any,
+      },
+    };
+
     let advancedSettings = null;
     if (this.state.showAdvanced) {
       advancedSettings = (
           <React.Fragment>
             <TextField
               type="url"
-              errorText={this.state.errors.errorServer}
-              floatingLabelText="Server"
+              style={styles.textField}
+              error={!!this.state.errors.errorServer}
+              helperText={this.state.errors.errorServer}
+              label="Server"
               name="server"
               value={this.state.server}
               onChange={this.handleInputChange}
@@ -113,38 +134,26 @@ class LoginForm extends React.PureComponent {
       );
     }
 
-    const styles = {
-      form: {
-      },
-      forgotPassword: {
-        color: getPalette('accent1Color'),
-        paddingTop: 20,
-      },
-      advancedSettings: {
-        marginTop: 20,
-      },
-      submit: {
-        marginTop: 40,
-        textAlign: 'right' as any,
-      },
-    };
-
     return (
       <React.Fragment>
         {(this.props.error) && (<div>Error! {this.props.error.message}</div>)}
         <form style={styles.form} onSubmit={this.generateEncryption}>
           <TextField
             type="email"
-            errorText={this.state.errors.errorEmail}
-            floatingLabelText="Email"
+            style={styles.textField}
+            error={!!this.state.errors.errorEmail}
+            helperText={this.state.errors.errorEmail}
+            label="Email"
             name="username"
             value={this.state.username}
             onChange={this.handleInputChange}
           />
           <TextField
             type="password"
-            errorText={this.state.errors.errorPassword}
-            floatingLabelText="Password"
+            style={styles.textField}
+            error={!!this.state.errors.errorPassword}
+            helperText={this.state.errors.errorPassword}
+            label="Password"
             name="password"
             value={this.state.password}
             onChange={this.handleInputChange}
@@ -154,27 +163,37 @@ class LoginForm extends React.PureComponent {
           </div>
           <TextField
             type="password"
-            errorText={this.state.errors.errorEncryptionPassword}
-            floatingLabelText="Encryption Password"
+            style={styles.textField}
+            error={!!this.state.errors.errorEncryptionPassword}
+            helperText={this.state.errors.errorEncryptionPassword}
+            label="Encryption Password"
             name="encryptionPassword"
             value={this.state.encryptionPassword}
             onChange={this.handleInputChange}
           />
-          <Toggle
-            label="Advanced settings"
-            style={styles.advancedSettings}
-            toggled={this.state.showAdvanced}
-            onToggle={this.toggleAdvancedSettings}
-          />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  color="primary"
+                  checked={this.state.showAdvanced}
+                  onChange={this.toggleAdvancedSettings}
+                />
+              }
+              label="Advanced settings"
+            />
+          </FormGroup>
           {advancedSettings}
 
           <div style={styles.submit}>
-            <RaisedButton
+            <Button
+              variant="raised"
               type="submit"
-              label={this.props.loading ? 'Loading…' : 'Log In'}
-              secondary={true}
+              color="secondary"
               disabled={this.props.loading}
-            />
+            >
+              {this.props.loading ? 'Loading…' : 'Log In'}
+            </Button>
           </div>
         </form>
       </React.Fragment>
