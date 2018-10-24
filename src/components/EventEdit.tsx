@@ -1,14 +1,20 @@
 import * as React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import Toggle from 'material-ui/Toggle';
-import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import { red500, fullWhite } from 'material-ui/styles/colors';
-import IconDelete from 'material-ui/svg-icons/action/delete';
 
-import IconCancel from 'material-ui/svg-icons/content/clear';
-import IconSave from 'material-ui/svg-icons/content/save';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import * as colors from '@material-ui/core/colors';
+
+import IconDelete from '@material-ui/icons/Delete';
+import IconCancel from '@material-ui/icons/Clear';
+import IconSave from '@material-ui/icons/Save';
 
 import DateTimePicker from '../widgets/DateTimePicker';
 
@@ -197,6 +203,7 @@ class EventEdit extends React.PureComponent {
       fullWidth: {
         width: '100%',
         boxSizing: 'border-box' as any,
+        marginTop: 16,
       },
       submit: {
         marginTop: 40,
@@ -225,30 +232,40 @@ class EventEdit extends React.PureComponent {
         <form style={styles.form} onSubmit={this.onSubmit}>
           <TextField
             name="title"
-            hintText="Enter title"
+            placeholder="Enter title"
             style={styles.fullWidth}
             value={this.state.title}
             onChange={this.handleInputChange}
           />
 
-          <SelectField
-            style={styles.fullWidth}
-            value={this.state.journalUid}
-            floatingLabelText="Saving to"
-            disabled={this.props.item !== undefined}
-            onChange={(event: object, key: number, payload: any) => this.handleChange('journalUid', payload)}
-          >
-            {this.props.collections.map((x) => (
-              <MenuItem key={x.uid} value={x.uid} primaryText={x.displayName} />
-            ))}
-          </SelectField>
+          <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth} >
+            <InputLabel>
+              Saving to
+            </InputLabel>
+            <Select
+              value={this.state.journalUid}
+              disabled={this.props.item !== undefined}
+              onChange={this.handleInputChange}
+            >
+              {this.props.collections.map((x) => (
+                <MenuItem key={x.uid} value={x.uid}>{x.displayName}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-          <Toggle
-            label="All Day"
-            name="allDay"
-            toggled={this.state.allDay}
-            onToggle={this.toggleAllDay}
-          />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="allDay"
+                  checked={this.state.allDay}
+                  onChange={this.toggleAllDay}
+                  color="primary"
+                />
+              }
+              label="All Day"
+            />
+          </FormGroup>
 
           <div>
             <DateTimePicker
@@ -270,7 +287,7 @@ class EventEdit extends React.PureComponent {
 
           <TextField
             name="location"
-            hintText="Add location"
+            placeholder="Add location"
             style={styles.fullWidth}
             value={this.state.location}
             onChange={this.handleInputChange}
@@ -278,38 +295,42 @@ class EventEdit extends React.PureComponent {
 
           <TextField
             name="description"
-            hintText="Add description"
-            multiLine={true}
+            placeholder="Add description"
+            multiline={true}
             style={styles.fullWidth}
             value={this.state.description}
             onChange={this.handleInputChange}
           />
 
           <div style={styles.submit}>
-            <RaisedButton
-              label="Cancel"
-              icon={<IconCancel />}
+            <Button
+              variant="raised"
               onClick={this.props.onCancel}
-            />
+            >
+             <IconCancel style={{marginRight: 8}} />
+              Cancel
+            </Button>
 
             {this.props.item &&
-              <RaisedButton
-                label="Delete"
-                labelColor={fullWhite}
-                backgroundColor={red500}
-                style={{marginLeft: 15}}
-                icon={<IconDelete color={fullWhite} />}
+              <Button
+                variant="raised"
+                style={{marginLeft: 15, backgroundColor: colors.red[500], color: 'white'}}
                 onClick={this.onDeleteRequest}
-              />
+              >
+                <IconDelete style={{marginRight: 8}} />
+                Delete
+              </Button>
             }
 
-            <RaisedButton
+            <Button
               type="submit"
-              label="Save"
-              secondary={true}
-              icon={<IconSave />}
+              variant="raised"
+              color="secondary"
               style={{marginLeft: 15}}
-            />
+            >
+              <IconSave style={{marginRight: 8}} />
+              Save
+            </Button>
           </div>
 
           <div>
