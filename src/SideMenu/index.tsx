@@ -2,11 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { List, ListItem, ListSubheader, ListDivider } from '../widgets/List';
-import ActionCode from 'material-ui/svg-icons/action/code';
-import ActionHome from 'material-ui/svg-icons/action/home';
-import ActionBugReport from 'material-ui/svg-icons/action/bug-report';
-import ActionQuestionAnswer from 'material-ui/svg-icons/action/question-answer';
-import LogoutIcon from 'material-ui/svg-icons/action/power-settings-new';
+import ActionCode from '@material-ui/icons/Code';
+import ActionHome from '@material-ui/icons/Home';
+import ActionBugReport from '@material-ui/icons/BugReport';
+import ActionQuestionAnswer from '@material-ui/icons/QuestionAnswer';
+import LogoutIcon from '@material-ui/icons/PowerSettingsNew';
 
 const logo = require('../images/logo.svg');
 
