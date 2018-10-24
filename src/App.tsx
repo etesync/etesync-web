@@ -6,16 +6,14 @@ import { createSelector } from 'reselect';
 import { MuiThemeProvider as ThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
 import amber from '@material-ui/core/colors/amber';
 import lightBlue from '@material-ui/core/colors/lightBlue';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { amber500, amber700, lightBlue500, darkBlack, white } from 'material-ui/styles/colors';
-import AppBar from 'material-ui/AppBar';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 import Drawer from '@material-ui/core/Drawer';
-import IconButton from 'material-ui/IconButton';
+import IconButton from '@material-ui/core/IconButton';
 
-import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
-import NavigationBack from 'material-ui/svg-icons/navigation/arrow-back';
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
+import NavigationMenu from '@material-ui/icons/Menu';
+import NavigationBack from '@material-ui/icons/ArrowBack';
+import NavigationRefresh from '@material-ui/icons/Refresh';
 
 import './App.css';
 
@@ -38,28 +36,22 @@ const muiTheme = createMuiTheme({
       light: lightBlue.A200,
       main: lightBlue.A400,
       dark: lightBlue.A700,
-      contrastText: white,
+      contrastText: 'white',
     },
   }
 });
 
-const muiThemeV0 = getMuiTheme({
-  palette: {
-    primary1Color: amber500,
-    primary2Color: amber700,
-    accent1Color: lightBlue500,
-    textColor: darkBlack,
-    alternateTextColor: white,
-  }
-});
-
+// FIXME: get rid of this one
 export function getPalette(part: string): string {
-  const theme = muiThemeV0;
-  if ((theme.palette === undefined) || (theme.palette[part] === undefined)) {
-    return '';
-  }
+  const palette = {
+    primary1Color: amber[500],
+    primary2Color: amber[700],
+    accent1Color: lightBlue[500],
+    textColor: 'black',
+    alternateTextColor: 'white',
+  };
 
-  return theme.palette[part];
+  return palette[part] || '';
 }
 
 export const routeResolver = new RouteResolver({
@@ -136,12 +128,26 @@ const AppBarWitHistory = withRouter(
       } = this.props;
       return (
         <AppBar
-          iconElementLeft={!this.canGoBack() ?
-            toggleDrawerIcon :
-            <IconButton onClick={this.goBack}><NavigationBack /></IconButton>
-          }
+          position="static"
           {...props}
-        />
+        >
+          <Toolbar>
+            <div style={{ marginLeft: -12, marginRight: 20, }}>
+              {!this.canGoBack() ?
+                toggleDrawerIcon :
+                <IconButton onClick={this.goBack}><NavigationBack /></IconButton>
+              }
+            </div>
+
+            <div style={{ flexGrow: 1, fontSize: '1.25em' }}>
+              {C.appName}
+            </div>
+
+            <div style={{ marginRight: -12 }}>
+              {this.props.iconElementRight}
+            </div>
+          </Toolbar>
+        </AppBar>
       );
     }
   }
@@ -188,31 +194,28 @@ class App extends React.PureComponent {
 
     return (
       <ThemeProvider theme={muiTheme}>
-        <MuiThemeProvider muiTheme={muiThemeV0}>
-          <BrowserRouter>
-          <div>
-            <AppBarWitHistory
-              title={C.appName}
-              toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
-              iconElementRight={
-                <IconButton disabled={!credentials || fetching} onClick={this.refresh}>
-                  <IconRefreshWithSpin spin={fetching} />
-                </IconButton>}
+        <BrowserRouter>
+        <div>
+          <AppBarWitHistory
+            toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
+            iconElementRight={
+              <IconButton disabled={!credentials || fetching} onClick={this.refresh}>
+                <IconRefreshWithSpin spin={fetching} />
+              </IconButton>}
 
-            />
-            <Drawer
-              open={this.state.drawerOpen}
-              onClose={this.toggleDrawer}
-            >
-              <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
-            </Drawer>
+          />
+          <Drawer
+            open={this.state.drawerOpen}
+            onClose={this.toggleDrawer}
+          >
+            <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
+          </Drawer>
 
-            <ErrorBoundary>
-              <LoginGate credentials={this.props.credentials} />
-            </ErrorBoundary>
-          </div>
-          </BrowserRouter>
-        </MuiThemeProvider>
+          <ErrorBoundary>
+            <LoginGate credentials={this.props.credentials} />
+          </ErrorBoundary>
+        </div>
+        </BrowserRouter>
       </ThemeProvider>
     );
   }
