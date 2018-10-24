@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
-import RaisedButton from 'material-ui/RaisedButton';
-import IconEdit from 'material-ui/svg-icons/editor/mode-edit';
-import IconChangeHistory from 'material-ui/svg-icons/action/change-history';
+import Button from '@material-ui/core/Button';
+import IconEdit from '@material-ui/icons/Edit';
+import IconChangeHistory from '@material-ui/icons/ChangeHistory';
+import { withStyles } from '@material-ui/core/styles';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -96,12 +97,23 @@ type CollectionRoutesPropsType = RouteComponentProps<{}> & {
   onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
   onItemDelete: (item: PimType, journalUid: string) => void;
   onItemCancel: () => void;
+  classes: any;
 };
 
-const CollectionRoutes = withRouter(
+const styles = (theme: any) => ({
+  button: {
+    marginLeft: theme.spacing.unit,
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+});
+
+const CollectionRoutes = withStyles(styles)(withRouter(
   class CollectionRoutesInner extends React.PureComponent<CollectionRoutesPropsType> {
     render() {
       const props = this.props;
+      const { classes } = this.props;
       const ComponentEdit = props.componentEdit;
       const ComponentView = props.componentView;
 
@@ -157,28 +169,33 @@ const CollectionRoutes = withRouter(
             render={({match, history}) => (
               <Container>
                 <div style={{textAlign: 'right', marginBottom: 15}}>
-                  <RaisedButton
-                    label="Change History"
-                    style={{marginLeft: 15}}
-                    icon={<IconChangeHistory />}
+                  <Button
+                    variant="contained"
+                    className={classes.button}
                     onClick={() =>
                       history.push(routeResolver.getRoute(
                         props.routePrefix + '._id.log',
                         {itemUid: match.params.itemUid}))
                     }
-                  />
+                  >
+                   <IconChangeHistory className={classes.leftIcon} />
+                   Change History
+                  </Button>
 
-                  <RaisedButton
-                    label="Edit"
-                    secondary={true}
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    className={classes.button}
                     style={{marginLeft: 15}}
-                    icon={<IconEdit />}
                     onClick={() =>
                       history.push(routeResolver.getRoute(
                         props.routePrefix + '._id.edit',
                         {itemUid: match.params.itemUid}))
                     }
-                  />
+                  >
+                    <IconEdit className={classes.leftIcon} />
+                    Edit
+                  </Button>
                 </div>
                 <ComponentView item={props.items[match.params.itemUid]} />
               </Container>
@@ -188,7 +205,7 @@ const CollectionRoutes = withRouter(
       );
     }
   }
-);
+));
 
 class Pim extends React.PureComponent {
   props: {
