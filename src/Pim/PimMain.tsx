@@ -1,7 +1,9 @@
 import * as React from 'react';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import { Tabs, Tab } from 'material-ui/Tabs';
+import Button from '@material-ui/core/Button';
+import ContentAdd from '@material-ui/icons/Add';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import { Theme, withTheme } from '@material-ui/core/styles';
 
 import * as ICAL from 'ical.js';
 
@@ -23,21 +25,22 @@ const calendarTitle = 'Calendar';
 
 const PersistCalendar = historyPersistor('Calendar')(Calendar);
 
-class PimMain extends React.PureComponent {
-  props: {
-    contacts: Array<ContactType>,
-    events: Array<EventType>,
-    location?: Location,
-    history?: History,
-  };
+interface PropsType {
+  contacts: Array<ContactType>;
+  events: Array<EventType>;
+  location?: Location;
+  history?: History;
+  theme: Theme;
+}
 
+class PimMain extends React.PureComponent<PropsType> {
   state: {
-    tab: string;
+    tab: number;
   };
 
   constructor(props: any) {
     super(props);
-    this.state = {tab: addressBookTitle};
+    this.state = {tab: 0};
     this.eventClicked = this.eventClicked.bind(this);
     this.contactClicked = this.contactClicked.bind(this);
     this.floatingButtonClicked = this.floatingButtonClicked.bind(this);
@@ -66,16 +69,18 @@ class PimMain extends React.PureComponent {
   }
 
   floatingButtonClicked() {
-    if (this.state.tab === addressBookTitle) {
+    if (this.state.tab === 0) {
       this.props.history!.push(
         routeResolver.getRoute('pim.contacts.new')
       );
-    } else if (this.state.tab === calendarTitle) {
+    } else if (this.state.tab === 1) {
       this.newEvent();
     }
   }
 
   render() {
+    const { theme } = this.props;
+    const { tab } = this.state;
     const style = {
       floatingButton: {
         margin: 0,
@@ -90,40 +95,44 @@ class PimMain extends React.PureComponent {
     return (
       <React.Fragment>
         <Tabs
-          value={this.state.tab}
-          onChange={(value) => this.setState({tab: value})}
+          fullWidth={true}
+          style={{ backgroundColor: theme.palette.primary.main, color: 'white' }}
+          value={tab}
+          onChange={(event, value) => this.setState({tab: value})}
         >
           <Tab
-            value={addressBookTitle}
             label={addressBookTitle}
-          >
-            <Container>
-              <SearchableAddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
-            </Container>
-          </Tab>
+          />
           <Tab
-            value={calendarTitle}
             label={calendarTitle}
-          >
-            <Container>
-              <PersistCalendar
-                entries={this.props.events}
-                onItemClick={this.eventClicked}
-                onSlotClick={this.newEvent}
-              />
-            </Container>
-          </Tab>
+          />
         </Tabs>
+        { tab === 0 &&
+          <Container>
+            <SearchableAddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
+          </Container>
+        }
+        { tab === 1 &&
+          <Container>
+            <PersistCalendar
+              entries={this.props.events}
+              onItemClick={this.eventClicked}
+              onSlotClick={this.newEvent}
+            />
+          </Container>
+        }
 
-        <FloatingActionButton
+        <Button
+          variant="fab"
+          color="primary"
           style={style.floatingButton}
           onClick={this.floatingButtonClicked}
         >
           <ContentAdd />
-        </FloatingActionButton>
+        </Button>
       </React.Fragment>
     );
   }
 }
 
-export default historyPersistor('PimMain')(PimMain);
+export default withTheme()(historyPersistor('PimMain')(PimMain));
