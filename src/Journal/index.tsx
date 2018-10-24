@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { Tabs, Tab } from 'material-ui/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import { Theme, withTheme } from '@material-ui/core/styles';
 
 import SearchableAddressBook from '../components/SearchableAddressBook';
 import Contact from '../components/Contact';
@@ -27,24 +29,29 @@ interface PropsType {
 }
 
 interface PropsTypeInner extends PropsType {
+  theme: Theme;
 }
 
 const JournalAddressBook = journalView(SearchableAddressBook, Contact);
 const PersistCalendar = historyPersistor('Calendar')(Calendar);
 const JournalCalendar = journalView(PersistCalendar, Event);
 
-class Journal extends React.PureComponent {
-  static defaultProps = {
-    prevUid: null,
+class Journal extends React.PureComponent<PropsTypeInner> {
+  state: {
+    tab: number,
   };
 
-  props: PropsTypeInner;
-
-  constructor(props: any) {
+  constructor(props: PropsTypeInner) {
     super(props);
+
+    this.state = {
+      tab: 0,
+    };
   }
 
   render() {
+    const { theme } = this.props;
+    const currentTab = this.state.tab;
     const journalUid = this.props.match.params.journalUid;
 
     const syncJournal = this.props.syncInfo.get(journalUid);
@@ -74,25 +81,28 @@ class Journal extends React.PureComponent {
     return (
       <React.Fragment>
         <SecondaryHeader text={collectionInfo.displayName} />
-        <Tabs>
-          <Tab
-            label={itemsTitle}
-          >
-            <Container>
-              {itemsView}
-            </Container>
-          </Tab>
-          <Tab
-            label="Journal Entries"
-          >
-            <Container>
-              <JournalEntries journal={journal} entries={syncEntries} />
-            </Container>
-          </Tab>
+        <Tabs
+          fullWidth={true}
+          style={{ backgroundColor: theme.palette.primary.main, color: 'white' }}
+          value={currentTab}
+          onChange={(event, tab) => this.setState({ tab })}
+        >
+          <Tab label={itemsTitle} />
+          <Tab label="Journal Entries" />
         </Tabs>
+        { currentTab === 0 &&
+          <Container>
+            {itemsView}
+          </Container>
+        }
+        { currentTab === 1 &&
+          <Container>
+            <JournalEntries journal={journal} entries={syncEntries} />
+          </Container>
+        }
       </React.Fragment>
     );
   }
 }
 
-export default Journal;
+export default withTheme()(Journal);

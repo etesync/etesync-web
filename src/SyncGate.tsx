@@ -89,7 +89,6 @@ const syncInfoSelector = createSelector(
 );
 
 const PimRouter = withRouter(Pim);
-const JournalRouter = withRouter(Journal);
 
 class SyncGate extends React.PureComponent<PropsTypeInner> {
   constructor(props: PropsTypeInner) {
@@ -198,7 +197,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
         <Route
           path={routeResolver.getRoute('journals._id')}
           render={({match}) => (
-            <JournalRouter
+            <Journal
               syncInfo={journalMap}
               match={match}
             />
