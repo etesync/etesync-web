@@ -341,6 +341,7 @@ class ContactEdit extends React.PureComponent {
               Saving to
             </InputLabel>
             <Select
+              name="journalUid"
               value={this.state.journalUid}
               onChange={this.handleInputChange}
             >

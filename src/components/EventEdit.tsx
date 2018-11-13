@@ -243,6 +243,7 @@ class EventEdit extends React.PureComponent {
               Saving to
             </InputLabel>
             <Select
+              name="journalUid"
               value={this.state.journalUid}
               disabled={this.props.item !== undefined}
               onChange={this.handleInputChange}
