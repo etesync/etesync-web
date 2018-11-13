@@ -124,6 +124,7 @@ const AppBarWitHistory = withRouter(
         staticContext,
         toggleDrawerIcon,
         history,
+        iconElementRight,
         ...props
       } = this.props;
       return (
@@ -144,7 +145,7 @@ const AppBarWitHistory = withRouter(
             </div>
 
             <div style={{ marginRight: -12 }}>
-              {this.props.iconElementRight}
+              {iconElementRight}
             </div>
           </Toolbar>
         </AppBar>
