@@ -144,7 +144,7 @@ class ContactEdit extends React.PureComponent {
       phone: [new ValueType()],
       email: [new ValueType()],
       address: [new ValueType()],
-      impp: [new ValueType()],
+      impp: [new ValueType('jabber')],
       org: '',
       note: '',
       title: '',
