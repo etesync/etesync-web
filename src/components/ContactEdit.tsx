@@ -354,7 +354,7 @@ class ContactEdit extends React.PureComponent {
           <TextField
             name="fn"
             placeholder="Name"
-            style={styles.fullWidth}
+            style={{ marginTop: '2rem', ...styles.fullWidth }}
             value={this.state.fn}
             onChange={this.handleInputChange}
           />
