@@ -87,7 +87,6 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
     <React.Fragment>
       <TextField
         type={props.type}
-        name={props.name}
         placeholder={props.placeholder}
         style={props.style}
         value={props.value.value}
@@ -103,7 +102,9 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
         value={props.value.type}
         types={props.types}
         onChange={
-          (contact: object, key: number, payload: any) => props.onChange(props.name, payload, props.value.value)
+          (event: React.ChangeEvent<HTMLSelectElement>) => (
+            props.onChange(props.name, event.target.value, props.value.value)
+          )
         }
       />
     </React.Fragment>
