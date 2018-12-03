@@ -83,7 +83,7 @@ class Journal extends React.PureComponent<PropsTypeInner> {
         <SecondaryHeader text={collectionInfo.displayName} />
         <Tabs
           fullWidth={true}
-          style={{ backgroundColor: theme.palette.primary.main, color: 'white' }}
+          style={{ backgroundColor: theme.palette.primary.main }}
           value={currentTab}
           onChange={(event, tab) => this.setState({ tab })}
         >

@@ -96,7 +96,7 @@ class PimMain extends React.PureComponent<PropsType> {
       <React.Fragment>
         <Tabs
           fullWidth={true}
-          style={{ backgroundColor: theme.palette.primary.main, color: 'white' }}
+          style={{ backgroundColor: theme.palette.primary.main }}
           value={tab}
           onChange={(event, value) => this.setState({tab: value})}
         >
