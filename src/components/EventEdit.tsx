@@ -212,7 +212,7 @@ class EventEdit extends React.PureComponent {
       },
     };
 
-    const recurring = this.props.item && this.props.item.isRecurring;
+    const recurring = this.props.item && this.props.item.isRecurring();
 
     return (
       <React.Fragment>
