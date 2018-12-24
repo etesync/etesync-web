@@ -165,7 +165,7 @@ class LoginForm extends React.PureComponent {
             type="password"
             style={styles.textField}
             error={!!this.state.errors.errorEncryptionPassword}
-            helperText={this.state.errors.errorEncryptionPassword}
+            helperText={this.state.errors.errorEncryptionPassword || 'Choose a new one if not already set'}
             label="Encryption Password"
             name="encryptionPassword"
             value={this.state.encryptionPassword}
