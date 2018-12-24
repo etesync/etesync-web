@@ -347,7 +347,7 @@ class EventEdit extends React.PureComponent {
         onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
         onCancel={() => this.setState({showDeleteDialog: false})}
       >
-        Are you sure you would like to delete this contact?
+        Are you sure you would like to delete this event?
       </ConfirmationDialog>
       </React.Fragment>
     );
