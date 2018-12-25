@@ -7,6 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import { Action } from 'redux-actions';
+
 import * as EteSync from '../api/EteSync';
 
 import { createSelector } from 'reselect';
@@ -28,6 +30,7 @@ import PimMain from './PimMain';
 import { routeResolver } from '../App';
 
 import { store, CredentialsData, UserInfoData } from '../store';
+import { fetchEntries } from '../store/actions';
 
 import { SyncInfo } from '../SyncGate';
 
@@ -232,11 +235,28 @@ class Pim extends React.PureComponent {
     const journal = syncJournal.journal;
 
     let action = (originalEvent === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
-    let saveEvent = store.dispatch(
-      createJournalEntry(
-        this.props.etesync, this.props.userInfo, journal, syncJournal.journalEntries, action, item.toIcal()));
-    (saveEvent as any).then(() => {
-      this.props.history.goBack();
+
+    let prevUid: string | null = null;
+    let last = syncJournal.journalEntries.last() as EteSync.Entry;
+    if (last) {
+      prevUid = last.uid;
+    }
+    store.dispatch<any>(fetchEntries(this.props.etesync, journal.uid, prevUid))
+      .then((entriesAction: Action<EteSync.Entry[]>) => {
+
+      last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
+
+      if (last) {
+        prevUid = last.uid;
+      }
+
+      const saveEvent = store.dispatch(
+        createJournalEntry(
+          this.props.etesync, this.props.userInfo, journal,
+          prevUid, action, item.toIcal()));
+      (saveEvent as any).then(() => {
+        this.props.history.goBack();
+      });
     });
   }
 
@@ -250,11 +270,28 @@ class Pim extends React.PureComponent {
     const journal = syncJournal.journal;
 
     let action = EteSync.SyncEntryAction.Delete;
-    let deleteItem = store.dispatch(
-      createJournalEntry(
-        this.props.etesync, this.props.userInfo, journal, syncJournal.journalEntries, action, item.toIcal()));
-    (deleteItem as any).then(() => {
-      this.props.history.push(routeResolver.getRoute('pim'));
+
+    let prevUid: string | null = null;
+    let last = syncJournal.journalEntries.last() as EteSync.Entry;
+    if (last) {
+      prevUid = last.uid;
+    }
+    store.dispatch<any>(fetchEntries(this.props.etesync, journal.uid, prevUid))
+      .then((entriesAction: Action<EteSync.Entry[]>) => {
+
+      last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
+
+      if (last) {
+        prevUid = last.uid;
+      }
+
+      const deleteItem = store.dispatch(
+        createJournalEntry(
+          this.props.etesync, this.props.userInfo, journal,
+          prevUid, action, item.toIcal()));
+      (deleteItem as any).then(() => {
+        this.props.history.push(routeResolver.getRoute('pim'));
+      });
     });
   }
 
