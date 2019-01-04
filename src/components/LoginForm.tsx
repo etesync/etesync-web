@@ -139,11 +139,11 @@ class LoginForm extends React.PureComponent {
         {(this.props.error) && (<div>Error! {this.props.error.message}</div>)}
         <form style={styles.form} onSubmit={this.generateEncryption}>
           <TextField
-            type="email"
+            type={this.state.showAdvanced ? 'text' : 'email'}
             style={styles.textField}
             error={!!this.state.errors.errorEmail}
             helperText={this.state.errors.errorEmail}
-            label="Email"
+            label="Username"
             name="username"
             value={this.state.username}
             onChange={this.handleInputChange}
