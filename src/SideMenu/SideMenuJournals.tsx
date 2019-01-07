@@ -46,7 +46,8 @@ class SideMenuJournals extends React.PureComponent {
         return ret;
       },
       { CALENDAR: [],
-        ADDRESS_BOOK: []
+        ADDRESS_BOOK: [],
+        TASKS: []
       });
 
     return (
@@ -59,6 +60,11 @@ class SideMenuJournals extends React.PureComponent {
         <ListItem
           primaryText="Calendars"
           nestedItems={journalMap.CALENDAR}
+        />
+
+        <ListItem
+          primaryText="Tasks"
+          nestedItems={journalMap.TASKS}
         />
       </React.Fragment>
     );

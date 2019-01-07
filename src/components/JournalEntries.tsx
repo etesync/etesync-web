@@ -13,7 +13,7 @@ import IconEdit from '@material-ui/icons/Edit';
 
 import * as ICAL from 'ical.js';
 
-import { EventType, ContactType } from '../pim-types';
+import { TaskType, EventType, ContactType } from '../pim-types';
 
 import * as EteSync from '../api/EteSync';
 
@@ -57,9 +57,15 @@ class JournalEntries extends React.PureComponent {
       let name;
       let uid;
       if (comp.name === 'vcalendar') {
-        const vevent = EventType.fromVCalendar(comp);
-        name = vevent.summary;
-        uid = vevent.uid;
+        if (EventType.isEvent(comp)) {
+          const vevent = EventType.fromVCalendar(comp);
+          name = vevent.summary;
+          uid = vevent.uid;
+        } else {
+          const vtodo = TaskType.fromVCalendar(comp);
+          name = vtodo.summary;
+          uid = vtodo.uid;
+        }
       } else if (comp.name === 'vcard') {
         const vcard = new ContactType(comp);
         name = vcard.fn;

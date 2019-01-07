@@ -9,6 +9,10 @@ export interface PimType {
 export class EventType extends ICAL.Event implements PimType {
   color: string;
 
+  static isEvent(comp: ICAL.Component) {
+    return !!comp.getFirstSubcomponent('vevent');
+  }
+
   static fromVCalendar(comp: ICAL.Component) {
     return new EventType(comp.getFirstSubcomponent('vevent'));
   }
@@ -44,6 +48,29 @@ export class EventType extends ICAL.Event implements PimType {
 
   clone() {
     const ret = new EventType(new ICAL.Component(this.component.toJSON()));
+    ret.color = this.color;
+    return ret;
+  }
+}
+
+export class TaskType extends ICAL.Event implements PimType {
+  color: string;
+
+  static fromVCalendar(comp: ICAL.Component) {
+    return new EventType(comp.getFirstSubcomponent('vtodo'));
+  }
+
+  toIcal() {
+    let comp = new ICAL.Component(['vcalendar', [], []]);
+    comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
+    comp.updatePropertyWithValue('version', '4.0');
+
+    comp.addSubcomponent(this.component);
+    return comp.toString();
+  }
+
+  clone() {
+    const ret = new TaskType(new ICAL.Component(this.component.toJSON()));
     ret.color = this.color;
     return ret;
   }

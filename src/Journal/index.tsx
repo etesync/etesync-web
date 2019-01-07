@@ -51,7 +51,8 @@ class Journal extends React.PureComponent<PropsTypeInner> {
 
   render() {
     const { theme } = this.props;
-    const currentTab = this.state.tab;
+    let currentTab = this.state.tab;
+    let journalOnly = false;
     const journalUid = this.props.match.params.journalUid;
 
     const syncJournal = this.props.syncInfo.get(journalUid);
@@ -73,10 +74,17 @@ class Journal extends React.PureComponent<PropsTypeInner> {
       itemsView =
         <JournalAddressBook journal={journal} entries={syncEntriesToItemMap(collectionInfo, syncEntries)} />;
       itemsTitle = 'Contacts';
+    } else if (collectionInfo.type === 'TASKS')  {
+      itemsView = <div>Task preview is not yet supported</div>;
+      itemsTitle = 'Tasks';
+      journalOnly = true;
     } else {
-      itemsView = <div>Unsupported type</div>;
+      itemsView = <div>Preview is not supported for this journal type</div>;
       itemsTitle = 'Items';
+      journalOnly = true;
     }
+
+    currentTab = journalOnly ? 1 : currentTab;
 
     return (
       <React.Fragment>
@@ -87,7 +95,7 @@ class Journal extends React.PureComponent<PropsTypeInner> {
           value={currentTab}
           onChange={(event, tab) => this.setState({ tab })}
         >
-          <Tab label={itemsTitle} />
+          <Tab label={itemsTitle} disabled={journalOnly} />
           <Tab label="Journal Entries" />
         </Tabs>
         { currentTab === 0 &&
