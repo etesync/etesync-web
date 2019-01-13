@@ -40,7 +40,7 @@ class PimMain extends React.PureComponent<PropsType> {
 
   constructor(props: any) {
     super(props);
-    this.state = {tab: 0};
+    this.state = {tab: 1};
     this.eventClicked = this.eventClicked.bind(this);
     this.contactClicked = this.contactClicked.bind(this);
     this.floatingButtonClicked = this.floatingButtonClicked.bind(this);
