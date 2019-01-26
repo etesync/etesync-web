@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Action } from 'redux-actions';
 import { Route, Switch, Redirect, RouteComponentProps, withRouter } from 'react-router';
 
 import { List, Map } from 'immutable';
@@ -113,8 +114,12 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
           const journal = new EteSync.Journal();
           const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, collection.uid);
           journal.setInfo(cryptoManager, collection);
-          store.dispatch<any>(createJournal(this.props.etesync, journal)).then(() => {
-            store.dispatch(fetchEntries(this.props.etesync, collection.uid));
+          store.dispatch<any>(createJournal(this.props.etesync, journal)).then(
+            (journalAction: Action<EteSync.Journal>) => {
+              // FIXME: Limit based on error code to only do it for associates.
+              if (!journalAction.error) {
+                store.dispatch(fetchEntries(this.props.etesync, collection.uid));
+              }
           });
         });
       });
