@@ -36,6 +36,7 @@ type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
   journals: JournalsType;
   entries: EntriesType;
   userInfo: UserInfoType;
+  fetchCount: number;
 };
 
 const syncInfoSelector = createSelector(
@@ -167,8 +168,9 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
     }
 
     if ((this.props.userInfo.value === null) || (journals === null) ||
-      (entryArrays.size === 0) ||
-      !entryArrays.every((x: any) => (x.value !== null))) {
+      ((this.props.fetchCount > 0) &&
+        ((entryArrays.size === 0) || !entryArrays.every((x: any) => (x.value !== null))))
+      ) {
       return (<LoadingIndicator style={{display: 'block', margin: '40px auto'}} />);
     }
 
@@ -213,6 +215,7 @@ const mapStateToProps = (state: StoreState, props: PropsType) => {
     journals: state.cache.journals,
     entries: state.cache.entries,
     userInfo: state.cache.userInfo,
+    fetchCount: state.fetchCount,
   };
 };
 
