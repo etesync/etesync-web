@@ -104,7 +104,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
           return;
         }
 
-        ['ADDRESS_BOOK', 'CALENDAR'].forEach((collectionType) => {
+        ['ADDRESS_BOOK', 'CALENDAR', 'TASKS'].forEach((collectionType) => {
           const collection = new EteSync.CollectionInfo();
           collection.uid = EteSync.genUid();
           collection.type = collectionType;
