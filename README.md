@@ -1,6 +1,9 @@
-# The EteSync Web App
+<p align="center">
+  <img width="120" src="src/images/logo.svg" />
+  <h1 align="center">EteSync - Secure Data Sync</h1>
+</p>
 
-Use EteSync from the browser!
+The EteSync Web App - Use EteSync from the browser!
 
 
 ![GitHub tag](https://img.shields.io/github/tag/etesync/etesync-web.svg)
