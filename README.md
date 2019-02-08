@@ -39,3 +39,7 @@ the build directory.
 
 Alternatively, you can run the debug server just to verify everything works,
 though be aware that the app will probably be quite slow. To do that, run `yarn start`.
+
+### Serving from subdirectory
+
+In order to run your own version and serve it from a subdirectory rather than the top level of the domain, add `"homepage": "/subdir-name"` to the `package.json` file.
