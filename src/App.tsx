@@ -41,19 +41,6 @@ const muiTheme = createMuiTheme({
   }
 });
 
-// FIXME: get rid of this one
-export function getPalette(part: string): string {
-  const palette = {
-    primary1Color: amber[500],
-    primary2Color: amber[700],
-    accent1Color: lightBlue[500],
-    textColor: 'black',
-    alternateTextColor: 'white',
-  };
-
-  return palette[part] || '';
-}
-
 export const routeResolver = new RouteResolver({
   home: '',
   pim: {

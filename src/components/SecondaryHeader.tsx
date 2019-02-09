@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { getPalette } from '../App';
+import { Theme, withTheme } from '@material-ui/core/styles';
 
-export default (props: {text: string}) => {
+export default withTheme()((props: {text: string, theme: Theme}) => {
     const style = {
       header: {
-        backgroundColor: getPalette('primary1Color'),
-        color: getPalette('alternateTextColor'),
+        backgroundColor: props.theme.palette.primary.main,
+        color: props.theme.palette.primary.contrastText,
         padding: 15,
         textAlign: 'center' as any,
       },
@@ -20,4 +20,4 @@ export default (props: {text: string}) => {
         <h2 style={style.headerText}>{props.text}</h2>
       </div>
     );
-};
+});

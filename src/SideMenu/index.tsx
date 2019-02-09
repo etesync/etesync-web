@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { List, ListItem, ListSubheader, ListDivider } from '../widgets/List';
+import { Theme, withTheme } from '@material-ui/core/styles';
 import ActionCode from '@material-ui/icons/Code';
 import ActionHome from '@material-ui/icons/Home';
 import ActionBugReport from '@material-ui/icons/BugReport';
@@ -13,7 +14,7 @@ const logo = require('../images/logo.svg');
 import SideMenuJournals from './SideMenuJournals';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-import { routeResolver, getPalette } from '../App';
+import { routeResolver } from '../App';
 
 import { store, JournalsType, UserInfoData, StoreState, CredentialsData } from '../store';
 import { logout } from '../store/actions';
@@ -28,6 +29,7 @@ interface PropsType {
 type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
   journals: JournalsType;
   userInfo: UserInfoData;
+  theme: Theme;
 };
 
 class SideMenu extends React.PureComponent<PropsTypeInner> {
@@ -48,6 +50,7 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
   }
 
   render() {
+    const { theme } = this.props;
     const username = (this.props.etesync && this.props.etesync.credentials.email) ?
       this.props.etesync.credentials.email
       : C.appName;
@@ -83,7 +86,7 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
       <div style={{ overflowX: 'hidden', width: 250}}>
         <div className="App-drawer-header">
           <img className="App-drawer-logo" src={logo} />
-          <div style={{color: getPalette('alternateTextColor')}} >
+          <div style={{ color: theme.palette.secondary.contrastText }} >
             {username}
           </div>
         </div>
@@ -116,6 +119,6 @@ const mapStateToProps = (state: StoreState, props: PropsType) => {
   };
 };
 
-export default withRouter(connect(
+export default withTheme()(withRouter(connect(
   mapStateToProps
-)(SideMenu));
+)(SideMenu)));

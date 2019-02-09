@@ -1,12 +1,13 @@
 import * as React from 'react';
 
-import { getPalette } from '../App';
+import { Theme, withTheme } from '@material-ui/core/styles';
 
-export default (props: {text: string, backgroundColor?: string, children?: any}) => {
+export default withTheme()((props: {text: string, backgroundColor?: string, children?: any, theme: Theme}) => {
     const style = {
       header: {
-        backgroundColor: (props.backgroundColor !== undefined) ? props.backgroundColor : getPalette('accent1Color'),
-        color: getPalette('alternateTextColor'),
+        backgroundColor: (props.backgroundColor !== undefined) ?
+          props.backgroundColor : props.theme.palette.secondary.main,
+        color: props.theme.palette.secondary.contrastText,
         padding: 15,
       },
       headerText: {
@@ -21,4 +22,4 @@ export default (props: {text: string, backgroundColor?: string, children?: any})
         {props.children}
       </div>
     );
-};
+});

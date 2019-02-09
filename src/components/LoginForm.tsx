@@ -7,8 +7,6 @@ import Switch from '@material-ui/core/Switch';
 
 import ExternalLink from '../widgets/ExternalLink';
 
-import { getPalette } from '../App';
-
 import * as C from '../constants';
 
 interface FormErrors {
@@ -103,7 +101,6 @@ class LoginForm extends React.PureComponent {
       form: {
       },
       forgotPassword: {
-        color: getPalette('accent1Color'),
         paddingTop: 20,
       },
       textField: {
