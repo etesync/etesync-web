@@ -183,7 +183,7 @@ class App extends React.PureComponent {
     return (
       <ThemeProvider theme={muiTheme}>
         <BrowserRouter>
-        <div>
+        <div style={{backgroundColor: muiTheme.palette.background.default, color: muiTheme.palette.text.primary}}>
           <AppBarWitHistory
             toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
             iconElementRight={
