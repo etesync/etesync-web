@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { History } from 'history';
 
-import { List, ListItem } from './widgets/List';
+import { List, ListItem } from '../widgets/List';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from '../api/EteSync';
 
-import { routeResolver } from './App';
+import { routeResolver } from '../App';
 
-import { JournalsData, UserInfoData, CredentialsData } from './store';
+import { JournalsData, UserInfoData, CredentialsData } from '../store';
 
-class Journals extends React.PureComponent {
+class JournalsList extends React.PureComponent {
   props: {
     etesync: CredentialsData;
     journals: JournalsData;
@@ -79,4 +79,4 @@ class Journals extends React.PureComponent {
   }
 }
 
-export default Journals;
+export default JournalsList;
