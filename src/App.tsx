@@ -74,6 +74,8 @@ export const routeResolver = new RouteResolver({
           _base: ':entryUid',
         },
       },
+      members: {
+      },
     },
     new: 'new',
   },

@@ -4,6 +4,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { Theme, withTheme } from '@material-ui/core/styles';
 import IconEdit from '@material-ui/icons/Edit';
+import IconMembers from '@material-ui/icons/People';
 
 import SearchableAddressBook from '../components/SearchableAddressBook';
 import Contact from '../components/Contact';
@@ -87,13 +88,22 @@ class Journal extends React.PureComponent<PropsTypeInner> {
       <React.Fragment>
         <AppBarOverride title={collectionInfo.displayName}>
           { isOwner &&
-            <IconButton
-              component={Link}
-              title="Edit"
-              {...{to: routeResolver.getRoute('journals._id.edit', { journalUid: journal.uid })}}
-            >
-              <IconEdit />
-            </IconButton>
+            <>
+              <IconButton
+                component={Link}
+                title="Edit"
+                {...{to: routeResolver.getRoute('journals._id.edit', { journalUid: journal.uid })}}
+              >
+                <IconEdit />
+              </IconButton>
+              <IconButton
+                component={Link}
+                title="Members"
+                {...{to: routeResolver.getRoute('journals._id.members', { journalUid: journal.uid })}}
+              >
+                <IconMembers />
+              </IconButton>
+            </>
           }
         </AppBarOverride>
         <Tabs

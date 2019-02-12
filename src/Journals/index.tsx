@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router';
 
 import Journal from './Journal';
 import JournalEdit from './JournalEdit';
+import JournalMembers from './JournalMembers';
 import JournalsList from './JournalsList';
 
 import { routeResolver } from '../App';
@@ -83,6 +84,15 @@ class Journals extends React.PureComponent {
                       onSave={this.onItemSave}
                       onDelete={this.onItemDelete}
                       onCancel={this.onCancel}
+                    />
+                  )}
+                />
+                <Route
+                  path={routeResolver.getRoute('journals._id.members')}
+                  render={() => (
+                    <JournalMembers
+                      etesync={this.props.etesync}
+                      info={collectionInfo}
                     />
                   )}
                 />

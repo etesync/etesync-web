@@ -503,6 +503,29 @@ export class EntryManager extends BaseManager {
   }
 }
 
+export interface JournalMemberJson {
+  user: string;
+  key: base64;
+}
+
+export class JournalMembersManager extends BaseManager {
+  constructor(credentials: Credentials, apiBase: string, journalId: string) {
+    super(credentials, apiBase, ['journals', journalId, 'members', '']);
+  }
+
+  list(): Promise<JournalMemberJson[]> {
+    return new Promise((resolve, reject) => {
+      this.newCall().then((json: Array<{}>) => {
+        resolve(json.map((val: JournalMemberJson) => {
+          return val;
+        }));
+      }).catch((error: Error) => {
+        reject(error);
+      });
+    });
+  }
+}
+
 export class UserInfoManager extends BaseManager {
   constructor(credentials: Credentials, apiBase: string) {
     super(credentials, apiBase, ['user', '']);
