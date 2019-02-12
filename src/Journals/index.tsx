@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { Location, History } from 'history';
 import { Route, Switch } from 'react-router';
+import { Link } from 'react-router-dom';
+
+import IconButton from '@material-ui/core/IconButton';
+import IconAdd from '@material-ui/icons/Add';
 
 import Journal from './Journal';
 import JournalEdit from './JournalEdit';
@@ -10,7 +14,7 @@ import AppBarOverride from '../widgets/AppBarOverride';
 import { routeResolver } from '../App';
 
 import { store, JournalsData, UserInfoData, CredentialsData } from '../store';
-import { addJournal, updateJournal } from '../store/actions';
+import { addJournal, deleteJournal, updateJournal } from '../store/actions';
 import { SyncInfo } from '../SyncGate';
 
 import * as EteSync from '../api/EteSync';
@@ -40,7 +44,15 @@ class Journals extends React.PureComponent {
           exact={true}
           render={({ history }) => (
             <>
-              <AppBarOverride title="Journals" />
+              <AppBarOverride title="Journals">
+                <IconButton
+                  component={Link}
+                  title="New"
+                  {...{to: routeResolver.getRoute('journals.new')}}
+                >
+                  <IconAdd />
+                </IconButton>
+              </AppBarOverride>
               <JournalsList
                 userInfo={this.props.userInfo}
                 etesync={this.props.etesync}
@@ -48,6 +60,17 @@ class Journals extends React.PureComponent {
                 history={history}
               />
             </>
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('journals.new')}
+          render={() => (
+            <JournalEdit
+              syncInfo={this.props.syncInfo}
+              onSave={this.onItemSave}
+              onDelete={this.onItemDelete}
+              onCancel={this.onCancel}
+            />
           )}
         />
         <Route
@@ -112,7 +135,13 @@ class Journals extends React.PureComponent {
   }
 
   onItemDelete(info: EteSync.CollectionInfo) {
-    return;
+    const journal = new EteSync.Journal();
+    const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, info.uid);
+    journal.setInfo(cryptoManager, info);
+
+    store.dispatch<any>(deleteJournal(this.props.etesync, journal)).then(() =>
+      this.props.history.push(routeResolver.getRoute('journals'))
+    );
   }
 
   onCancel() {

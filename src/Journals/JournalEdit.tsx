@@ -1,6 +1,10 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import { Theme, withTheme } from '@material-ui/core/styles';
 import IconDelete from '@material-ui/icons/Delete';
 import IconCancel from '@material-ui/icons/Clear';
@@ -53,7 +57,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
       this.state.info = {...collection};
     } else {
       this.state.info.uid = EteSync.genUid();
-     // FIXME: set the type
+      this.state.info.type = 'ADDRESS_BOOK';
     }
   }
 
@@ -73,13 +77,35 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
       },
     };
 
+    const journalTypes = {
+      ADDRESS_BOOK: 'Address Book',
+      CALENDAR: 'Calendar',
+      TASKS: 'Task List',
+    };
+
     return (
       <>
         <AppBarOverride title={pageTitle} />
         <Container style={{maxWidth: 400}}>
           <form onSubmit={this.onSubmit}>
+            <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth} >
+              <InputLabel>
+                Collection type
+              </InputLabel>
+              <Select
+                name="type"
+                required={true}
+                value={this.state.info.type}
+                onChange={this.handleInputChange}
+              >
+                {Object.keys(journalTypes).map((x) => (
+                  <MenuItem key={x} value={x}>{journalTypes[x]}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField
               name="displayName"
+              required={true}
               label="Display name of this collection"
               value={this.state.info.displayName}
               onChange={this.handleInputChange}
