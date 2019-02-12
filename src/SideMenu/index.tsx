@@ -5,14 +5,12 @@ import { List, ListItem, ListSubheader, ListDivider } from '../widgets/List';
 import { Theme, withTheme } from '@material-ui/core/styles';
 import ActionCode from '@material-ui/icons/Code';
 import ActionHome from '@material-ui/icons/Home';
+import ActionJournals from '@material-ui/icons/LibraryBooks';
 import ActionBugReport from '@material-ui/icons/BugReport';
 import ActionQuestionAnswer from '@material-ui/icons/QuestionAnswer';
 import LogoutIcon from '@material-ui/icons/PowerSettingsNew';
 
 const logo = require('../images/logo.svg');
-
-import SideMenuJournals from './SideMenuJournals';
-import ErrorBoundary from '../components/ErrorBoundary';
 
 import { routeResolver } from '../App';
 
@@ -36,17 +34,11 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
   constructor(props: PropsTypeInner) {
     super(props);
     this.logout = this.logout.bind(this);
-    this.journalClicked = this.journalClicked.bind(this);
   }
 
   logout() {
     store.dispatch(logout());
     this.props.onCloseDrawerRequest();
-  }
-
-  journalClicked(journalUid: string) {
-    this.props.onCloseDrawerRequest();
-    this.props.history.push(routeResolver.getRoute('journals._id', { journalUid: journalUid }));
   }
 
   render() {
@@ -57,27 +49,17 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
 
     let loggedInItems;
     if (this.props.etesync) {
-      const journals = (this.props.etesync.encryptionKey && this.props.journals && this.props.journals.value
-        && this.props.userInfo) && (
-
-        <React.Fragment>
-          <ListDivider />
-          <ListSubheader>Journals</ListSubheader>
-          <ErrorBoundary>
-            <SideMenuJournals
-              etesync={this.props.etesync}
-              journals={this.props.journals.value}
-              userInfo={this.props.userInfo}
-              onItemClick={this.journalClicked}
-            />
-          </ErrorBoundary>
-        </React.Fragment>
-      );
-
       loggedInItems = (
         <React.Fragment>
+          <ListItem
+            primaryText="Journals"
+            leftIcon={<ActionJournals />}
+            onClick={() => {
+              this.props.onCloseDrawerRequest();
+              this.props.history.push(routeResolver.getRoute('journals'));
+            }}
+          />
           <ListItem primaryText="Log Out" leftIcon={<LogoutIcon/>}  onClick={this.logout} />
-          {journals}
         </React.Fragment>
       );
     }

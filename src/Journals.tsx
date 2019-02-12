@@ -1,21 +1,25 @@
 import * as React from 'react';
+import { History } from 'history';
 
-import { ListItem } from '../widgets/List';
+import { List, ListItem } from './widgets/List';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from './api/EteSync';
 
-import { JournalsData, UserInfoData, CredentialsData } from '../store';
+import { routeResolver } from './App';
 
-class SideMenuJournals extends React.PureComponent {
+import { JournalsData, UserInfoData, CredentialsData } from './store';
+
+class Journals extends React.PureComponent {
   props: {
     etesync: CredentialsData;
     journals: JournalsData;
     userInfo: UserInfoData;
-    onItemClick: (journalUid: string) => void;
+    history: History;
   };
 
   constructor(props: any) {
     super(props);
+    this.journalClicked = this.journalClicked.bind(this);
   }
 
   render() {
@@ -38,7 +42,7 @@ class SideMenuJournals extends React.PureComponent {
         let info = journal.getInfo(cryptoManager);
         ret[info.type] = ret[info.type] || [];
         ret[info.type].push(
-          <ListItem key={journal.uid} onClick={() => this.props.onItemClick(journal.uid)}>
+          <ListItem key={journal.uid} onClick={() => this.journalClicked(journal.uid)}>
             {info.displayName} ({journal.uid.slice(0, 5)})
           </ListItem>
         );
@@ -51,7 +55,7 @@ class SideMenuJournals extends React.PureComponent {
       });
 
     return (
-      <React.Fragment>
+      <List>
         <ListItem
           primaryText="Address Books"
           nestedItems={journalMap.ADDRESS_BOOK}
@@ -66,9 +70,13 @@ class SideMenuJournals extends React.PureComponent {
           primaryText="Tasks"
           nestedItems={journalMap.TASKS}
         />
-      </React.Fragment>
+      </List>
     );
+  }
+
+  private journalClicked(journalUid: string) {
+    this.props.history.push(routeResolver.getRoute('journals._id', { journalUid: journalUid }));
   }
 }
 
-export default SideMenuJournals;
+export default Journals;

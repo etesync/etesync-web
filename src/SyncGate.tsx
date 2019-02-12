@@ -11,6 +11,7 @@ import { routeResolver } from './App';
 import LoadingIndicator from './widgets/LoadingIndicator';
 import PrettyError from './widgets/PrettyError';
 
+import Journals from './Journals';
 import Journal from './Journal';
 import Pim from './Pim';
 
@@ -197,6 +198,18 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
               etesync={this.props.etesync}
               userInfo={this.props.userInfo.value!}
               syncInfo={journalMap}
+              history={history}
+            />
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('journals')}
+          exact={true}
+          render={({ history }) => (
+            <Journals
+              userInfo={this.props.userInfo.value!}
+              etesync={this.props.etesync}
+              journals={journals}
               history={history}
             />
           )}
