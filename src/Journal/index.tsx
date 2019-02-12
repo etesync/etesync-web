@@ -88,7 +88,7 @@ class Journal extends React.PureComponent<PropsTypeInner> {
 
     return (
       <React.Fragment>
-        <SecondaryHeader text={collectionInfo.displayName} />
+        <SecondaryHeader>{collectionInfo.displayName}</SecondaryHeader>
         <Tabs
           fullWidth={true}
           style={{ backgroundColor: theme.palette.primary.main }}

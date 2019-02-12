@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Theme, withTheme } from '@material-ui/core/styles';
 
-export default withTheme()((props: {text: string, theme: Theme}) => {
+export default withTheme()((props: {children: React.ReactNode | React.ReactNode[], theme: Theme}) => {
     const style = {
       header: {
         backgroundColor: props.theme.palette.primary.main,
@@ -17,7 +17,7 @@ export default withTheme()((props: {text: string, theme: Theme}) => {
 
     return (
       <div style={style.header}>
-        <h2 style={style.headerText}>{props.text}</h2>
+        <h2 style={style.headerText}>{props.children}</h2>
       </div>
     );
 });
