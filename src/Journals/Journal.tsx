@@ -1,7 +1,9 @@
 import * as React from 'react';
+import IconButton from '@material-ui/core/IconButton';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { Theme, withTheme } from '@material-ui/core/styles';
+import IconEdit from '@material-ui/icons/Edit';
 
 import SearchableAddressBook from '../components/SearchableAddressBook';
 import Contact from '../components/Contact';
@@ -16,15 +18,16 @@ import journalView from './journalView';
 
 import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from '../journal-processors';
 
-import { SyncInfo } from '../SyncGate';
+import { SyncInfo, SyncInfoJournal } from '../SyncGate';
 
-import { match } from 'react-router';
+import { Link } from 'react-router-dom';
 
+import { routeResolver } from '../App';
 import { historyPersistor } from '../persist-state-history';
 
 interface PropsType {
   syncInfo: SyncInfo;
-  match: match<any>;
+  syncJournal: SyncInfoJournal;
 }
 
 interface PropsTypeInner extends PropsType {
@@ -49,15 +52,9 @@ class Journal extends React.PureComponent<PropsTypeInner> {
   }
 
   render() {
-    const { theme } = this.props;
+    const { theme, syncJournal } = this.props;
     let currentTab = this.state.tab;
     let journalOnly = false;
-    const journalUid = this.props.match.params.journalUid;
-
-    const syncJournal = this.props.syncInfo.get(journalUid);
-    if (!syncJournal) {
-      return (<div>Journal not found!</div>);
-    }
 
     const journal = syncJournal.journal;
     const collectionInfo = syncJournal.collection;
@@ -87,7 +84,15 @@ class Journal extends React.PureComponent<PropsTypeInner> {
 
     return (
       <React.Fragment>
-        <AppBarOverride title={collectionInfo.displayName} />
+        <AppBarOverride title={collectionInfo.displayName}>
+          <IconButton
+            component={Link}
+            title="Edit"
+            {...{to: routeResolver.getRoute('journals._id.edit', { journalUid: journal.uid })}}
+          >
+            <IconEdit />
+          </IconButton>
+        </AppBarOverride>
         <Tabs
           fullWidth={true}
           style={{ backgroundColor: theme.palette.primary.main }}

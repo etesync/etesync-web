@@ -194,6 +194,36 @@ const journals = handleActions(
         return newState;
       }
     },
+    [actions.updateJournal.toString()]: (state: JournalsTypeImmutable, _action: any) => {
+      const action = { ..._action };
+      if (action.payload) {
+        action.payload = (action.meta === undefined) ? action.payload : action.meta.journal;
+        action.payload = [ action.payload ];
+      }
+
+      const newState = fetchTypeIdentityReducer(state, action, true);
+      // Compare the states and see if they are really different
+      const oldJournals = state.get('value', null);
+      const newJournals = newState.get('value', null);
+
+      if (!oldJournals || !newJournals || (oldJournals.size !== newJournals.size)) {
+        return newState;
+      }
+
+      let oldJournalHash = {};
+      oldJournals.forEach((x) => {
+        oldJournalHash[x.uid] = x.serialize();
+      });
+
+      if (newJournals.every((journal: EteSync.Journal) => (
+        (journal.uid in oldJournalHash) &&
+        (journal.serialize().content === oldJournalHash[journal.uid].content)
+      ))) {
+        return state;
+      } else {
+        return newState;
+      }
+    },
   },
   new JournalsFetchRecord(),
 );

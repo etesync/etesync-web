@@ -40,11 +40,6 @@ const muiTheme = createMuiTheme({
   }
 });
 
-export let appBarPortals = {
-  'title': null as Element | null,
-  'buttons': null as Element | null,
-};
-
 export const routeResolver = new RouteResolver({
   home: '',
   pim: {
@@ -68,6 +63,7 @@ export const routeResolver = new RouteResolver({
   journals: {
     _id: {
       _base: ':journalUid',
+      edit: 'edit',
       items: {
         _id: {
           _base: ':itemUid',
@@ -79,6 +75,7 @@ export const routeResolver = new RouteResolver({
         },
       },
     },
+    new: 'new',
   },
 });
 
