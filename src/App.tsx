@@ -189,7 +189,7 @@ class App extends React.PureComponent {
           <AppBarWitHistory
             toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
             iconElementRight={
-              <IconButton disabled={!credentials || fetching} onClick={this.refresh}>
+              <IconButton disabled={!credentials || fetching} onClick={this.refresh} title="Refresh">
                 <IconRefreshWithSpin spin={fetching} />
               </IconButton>}
 
