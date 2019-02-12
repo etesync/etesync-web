@@ -18,8 +18,7 @@ export default pure((_props: any) => {
 
   return (
     <Dialog
-      modal={false}
-      onRequestClose={onCancel}
+      onClose={onCancel}
       {...props}
     >
       <DialogContent>
