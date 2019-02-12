@@ -19,7 +19,7 @@ import * as EteSync from './api/EteSync';
 import { CURRENT_VERSION } from './api/Constants';
 
 import { store, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoType } from './store';
-import { createJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';
+import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -43,7 +43,7 @@ type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
 
 const syncInfoSelector = createSelector(
   (props: PropsTypeInner) => props.etesync,
-  (props: PropsTypeInner) => props.journals.value as List<EteSync.Journal>,
+  (props: PropsTypeInner) => props.journals.value!,
   (props: PropsTypeInner) => props.entries,
   (props: PropsTypeInner) => props.userInfo.value!,
   (etesync, journals, entries, userInfo) => {
@@ -115,7 +115,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
           const journal = new EteSync.Journal();
           const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, collection.uid);
           journal.setInfo(cryptoManager, collection);
-          store.dispatch<any>(createJournal(this.props.etesync, journal)).then(
+          store.dispatch<any>(addJournal(this.props.etesync, journal)).then(
             (journalAction: Action<EteSync.Journal>) => {
               // FIXME: Limit based on error code to only do it for associates.
               if (!journalAction.error) {

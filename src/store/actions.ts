@@ -3,7 +3,7 @@ import { createAction, createActions } from 'redux-actions';
 import * as EteSync from '../api/EteSync';
 import { UserInfo } from '../api/EteSync';
 
-import { CredentialsData, EntriesType } from './';
+import { CredentialsData, EntriesType, JournalsData } from './';
 
 export const { fetchCredentials, logout } = createActions({
   FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
@@ -44,8 +44,8 @@ export const login = (username: string, password: string, encryptionPassword: st
   };
 };
 
-export const { fetchJournals } = createActions({
-  FETCH_JOURNALS: (etesync: CredentialsData) => {
+export const { fetchListJournal } = createActions({
+  FETCH_LIST_JOURNAL: (etesync: CredentialsData) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
     let journalManager = new EteSync.JournalManager(creds, apiBase);
@@ -54,8 +54,8 @@ export const { fetchJournals } = createActions({
   },
 });
 
-export const createJournal = createAction(
-  'CREATE_JOURNAL',
+export const addJournal = createAction(
+  'ADD_JOURNAL',
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
@@ -64,7 +64,7 @@ export const createJournal = createAction(
     return journalManager.create(journal);
   },
   (etesync: CredentialsData, journal: EteSync.Journal) => {
-    return { journal };
+    return { item: journal };
   },
 );
 
@@ -78,7 +78,21 @@ export const updateJournal = createAction(
     return journalManager.update(journal);
   },
   (etesync: CredentialsData, journal: EteSync.Journal) => {
-    return { journal };
+    return { item: journal };
+  },
+);
+
+export const deleteJournal = createAction(
+  'DELETE_JOURNAL',
+  (etesync: CredentialsData, journal: EteSync.Journal) => {
+    const creds = etesync.credentials;
+    const apiBase = etesync.serviceApiUrl;
+    let journalManager = new EteSync.JournalManager(creds, apiBase);
+
+    return journalManager.delete(journal);
+  },
+  (etesync: CredentialsData, journal: EteSync.Journal) => {
+    return { item: journal };
   },
 );
 
@@ -135,13 +149,13 @@ export const createUserInfo = createAction(
 
 export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
   return (dispatch: any) => {
-    return dispatch(fetchJournals(etesync)).then((journalsAction: any) => {
-      const journals: Array<EteSync.Journal> = journalsAction.payload;
-      if (!journals || (journals.length === 0)) {
+    return dispatch(fetchListJournal(etesync)).then((journalsAction: any) => {
+      const journals: JournalsData = journalsAction.payload;
+      if (!journals || journals.isEmpty) {
         return false;
       }
 
-      journals.forEach((journal) => {
+      journals.forEach((journal, uid) => {
         let prevUid: string | null = null;
         const entries = currentEntries.get(journal.uid);
         if (entries && entries.value) {

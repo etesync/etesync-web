@@ -10,7 +10,7 @@ import AppBarOverride from '../widgets/AppBarOverride';
 import { routeResolver } from '../App';
 
 import { store, JournalsData, UserInfoData, CredentialsData } from '../store';
-import { createJournal, updateJournal } from '../store/actions';
+import { addJournal, updateJournal } from '../store/actions';
 import { SyncInfo } from '../SyncGate';
 
 import * as EteSync from '../api/EteSync';
@@ -102,7 +102,7 @@ class Journals extends React.PureComponent {
         this.props.history.goBack()
       );
     } else {
-      store.dispatch<any>(createJournal(this.props.etesync, journal)).then(() =>
+      store.dispatch<any>(addJournal(this.props.etesync, journal)).then(() =>
         this.props.history.goBack()
       );
     }

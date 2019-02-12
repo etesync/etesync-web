@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
-import { persistReducer, createTransform } from 'redux-persist';
-import { handleAction, handleActions, combineActions } from 'redux-actions';
+import { createMigrate, persistReducer, createTransform } from 'redux-persist';
+import { Action, ActionFunctionAny, combineActions, handleAction, handleActions } from 'redux-actions';
 
 import * as localforage from 'localforage';
 import session from 'redux-persist/lib/storage/session';
 
-import { List, Map, Record } from 'immutable';
+import { List, Map as ImmutableMap, Record } from 'immutable';
 
 import * as EteSync from '../api/EteSync';
 
@@ -35,11 +35,14 @@ function fetchTypeRecord<T>() {
   });
 }
 
+interface BaseModel {
+  uid: string;
+}
+
 export type CredentialsType = FetchType<CredentialsData>;
 export type CredentialsTypeRemote = FetchType<CredentialsDataRemote>;
 
-export type JournalsData = List<EteSync.Journal>;
-
+export type JournalsData = ImmutableMap<string, EteSync.Journal>;
 const JournalsFetchRecord = fetchTypeRecord<JournalsData>();
 export type JournalsType = FetchType<JournalsData>;
 export type JournalsTypeImmutable = Record<JournalsType>;
@@ -48,8 +51,8 @@ export type EntriesData = List<EteSync.Entry>;
 
 const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
 
-export type EntriesTypeImmutable = Map<string, Record<FetchType<EntriesData>>>;
-export type EntriesType = Map<string, FetchType<EntriesData>>;
+export type EntriesTypeImmutable = ImmutableMap<string, Record<FetchType<EntriesData>>>;
+export type EntriesType = ImmutableMap<string, FetchType<EntriesData>>;
 
 export type UserInfoData = EteSync.UserInfo;
 
@@ -127,6 +130,77 @@ const credentials = handleActions(
   {value: null}
 );
 
+const setMapModelReducer = <T extends Record<any>, V extends BaseModel>(state: T, action: any) => {
+  const newState = fetchTypeIdentityReducer(state, action);
+  // Compare the states and see if they are really different
+  const newItems = newState.get('value', null);
+
+  if (!newItems) {
+    return newState;
+  }
+
+  const ret = new Map<string, V>();
+
+  newItems.forEach((item: V) => {
+    ret.set(item.uid, item);
+  });
+
+  return newState.set('value', ImmutableMap(ret));
+};
+
+const addEditMapModelReducer = <T extends Record<any>, V extends BaseModel>(state: T, action: any) => {
+  if (action.error) {
+    return state.set('error', action.payload);
+  } else {
+    let payload = (action.payload === undefined) ? null : action.payload;
+    payload = (action.meta === undefined) ? payload : action.meta.item;
+
+    state = state.set('error', undefined);
+
+    if (action.payload === undefined) {
+      return state;
+    }
+
+    const item = payload as V;
+    let value = state.get('value', null)!;
+    value = value.set(item.uid, item);
+    return state.set('value', value);
+  }
+};
+
+const deleteMapModelReducer = <T extends Record<any>>(state: T, action: any) => {
+  if (action.error) {
+    return state.set('error', action.payload);
+  } else {
+    let payload = (action.payload === undefined) ? null : action.payload;
+    payload = (action.meta === undefined) ? payload : action.meta.item;
+
+    state = state.set('error', undefined);
+
+    if (action.payload === undefined) {
+      return state;
+    }
+
+    const id = payload as number;
+    let value = state.get('value', null)!;
+    value = value.delete(id);
+    return state.set('value', value);
+  }
+};
+
+const mapReducerActionsMapCreator = <T extends Record<any>, V extends BaseModel>(actionName: string) => {
+  const setsReducer = (state: T, action: any) => setMapModelReducer<T, V>(state, action);
+  const addEditReducer = (state: T, action: any) => addEditMapModelReducer<T, V>(state, action);
+  const deleteReducer = (state: T, action: any) => deleteMapModelReducer<T>(state, action);
+
+  return {
+    [actions['fetchList' + actionName].toString() as string]: setsReducer,
+    [actions['add' + actionName].toString() as string]: addEditReducer,
+    [actions['update' + actionName].toString() as string]: addEditReducer,
+    [actions['delete' + actionName].toString() as string]: deleteReducer,
+  };
+};
+
 export const entries = handleAction(
   combineActions(actions.fetchEntries, actions.createEntries),
   (state: EntriesTypeImmutable, action: any) => {
@@ -135,95 +209,12 @@ export const entries = handleAction(
     return state.set(action.meta.journal,
                      fetchTypeIdentityReducer(prevState, action, extend));
   },
-  Map({})
+  ImmutableMap({})
 );
 
 const journals = handleActions(
   {
-    [actions.fetchJournals.toString()]: (state: JournalsTypeImmutable, action: any) => {
-      const newState = fetchTypeIdentityReducer(state, action);
-      // Compare the states and see if they are really different
-      const oldJournals = state.get('value', null);
-      const newJournals = newState.get('value', null);
-
-      if (!oldJournals || !newJournals || (oldJournals.size !== newJournals.size)) {
-        return newState;
-      }
-
-      let oldJournalHash = {};
-      oldJournals.forEach((x) => {
-        oldJournalHash[x.uid] = x.serialize();
-      });
-
-      if (newJournals.every((journal: EteSync.Journal) => (
-        (journal.uid in oldJournalHash) &&
-        (journal.serialize().content === oldJournalHash[journal.uid].content)
-      ))) {
-        return state;
-      } else {
-        return newState;
-      }
-    },
-    [actions.createJournal.toString()]: (state: JournalsTypeImmutable, _action: any) => {
-      const action = { ..._action };
-      if (action.payload) {
-        action.payload = (action.meta === undefined) ? action.payload : action.meta.journal;
-        action.payload = [ action.payload ];
-      }
-
-      const newState = fetchTypeIdentityReducer(state, action, true);
-      // Compare the states and see if they are really different
-      const oldJournals = state.get('value', null);
-      const newJournals = newState.get('value', null);
-
-      if (!oldJournals || !newJournals || (oldJournals.size !== newJournals.size)) {
-        return newState;
-      }
-
-      let oldJournalHash = {};
-      oldJournals.forEach((x) => {
-        oldJournalHash[x.uid] = x.serialize();
-      });
-
-      if (newJournals.every((journal: EteSync.Journal) => (
-        (journal.uid in oldJournalHash) &&
-        (journal.serialize().content === oldJournalHash[journal.uid].content)
-      ))) {
-        return state;
-      } else {
-        return newState;
-      }
-    },
-    [actions.updateJournal.toString()]: (state: JournalsTypeImmutable, _action: any) => {
-      const action = { ..._action };
-      if (action.payload) {
-        action.payload = (action.meta === undefined) ? action.payload : action.meta.journal;
-        action.payload = [ action.payload ];
-      }
-
-      const newState = fetchTypeIdentityReducer(state, action, true);
-      // Compare the states and see if they are really different
-      const oldJournals = state.get('value', null);
-      const newJournals = newState.get('value', null);
-
-      if (!oldJournals || !newJournals || (oldJournals.size !== newJournals.size)) {
-        return newState;
-      }
-
-      let oldJournalHash = {};
-      oldJournals.forEach((x) => {
-        oldJournalHash[x.uid] = x.serialize();
-      });
-
-      if (newJournals.every((journal: EteSync.Journal) => (
-        (journal.uid in oldJournalHash) &&
-        (journal.serialize().content === oldJournalHash[journal.uid].content)
-      ))) {
-        return state;
-      } else {
-        return newState;
-      }
-    },
+    ...mapReducerActionsMapCreator<JournalsTypeImmutable, EteSync.Journal>('Journal'),
   },
   new JournalsFetchRecord(),
 );
@@ -253,11 +244,23 @@ const userInfo = handleAction(
   new JournalsFetchRecord(),
 );
 
+const fetchActions = [
+] as Array<ActionFunctionAny<Action<any>>>;
+
+for (const func in actions) {
+  if (func.startsWith('fetchList') ||
+    func.startsWith('add') ||
+    func.startsWith('update') ||
+    func.startsWith('delete')) {
+
+    fetchActions.push(actions[func]);
+  }
+}
+
+// Indicates network activity, not just fetch
 const fetchCount = handleAction(
   combineActions(
-    actions.fetchCredentials,
-    actions.fetchJournals,
-    actions.fetchEntries
+    ...fetchActions,
   ),
   (state: number, action: any) => {
     if (action.payload === undefined) {
@@ -266,7 +269,7 @@ const fetchCount = handleAction(
       return state - 1;
     }
   },
-  0
+  0,
 );
 
 const credentialsPersistConfig = {
@@ -285,19 +288,22 @@ const journalsSerialize = (state: JournalsData) => {
     return null;
   }
 
-  return state.map((x) => x.serialize()).toJS();
+  return state.map((x, uid) => x.serialize()).toJS();
 };
 
-const journalsDeserialize = (state: EteSync.JournalJson[]) => {
+const journalsDeserialize = (state: {}) => {
   if (state === null) {
     return null;
   }
 
-  return List(state.map((x: any) => {
-    let ret = new EteSync.Journal(x.version);
+  const newState = new Map<string, EteSync.Journal>();
+  Object.keys(state).forEach((uid) => {
+    const x = state[uid];
+    const ret = new EteSync.Journal(x.version);
     ret.deserialize(x);
-    return ret;
-  }));
+    newState.set(uid, ret);
+  });
+  return ImmutableMap(newState);
 };
 
 const entriesSerialize = (state: FetchType<EntriesData>) => {
@@ -360,7 +366,7 @@ const cacheDeserialize = (state: any, key: string) => {
     Object.keys(state).forEach((mapKey) => {
       ret[mapKey] = entriesDeserialize(state[mapKey]);
     });
-    return Map(ret);
+    return ImmutableMap(ret);
   } else if (key === 'journals') {
     return new JournalsFetchRecord({value: journalsDeserialize(state)});
   } else if (key === 'userInfo') {
@@ -370,10 +376,21 @@ const cacheDeserialize = (state: any, key: string) => {
   return state;
 };
 
+const cacheMigrations = {
+  0: (state: any) => {
+    return {
+      ...state,
+      journals: undefined
+    };
+  },
+};
+
 const cachePersistConfig = {
   key: 'cache',
+  version: 1,
   storage: localforage,
   transforms: [createTransform(cacheSerialize, cacheDeserialize)],
+  migrate: createMigrate(cacheMigrations, { debug: false}),
 };
 
 const reducers = combineReducers({
