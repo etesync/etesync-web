@@ -8,9 +8,8 @@ import Contact from '../components/Contact';
 import Calendar from '../components/Calendar';
 import Event from '../components/Event';
 
+import AppBarOverride from '../widgets/AppBarOverride';
 import Container from '../widgets/Container';
-
-import SecondaryHeader from '../components/SecondaryHeader';
 
 import JournalEntries from '../components/JournalEntries';
 import journalView from './journalView';
@@ -88,7 +87,7 @@ class Journal extends React.PureComponent<PropsTypeInner> {
 
     return (
       <React.Fragment>
-        <SecondaryHeader>{collectionInfo.displayName}</SecondaryHeader>
+        <AppBarOverride title={collectionInfo.displayName} />
         <Tabs
           fullWidth={true}
           style={{ backgroundColor: theme.palette.primary.main }}

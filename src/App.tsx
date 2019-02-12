@@ -23,7 +23,6 @@ import SideMenu from './SideMenu';
 import LoginGate from './LoginGate';
 import { RouteResolver } from './routes';
 
-import * as C from './constants';
 import * as store from './store';
 import * as actions from './store/actions';
 
@@ -40,6 +39,11 @@ const muiTheme = createMuiTheme({
     },
   }
 });
+
+export let appBarPortals = {
+  'title': null as Element | null,
+  'buttons': null as Element | null,
+};
 
 export const routeResolver = new RouteResolver({
   home: '',
@@ -127,11 +131,9 @@ const AppBarWitHistory = withRouter(
               }
             </div>
 
-            <div style={{ flexGrow: 1, fontSize: '1.25em' }}>
-              {C.appName}
-            </div>
+            <div style={{ flexGrow: 1, fontSize: '1.25em' }} id="appbar-title" />
 
-            <div style={{ marginRight: -12 }}>
+            <div style={{ marginRight: -12 }} id="appbar-buttons">
               {iconElementRight}
             </div>
           </Toolbar>

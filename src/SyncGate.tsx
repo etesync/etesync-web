@@ -8,6 +8,7 @@ import { createSelector } from 'reselect';
 
 import { routeResolver } from './App';
 
+import AppBarOverride from './widgets/AppBarOverride';
 import LoadingIndicator from './widgets/LoadingIndicator';
 import PrettyError from './widgets/PrettyError';
 
@@ -194,24 +195,30 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
         <Route
           path={routeResolver.getRoute('pim')}
           render={({match, history}) => (
-            <PimRouter
-              etesync={this.props.etesync}
-              userInfo={this.props.userInfo.value!}
-              syncInfo={journalMap}
-              history={history}
-            />
+            <>
+              <AppBarOverride title="EteSync" />
+              <PimRouter
+                etesync={this.props.etesync}
+                userInfo={this.props.userInfo.value!}
+                syncInfo={journalMap}
+                history={history}
+              />
+            </>
           )}
         />
         <Route
           path={routeResolver.getRoute('journals')}
           exact={true}
           render={({ history }) => (
-            <Journals
-              userInfo={this.props.userInfo.value!}
-              etesync={this.props.etesync}
-              journals={journals}
-              history={history}
-            />
+            <>
+              <AppBarOverride title="Journals" />
+              <Journals
+                userInfo={this.props.userInfo.value!}
+                etesync={this.props.etesync}
+                journals={journals}
+                history={history}
+              />
+            </>
           )}
         />
         <Route
