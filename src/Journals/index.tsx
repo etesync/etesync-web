@@ -1,16 +1,11 @@
 import * as React from 'react';
 import { Location, History } from 'history';
 import { Route, Switch } from 'react-router';
-import { Link } from 'react-router-dom';
-
-import IconButton from '@material-ui/core/IconButton';
-import IconAdd from '@material-ui/icons/Add';
 
 import Journal from './Journal';
 import JournalEdit from './JournalEdit';
 import JournalsList from './JournalsList';
 
-import AppBarOverride from '../widgets/AppBarOverride';
 import { routeResolver } from '../App';
 
 import { store, JournalsData, UserInfoData, CredentialsData } from '../store';
@@ -44,15 +39,6 @@ class Journals extends React.PureComponent {
           exact={true}
           render={({ history }) => (
             <>
-              <AppBarOverride title="Journals">
-                <IconButton
-                  component={Link}
-                  title="New"
-                  {...{to: routeResolver.getRoute('journals.new')}}
-                >
-                  <IconAdd />
-                </IconButton>
-              </AppBarOverride>
               <JournalsList
                 userInfo={this.props.userInfo}
                 etesync={this.props.etesync}

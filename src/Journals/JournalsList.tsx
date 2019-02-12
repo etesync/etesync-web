@@ -1,7 +1,15 @@
 import * as React from 'react';
 import { History } from 'history';
 
+import { Link } from 'react-router-dom';
+
+import IconButton from '@material-ui/core/IconButton';
+import IconAdd from '@material-ui/icons/Add';
+
 import { List, ListItem } from '../widgets/List';
+
+import AppBarOverride from '../widgets/AppBarOverride';
+import Container from '../widgets/Container';
 
 import * as EteSync from '../api/EteSync';
 
@@ -55,22 +63,33 @@ class JournalsList extends React.PureComponent {
       });
 
     return (
-      <List>
-        <ListItem
-          primaryText="Address Books"
-          nestedItems={journalMap.ADDRESS_BOOK}
-        />
+      <Container>
+        <AppBarOverride title="Journals">
+          <IconButton
+            component={Link}
+            title="New"
+            {...{to: routeResolver.getRoute('journals.new')}}
+          >
+            <IconAdd />
+          </IconButton>
+        </AppBarOverride>
+        <List>
+          <ListItem
+            primaryText="Address Books"
+            nestedItems={journalMap.ADDRESS_BOOK}
+          />
 
-        <ListItem
-          primaryText="Calendars"
-          nestedItems={journalMap.CALENDAR}
-        />
+          <ListItem
+            primaryText="Calendars"
+            nestedItems={journalMap.CALENDAR}
+          />
 
-        <ListItem
-          primaryText="Tasks"
-          nestedItems={journalMap.TASKS}
-        />
-      </List>
+          <ListItem
+            primaryText="Tasks"
+            nestedItems={journalMap.TASKS}
+          />
+        </List>
+      </Container>
     );
   }
 
