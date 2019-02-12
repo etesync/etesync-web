@@ -28,6 +28,7 @@ import { historyPersistor } from '../persist-state-history';
 interface PropsType {
   syncInfo: SyncInfo;
   syncJournal: SyncInfoJournal;
+  isOwner: boolean;
 }
 
 interface PropsTypeInner extends PropsType {
@@ -52,7 +53,7 @@ class Journal extends React.PureComponent<PropsTypeInner> {
   }
 
   render() {
-    const { theme, syncJournal } = this.props;
+    const { theme, isOwner, syncJournal } = this.props;
     let currentTab = this.state.tab;
     let journalOnly = false;
 
@@ -85,13 +86,15 @@ class Journal extends React.PureComponent<PropsTypeInner> {
     return (
       <React.Fragment>
         <AppBarOverride title={collectionInfo.displayName}>
-          <IconButton
-            component={Link}
-            title="Edit"
-            {...{to: routeResolver.getRoute('journals._id.edit', { journalUid: journal.uid })}}
-          >
-            <IconEdit />
-          </IconButton>
+          { isOwner &&
+            <IconButton
+              component={Link}
+              title="Edit"
+              {...{to: routeResolver.getRoute('journals._id.edit', { journalUid: journal.uid })}}
+            >
+              <IconEdit />
+            </IconButton>
+          }
         </AppBarOverride>
         <Tabs
           fullWidth={true}

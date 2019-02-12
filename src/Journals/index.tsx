@@ -60,6 +60,8 @@ class Journals extends React.PureComponent {
               return (<div>Journal not found!</div>);
             }
 
+            const isOwner = syncJournal.journal.owner === this.props.etesync.credentials.email;
+
             const collectionInfo = syncJournal.collection;
             return (
               <Switch>
@@ -81,6 +83,7 @@ class Journals extends React.PureComponent {
                     <Journal
                       syncInfo={this.props.syncInfo}
                       syncJournal={syncJournal}
+                      isOwner={isOwner}
                     />
                   )}
                 />
