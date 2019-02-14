@@ -1,4 +1,6 @@
 import * as React from 'react';
+import * as ICAL from 'ical.js';
+import moment from 'moment';
 
 // Generic handling of input changes
 export function handleInputChange(self: React.Component, part?: string) {
@@ -46,4 +48,36 @@ export function insertSorted<T>(array: T[] = [], newItem: T, key: string) {
   array.push(newItem);
 
   return array;
+}
+
+export function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
+  const mStart = moment(start.toJSDate());
+  const mEnd = moment(end.toJSDate());
+  let strStart;
+  let strEnd;
+
+  const allDayFormat = 'dddd, LL';
+  const fullFormat = 'LLLL';
+
+  // All day
+  if (start.isDate) {
+    if (mEnd.diff(mStart, 'days', true) === 1) {
+      return mStart.format(allDayFormat);
+    } else {
+      strStart = mStart.format(allDayFormat);
+      strEnd = mEnd.clone().subtract(1, 'day').format(allDayFormat);
+    }
+  } else if (mStart.isSame(mEnd, 'day')) {
+    strStart = mStart.format(fullFormat);
+    strEnd = mEnd.format('LT');
+
+    if (mStart.isSame(mEnd)) {
+      return strStart;
+    }
+  } else {
+    strStart = mStart.format(fullFormat);
+    strEnd = mEnd.format(fullFormat);
+  }
+
+  return strStart + ' - ' + strEnd;
 }
