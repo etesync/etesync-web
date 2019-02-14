@@ -50,14 +50,23 @@ export function insertSorted<T>(array: T[] = [], newItem: T, key: string) {
   return array;
 }
 
+const allDayFormat = 'dddd, LL';
+const fullFormat = 'LLLL';
+
+export function formatDate(date: ICAL.Time) {
+  const mDate = moment(date.toJSDate());
+  if (date.isDate) {
+    return mDate.format(allDayFormat);
+  } else {
+    return mDate.format(fullFormat);
+  }
+}
+
 export function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
   const mStart = moment(start.toJSDate());
   const mEnd = moment(end.toJSDate());
   let strStart;
   let strEnd;
-
-  const allDayFormat = 'dddd, LL';
-  const fullFormat = 'LLLL';
 
   // All day
   if (start.isDate) {
