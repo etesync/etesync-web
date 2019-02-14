@@ -133,7 +133,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             path={routeResolver.getRoute(props.routePrefix + '.new')}
             exact={true}
             render={({match}) => (
-              <Container style={{maxWidth: 400}}>
+              <Container style={{maxWidth: '30rem'}}>
                 <ComponentEdit
                   collections={props.collections}
                   onSave={props.onItemSave}
@@ -146,7 +146,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             path={routeResolver.getRoute(props.routePrefix + '._id.edit')}
             exact={true}
             render={({match}) => (
-              <Container style={{maxWidth: 400}}>
+              <Container style={{maxWidth: '30rem'}}>
                 {(match.params.itemUid in props.items) &&
                   <ComponentEdit
                     initialCollection={(props.items[match.params.itemUid] as any).journalUid}

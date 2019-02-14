@@ -36,7 +36,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     return (
       <>
         <AppBarOverride title={`${info.displayName} - Members`} />
-        <Container style={{maxWidth: 400}}>
+        <Container style={{maxWidth: '30rem'}}>
           { members ?
               (members.length > 0 ?
                 <List>

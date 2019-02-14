@@ -47,7 +47,7 @@ class LoginGate extends React.Component {
       };
 
       return (
-        <Container style={{maxWidth: 400}}>
+        <Container style={{maxWidth: '30rem'}}>
           <h2>Please Log In</h2>
           <LoginForm
             onSubmit={this.onFormSubmit}
@@ -71,7 +71,7 @@ class LoginGate extends React.Component {
       );
     } else if (this.props.credentials.value.encryptionKey === null) {
       return (
-        <Container style={{maxWidth: 400}}>
+        <Container style={{maxWidth: '30rem'}}>
           <h2>Encryption Password</h2>
           <p>
             You are logged in as <strong>{this.props.credentials.value.credentials.email}</strong>.

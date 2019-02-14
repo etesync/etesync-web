@@ -86,7 +86,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
     return (
       <>
         <AppBarOverride title={pageTitle} />
-        <Container style={{maxWidth: 400}}>
+        <Container style={{maxWidth: '30rem'}}>
           <form onSubmit={this.onSubmit}>
             <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth} >
               <InputLabel>
