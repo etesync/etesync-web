@@ -1,5 +1,5 @@
 import * as sjcl from 'sjcl';
-import * as NodeRSA from 'node-rsa';
+import NodeRSA from 'node-rsa';
 
 import * as Constants from './Constants';
 import { byte, base64 } from './Helpers';

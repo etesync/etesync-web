@@ -1,9 +1,9 @@
 import * as sjcl from 'sjcl';
-import * as URI from 'urijs';
+import URI from 'urijs';
 
 import * as Constants from './Constants';
 
-import * as fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch';
 
 import { byte, base64, stringToByteArray } from './Helpers';
 import { CryptoManager, AsymmetricKeyPair, HMAC_SIZE_BYTES } from './Crypto';

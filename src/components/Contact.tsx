@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { List, ListItem, ListDivider as Divider } from '../widgets/List';
 import IconHome from '@material-ui/icons/Home';

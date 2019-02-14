@@ -8,8 +8,8 @@ import promiseMiddleware from './promise-middleware';
 import reducers from './reducers';
 import { CredentialsTypeRemote, JournalsType, EntriesType, UserInfoType } from './reducers';
 
-export { CredentialsType, CredentialsData, JournalsType, JournalsData,
-  EntriesType, EntriesData, UserInfoType, UserInfoData } from './reducers';
+// Workaround babel limitation
+export * from './reducers';
 
 export interface StoreState {
   fetchCount: number;

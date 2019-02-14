@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import * as moment from 'moment';
-import * as Datetime from 'react-datetime';
+import moment from 'moment';
+import Datetime from 'react-datetime';
 
 import 'react-datetime/css/react-datetime.css';
 
