@@ -24,8 +24,9 @@ import JournalEntries from '../components/JournalEntries';
 import ContactEdit from '../components/ContactEdit';
 import Contact from '../components/Contact';
 import EventEdit from '../components/EventEdit';
-import TaskEdit from '../components/TaskEdit';
 import Event from '../components/Event';
+import TaskEdit from '../components/TaskEdit';
+import Task from '../components/Task';
 import PimMain from './PimMain';
 
 import { routeResolver } from '../App';
@@ -366,7 +367,7 @@ class Pim extends React.PureComponent {
               collections={collectionsTaskList}
               items={taskListItems}
               componentEdit={TaskEdit}
-              componentView={Event}
+              componentView={Task}
               onItemSave={this.onItemSave}
               onItemDelete={this.onItemDelete}
               onItemCancel={this.onCancel}
