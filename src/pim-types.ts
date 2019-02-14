@@ -60,9 +60,25 @@ export class TaskType extends EventType {
     return new TaskType(comp.getFirstSubcomponent('vtodo'));
   }
 
+  constructor(comp: ICAL.Component | null) {
+    super(comp ? comp : new ICAL.Component('vtodo'));
+  }
+
   get completed() {
     const status = this.component.getFirstPropertyValue('status');
     return status === 'COMPLETED';
+  }
+
+  set dueDate(date: ICAL.Time | undefined) {
+    if (date) {
+      this.component.updatePropertyWithValue('due', date);
+    } else {
+      this.component.removeAllProperties('due');
+    }
+  }
+
+  get dueDate() {
+    return this.component.getFirstPropertyValue('due');
   }
 
   clone() {

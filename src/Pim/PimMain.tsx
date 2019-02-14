@@ -86,6 +86,10 @@ class PimMain extends React.PureComponent<PropsType> {
       );
     } else if (this.state.tab === 1) {
       this.newEvent();
+    } else if (this.state.tab === 2) {
+      this.props.history!.push(
+        routeResolver.getRoute('pim.tasks.new')
+      );
     }
   }
 
@@ -143,7 +147,6 @@ class PimMain extends React.PureComponent<PropsType> {
 
         <Fab
           color="primary"
-          disabled={tab === 2}
           style={style.floatingButton}
           onClick={this.floatingButtonClicked}
         >
