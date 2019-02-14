@@ -38,13 +38,17 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
         <AppBarOverride title={`${info.displayName} - Members`} />
         <Container style={{maxWidth: 400}}>
           { members ?
-            <List>
-              { members.map((member) => (
-                <ListItem key={member.user} onClick={undefined}>
-                  {member.user}
-                </ListItem>
-              ))}
-            </List>
+              (members.length > 0 ?
+                <List>
+                  { members.map((member) => (
+                    <ListItem key={member.user} onClick={undefined}>
+                      {member.user}
+                    </ListItem>
+                  ))}
+              </List>
+              :
+              <div>No members</div>
+              )
             :
             <LoadingIndicator />
           }
