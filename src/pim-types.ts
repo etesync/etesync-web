@@ -53,6 +53,13 @@ export class EventType extends ICAL.Event implements PimType {
   }
 }
 
+export enum TaskStatusType {
+  NeedsAction = 'NEEDS-ACTION',
+  Completed = 'COMPLETED',
+  InProcess = 'IN-PROCESS',
+  Cancelled = 'CANCELLED',
+}
+
 export class TaskType extends EventType {
   color: string;
 
@@ -67,6 +74,14 @@ export class TaskType extends EventType {
   get completed() {
     const status = this.component.getFirstPropertyValue('status');
     return status === 'COMPLETED';
+  }
+
+  set status(status: TaskStatusType) {
+      this.component.updatePropertyWithValue('status', status);
+  }
+
+  get status(): TaskStatusType {
+    return this.component.getFirstPropertyValue('status');
   }
 
   set dueDate(date: ICAL.Time | undefined) {

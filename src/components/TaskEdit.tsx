@@ -28,7 +28,7 @@ import * as ICAL from 'ical.js';
 
 import * as EteSync from '../api/EteSync';
 
-import { TaskType } from '../pim-types';
+import { TaskType, TaskStatusType } from '../pim-types';
 
 interface PropsType {
   collections: Array<EteSync.CollectionInfo>;
@@ -44,6 +44,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
   state: {
     uid: string,
     title: string;
+    status: TaskStatusType;
     allDay: boolean;
     start?: Date;
     due?: Date;
@@ -60,6 +61,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.state = {
       uid: '',
       title: '',
+      status: TaskStatusType.NeedsAction,
       allDay: false,
       location: '',
       description: '',
@@ -73,6 +75,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
       this.state.uid = event.uid;
       this.state.title = event.title ? event.title : '';
+      this.state.status = event.status;
       if (event.startDate) {
         this.state.allDay = event.startDate.isDate;
         this.state.start = event.startDate.toJSDate();
@@ -162,6 +165,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
     event.uid = this.state.uid;
     event.summary = this.state.title;
+    event.status = this.state.status;
     if (startDate) {
       event.startDate = startDate;
     }
@@ -235,6 +239,22 @@ class TaskEdit extends React.PureComponent<PropsType> {
               {this.props.collections.map((x) => (
                 <MenuItem key={x.uid} value={x.uid}>{x.displayName}</MenuItem>
               ))}
+            </Select>
+          </FormControl>
+
+          <FormControl style={styles.fullWidth} >
+            <InputLabel>
+              Status
+            </InputLabel>
+            <Select
+              name="status"
+              value={this.state.status}
+              onChange={this.handleInputChange}
+            >
+              <MenuItem value={TaskStatusType.NeedsAction}>Needs action</MenuItem>
+              <MenuItem value={TaskStatusType.InProcess}>In progress</MenuItem>
+              <MenuItem value={TaskStatusType.Completed}>Completed</MenuItem>
+              <MenuItem value={TaskStatusType.Cancelled}>Cancelled</MenuItem>
             </Select>
           </FormControl>
 
