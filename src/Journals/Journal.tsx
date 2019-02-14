@@ -40,7 +40,7 @@ const JournalAddressBook = journalView(SearchableAddressBook, Contact);
 const PersistCalendar = historyPersistor('Calendar')(Calendar);
 const JournalCalendar = journalView(PersistCalendar, Event);
 
-class Journal extends React.PureComponent<PropsTypeInner> {
+class Journal extends React.Component<PropsTypeInner> {
   state: {
     tab: number,
   };
