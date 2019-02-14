@@ -47,7 +47,7 @@ class TaskList extends React.PureComponent {
   };
 
   render() {
-    const entries = this.props.entries.filter((x) => !x.completed);
+    const entries = this.props.entries.filter((x) => !x.finished);
     const sortedEntries = sortSelector(entries);
 
     let itemList = sortedEntries.map((entry, idx, array) => {

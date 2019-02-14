@@ -71,9 +71,9 @@ export class TaskType extends EventType {
     super(comp ? comp : new ICAL.Component('vtodo'));
   }
 
-  get completed() {
-    const status = this.component.getFirstPropertyValue('status');
-    return status === 'COMPLETED';
+  get finished() {
+    return this.status === TaskStatusType.Completed ||
+      this.status === TaskStatusType.Cancelled;
   }
 
   set status(status: TaskStatusType) {
