@@ -5,6 +5,8 @@ SSH_TARGET_DIR=sites/client.etesync.com
 
 OUTPUTDIR=./build
 
+export INLINE_RUNTIME_CHUNK=false
+
 yarn build
 
 sed -i "s#\(<script type=\"text/javascript\"\)#\1 integrity=\"sha384-$(shasum -b -a 384 build/static/js/main.*.js | xxd -r -p | base64 -w0)\" crossorigin=\"anonymous\"#" build/index.html
