@@ -24,9 +24,13 @@ function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
       strStart = mStart.format(allDayFormat);
       strEnd = mEnd.clone().subtract(1, 'day').format(allDayFormat);
     }
-  } else if ((mStart.day === mEnd.day) && (mEnd.diff(mStart, 'days', true) < 1)) {
+  } else if (mStart.isSame(mEnd, 'day')) {
     strStart = mStart.format(fullFormat);
     strEnd = mEnd.format('LT');
+
+    if (mStart.isSame(mEnd)) {
+      return strStart;
+    }
   } else {
     strStart = mStart.format(fullFormat);
     strEnd = mEnd.format(fullFormat);
