@@ -18,7 +18,7 @@
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts-ts": "2.17.0",
+    "react-scripts": "^2.1.5",
     "recompose": "^0.30.0",
     "redux": "^4.0.0",
     "redux-actions": "^2.6.4",
@@ -31,19 +31,19 @@
     "uuid": "^3.1.0"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.34",
-    "@types/jest": "^21.1.8",
-    "@types/node": "^8.0.53",
+    "@types/jest": "^24.0.4",
+    "@types/node": "^11.9.3",
     "@types/node-rsa": "^0.4.1",
-    "@types/react": "^16.4.14",
+    "@types/react": "^16.8.3",
     "@types/react-big-calendar": "^0.20.0",
-    "@types/react-dom": "^16.0.8",
+    "@types/react-dom": "^16.8.1",
     "@types/react-redux": "^5.0.14",
     "@types/react-router": "^4.0.19",
     "@types/react-router-dom": "^4.2.3",
@@ -54,6 +54,12 @@
     "@types/sjcl": "^1.0.28",
     "@types/urijs": "^1.15.34",
     "@types/uuid": "^3.4.3",
-    "typescript": "2.9.2"
-  }
+    "typescript": "^3.3.3"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
