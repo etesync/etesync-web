@@ -111,7 +111,16 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
   );
 };
 
-class ContactEdit extends React.PureComponent {
+interface PropsType {
+  collections: Array<EteSync.CollectionInfo>;
+  initialCollection?: string;
+  item?: ContactType;
+  onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => void;
+  onDelete: (contact: ContactType, journalUid: string) => void;
+  onCancel: () => void;
+};
+
+class ContactEdit extends React.PureComponent<PropsType> {
   state: {
     uid: string,
     fn: string;
@@ -125,15 +134,6 @@ class ContactEdit extends React.PureComponent {
 
     journalUid: string;
     showDeleteDialog: boolean;
-  };
-
-  props: {
-    collections: Array<EteSync.CollectionInfo>,
-    initialCollection?: string,
-    item?: ContactType,
-    onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => void;
-    onDelete: (contact: ContactType, journalUid: string) => void;
-    onCancel: () => void;
   };
 
   constructor(props: any) {

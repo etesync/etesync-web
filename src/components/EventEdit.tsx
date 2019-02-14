@@ -30,7 +30,17 @@ import * as EteSync from '../api/EteSync';
 
 import { EventType } from '../pim-types';
 
-class EventEdit extends React.PureComponent {
+interface PropsType {
+  collections: Array<EteSync.CollectionInfo>;
+  initialCollection?: string;
+  item?: EventType;
+  onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
+  onDelete: (event: EventType, journalUid: string) => void;
+  onCancel: () => void;
+  location: Location;
+};
+
+class EventEdit extends React.PureComponent<PropsType> {
   state: {
     uid: string,
     title: string;
@@ -43,16 +53,6 @@ class EventEdit extends React.PureComponent {
 
     error?: string;
     showDeleteDialog: boolean;
-  };
-
-  props: {
-    collections: Array<EteSync.CollectionInfo>,
-    initialCollection?: string,
-    item?: EventType,
-    onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
-    onDelete: (event: EventType, journalUid: string) => void;
-    onCancel: () => void;
-    location: Location;
   };
 
   constructor(props: any) {
