@@ -305,7 +305,7 @@ class EventEdit extends React.PureComponent {
 
           <div style={styles.submit}>
             <Button
-              variant="raised"
+              variant="contained"
               onClick={this.props.onCancel}
             >
              <IconCancel style={{marginRight: 8}} />
@@ -314,7 +314,7 @@ class EventEdit extends React.PureComponent {
 
             {this.props.item &&
               <Button
-                variant="raised"
+                variant="contained"
                 style={{marginLeft: 15, backgroundColor: colors.red[500], color: 'white'}}
                 onClick={this.onDeleteRequest}
               >
@@ -325,7 +325,7 @@ class EventEdit extends React.PureComponent {
 
             <Button
               type="submit"
-              variant="raised"
+              variant="contained"
               color="secondary"
               style={{marginLeft: 15}}
             >

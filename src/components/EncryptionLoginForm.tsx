@@ -85,7 +85,7 @@ class EncryptionLoginForm extends React.PureComponent {
           <div style={styles.submit}>
             <Button
               type="submit"
-              variant="raised"
+              variant="contained"
               color="secondary"
               disabled={this.props.loading}
             >

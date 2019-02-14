@@ -123,7 +123,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
 
             <div style={styles.submit}>
               <Button
-                variant="raised"
+                variant="contained"
                 onClick={onCancel}
               >
                <IconCancel style={{marginRight: 8}} />
@@ -132,7 +132,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
 
               {this.props.item &&
                 <Button
-                  variant="raised"
+                  variant="contained"
                   style={{marginLeft: 15, backgroundColor: colors.red[500], color: 'white'}}
                   onClick={this.onDeleteRequest}
                 >
@@ -143,7 +143,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
 
               <Button
                 type="submit"
-                variant="raised"
+                variant="contained"
                 color="secondary"
                 style={{marginLeft: 15}}
               >

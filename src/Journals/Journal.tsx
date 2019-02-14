@@ -107,7 +107,7 @@ class Journal extends React.Component<PropsTypeInner> {
           }
         </AppBarOverride>
         <Tabs
-          fullWidth={true}
+          variant="fullWidth"
           style={{ backgroundColor: theme.palette.primary.main }}
           value={currentTab}
           onChange={(event, tab) => this.setState({ tab })}

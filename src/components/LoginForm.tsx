@@ -184,7 +184,7 @@ class LoginForm extends React.PureComponent {
 
           <div style={styles.submit}>
             <Button
-              variant="raised"
+              variant="contained"
               type="submit"
               color="secondary"
               disabled={this.props.loading}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import ContentAdd from '@material-ui/icons/Add';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
@@ -95,7 +95,7 @@ class PimMain extends React.PureComponent<PropsType> {
     return (
       <React.Fragment>
         <Tabs
-          fullWidth={true}
+          variant="fullWidth"
           style={{ backgroundColor: theme.palette.primary.main }}
           value={tab}
           onChange={(event, value) => this.setState({tab: value})}
@@ -122,14 +122,13 @@ class PimMain extends React.PureComponent<PropsType> {
           </Container>
         }
 
-        <Button
-          variant="fab"
+        <Fab
           color="primary"
           style={style.floatingButton}
           onClick={this.floatingButtonClicked}
         >
           <ContentAdd />
-        </Button>
+        </Fab>
       </React.Fragment>
     );
   }
