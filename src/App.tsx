@@ -37,7 +37,10 @@ const muiTheme = createMuiTheme({
       dark: lightBlue.A700,
       contrastText: 'white',
     },
-  }
+  },
+  typography: {
+    useNextVariants: true,
+  },
 });
 
 export const routeResolver = new RouteResolver({
@@ -52,6 +55,14 @@ export const routeResolver = new RouteResolver({
       new: 'new',
     },
     events: {
+      _id: {
+        _base: ':itemUid',
+        edit: 'edit',
+        log: 'log',
+      },
+      new: 'new',
+    },
+    tasks: {
       _id: {
         _base: ':itemUid',
         edit: 'edit',

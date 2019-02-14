@@ -53,20 +53,16 @@ export class EventType extends ICAL.Event implements PimType {
   }
 }
 
-export class TaskType extends ICAL.Event implements PimType {
+export class TaskType extends EventType {
   color: string;
 
   static fromVCalendar(comp: ICAL.Component) {
-    return new EventType(comp.getFirstSubcomponent('vtodo'));
+    return new TaskType(comp.getFirstSubcomponent('vtodo'));
   }
 
-  toIcal() {
-    let comp = new ICAL.Component(['vcalendar', [], []]);
-    comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
-    comp.updatePropertyWithValue('version', '4.0');
-
-    comp.addSubcomponent(this.component);
-    return comp.toString();
+  get completed() {
+    const status = this.component.getFirstPropertyValue('status');
+    return status === 'COMPLETED';
   }
 
   clone() {

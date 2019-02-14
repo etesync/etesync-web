@@ -10,6 +10,7 @@ import SearchableAddressBook from '../components/SearchableAddressBook';
 import Contact from '../components/Contact';
 import Calendar from '../components/Calendar';
 import Event from '../components/Event';
+import TaskList from '../components/TaskList';
 
 import AppBarOverride from '../widgets/AppBarOverride';
 import Container from '../widgets/Container';
@@ -17,7 +18,7 @@ import Container from '../widgets/Container';
 import JournalEntries from '../components/JournalEntries';
 import journalView from './journalView';
 
-import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from '../journal-processors';
+import { syncEntriesToItemMap, syncEntriesToEventItemMap, syncEntriesToTaskItemMap } from '../journal-processors';
 
 import { SyncInfo, SyncInfoJournal } from '../SyncGate';
 
@@ -39,6 +40,7 @@ interface PropsTypeInner extends PropsType {
 const JournalAddressBook = journalView(SearchableAddressBook, Contact);
 const PersistCalendar = historyPersistor('Calendar')(Calendar);
 const JournalCalendar = journalView(PersistCalendar, Event);
+const JournalTaskList = journalView(TaskList, Event);
 
 class Journal extends React.Component<PropsTypeInner> {
   state: {
@@ -65,17 +67,23 @@ class Journal extends React.Component<PropsTypeInner> {
     let itemsTitle: string;
     let itemsView: JSX.Element;
     if (collectionInfo.type === 'CALENDAR') {
-      itemsView =
-        <JournalCalendar journal={journal} entries={syncEntriesToCalendarItemMap(collectionInfo, syncEntries)} />;
+      itemsView = (
+        <JournalCalendar
+          journal={journal}
+          entries={syncEntriesToEventItemMap(collectionInfo, syncEntries)}
+        />);
       itemsTitle = 'Events';
     } else if (collectionInfo.type === 'ADDRESS_BOOK') {
       itemsView =
         <JournalAddressBook journal={journal} entries={syncEntriesToItemMap(collectionInfo, syncEntries)} />;
       itemsTitle = 'Contacts';
     } else if (collectionInfo.type === 'TASKS')  {
-      itemsView = <div>Task preview is not yet supported</div>;
+      itemsView = (
+        <JournalTaskList
+          journal={journal}
+          entries={syncEntriesToTaskItemMap(collectionInfo, syncEntries)}
+        />);
       itemsTitle = 'Tasks';
-      journalOnly = true;
     } else {
       itemsView = <div>Preview is not supported for this journal type</div>;
       itemsTitle = 'Items';

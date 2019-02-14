@@ -2,7 +2,7 @@ import { List } from 'immutable';
 
 import * as ICAL from 'ical.js';
 
-import { EventType, ContactType } from './pim-types';
+import { EventType, ContactType, TaskType } from './pim-types';
 
 import * as EteSync from './api/EteSync';
 
@@ -50,14 +50,15 @@ function colorIntToHtml(color: number) {
     ((alpha > 0) ? toHex(alpha) : '');
 }
 
-export function syncEntriesToCalendarItemMap(
-  collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: EventType} = {}) {
+function syncEntriesToCalendarItemMap<T extends EventType>(
+  ItemType: any,
+  collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: T} = {}) {
   let items = base;
 
   const color = colorIntToHtml(collection.color);
 
   entries.forEach((syncEntry) => {
-    let comp = EventType.fromVCalendar(new ICAL.Component(ICAL.parse(syncEntry.content)));
+    let comp = ItemType.fromVCalendar(new ICAL.Component(ICAL.parse(syncEntry.content)));
 
     if (comp === null) {
       return;
@@ -79,4 +80,14 @@ export function syncEntriesToCalendarItemMap(
   });
 
   return items;
+}
+
+export function syncEntriesToEventItemMap(
+  collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: EventType} = {}) {
+  return syncEntriesToCalendarItemMap<EventType>(EventType, collection, entries, base);
+}
+
+export function syncEntriesToTaskItemMap(
+  collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: TaskType} = {}) {
+  return syncEntriesToCalendarItemMap<TaskType>(TaskType, collection, entries, base);
 }

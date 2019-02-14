@@ -16,7 +16,7 @@ import { pure } from 'recompose';
 
 import { History } from 'history';
 
-import { PimType, ContactType, EventType } from '../pim-types';
+import { PimType, ContactType, EventType, TaskType } from '../pim-types';
 
 import Container from '../widgets/Container';
 
@@ -36,7 +36,7 @@ import { SyncInfo } from '../SyncGate';
 
 import { createJournalEntry } from '../etesync-helpers';
 
-import { syncEntriesToItemMap, syncEntriesToCalendarItemMap } from '../journal-processors';
+import { syncEntriesToItemMap, syncEntriesToEventItemMap, syncEntriesToTaskItemMap } from '../journal-processors';
 
 function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
@@ -47,8 +47,10 @@ const itemsSelector = createSelector(
   (syncInfo) => {
     let collectionsAddressBook: Array<EteSync.CollectionInfo> = [];
     let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
+    let collectionsTaskList: Array<EteSync.CollectionInfo> = [];
     let addressBookItems: {[key: string]: ContactType} = {};
     let calendarItems: {[key: string]: EventType} = {};
+    let taskListItems: {[key: string]: TaskType} = {};
     syncInfo.forEach(
       (syncJournal) => {
         const syncEntries = syncJournal.entries;
@@ -59,13 +61,18 @@ const itemsSelector = createSelector(
           addressBookItems = syncEntriesToItemMap(collectionInfo, syncEntries, addressBookItems);
           collectionsAddressBook.push(collectionInfo);
         } else if (collectionInfo.type === 'CALENDAR') {
-          calendarItems = syncEntriesToCalendarItemMap(collectionInfo, syncEntries, calendarItems);
+          calendarItems = syncEntriesToEventItemMap(collectionInfo, syncEntries, calendarItems);
           collectionsCalendar.push(collectionInfo);
+        } else if (collectionInfo.type === 'TASKS') {
+          taskListItems = syncEntriesToTaskItemMap(collectionInfo, syncEntries, taskListItems);
+          collectionsTaskList.push(collectionInfo);
         }
       }
     );
 
-    return { collectionsAddressBook, collectionsCalendar, addressBookItems, calendarItems };
+    return {
+      collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems
+    };
   },
 );
 
@@ -188,6 +195,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                   <Button
                     color="secondary"
                     variant="contained"
+                    disabled={!props.componentEdit}
                     className={classes.button}
                     style={{marginLeft: 15}}
                     onClick={() =>
@@ -300,7 +308,7 @@ class Pim extends React.PureComponent {
   }
 
   render() {
-    const { collectionsAddressBook, collectionsCalendar, addressBookItems, calendarItems } = itemsSelector(this.props);
+    const { collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems } = itemsSelector(this.props);
 
     return (
       <Switch>
@@ -311,6 +319,7 @@ class Pim extends React.PureComponent {
             <PimMain
               contacts={objValues(addressBookItems)}
               events={objValues(calendarItems)}
+              tasks={objValues(taskListItems)}
               history={history}
             />
           )}
@@ -340,6 +349,22 @@ class Pim extends React.PureComponent {
               collections={collectionsCalendar}
               items={calendarItems}
               componentEdit={EventEdit}
+              componentView={Event}
+              onItemSave={this.onItemSave}
+              onItemDelete={this.onItemDelete}
+              onItemCancel={this.onCancel}
+            />
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('pim.tasks')}
+          render={() => (
+            <CollectionRoutes
+              syncInfo={this.props.syncInfo}
+              routePrefix="pim.tasks"
+              collections={collectionsTaskList}
+              items={taskListItems}
+              componentEdit={undefined}
               componentView={Event}
               onItemSave={this.onItemSave}
               onItemDelete={this.onItemDelete}

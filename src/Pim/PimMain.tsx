@@ -13,8 +13,9 @@ import Container from '../widgets/Container';
 
 import SearchableAddressBook from '../components/SearchableAddressBook';
 import Calendar from '../components/Calendar';
+import TaskList from '../components/TaskList';
 
-import { EventType, ContactType } from '../pim-types';
+import { EventType, ContactType, TaskType } from '../pim-types';
 
 import { routeResolver } from '../App';
 
@@ -22,12 +23,14 @@ import { historyPersistor } from '../persist-state-history';
 
 const addressBookTitle = 'Address Book';
 const calendarTitle = 'Calendar';
+const tasksTitle = 'Tasks';
 
 const PersistCalendar = historyPersistor('Calendar')(Calendar);
 
 interface PropsType {
   contacts: Array<ContactType>;
   events: Array<EventType>;
+  tasks: Array<TaskType>;
   location?: Location;
   history?: History;
   theme: Theme;
@@ -42,6 +45,7 @@ class PimMain extends React.PureComponent<PropsType> {
     super(props);
     this.state = {tab: 1};
     this.eventClicked = this.eventClicked.bind(this);
+    this.taskClicked = this.taskClicked.bind(this);
     this.contactClicked = this.contactClicked.bind(this);
     this.floatingButtonClicked = this.floatingButtonClicked.bind(this);
     this.newEvent = this.newEvent.bind(this);
@@ -52,6 +56,13 @@ class PimMain extends React.PureComponent<PropsType> {
 
     this.props.history!.push(
       routeResolver.getRoute('pim.events._id', { itemUid: uid }));
+  }
+
+  taskClicked(event: ICAL.Event) {
+    const uid = event.uid;
+
+    this.props.history!.push(
+      routeResolver.getRoute('pim.tasks._id', { itemUid: uid }));
   }
 
   contactClicked(contact: ContactType) {
@@ -106,24 +117,33 @@ class PimMain extends React.PureComponent<PropsType> {
           <Tab
             label={calendarTitle}
           />
+          <Tab
+            label={tasksTitle}
+          />
         </Tabs>
-        { tab === 0 &&
-          <Container>
+
+        <Container>
+          { tab === 0 &&
             <SearchableAddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
-          </Container>
-        }
-        { tab === 1 &&
-          <Container>
+          }
+          { tab === 1 &&
             <PersistCalendar
               entries={this.props.events}
               onItemClick={this.eventClicked}
               onSlotClick={this.newEvent}
             />
-          </Container>
-        }
+          }
+          { tab === 2 &&
+            <TaskList
+              entries={this.props.tasks}
+              onItemClick={this.taskClicked}
+            />
+          }
+        </Container>
 
         <Fab
           color="primary"
+          disabled={tab === 2}
           style={style.floatingButton}
           onClick={this.floatingButtonClicked}
         >
