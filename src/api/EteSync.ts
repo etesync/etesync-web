@@ -3,8 +3,6 @@ import URI from 'urijs';
 
 import * as Constants from './Constants';
 
-import fetch from 'isomorphic-fetch';
-
 import { byte, base64, stringToByteArray } from './Helpers';
 import { CryptoManager, AsymmetricKeyPair, HMAC_SIZE_BYTES } from './Crypto';
 export { CryptoManager, AsymmetricCryptoManager, AsymmetricKeyPair, deriveKey, genUid } from './Crypto';

@@ -7,7 +7,6 @@
     "@material-ui/icons": "^3.0.2",
     "ical.js": "^1.2.2",
     "immutable": "^4.0.0-rc.12",
-    "isomorphic-fetch": "^2.2.1",
     "localforage": "^1.7.3",
     "moment": "^2.24.0",
     "node-rsa": "^1.0.3",
@@ -37,7 +36,6 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "@types/isomorphic-fetch": "^0.0.35",
     "@types/jest": "^24.0.4",
     "@types/node": "^11.9.3",
     "@types/node-rsa": "^1.0.0",

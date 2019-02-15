@@ -1,6 +1,5 @@
 import * as EteSync from './EteSync';
 
-import * as fetch from 'isomorphic-fetch';
 import * as sjcl from 'sjcl';
 
 const testApiBase = 'http://localhost:8000';
