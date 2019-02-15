@@ -17,6 +17,16 @@ export class EventType extends ICAL.Event implements PimType {
     return new EventType(comp.getFirstSubcomponent('vevent'));
   }
 
+  get timezone() {
+    if (this.startDate) {
+      return this.startDate.timezone;
+    } else if (this.endDate) {
+      return this.endDate.timezone;
+    }
+
+    return null;
+  }
+
   get title() {
     return this.summary;
   }

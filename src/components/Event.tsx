@@ -22,10 +22,12 @@ class Event extends React.PureComponent {
       },
     };
 
+    const timezone = this.props.item.timezone;
+
     return (
       <React.Fragment>
         <PimItemHeader text={this.props.item.summary} backgroundColor={this.props.item.color}>
-          <div>{formatDateRange(this.props.item.startDate, this.props.item.endDate)}</div>
+          <div>{formatDateRange(this.props.item.startDate, this.props.item.endDate)} { timezone && <small>({timezone})</small>}</div>
           <br/>
           <div><u>{this.props.item.location}</u></div>
         </PimItemHeader>

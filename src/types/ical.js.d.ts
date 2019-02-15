@@ -70,6 +70,8 @@ declare module 'ical.js' {
 
   class Time {
     isDate: boolean;
+    timezone: string;
+    zone: Timezone;
 
     static fromString(str: string): Time;
     static fromJSDate(aDate: Date | null, useUTC: boolean): Time;
@@ -101,5 +103,12 @@ declare module 'ical.js' {
     complete: boolean;
 
     next(): Time;
+  }
+
+  class Timezone {
+    static localTimezone: Timezone;
+    static convert_time(tt: Time, from_zone: Timezone, to_zone: Timezone): Time;
+
+    tzid: string;
   }
 }

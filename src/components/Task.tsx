@@ -24,14 +24,16 @@ class Task extends React.PureComponent {
       },
     };
 
+    const timezone = this.props.item.timezone;
+
     return (
       <React.Fragment>
         <PimItemHeader text={this.props.item.summary} backgroundColor={this.props.item.color}>
           { item.startDate &&
-            <div>Start: {formatDate(item.startDate)}</div>
+            <div>Start: {formatDate(item.startDate)} { timezone && <small>({timezone})</small>}</div>
           }
           { item.dueDate &&
-            <div>Due: {formatDate(item.dueDate)}</div>
+            <div>Due: {formatDate(item.dueDate)} { timezone && <small>({timezone})</small>}</div>
           }
           <br/>
           <div><u>{this.props.item.location}</u></div>
