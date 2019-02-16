@@ -3,7 +3,7 @@ import { createAction, createActions } from 'redux-actions';
 import * as EteSync from '../api/EteSync';
 import { UserInfo } from '../api/EteSync';
 
-import { CredentialsData, EntriesType, JournalsData } from './';
+import { CredentialsData, EntriesType, JournalsData, SettingsType } from './';
 
 export const { fetchCredentials, logout } = createActions({
   FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
@@ -170,3 +170,11 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
     });
   };
 }
+
+// FIXME: Move the rest to their own file
+export const setSettings = createAction(
+  'SET_SETTINGS',
+  (settings: SettingsType) => {
+    return {...settings};
+  },
+);

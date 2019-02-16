@@ -6,7 +6,7 @@ import { createLogger } from 'redux-logger';
 import promiseMiddleware from './promise-middleware';
 
 import reducers from './reducers';
-import { CredentialsTypeRemote, JournalsType, EntriesType, UserInfoType } from './reducers';
+import { CredentialsTypeRemote, JournalsType, EntriesType, UserInfoType, SettingsType } from './reducers';
 
 // Workaround babel limitation
 export * from './reducers';
@@ -14,6 +14,7 @@ export * from './reducers';
 export interface StoreState {
   fetchCount: number;
   credentials: CredentialsTypeRemote;
+  settings: SettingsType;
   encryptionKey: {key: string};
   cache: {
     journals: JournalsType;

@@ -272,6 +272,25 @@ const fetchCount = handleAction(
   0,
 );
 
+// FIXME Move all the below (potentially the fetchCount ones too) to their own file
+export interface SettingsType {
+  locale: string;
+};
+
+const settingsReducer = handleActions(
+  {
+    [actions.setSettings.toString()]: (state: {key: string | null}, action: any) => (
+      {...action.payload}
+    ),
+  },
+  { locale: 'en-gb' }
+);
+
+const settingsPersistConfig = {
+  key: 'settings',
+  storage: localforage,
+};
+
 const credentialsPersistConfig = {
   key: 'credentials',
   storage: localforage,
@@ -395,6 +414,7 @@ const cachePersistConfig = {
 
 const reducers = combineReducers({
   fetchCount,
+  settings: persistReducer(settingsPersistConfig, settingsReducer),
   credentials: persistReducer(credentialsPersistConfig, credentials),
   encryptionKey: persistReducer(encryptionKeyPersistConfig, encryptionKeyReducer),
   cache: persistReducer(cachePersistConfig, combineReducers({

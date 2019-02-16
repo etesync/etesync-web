@@ -5,6 +5,7 @@ import { List, ListItem, ListSubheader, ListDivider } from '../widgets/List';
 import { Theme, withTheme } from '@material-ui/core/styles';
 import ActionCode from '@material-ui/icons/Code';
 import ActionHome from '@material-ui/icons/Home';
+import ActionSettings from '@material-ui/icons/Settings';
 import ActionJournals from '@material-ui/icons/LibraryBooks';
 import ActionBugReport from '@material-ui/icons/BugReport';
 import ActionQuestionAnswer from '@material-ui/icons/QuestionAnswer';
@@ -57,6 +58,14 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
             onClick={() => {
               this.props.onCloseDrawerRequest();
               this.props.history.push(routeResolver.getRoute('journals'));
+            }}
+          />
+          <ListItem
+            primaryText="Settings"
+            leftIcon={<ActionSettings />}
+            onClick={() => {
+              this.props.onCloseDrawerRequest();
+              this.props.history.push(routeResolver.getRoute('settings'));
             }}
           />
           <ListItem primaryText="Log Out" leftIcon={<LogoutIcon/>}  onClick={this.logout} />
