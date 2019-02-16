@@ -2,14 +2,12 @@ import * as React from 'react';
 import BigCalendar, { View } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import * as moment from 'moment';
-import 'moment/locale/en-gb';
 import * as ICAL from 'ical.js';
 
 import { EventType } from '../pim-types';
 
 import './Calendar.css';
 
-moment.locale('en-gb');
 const calendarLocalizer = BigCalendar.momentLocalizer(moment);
 
 const MAX_RECURRENCE_DATE = ICAL.Time.now();

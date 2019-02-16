@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { Action } from 'redux-actions';
 import { Route, Switch, Redirect, RouteComponentProps, withRouter } from 'react-router';
 
+import * as moment from 'moment';
+import 'moment/locale/en-gb';
+
 import { List, Map } from 'immutable';
 import { createSelector } from 'reselect';
 
@@ -19,7 +22,7 @@ import Pim from './Pim';
 import * as EteSync from './api/EteSync';
 import { CURRENT_VERSION } from './api/Constants';
 
-import { store, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoType } from './store';
+import { store, SettingsType, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoType } from './store';
 import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
@@ -36,6 +39,7 @@ interface PropsType {
 }
 
 type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
+  settings: SettingsType;
   journals: JournalsType;
   entries: EntriesType;
   userInfo: UserInfoType;
@@ -181,6 +185,10 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
       return (<LoadingIndicator style={{display: 'block', margin: '40px auto'}} />);
     }
 
+    // FIXME: Shouldn't be here
+    moment.locale(this.props.settings.locale);
+
+
     const journalMap = syncInfoSelector(this.props);
 
     return (
@@ -235,6 +243,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
 
 const mapStateToProps = (state: StoreState, props: PropsType) => {
   return {
+    settings: state.settings,
     journals: state.cache.journals,
     entries: state.cache.entries,
     userInfo: state.cache.userInfo,
