@@ -145,6 +145,7 @@ class LoginForm extends React.PureComponent {
             value={this.state.username}
             onChange={this.handleInputChange}
           />
+          <br />
           <TextField
             type="password"
             style={styles.textField}
