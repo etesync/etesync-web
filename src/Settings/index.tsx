@@ -42,18 +42,18 @@ class Settings extends React.PureComponent<PropsTypeInner> {
       <>
         <AppBarOverride title="Settings" />
         <Container>
-          <h1>Localization</h1>
-          <FormControl style={{width: '10em'}}>
+          <h1>Date & Time</h1>
+          <FormControl style={{width: '15em'}}>
             <InputLabel>
-              Time & Date Style
+              Locale
             </InputLabel>
             <Select
               name="locale"
               value={settings.locale}
               onChange={this.handleChange}
             >
-              <MenuItem value="en-gb">European</MenuItem>
-              <MenuItem value="en-us">American</MenuItem>
+              <MenuItem value="en-gb">English (United Kingdom)</MenuItem>
+              <MenuItem value="en-us">English (United States)</MenuItem>
             </Select>
           </FormControl>
         </Container>
