@@ -5,23 +5,11 @@ import { createLogger } from 'redux-logger';
 
 import promiseMiddleware from './promise-middleware';
 
-import reducers from './reducers';
-import { CredentialsTypeRemote, JournalsType, EntriesType, UserInfoType, SettingsType } from './reducers';
+import reducers from './construct';
 
 // Workaround babel limitation
 export * from './reducers';
-
-export interface StoreState {
-  fetchCount: number;
-  credentials: CredentialsTypeRemote;
-  settings: SettingsType;
-  encryptionKey: {key: string};
-  cache: {
-    journals: JournalsType;
-    entries: EntriesType;
-    userInfo: UserInfoType;
-  };
-}
+export * from './construct';
 
 let middleware = [
   thunkMiddleware,

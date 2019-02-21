@@ -1,9 +1,4 @@
-import { combineReducers } from 'redux';
-import { createMigrate, persistReducer, createTransform } from 'redux-persist';
 import { Action, ActionFunctionAny, combineActions, handleAction, handleActions } from 'redux-actions';
-
-import * as localforage from 'localforage';
-import session from 'redux-persist/lib/storage/session';
 
 import { List, Map as ImmutableMap, Record } from 'immutable';
 
@@ -43,20 +38,20 @@ export type CredentialsType = FetchType<CredentialsData>;
 export type CredentialsTypeRemote = FetchType<CredentialsDataRemote>;
 
 export type JournalsData = ImmutableMap<string, EteSync.Journal>;
-const JournalsFetchRecord = fetchTypeRecord<JournalsData>();
+export const JournalsFetchRecord = fetchTypeRecord<JournalsData>();
 export type JournalsType = FetchType<JournalsData>;
 export type JournalsTypeImmutable = Record<JournalsType>;
 
 export type EntriesData = List<EteSync.Entry>;
 
-const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
+export const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
 
 export type EntriesTypeImmutable = ImmutableMap<string, Record<FetchType<EntriesData>>>;
 export type EntriesType = ImmutableMap<string, FetchType<EntriesData>>;
 
 export type UserInfoData = EteSync.UserInfo;
 
-const UserInfoFetchRecord = fetchTypeRecord<UserInfoData>();
+export const UserInfoFetchRecord = fetchTypeRecord<UserInfoData>();
 export type UserInfoType = FetchType<UserInfoData>;
 export type UserInfoTypeImmutable = Record<UserInfoType>;
 
@@ -87,7 +82,7 @@ function fetchTypeIdentityReducer(
   }
 }
 
-const encryptionKeyReducer = handleActions(
+export const encryptionKeyReducer = handleActions(
   {
     [actions.deriveKey.toString()]: (state: {key: string | null}, action: any) => (
       {key: action.payload}
@@ -99,7 +94,7 @@ const encryptionKeyReducer = handleActions(
   {key: null}
 );
 
-const credentials = handleActions(
+export const credentials = handleActions(
   {
     [actions.fetchCredentials.toString()]: (
       state: CredentialsTypeRemote, action: any, extend: boolean = false) => {
@@ -212,14 +207,14 @@ export const entries = handleAction(
   ImmutableMap({})
 );
 
-const journals = handleActions(
+export const journals = handleActions(
   {
     ...mapReducerActionsMapCreator<JournalsTypeImmutable, EteSync.Journal>('Journal'),
   },
   new JournalsFetchRecord(),
 );
 
-const userInfo = handleAction(
+export const userInfo = handleAction(
   combineActions(
     actions.fetchUserInfo,
     actions.createUserInfo
@@ -258,7 +253,7 @@ for (const func in actions) {
 }
 
 // Indicates network activity, not just fetch
-const fetchCount = handleAction(
+export const fetchCount = handleAction(
   combineActions(
     ...fetchActions,
   ),
@@ -277,7 +272,7 @@ export interface SettingsType {
   locale: string;
 };
 
-const settingsReducer = handleActions(
+export const settingsReducer = handleActions(
   {
     [actions.setSettings.toString()]: (state: {key: string | null}, action: any) => (
       {...action.payload}
@@ -285,143 +280,3 @@ const settingsReducer = handleActions(
   },
   { locale: 'en-gb' }
 );
-
-const settingsPersistConfig = {
-  key: 'settings',
-  storage: localforage,
-};
-
-const credentialsPersistConfig = {
-  key: 'credentials',
-  storage: localforage,
-  whitelist: ['value'],
-};
-
-const encryptionKeyPersistConfig = {
-  key: 'encryptionKey',
-  storage: session,
-};
-
-const journalsSerialize = (state: JournalsData) => {
-  if (state === null) {
-    return null;
-  }
-
-  return state.map((x, uid) => x.serialize()).toJS();
-};
-
-const journalsDeserialize = (state: {}) => {
-  if (state === null) {
-    return null;
-  }
-
-  const newState = new Map<string, EteSync.Journal>();
-  Object.keys(state).forEach((uid) => {
-    const x = state[uid];
-    const ret = new EteSync.Journal(x.version);
-    ret.deserialize(x);
-    newState.set(uid, ret);
-  });
-  return ImmutableMap(newState);
-};
-
-const entriesSerialize = (state: FetchType<EntriesData>) => {
-  if ((state === null) || (state.value == null)) {
-    return null;
-  }
-
-  return state.value.map((x) => x.serialize()).toJS();
-};
-
-const entriesDeserialize = (state: EteSync.EntryJson[]): FetchType<EntriesData> => {
-  if (state === null) {
-    return new EntriesFetchRecord({value: null});
-  }
-
-  return new EntriesFetchRecord({value: List(state.map((x: any) => {
-    let ret = new EteSync.Entry();
-    ret.deserialize(x);
-    return ret;
-  }))});
-};
-
-const userInfoSerialize = (state: FetchType<UserInfoData>) => {
-  if ((state === null) || (state.value == null)) {
-    return null;
-  }
-
-  return state.value.serialize();
-};
-
-const userInfoDeserialize = (state: EteSync.UserInfoJson) => {
-  if (state === null) {
-    return null;
-  }
-
-  let ret = new EteSync.UserInfo(state.owner!, state.version);
-  ret.deserialize(state);
-  return ret;
-};
-
-const cacheSerialize = (state: any, key: string) => {
-  if (key === 'entries') {
-    let ret = {};
-    state.forEach((value: FetchType<EntriesData>, mapKey: string) => {
-      ret[mapKey] = entriesSerialize(value);
-    });
-    return ret;
-  } else if (key === 'journals') {
-    return journalsSerialize(state.value);
-  } else if (key === 'userInfo') {
-    return userInfoSerialize(state);
-  }
-
-  return state;
-};
-
-const cacheDeserialize = (state: any, key: string) => {
-  if (key === 'entries') {
-    let ret = {};
-    Object.keys(state).forEach((mapKey) => {
-      ret[mapKey] = entriesDeserialize(state[mapKey]);
-    });
-    return ImmutableMap(ret);
-  } else if (key === 'journals') {
-    return new JournalsFetchRecord({value: journalsDeserialize(state)});
-  } else if (key === 'userInfo') {
-    return new UserInfoFetchRecord({value: userInfoDeserialize(state)});
-  }
-
-  return state;
-};
-
-const cacheMigrations = {
-  0: (state: any) => {
-    return {
-      ...state,
-      journals: undefined
-    };
-  },
-};
-
-const cachePersistConfig = {
-  key: 'cache',
-  version: 1,
-  storage: localforage,
-  transforms: [createTransform(cacheSerialize, cacheDeserialize)],
-  migrate: createMigrate(cacheMigrations, { debug: false}),
-};
-
-const reducers = combineReducers({
-  fetchCount,
-  settings: persistReducer(settingsPersistConfig, settingsReducer),
-  credentials: persistReducer(credentialsPersistConfig, credentials),
-  encryptionKey: persistReducer(encryptionKeyPersistConfig, encryptionKeyReducer),
-  cache: persistReducer(cachePersistConfig, combineReducers({
-    entries,
-    journals,
-    userInfo,
-  })),
-});
-
-export default reducers;
