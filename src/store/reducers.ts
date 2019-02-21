@@ -43,14 +43,11 @@ export type JournalsType = FetchType<JournalsData>;
 export type JournalsTypeImmutable = Record<JournalsType>;
 
 export type EntriesData = List<EteSync.Entry>;
-
 export const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
-
 export type EntriesTypeImmutable = ImmutableMap<string, Record<FetchType<EntriesData>>>;
 export type EntriesType = ImmutableMap<string, FetchType<EntriesData>>;
 
 export type UserInfoData = EteSync.UserInfo;
-
 export const UserInfoFetchRecord = fetchTypeRecord<UserInfoData>();
 export type UserInfoType = FetchType<UserInfoData>;
 export type UserInfoTypeImmutable = Record<UserInfoType>;
