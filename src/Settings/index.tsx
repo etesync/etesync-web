@@ -15,11 +15,11 @@ import AppBarOverride from '../widgets/AppBarOverride';
 
 interface PropsType {
   history: History;
-};
+}
 
 interface PropsTypeInner extends PropsType {
   settings: SettingsType;
-};
+}
 
 class Settings extends React.PureComponent<PropsTypeInner> {
   constructor(props: any) {
