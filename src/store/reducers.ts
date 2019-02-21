@@ -236,7 +236,7 @@ export const userInfo = handleAction(
       return state.set('value', payload);
     }
   },
-  new JournalsFetchRecord(),
+  new UserInfoFetchRecord(),
 );
 
 const fetchActions = [
