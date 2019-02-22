@@ -470,7 +470,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
           <TextField
             name="note"
-            multiline={true}
+            multiline
             placeholder="Note"
             style={styles.fullWidth}
             value={this.state.note}

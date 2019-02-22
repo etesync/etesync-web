@@ -37,7 +37,7 @@ class Journals extends React.PureComponent {
       <Switch>
         <Route
           path={routeResolver.getRoute('journals')}
-          exact={true}
+          exact
           render={({ history }) => (
             <>
               <JournalsList

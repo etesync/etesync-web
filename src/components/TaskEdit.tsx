@@ -301,7 +301,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
           <TextField
             name="description"
             placeholder="Add description"
-            multiline={true}
+            multiline
             style={styles.fullWidth}
             value={this.state.description}
             onChange={this.handleInputChange}

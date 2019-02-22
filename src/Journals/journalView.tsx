@@ -38,7 +38,7 @@ export function journalView(JournalList: any, JournalItem: any) {
         <Switch>
           <Route
             path={routeResolver.getRoute('journals._id')}
-            exact={true}
+            exact
             render={() => (
               <JournalList entries={objValues(items)} onItemClick={this.itemClicked} />
               )
@@ -46,7 +46,7 @@ export function journalView(JournalList: any, JournalItem: any) {
           />
           <Route
             path={routeResolver.getRoute('journals._id.items._id')}
-            exact={true}
+            exact
             render={({match}) => {
 
               return (

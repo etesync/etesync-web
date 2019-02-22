@@ -117,7 +117,7 @@ class Contact extends React.PureComponent {
         return (
           <ListItem
             key={idx}
-            insetChildren={true}
+            insetChildren
             primaryText={val}
             secondaryText={prop.name}
           />
@@ -134,7 +134,7 @@ class Contact extends React.PureComponent {
               {items}
             </List>
             <List>
-              <Divider inset={true} />
+              <Divider inset />
             </List>
           </React.Fragment>
         );

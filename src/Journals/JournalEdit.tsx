@@ -94,7 +94,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
               </InputLabel>
               <Select
                 name="type"
-                required={true}
+                required
                 value={this.state.info.type}
                 onChange={this.handleInputChange}
               >
@@ -105,7 +105,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
             </FormControl>
             <TextField
               name="displayName"
-              required={true}
+              required
               label="Display name of this collection"
               value={this.state.info.displayName}
               onChange={this.handleInputChange}

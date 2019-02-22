@@ -68,7 +68,7 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
               this.props.history.push(routeResolver.getRoute('settings'));
             }}
           />
-          <ListItem primaryText="Log Out" leftIcon={<LogoutIcon/>}  onClick={this.logout} />
+          <ListItem primaryText="Log Out" leftIcon={<LogoutIcon />}  onClick={this.logout} />
         </React.Fragment>
       );
     }

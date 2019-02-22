@@ -76,7 +76,7 @@ class Calendar extends React.PureComponent<PropsType> {
           defaultDate={new Date()}
           localizer={calendarLocalizer}
           events={entries}
-          selectable={true}
+          selectable
           onSelectEvent={this.props.onItemClick as any}
           onSelectSlot={this.slotClicked as any}
           formats={{agendaHeaderFormat: agendaHeaderFormat as any}}

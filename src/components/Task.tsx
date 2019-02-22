@@ -35,7 +35,7 @@ class Task extends React.PureComponent {
           { item.dueDate &&
             <div>Due: {formatDate(item.dueDate)} {timezone && <small>({timezone})</small>}</div>
           }
-          <br/>
+          <br />
           <div><u>{this.props.item.location}</u></div>
         </PimItemHeader>
         <div style={style.content}>

@@ -195,7 +195,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
       <Switch>
         <Route
           path={routeResolver.getRoute('home')}
-          exact={true}
+          exact
           render={({match}) => (
             <Redirect to={routeResolver.getRoute('pim')} />
           )}
@@ -229,7 +229,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
         />
         <Route
           path={routeResolver.getRoute('settings')}
-          exact={true}
+          exact
           render={({history}) => (
             <Settings
               history={history}

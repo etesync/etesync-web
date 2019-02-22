@@ -54,9 +54,9 @@ class LoginGate extends React.Component {
             error={this.props.credentials.error}
             loading={this.props.credentials.fetching}
           />
-          <hr style={style.divider}/>
+          <hr style={style.divider} />
           <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
-            <img src={SignedPagesBadge}/>
+            <img src={SignedPagesBadge} />
           </ExternalLink>
           <ul>
             <li><ExternalLink style={style.isSafe} href={C.homePage}>

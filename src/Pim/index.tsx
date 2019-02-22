@@ -133,7 +133,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
         <Switch>
           <Route
             path={routeResolver.getRoute(props.routePrefix + '.new')}
-            exact={true}
+            exact
             render={({match}) => (
               <Container style={{maxWidth: '30rem'}}>
                 <ComponentEdit
@@ -146,7 +146,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           />
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id.edit')}
-            exact={true}
+            exact
             render={({match}) => (
               <Container style={{maxWidth: '30rem'}}>
                 {(match.params.itemUid in props.items) &&
@@ -164,7 +164,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           />
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id.log')}
-            exact={true}
+            exact
             render={({match}) => (
               <Container>
                 <ItemChangeLog
@@ -177,7 +177,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           />
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id')}
-            exact={true}
+            exact
             render={({match, history}) => (
               <Container>
                 <div style={{textAlign: 'right', marginBottom: 15}}>
@@ -316,7 +316,7 @@ class Pim extends React.PureComponent {
       <Switch>
         <Route
           path={routeResolver.getRoute('pim')}
-          exact={true}
+          exact
           render={({history}) => (
             <PimMain
               contacts={objValues(addressBookItems)}

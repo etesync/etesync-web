@@ -28,7 +28,7 @@ class Event extends React.PureComponent {
       <React.Fragment>
         <PimItemHeader text={this.props.item.summary} backgroundColor={this.props.item.color}>
           <div>{formatDateRange(this.props.item.startDate, this.props.item.endDate)} {timezone && <small>({timezone})</small>}</div>
-          <br/>
+          <br />
           <div><u>{this.props.item.location}</u></div>
         </PimItemHeader>
         <div style={style.content}>
