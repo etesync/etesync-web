@@ -17,7 +17,7 @@ function eventPropGetter(event: EventType) {
   return {
     style: {
       backgroundColor: event.color,
-    }
+    },
   };
 }
 
@@ -26,16 +26,16 @@ function agendaHeaderFormat(date: {start: Date, end: Date}, culture: string, loc
   return localizer.format(date.start, format) + ' - ' + localizer.format(date.end, format);
 }
 
-class Calendar extends React.PureComponent {
-  state: {
+interface PropsType {
+  entries: EventType[];
+  onItemClick: (contact: EventType) => void;
+  onSlotClick?: (start: Date, end: Date) => void;
+}
+
+class Calendar extends React.PureComponent<PropsType> {
+  public state: {
     currentDate?: Date;
     view?: View;
-  };
-
-  props: {
-    entries: Array<EventType>,
-    onItemClick: (contact: EventType) => void,
-    onSlotClick?: (start: Date, end: Date) => void,
   };
 
   constructor(props: any) {
@@ -47,22 +47,8 @@ class Calendar extends React.PureComponent {
     this.slotClicked = this.slotClicked.bind(this);
   }
 
-  onNavigate(currentDate: Date) {
-    this.setState({currentDate});
-  }
-
-  onView(view: string) {
-    this.setState({view});
-  }
-
-  slotClicked(slotInfo: {start: Date, end: Date}) {
-    if (this.props.onSlotClick) {
-      this.props.onSlotClick(slotInfo.start, slotInfo.end);
-    }
-  }
-
-  render() {
-    const entries = [] as Array<EventType>;
+  public render() {
+    const entries = [] as EventType[];
     this.props.entries.forEach((event) => {
       entries.push(event);
 
@@ -102,6 +88,20 @@ class Calendar extends React.PureComponent {
         />
       </div>
     );
+  }
+
+  private onNavigate(currentDate: Date) {
+    this.setState({currentDate});
+  }
+
+  private onView(view: string) {
+    this.setState({view});
+  }
+
+  private slotClicked(slotInfo: {start: Date, end: Date}) {
+    if (this.props.onSlotClick) {
+      this.props.onSlotClick(slotInfo.start, slotInfo.end);
+    }
   }
 }
 

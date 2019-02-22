@@ -1,114 +1,112 @@
 declare module 'ical.js' {
-  function parse(input: string): Array<any>;
+  function parse(input: string): any[];
   class Component {
-    name: string;
+    static public fromString(str: string): Component;
 
-    static fromString(str: string): Component;
+    public name: string;
 
-    constructor(jCal: Array<any> | string, parent?: Component);
+    constructor(jCal: any[] | string, parent?: Component);
 
-    toJSON(): Array<any>;
+    public toJSON(): any[];
 
-    getFirstSubcomponent(name?: string): Component | null;
+    public getFirstSubcomponent(name?: string): Component | null;
 
-    getFirstPropertyValue(name?: string): any;
+    public getFirstPropertyValue(name?: string): any;
 
-    getFirstProperty(name?: string): Property;
-    getAllProperties(name?: string): Array<Property>;
+    public getFirstProperty(name?: string): Property;
+    public getAllProperties(name?: string): Property[];
 
-    addProperty(property: Property): Property;
-    addPropertyWithValue(name: string, value: string | number | object): Property;
+    public addProperty(property: Property): Property;
+    public addPropertyWithValue(name: string, value: string | number | object): Property;
 
-    updatePropertyWithValue(name: string, value: string | number | object): Property;
+    public updatePropertyWithValue(name: string, value: string | number | object): Property;
 
-    removeAllProperties(name?: string): boolean;
+    public removeAllProperties(name?: string): boolean;
 
-    addSubcomponent(component: Component): Component;
+    public addSubcomponent(component: Component): Component;
   }
 
   class Event {
-    uid: string;
-    summary: string;
-    startDate: Time;
-    endDate: Time;
-    description: string;
-    location: string;
-    attendees: Array<Property>;
+    public uid: string;
+    public summary: string;
+    public startDate: Time;
+    public endDate: Time;
+    public description: string;
+    public location: string;
+    public attendees: Property[];
 
-    component: Component;
+    public component: Component;
 
-    isRecurring(): boolean;
-    iterator(startTime?: Time): RecurExpansion;
+    public constructor(component?: Component | null, options?: {strictExceptions: boolean, exepctions: Array<Component | Event>});
 
-    constructor(component?: Component | null,
-                options?: {strictExceptions: boolean, exepctions: Array<Component|Event>});
+    public isRecurring(): boolean;
+    public iterator(startTime?: Time): RecurExpansion;
   }
 
   class Property {
-    name: string;
-    type: string;
+    public name: string;
+    public type: string;
 
-    constructor(jCal: Array<any> | string, parent?: Component);
+    constructor(jCal: any[] | string, parent?: Component);
 
-    getFirstValue(): any;
-    getValues(): Array<any>;
+    public getFirstValue(): any;
+    public getValues(): any[];
 
-    setParameter(name: string, value: string | Array<string>): void;
-    setValue(value: string | object): void;
-    toJSON(): any;
+    public setParameter(name: string, value: string | string[]): void;
+    public setValue(value: string | object): void;
+    public toJSON(): any;
   }
 
-  type TimeJsonData = {
-    year?: number,
-    month?: number,
-    day?: number,
-    hour?: number,
-    minute?: number,
-    second?: number,
-    isDate?: boolean
-  };
+  interface TimeJsonData {
+    year?: number;
+    month?: number;
+    day?: number;
+    hour?: number;
+    minute?: number;
+    second?: number;
+    isDate?: boolean;
+  }
 
   class Time {
-    isDate: boolean;
-    timezone: string;
-    zone: Timezone;
+    static public fromString(str: string): Time;
+    static public fromJSDate(aDate: Date | null, useUTC: boolean): Time;
+    static public fromData(aData: TimeJsonData): Time;
 
-    static fromString(str: string): Time;
-    static fromJSDate(aDate: Date | null, useUTC: boolean): Time;
-    static fromData(aData: TimeJsonData): Time;
+    static public now(): Time;
 
-    static now(): Time;
+    public isDate: boolean;
+    public timezone: string;
+    public zone: Timezone;
 
     constructor(data?: TimeJsonData);
+    public compare(aOther: Time): number;
 
-    compare(aOther: Time): number;
+    public clone(): Time;
 
-    clone(): Time;
-
-    adjust(
+    public adjust(
       aExtraDays: number, aExtraHours: number, aExtraMinutes: number, aExtraSeconds: number, aTimeopt?: Time): void;
 
-    addDuration(aDuration: Duration): void;
-    subtractDateTz(aDate: Time): Duration;
+    public addDuration(aDuration: Duration): void;
+    public subtractDateTz(aDate: Time): Duration;
 
-    toJSDate(): Date;
-    toJSON(): TimeJsonData;
+    public toJSDate(): Date;
+    public toJSON(): TimeJsonData;
   }
 
   class Duration {
-    days: number;
+    public days: number;
   }
 
   class RecurExpansion {
-    complete: boolean;
+    public complete: boolean;
 
-    next(): Time;
+    public next(): Time;
   }
 
   class Timezone {
-    static localTimezone: Timezone;
-    static convert_time(tt: Time, from_zone: Timezone, to_zone: Timezone): Time;
+    static public localTimezone: Timezone;
+    static public convert_time(tt: Time, fromZone: Timezone, toZone: Timezone): Time;
 
-    tzid: string;
+    public tzid: string;
   }
 }

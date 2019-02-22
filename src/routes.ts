@@ -1,13 +1,15 @@
-export type RouteKeysType = { [Identifier: string]: any };
+export interface RouteKeysType {
+  [Identifier: string]: any;
+}
 
 export class RouteResolver {
-  routes: {};
+  public routes: {};
 
   constructor(routes: {}) {
     this.routes = routes;
   }
 
-  getRoute(name: string, _keys?: RouteKeysType): string {
+  public getRoute(name: string, _keys?: RouteKeysType): string {
     let dict = this.routes;
 
     let path: string[] = [];
@@ -19,7 +21,7 @@ export class RouteResolver {
     });
 
     if (_keys) {
-      let keys = Object.assign({}, _keys);
+      const keys = Object.assign({}, _keys);
 
       path = path.map((pathComponent) => {
         return pathComponent.split('/').map((val) => {

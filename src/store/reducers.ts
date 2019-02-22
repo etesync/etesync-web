@@ -208,7 +208,7 @@ export const journals = handleActions(
   {
     ...mapReducerActionsMapCreator<JournalsTypeImmutable, EteSync.Journal>('Journal'),
   },
-  new JournalsFetchRecord(),
+  new JournalsFetchRecord()
 );
 
 export const userInfo = handleAction(
@@ -233,7 +233,7 @@ export const userInfo = handleAction(
       return state.set('value', payload);
     }
   },
-  new UserInfoFetchRecord(),
+  new UserInfoFetchRecord()
 );
 
 const fetchActions = [
@@ -252,7 +252,7 @@ for (const func in actions) {
 // Indicates network activity, not just fetch
 export const fetchCount = handleAction(
   combineActions(
-    ...fetchActions,
+    ...fetchActions
   ),
   (state: number, action: any) => {
     if (action.payload === undefined) {
@@ -261,13 +261,13 @@ export const fetchCount = handleAction(
       return state - 1;
     }
   },
-  0,
+  0
 );
 
 // FIXME Move all the below (potentially the fetchCount ones too) to their own file
 export interface SettingsType {
   locale: string;
-};
+}
 
 export const settingsReducer = handleActions(
   {

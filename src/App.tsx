@@ -96,7 +96,7 @@ export const routeResolver = new RouteResolver({
 
 const AppBarWitHistory = withRouter(
   class extends React.PureComponent {
-    props: {
+    public props: {
       title: string,
       toggleDrawerIcon: any,
       history?: History;
@@ -110,19 +110,7 @@ const AppBarWitHistory = withRouter(
       this.canGoBack = this.canGoBack.bind(this);
     }
 
-    canGoBack() {
-      return (
-        (this.props.history!.length > 1) &&
-        (this.props.history!.location.pathname !== routeResolver.getRoute('pim')) &&
-        (this.props.history!.location.pathname !== routeResolver.getRoute('home'))
-      );
-    }
-
-    goBack() {
-      this.props.history!.goBack();
-    }
-
-    render() {
+    public render() {
       const {
         staticContext,
         toggleDrawerIcon,
@@ -136,7 +124,7 @@ const AppBarWitHistory = withRouter(
           {...props}
         >
           <Toolbar>
-            <div style={{ marginLeft: -12, marginRight: 20, }}>
+            <div style={{ marginLeft: -12, marginRight: 20 }}>
               {!this.canGoBack() ?
                 toggleDrawerIcon :
                 <IconButton onClick={this.goBack}><NavigationBack /></IconButton>
@@ -152,17 +140,29 @@ const AppBarWitHistory = withRouter(
         </AppBar>
       );
     }
-  }
+
+    private canGoBack() {
+      return (
+        (this.props.history!.length > 1) &&
+        (this.props.history!.location.pathname !== routeResolver.getRoute('pim')) &&
+        (this.props.history!.location.pathname !== routeResolver.getRoute('home'))
+      );
+    }
+
+    private goBack() {
+      this.props.history!.goBack();
+    }
+  },
 );
 
 const IconRefreshWithSpin = withSpin(NavigationRefresh);
 
 class App extends React.PureComponent {
-  state: {
+  public state: {
     drawerOpen: boolean,
   };
 
-  props: {
+  public props: {
     credentials: store.CredentialsType;
     entries: store.EntriesType;
     fetchCount: number;
@@ -177,19 +177,7 @@ class App extends React.PureComponent {
     this.refresh = this.refresh.bind(this);
   }
 
-  toggleDrawer() {
-    this.setState({drawerOpen: !this.state.drawerOpen});
-  }
-
-  closeDrawer() {
-    this.setState({drawerOpen: false});
-  }
-
-  refresh() {
-    store.store.dispatch<any>(actions.fetchAll(this.props.credentials.value!, this.props.entries));
-  }
-
-  render() {
+  public render() {
     const credentials = (this.props.credentials) ? this.props.credentials.value : null;
 
     const fetching = this.props.fetchCount > 0;
@@ -198,7 +186,7 @@ class App extends React.PureComponent {
       main: {
         backgroundColor: muiTheme.palette.background.default,
         color: muiTheme.palette.text.primary,
-        flexGrow: 1
+        flexGrow: 1,
       },
     };
 
@@ -229,6 +217,18 @@ class App extends React.PureComponent {
       </ThemeProvider>
     );
   }
+
+  private toggleDrawer() {
+    this.setState({drawerOpen: !this.state.drawerOpen});
+  }
+
+  private closeDrawer() {
+    this.setState({drawerOpen: false});
+  }
+
+  private refresh() {
+    store.store.dispatch<any>(actions.fetchAll(this.props.credentials.value!, this.props.entries));
+  }
 }
 
 const credentialsSelector = createSelector(
@@ -242,14 +242,14 @@ const credentialsSelector = createSelector(
     }
 
     return {
-      error: error,
-      fetching: fetching,
+      error,
+      fetching,
       value: {
         ...value,
-        encryptionKey: encryptionKey,
-      }
+        encryptionKey,
+      },
     };
-  }
+  },
 );
 
 const mapStateToProps = (state: store.StoreState) => {
@@ -261,5 +261,5 @@ const mapStateToProps = (state: store.StoreState) => {
 };
 
 export default connect(
-  mapStateToProps
+  mapStateToProps,
 )(App);

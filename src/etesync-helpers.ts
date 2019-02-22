@@ -11,7 +11,7 @@ export function createJournalEntry(
   action: EteSync.SyncEntryAction,
   content: string) {
 
-  let syncEntry = new EteSync.SyncEntry();
+  const syncEntry = new EteSync.SyncEntry();
   syncEntry.action = action;
 
   syncEntry.content = content;
@@ -27,7 +27,7 @@ export function createJournalEntry(
   } else {
     cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
   }
-  let entry = new EteSync.Entry();
+  const entry = new EteSync.Entry();
   entry.setSyncEntry(cryptoManager, syncEntry, prevUid);
 
   return createEntries(etesync, journal.uid, [entry], prevUid);

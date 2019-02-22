@@ -5,28 +5,20 @@ import Datetime from 'react-datetime';
 
 import 'react-datetime/css/react-datetime.css';
 
-class DateTimePicker extends React.PureComponent {
-  props: {
-    placeholder: string,
-    value?: Date,
-    dateOnly?: boolean,
-    onChange: (date?: Date) => void;
-  };
+interface PropsType {
+  placeholder: string;
+  value?: Date;
+  dateOnly?: boolean;
+  onChange: (date?: Date) => void;
+}
 
+class DateTimePicker extends React.PureComponent<PropsType> {
   constructor(props: any) {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleInputChange(newDate: string | moment.Moment) {
-    if (moment.isMoment(newDate)) {
-      this.props.onChange(newDate.toDate());
-    } else {
-      this.props.onChange(undefined);
-    }
-  }
-
-  render() {
+  public render() {
     const inputProps = {
       placeholder: this.props.placeholder,
       readOnly: true,
@@ -39,6 +31,14 @@ class DateTimePicker extends React.PureComponent {
         timeFormat={!this.props.dateOnly}
       />
     );
+  }
+
+  private handleInputChange(newDate: string | moment.Moment) {
+    if (moment.isMoment(newDate)) {
+      this.props.onChange(newDate.toDate());
+    } else {
+      this.props.onChange(undefined);
+    }
   }
 }
 

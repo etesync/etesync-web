@@ -11,7 +11,7 @@ import reducers from './construct';
 export * from './reducers';
 export * from './construct';
 
-let middleware = [
+const middleware = [
   thunkMiddleware,
   promiseMiddleware,
 ];

@@ -59,7 +59,7 @@ const AddressBookItem = pure((_props: any) => {
 });
 
 const sortSelector = createSelector(
-  (entries: Array<ContactType>) => entries,
+  (entries: ContactType[]) => entries,
   (entries) => {
     return entries.sort((_a, _b) => {
       const a = _a.fn;
@@ -73,24 +73,24 @@ const sortSelector = createSelector(
         return 0;
       }
     });
-  },
+  }
 );
 
-class AddressBook extends React.PureComponent {
-  props: {
-    entries: Array<ContactType>,
-    onItemClick: (contact: ContactType) => void,
-    filter?: (a: ContactType) => boolean,
-  };
+interface PropsType {
+  entries: ContactType[];
+  onItemClick: (contact: ContactType) => void;
+  filter?: (a: ContactType) => boolean;
+}
 
-  render() {
+class AddressBook extends React.PureComponent<PropsType> {
+  public render() {
     const sortedEntries = sortSelector(this.props.entries);
 
     const entries = (this.props.filter) ?
       sortedEntries.filter(this.props.filter)
       : sortedEntries;
 
-    let itemList = entries.map((entry, idx, array) => {
+    const itemList = entries.map((entry, idx, array) => {
       const uid = entry.uid;
 
       return (

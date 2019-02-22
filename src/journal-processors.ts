@@ -8,10 +8,10 @@ import * as EteSync from './api/EteSync';
 
 export function syncEntriesToItemMap(
   collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: ContactType} = {}) {
-  let items = base;
+  const items = base;
 
   entries.forEach((syncEntry) => {
-    let comp = new ContactType(new ICAL.Component(ICAL.parse(syncEntry.content)));
+    const comp = new ContactType(new ICAL.Component(ICAL.parse(syncEntry.content)));
 
     const uid = comp.uid;
 
@@ -42,7 +42,7 @@ function colorIntToHtml(color: number) {
   // tslint:enable
 
   function toHex(num: number) {
-    let ret = num.toString(16);
+    const ret = num.toString(16);
     return (ret.length === 1) ? '0' + ret : ret;
   }
 
@@ -53,12 +53,12 @@ function colorIntToHtml(color: number) {
 function syncEntriesToCalendarItemMap<T extends EventType>(
   ItemType: any,
   collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: T} = {}) {
-  let items = base;
+  const items = base;
 
   const color = colorIntToHtml(collection.color);
 
   entries.forEach((syncEntry) => {
-    let comp = ItemType.fromVCalendar(new ICAL.Component(ICAL.parse(syncEntry.content)));
+    const comp = ItemType.fromVCalendar(new ICAL.Component(ICAL.parse(syncEntry.content)));
 
     if (comp === null) {
       return;

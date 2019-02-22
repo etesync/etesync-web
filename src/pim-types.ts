@@ -7,15 +7,15 @@ export interface PimType {
 }
 
 export class EventType extends ICAL.Event implements PimType {
-  color: string;
-
-  static isEvent(comp: ICAL.Component) {
+  public static isEvent(comp: ICAL.Component) {
     return !!comp.getFirstSubcomponent('vevent');
   }
 
-  static fromVCalendar(comp: ICAL.Component) {
+  public static fromVCalendar(comp: ICAL.Component) {
     return new EventType(comp.getFirstSubcomponent('vevent'));
   }
+
+  public color: string;
 
   get timezone() {
     if (this.startDate) {
@@ -47,8 +47,8 @@ export class EventType extends ICAL.Event implements PimType {
     return this.description;
   }
 
-  toIcal() {
-    let comp = new ICAL.Component(['vcalendar', [], []]);
+  public toIcal() {
+    const comp = new ICAL.Component(['vcalendar', [], []]);
     comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
     comp.updatePropertyWithValue('version', '4.0');
 
@@ -56,7 +56,7 @@ export class EventType extends ICAL.Event implements PimType {
     return comp.toString();
   }
 
-  clone() {
+  public clone() {
     const ret = new EventType(new ICAL.Component(this.component.toJSON()));
     ret.color = this.color;
     return ret;
@@ -71,11 +71,11 @@ export enum TaskStatusType {
 }
 
 export class TaskType extends EventType {
-  color: string;
-
-  static fromVCalendar(comp: ICAL.Component) {
+  public static fromVCalendar(comp: ICAL.Component) {
     return new TaskType(comp.getFirstSubcomponent('vtodo'));
   }
+
+  public color: string;
 
   constructor(comp: ICAL.Component | null) {
     super(comp ? comp : new ICAL.Component('vtodo'));
@@ -106,7 +106,7 @@ export class TaskType extends EventType {
     return this.component.getFirstPropertyValue('due');
   }
 
-  clone() {
+  public clone() {
     const ret = new TaskType(new ICAL.Component(this.component.toJSON()));
     ret.color = this.color;
     return ret;
@@ -114,17 +114,17 @@ export class TaskType extends EventType {
 }
 
 export class ContactType implements PimType {
-  comp: ICAL.Component;
+  public comp: ICAL.Component;
 
   constructor(comp: ICAL.Component) {
     this.comp = comp;
   }
 
-  toIcal() {
+  public toIcal() {
     return this.comp.toString();
   }
 
-  clone() {
+  public clone() {
     return new ContactType(new ICAL.Component(this.comp.toJSON()));
   }
 

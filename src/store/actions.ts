@@ -48,7 +48,7 @@ export const { fetchListJournal } = createActions({
   FETCH_LIST_JOURNAL: (etesync: CredentialsData) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
-    let journalManager = new EteSync.JournalManager(creds, apiBase);
+    const journalManager = new EteSync.JournalManager(creds, apiBase);
 
     return journalManager.list();
   },
@@ -59,13 +59,13 @@ export const addJournal = createAction(
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
-    let journalManager = new EteSync.JournalManager(creds, apiBase);
+    const journalManager = new EteSync.JournalManager(creds, apiBase);
 
     return journalManager.create(journal);
   },
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     return { item: journal };
-  },
+  }
 );
 
 export const updateJournal = createAction(
@@ -73,13 +73,13 @@ export const updateJournal = createAction(
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
-    let journalManager = new EteSync.JournalManager(creds, apiBase);
+    const journalManager = new EteSync.JournalManager(creds, apiBase);
 
     return journalManager.update(journal);
   },
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     return { item: journal };
-  },
+  }
 );
 
 export const deleteJournal = createAction(
@@ -87,13 +87,13 @@ export const deleteJournal = createAction(
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
-    let journalManager = new EteSync.JournalManager(creds, apiBase);
+    const journalManager = new EteSync.JournalManager(creds, apiBase);
 
     return journalManager.delete(journal);
   },
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     return { item: journal };
-  },
+  }
 );
 
 export const { fetchEntries, createEntries } = createActions({
@@ -101,33 +101,33 @@ export const { fetchEntries, createEntries } = createActions({
     (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
       const creds = etesync.credentials;
       const apiBase = etesync.serviceApiUrl;
-      let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
+      const entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
 
       return entryManager.list(prevUid);
     },
     (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
       return { journal: journalUid, prevUid };
-    }
+    },
   ],
   CREATE_ENTRIES: [
-    (etesync: CredentialsData, journalUid: string, newEntries: Array<EteSync.Entry>, prevUid: string | null) => {
+    (etesync: CredentialsData, journalUid: string, newEntries: EteSync.Entry[], prevUid: string | null) => {
       const creds = etesync.credentials;
       const apiBase = etesync.serviceApiUrl;
-      let entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
+      const entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
 
-      return entryManager.create(newEntries, prevUid).then(response => newEntries);
+      return entryManager.create(newEntries, prevUid).then((response) => newEntries);
     },
-    (etesync: CredentialsData, journalUid: string, newEntries: Array<EteSync.Entry>, prevUid: string | null) => {
+    (etesync: CredentialsData, journalUid: string, newEntries: EteSync.Entry[], prevUid: string | null) => {
       return { journal: journalUid, entries: newEntries, prevUid };
-    }
-  ]
+    },
+  ],
 });
 
 export const { fetchUserInfo } = createActions({
   FETCH_USER_INFO: (etesync: CredentialsData, owner: string) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
-    let userInfoManager = new EteSync.UserInfoManager(creds, apiBase);
+    const userInfoManager = new EteSync.UserInfoManager(creds, apiBase);
 
     return userInfoManager.fetch(owner);
   },
@@ -138,13 +138,13 @@ export const createUserInfo = createAction(
   (etesync: CredentialsData, userInfo: UserInfo) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
-    let userInfoManager = new EteSync.UserInfoManager(creds, apiBase);
+    const userInfoManager = new EteSync.UserInfoManager(creds, apiBase);
 
     return userInfoManager.create(userInfo);
   },
   (etesync: CredentialsData, userInfo: UserInfo) => {
     return { userInfo };
-  },
+  }
 );
 
 export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
@@ -176,5 +176,5 @@ export const setSettings = createAction(
   'SET_SETTINGS',
   (settings: SettingsType) => {
     return {...settings};
-  },
+  }
 );

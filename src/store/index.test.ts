@@ -9,13 +9,13 @@ it('Entries reducer', () => {
   const jId = '24324324324';
   let state = Map({}) as EntriesTypeImmutable;
 
-  let entry = new EteSync.Entry();
+  const entry = new EteSync.Entry();
   entry.deserialize({
     content: 'someContent',
-    uid: '6355209e2a2c26a6c1e6e967c2032737d538f602cf912474da83a2902f8a0a83'
+    uid: '6355209e2a2c26a6c1e6e967c2032737d538f602cf912474da83a2902f8a0a83',
   });
 
-  let action = {
+  const action = {
     type: fetchEntries.toString(),
     meta: {journal: jId, prevUid: null as string | null},
     payload: [entry],
