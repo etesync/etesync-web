@@ -13,7 +13,7 @@ function objValues(obj: any) {
 
 export function journalView(JournalList: any, JournalItem: any) {
   return withRouter(class extends React.PureComponent {
-    props: {
+    public props: {
       journal: EteSync.Journal,
       entries: {[key: string]: any},
       history?: History,
@@ -24,15 +24,15 @@ export function journalView(JournalList: any, JournalItem: any) {
       this.itemClicked = this.itemClicked.bind(this);
     }
 
-    itemClicked(contact: any) {
+    public itemClicked(contact: any) {
       const uid = contact.uid;
 
       this.props.history!.push(
         routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid }));
     }
 
-    render() {
-      let items = this.props.entries;
+    public render() {
+      const items = this.props.entries;
 
       return (
         <Switch>

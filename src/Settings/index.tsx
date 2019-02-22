@@ -28,15 +28,7 @@ class Settings extends React.PureComponent<PropsTypeInner> {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  private handleChange(event: React.ChangeEvent<any>) {
-    const name = event.target.name;
-    const value = event.target.value;
-
-    const { settings } = this.props;
-    store.dispatch(setSettings({ ...settings, [name]: value}));
-  }
-
-  render() {
+  public render() {
     const { settings } = this.props;
     return (
       <>
@@ -61,8 +53,16 @@ class Settings extends React.PureComponent<PropsTypeInner> {
     );
   }
 
-  onCancel() {
+  public onCancel() {
     this.props.history.goBack();
+  }
+
+  private handleChange(event: React.ChangeEvent<any>) {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    const { settings } = this.props;
+    store.dispatch(setSettings({ ...settings, [name]: value}));
   }
 }
 

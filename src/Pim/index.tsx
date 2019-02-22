@@ -47,9 +47,9 @@ function objValues(obj: any) {
 const itemsSelector = createSelector(
   (props: {syncInfo: SyncInfo}) => props.syncInfo,
   (syncInfo) => {
-    let collectionsAddressBook: Array<EteSync.CollectionInfo> = [];
-    let collectionsCalendar: Array<EteSync.CollectionInfo> = [];
-    let collectionsTaskList: Array<EteSync.CollectionInfo> = [];
+    const collectionsAddressBook: EteSync.CollectionInfo[] = [];
+    const collectionsCalendar: EteSync.CollectionInfo[] = [];
+    const collectionsTaskList: EteSync.CollectionInfo[] = [];
     let addressBookItems: {[key: string]: ContactType} = {};
     let calendarItems: {[key: string]: EventType} = {};
     let taskListItems: {[key: string]: TaskType} = {};
@@ -73,9 +73,9 @@ const itemsSelector = createSelector(
     );
 
     return {
-      collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems
+      collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems,
     };
-  },
+  }
 );
 
 const ItemChangeLog = pure((props: any) => {
@@ -102,7 +102,7 @@ const ItemChangeLog = pure((props: any) => {
 type CollectionRoutesPropsType = RouteComponentProps<{}> & {
   syncInfo: SyncInfo,
   routePrefix: string,
-  collections: Array<EteSync.CollectionInfo>,
+  collections: EteSync.CollectionInfo[],
   componentEdit: any,
   componentView: any,
   items: {[key: string]: PimType},
@@ -123,7 +123,7 @@ const styles = (theme: any) => ({
 
 const CollectionRoutes = withStyles(styles)(withRouter(
   class CollectionRoutesInner extends React.PureComponent<CollectionRoutesPropsType> {
-    render() {
+    public render() {
       const props = this.props;
       const { classes } = this.props;
       const ComponentEdit = props.componentEdit;
@@ -221,7 +221,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
 ));
 
 class Pim extends React.PureComponent {
-  props: {
+  public props: {
     etesync: CredentialsData;
     userInfo: UserInfoData;
     syncInfo: SyncInfo;
@@ -235,7 +235,7 @@ class Pim extends React.PureComponent {
     this.onItemSave = this.onItemSave.bind(this);
   }
 
-  onItemSave(item: PimType, journalUid: string, originalEvent?: PimType) {
+  public onItemSave(item: PimType, journalUid: string, originalEvent?: PimType) {
     const syncJournal = this.props.syncInfo.get(journalUid);
 
     if (syncJournal === undefined) {
@@ -244,7 +244,7 @@ class Pim extends React.PureComponent {
 
     const journal = syncJournal.journal;
 
-    let action = (originalEvent === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
+    const action = (originalEvent === undefined) ? EteSync.SyncEntryAction.Add : EteSync.SyncEntryAction.Change;
 
     let prevUid: string | null = null;
     let last = syncJournal.journalEntries.last() as EteSync.Entry;
@@ -270,7 +270,7 @@ class Pim extends React.PureComponent {
     });
   }
 
-  onItemDelete(item: PimType, journalUid: string) {
+  public onItemDelete(item: PimType, journalUid: string) {
     const syncJournal = this.props.syncInfo.get(journalUid);
 
     if (syncJournal === undefined) {
@@ -279,7 +279,7 @@ class Pim extends React.PureComponent {
 
     const journal = syncJournal.journal;
 
-    let action = EteSync.SyncEntryAction.Delete;
+    const action = EteSync.SyncEntryAction.Delete;
 
     let prevUid: string | null = null;
     let last = syncJournal.journalEntries.last() as EteSync.Entry;
@@ -305,11 +305,11 @@ class Pim extends React.PureComponent {
     });
   }
 
-  onCancel() {
+  public onCancel() {
     this.props.history.goBack();
   }
 
-  render() {
+  public render() {
     const { collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems } = itemsSelector(this.props);
 
     return (

@@ -152,7 +152,7 @@ const AppBarWitHistory = withRouter(
     private goBack() {
       this.props.history!.goBack();
     }
-  },
+  }
 );
 
 const IconRefreshWithSpin = withSpin(NavigationRefresh);
@@ -249,7 +249,7 @@ const credentialsSelector = createSelector(
         encryptionKey,
       },
     };
-  },
+  }
 );
 
 const mapStateToProps = (state: store.StoreState) => {
@@ -261,5 +261,5 @@ const mapStateToProps = (state: store.StoreState) => {
 };
 
 export default connect(
-  mapStateToProps,
+  mapStateToProps
 )(App);

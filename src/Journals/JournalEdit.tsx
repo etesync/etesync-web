@@ -32,7 +32,7 @@ interface PropsTypeInner extends PropsType {
 }
 
 class JournalEdit extends React.PureComponent<PropsTypeInner> {
-  state = {
+  public state = {
     info: {
       uid: '',
       type: '',
@@ -61,7 +61,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
     }
   }
 
-  render() {
+  public render() {
     const { item, onDelete, onCancel } = this.props;
 
     const pageTitle = (item !== undefined) ? item.displayName : 'New Journal';
@@ -177,7 +177,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
 
   private onDeleteRequest() {
     this.setState({
-      showDeleteDialog: true
+      showDeleteDialog: true,
     });
   }
 

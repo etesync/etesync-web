@@ -9,26 +9,26 @@ import { USER, PASSWORD, keyBase64 } from './TestConstants';
 let credentials: EteSync.Credentials;
 
 beforeEach(async () => {
-  let authenticator = new EteSync.Authenticator(testApiBase);
+  const authenticator = new EteSync.Authenticator(testApiBase);
   const authToken = await authenticator.getAuthToken(USER, PASSWORD);
 
   credentials = new EteSync.Credentials(USER, authToken);
 
   await fetch(testApiBase + '/reset/', {
     method: 'post',
-    headers: { 'Authorization': 'Token ' + credentials.authToken },
+    headers: { Authorization: 'Token ' + credentials.authToken },
   });
 });
 
 it('Simple sync', async () => {
-  let journalManager = new EteSync.JournalManager(credentials, testApiBase);
+  const journalManager = new EteSync.JournalManager(credentials, testApiBase);
   let journals = await journalManager.list();
   expect(journals.length).toBe(0);
 
   const uid1 = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash('id1'));
   const cryptoManager = new EteSync.CryptoManager(keyBase64, USER);
   const info1 = new EteSync.CollectionInfo({uid: uid1, content: 'test', displayName: 'Dislpay 1'});
-  let journal = new EteSync.Journal();
+  const journal = new EteSync.Journal();
   journal.setInfo(cryptoManager, info1);
 
   await expect(journalManager.create(journal)).resolves.toBeDefined();
@@ -41,7 +41,7 @@ it('Simple sync', async () => {
   expect(journals[0].uid).toBe(journal.uid);
 
   // Update
-  let info2 = new EteSync.CollectionInfo(info1);
+  const info2 = new EteSync.CollectionInfo(info1);
   info2.displayName = 'Display 2';
 
   journal.setInfo(cryptoManager, info2);
@@ -59,24 +59,24 @@ it('Simple sync', async () => {
 });
 
 it('Journal Entry sync', async () => {
-  let journalManager = new EteSync.JournalManager(credentials, testApiBase);
+  const journalManager = new EteSync.JournalManager(credentials, testApiBase);
 
   const uid1 = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash('id1'));
   const cryptoManager = new EteSync.CryptoManager(keyBase64, USER);
   const info1 = new EteSync.CollectionInfo({uid: uid1, content: 'test', displayName: 'Dislpay 1'});
-  let journal = new EteSync.Journal();
+  const journal = new EteSync.Journal();
   journal.setInfo(cryptoManager, info1);
 
   await expect(journalManager.create(journal)).resolves.toBeDefined();
 
-  let entryManager = new EteSync.EntryManager(credentials, testApiBase, journal.uid);
+  const entryManager = new EteSync.EntryManager(credentials, testApiBase, journal.uid);
 
   let entries = await entryManager.list(null);
   expect(entries.length).toBe(0);
 
   const syncEntry = new EteSync.SyncEntry({action: 'ADD', content: 'bla'});
   let prevUid = null;
-  let entry = new EteSync.Entry();
+  const entry = new EteSync.Entry();
   entry.setSyncEntry(cryptoManager, syncEntry, prevUid);
 
   entries = [entry];
@@ -120,7 +120,7 @@ it('Journal Entry sync', async () => {
 
   expect(() => {
     let prev = null;
-    for (let ent of entries) {
+    for (const ent of entries) {
       expect(ent.getSyncEntry(cryptoManager, prev)).toBeDefined();
       prev = ent.uid;
     }
@@ -135,7 +135,7 @@ it('User info sync', async () => {
   await expect(userInfoManager.fetch(USER)).rejects.toBeInstanceOf(EteSync.HTTPError);
 
   // Create
-  let userInfo = new EteSync.UserInfo(USER);
+  const userInfo = new EteSync.UserInfo(USER);
   userInfo.setKeyPair(cryptoManager, new EteSync.AsymmetricKeyPair([0, 1, 2, 3], [4, 5, 6, 6]));
   await expect(userInfoManager.create(userInfo)).resolves.not.toBeNull();
 

@@ -11,10 +11,10 @@ import { login, deriveKey } from './store/actions';
 
 import * as C from './constants';
 
-const SignedPagesBadge = require('./images/signed-pages-badge.svg');
+import SignedPagesBadge from './images/signed-pages-badge.svg';
 
 class LoginGate extends React.Component {
-  props: {
+  public props: {
     credentials: CredentialsType;
   };
 
@@ -24,16 +24,16 @@ class LoginGate extends React.Component {
     this.onEncryptionFormSubmit = this.onEncryptionFormSubmit.bind(this);
   }
 
-  onFormSubmit(username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) {
+  public onFormSubmit(username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) {
     serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
     store.dispatch<any>(login(username, password, encryptionPassword, serviceApiUrl));
   }
 
-  onEncryptionFormSubmit(encryptionPassword: string) {
+  public onEncryptionFormSubmit(encryptionPassword: string) {
     store.dispatch(deriveKey(this.props.credentials.value!.credentials.email, encryptionPassword));
   }
 
-  render() {
+  public render() {
     if (this.props.credentials.value === null) {
       const style = {
         isSafe: {
@@ -43,7 +43,7 @@ class LoginGate extends React.Component {
         divider: {
           margin: '30px 0',
           color: '#00000025',
-        }
+        },
       };
 
       return (

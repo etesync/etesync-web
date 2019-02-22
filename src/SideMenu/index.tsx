@@ -11,7 +11,7 @@ import ActionBugReport from '@material-ui/icons/BugReport';
 import ActionQuestionAnswer from '@material-ui/icons/QuestionAnswer';
 import LogoutIcon from '@material-ui/icons/PowerSettingsNew';
 
-const logo = require('../images/logo.svg');
+import logo from '../images/logo.svg';
 
 import { routeResolver } from '../App';
 
@@ -37,12 +37,12 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
     this.logout = this.logout.bind(this);
   }
 
-  logout() {
+  public logout() {
     store.dispatch(logout());
     this.props.onCloseDrawerRequest();
   }
 
-  render() {
+  public render() {
     const { theme } = this.props;
     const username = (this.props.etesync && this.props.etesync.credentials.email) ?
       this.props.etesync.credentials.email

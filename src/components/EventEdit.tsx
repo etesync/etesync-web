@@ -31,17 +31,17 @@ import * as EteSync from '../api/EteSync';
 import { EventType } from '../pim-types';
 
 interface PropsType {
-  collections: Array<EteSync.CollectionInfo>;
+  collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: EventType;
   onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
   onDelete: (event: EventType, journalUid: string) => void;
   onCancel: () => void;
   location: Location;
-};
+}
 
 class EventEdit extends React.PureComponent<PropsType> {
-  state: {
+  public state: {
     uid: string,
     title: string;
     allDay: boolean;
@@ -84,7 +84,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       const event = this.props.item;
 
       const allDay = event.startDate.isDate;
-      let endDate = event.endDate.clone();
+      const endDate = event.endDate.clone();
 
       if (allDay) {
         endDate.adjust(-1, 0, 0, 0);
@@ -114,7 +114,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
   }
 
-  componentWillReceiveProps(nextProps: any) {
+  public componentWillReceiveProps(nextProps: any) {
     if ((this.props.collections !== nextProps.collections) ||
       (this.props.initialCollection !== nextProps.initialCollection)) {
       if (nextProps.initialCollection) {
@@ -125,24 +125,24 @@ class EventEdit extends React.PureComponent<PropsType> {
     }
   }
 
-  handleChange(name: string, value: string) {
+  public handleChange(name: string, value: string) {
     this.setState({
-      [name]: value
+      [name]: value,
     });
 
   }
 
-  handleInputChange(event: React.ChangeEvent<any>) {
+  public handleInputChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
     this.handleChange(name, value);
   }
 
-  toggleAllDay() {
+  public toggleAllDay() {
     this.setState({allDay: !this.state.allDay});
   }
 
-  onSubmit(e: React.FormEvent<any>) {
+  public onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
     if ((!this.state.start) || (!this.state.end)) {
@@ -155,7 +155,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       if (!allDay) {
         return ret;
       } else {
-        let data = ret.toJSON();
+        const data = ret.toJSON();
         data.isDate = allDay;
         return ICAL.Time.fromData(data);
       }
@@ -173,7 +173,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       return;
     }
 
-    let event = (this.props.item) ?
+    const event = (this.props.item) ?
       this.props.item.clone()
       :
       new EventType()
@@ -190,13 +190,13 @@ class EventEdit extends React.PureComponent<PropsType> {
     this.props.onSave(event, this.state.journalUid, this.props.item);
   }
 
-  onDeleteRequest() {
+  public onDeleteRequest() {
     this.setState({
-      showDeleteDialog: true
+      showDeleteDialog: true,
     });
   }
 
-  render() {
+  public render() {
     const styles = {
       form: {
       },

@@ -16,7 +16,7 @@ import { SyncInfo } from '../SyncGate';
 import * as EteSync from '../api/EteSync';
 
 class Journals extends React.PureComponent {
-  props: {
+  public props: {
     etesync: CredentialsData;
     journals: JournalsData;
     userInfo: UserInfoData;
@@ -32,7 +32,7 @@ class Journals extends React.PureComponent {
     this.onItemSave = this.onItemSave.bind(this);
   }
 
-  render() {
+  public render() {
     return (
       <Switch>
         <Route
@@ -114,7 +114,7 @@ class Journals extends React.PureComponent {
     );
   }
 
-  onItemSave(info: EteSync.CollectionInfo, originalInfo?: EteSync.CollectionInfo) {
+  public onItemSave(info: EteSync.CollectionInfo, originalInfo?: EteSync.CollectionInfo) {
     const journal = new EteSync.Journal();
     const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, info.uid);
     journal.setInfo(cryptoManager, info);
@@ -130,7 +130,7 @@ class Journals extends React.PureComponent {
     }
   }
 
-  onItemDelete(info: EteSync.CollectionInfo) {
+  public onItemDelete(info: EteSync.CollectionInfo) {
     const journal = new EteSync.Journal();
     const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, info.uid);
     journal.setInfo(cryptoManager, info);
@@ -140,7 +140,7 @@ class Journals extends React.PureComponent {
     );
   }
 
-  onCancel() {
+  public onCancel() {
     this.props.history.goBack();
   }
 }

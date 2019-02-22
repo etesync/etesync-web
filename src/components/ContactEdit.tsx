@@ -45,7 +45,7 @@ const imppTypes = [
 ];
 
 const TypeSelector = (props: any) => {
-  const types = props.types as {type: string}[];
+  const types = props.types as Array<{type: string}>;
 
   return (
     <Select
@@ -61,8 +61,8 @@ const TypeSelector = (props: any) => {
 };
 
 class ValueType {
-  type: string;
-  value: string;
+  public type: string;
+  public value: string;
 
   constructor(type?: string, value?: string) {
     this.type = type ? type : 'home';
@@ -74,7 +74,7 @@ interface ValueTypeComponentProps {
   type?: string;
   style?: object;
 
-  types: {type: string}[];
+  types: Array<{type: string}>;
   name: string;
   placeholder: string;
   value: ValueType;
@@ -112,16 +112,16 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
 };
 
 interface PropsType {
-  collections: Array<EteSync.CollectionInfo>;
+  collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: ContactType;
   onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => void;
   onDelete: (contact: ContactType, journalUid: string) => void;
   onCancel: () => void;
-};
+}
 
 class ContactEdit extends React.PureComponent<PropsType> {
-  state: {
+  public state: {
     uid: string,
     fn: string;
     phone: ValueType[];
@@ -201,7 +201,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
   }
 
-  componentWillReceiveProps(nextProps: any) {
+  public componentWillReceiveProps(nextProps: any) {
     if ((this.props.collections !== nextProps.collections) ||
       (this.props.initialCollection !== nextProps.initialCollection)) {
       if (nextProps.initialCollection) {
@@ -212,10 +212,10 @@ class ContactEdit extends React.PureComponent<PropsType> {
     }
   }
 
-  addValueType(name: string, _type?: string) {
+  public addValueType(name: string, _type?: string) {
     const type = _type ? _type : 'home';
     this.setState((prevState, props) => {
-      let newArray = prevState[name].slice(0);
+      const newArray = prevState[name].slice(0);
       newArray.push(new ValueType(type));
       return {
         ...prevState,
@@ -224,9 +224,9 @@ class ContactEdit extends React.PureComponent<PropsType> {
     });
   }
 
-  removeValueType(name: string, idx: number) {
+  public removeValueType(name: string, idx: number) {
     this.setState((prevState, props) => {
-      let newArray = prevState[name].slice(0);
+      const newArray = prevState[name].slice(0);
       newArray.splice(idx, 1);
       return {
         ...prevState,
@@ -235,9 +235,9 @@ class ContactEdit extends React.PureComponent<PropsType> {
     });
   }
 
-  handleValueTypeChange(name: string, idx: number, value: ValueType) {
+  public handleValueTypeChange(name: string, idx: number, value: ValueType) {
     this.setState((prevState, props) => {
-      let newArray = prevState[name].slice(0);
+      const newArray = prevState[name].slice(0);
       newArray[idx] = value;
       return {
         ...prevState,
@@ -246,29 +246,29 @@ class ContactEdit extends React.PureComponent<PropsType> {
     });
   }
 
-  handleChange(name: string, value: string) {
+  public handleChange(name: string, value: string) {
     this.setState({
-      [name]: value
+      [name]: value,
     });
 
   }
 
-  handleInputChange(contact: any) {
+  public handleInputChange(contact: any) {
     const name = contact.target.name;
     const value = contact.target.value;
     this.handleChange(name, value);
   }
 
-  onSubmit(e: React.FormEvent<any>) {
+  public onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
-    let contact = (this.props.item) ?
+    const contact = (this.props.item) ?
       this.props.item.clone()
       :
       new ContactType(new ICAL.Component(['vcard', [], []]))
     ;
 
-    let comp = contact.comp;
+    const comp = contact.comp;
     comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
     comp.updatePropertyWithValue('version', '4.0');
     comp.updatePropertyWithValue('uid', this.state.uid);
@@ -282,7 +282,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           return;
         }
 
-        let prop = new ICAL.Property(name, comp);
+        const prop = new ICAL.Property(name, comp);
         prop.setParameter('type', x.type);
         prop.setValue(x.value);
         comp.addProperty(prop);
@@ -310,13 +310,13 @@ class ContactEdit extends React.PureComponent<PropsType> {
     this.props.onSave(contact, this.state.journalUid, this.props.item);
   }
 
-  onDeleteRequest() {
+  public onDeleteRequest() {
     this.setState({
-      showDeleteDialog: true
+      showDeleteDialog: true,
     });
   }
 
-  render() {
+  public render() {
     const styles = {
       form: {
       },

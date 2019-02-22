@@ -11,12 +11,12 @@ import { ContactType } from '../pim-types';
 import AddressBook from '../components/AddressBook';
 
 class SearchableAddressBook extends React.PureComponent {
-  props: {
-    entries: Array<ContactType>,
+  public props: {
+    entries: ContactType[],
     onItemClick: (contact: ContactType) => void,
   };
 
-  state: {
+  public state: {
     searchQuery: string;
   };
 
@@ -26,15 +26,15 @@ class SearchableAddressBook extends React.PureComponent {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleInputChange(event: React.ChangeEvent<any>) {
+  public handleInputChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
-  render() {
+  public render() {
     const {
       entries,
       ...rest
@@ -52,7 +52,7 @@ class SearchableAddressBook extends React.PureComponent {
           onChange={this.handleInputChange}
         />
         {this.state.searchQuery &&
-          <IconButton onClick={() => this.setState({'searchQuery': ''})}>
+          <IconButton onClick={() => this.setState({searchQuery: ''})}>
             <IconClear />
           </IconButton>
         }

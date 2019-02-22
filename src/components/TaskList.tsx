@@ -23,7 +23,7 @@ const TaskListItem = pure((_props: any) => {
 });
 
 const sortSelector = createSelector(
-  (entries: Array<TaskType>) => entries,
+  (entries: TaskType[]) => entries,
   (entries) => {
     return entries.sort((_a, _b) => {
       const a = _a.title;
@@ -37,20 +37,20 @@ const sortSelector = createSelector(
         return 0;
       }
     });
-  },
+  }
 );
 
 class TaskList extends React.PureComponent {
-  props: {
-    entries: Array<TaskType>,
+  public props: {
+    entries: TaskType[],
     onItemClick: (contact: TaskType) => void,
   };
 
-  render() {
+  public render() {
     const entries = this.props.entries.filter((x) => !x.finished);
     const sortedEntries = sortSelector(entries);
 
-    let itemList = sortedEntries.map((entry, idx, array) => {
+    const itemList = sortedEntries.map((entry, idx, array) => {
       const uid = entry.uid;
 
       return (

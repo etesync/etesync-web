@@ -2,12 +2,12 @@ import * as React from 'react';
 import { withRouter } from 'react-router';
 
 // FIXME: Should probably tie this to the history object, or at least based on the depth of the history
-let stateCache = {};
+const stateCache = {};
 
 type Constructor<T> = new(...args: any[]) => T;
 
 export function historyPersistor(tag: string) {
-  return function<T extends Constructor<React.Component>>(Base: T) {
+  return <T extends Constructor<React.Component>>(Base: T) => {
     return withRouter(class extends Base {
       constructor(...rest: any[]) {
         const props = rest[0];
@@ -18,14 +18,14 @@ export function historyPersistor(tag: string) {
         }
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         if (super.componentWillUnmount) {
           super.componentWillUnmount();
         }
         stateCache[this.getKeyForTag(this.props, tag)] = this.state;
       }
 
-      getKeyForTag(props: any, tagName: string) {
+      public getKeyForTag(props: any, tagName: string) {
         return props.location.pathname + ':' + tagName;
       }
     });

@@ -6,7 +6,7 @@ import { IntegrityError } from '../api/EteSync';
 import PrettyError from '../widgets/PrettyError';
 
 class ErrorBoundary extends React.Component {
-  state: {
+  public state: {
     error?: Error;
   };
 
@@ -15,7 +15,7 @@ class ErrorBoundary extends React.Component {
     this.state = { };
   }
 
-  componentDidCatch(error: Error, info: any) {
+  public componentDidCatch(error: Error, info: any) {
     if (error instanceof IntegrityError) {
       persistor.purge();
     }
@@ -23,7 +23,7 @@ class ErrorBoundary extends React.Component {
     this.setState({ error });
   }
 
-  render() {
+  public render() {
     const { error } = this.state;
     if (error && error instanceof IntegrityError) {
       return (

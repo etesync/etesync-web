@@ -78,7 +78,7 @@ const syncInfoSelector = createSelector(
         const collectionInfo = journal.getInfo(cryptoManager);
 
         const syncEntries = journalEntries.value.map((entry: EteSync.Entry) => {
-          let syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
+          const syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
           prevUid = entry.uid;
 
           return syncEntry;
@@ -93,7 +93,7 @@ const syncInfoSelector = createSelector(
       },
       Map<string, SyncInfoJournal>()
     );
-  },
+  }
 );
 
 const PimRouter = withRouter(Pim);
@@ -103,7 +103,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
     super(props);
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     const me = this.props.etesync.credentials.email;
     const syncAll = () => {
       store.dispatch<any>(fetchAll(this.props.etesync, this.props.entries)).then((haveJournals: boolean) => {
@@ -153,7 +153,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
     }
   }
 
-  render() {
+  public render() {
     const entryArrays = this.props.entries;
     const journals = this.props.journals.value;
 
@@ -162,7 +162,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
     } else if (this.props.journals.error) {
       return <PrettyError error={this.props.journals.error} />;
     } else {
-      let errors: Array<{journal: string, error: Error}> = [];
+      const errors: Array<{journal: string, error: Error}> = [];
       this.props.entries.forEach((entry, journal) => {
         if (entry.error) {
           errors.push({journal, error: entry.error});

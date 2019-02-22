@@ -18,7 +18,7 @@ import { routeResolver } from '../App';
 import { JournalsData, UserInfoData, CredentialsData } from '../store';
 
 class JournalsList extends React.PureComponent {
-  props: {
+  public props: {
     etesync: CredentialsData;
     journals: JournalsData;
     userInfo: UserInfoData;
@@ -30,7 +30,7 @@ class JournalsList extends React.PureComponent {
     this.journalClicked = this.journalClicked.bind(this);
   }
 
-  render() {
+  public render() {
     const derived = this.props.etesync.encryptionKey;
     let asymmetricCryptoManager: EteSync.AsymmetricCryptoManager;
     const journalMap = this.props.journals.reduce(
@@ -47,7 +47,7 @@ class JournalsList extends React.PureComponent {
         } else {
           cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
         }
-        let info = journal.getInfo(cryptoManager);
+        const info = journal.getInfo(cryptoManager);
         ret[info.type] = ret[info.type] || [];
         ret[info.type].push(
           <ListItem key={journal.uid} onClick={() => this.journalClicked(journal.uid)}>
@@ -59,7 +59,7 @@ class JournalsList extends React.PureComponent {
       },
       { CALENDAR: [],
         ADDRESS_BOOK: [],
-        TASKS: []
+        TASKS: [],
       });
 
     return (
@@ -94,7 +94,7 @@ class JournalsList extends React.PureComponent {
   }
 
   private journalClicked(journalUid: string) {
-    this.props.history.push(routeResolver.getRoute('journals._id', { journalUid: journalUid }));
+    this.props.history.push(routeResolver.getRoute('journals._id', { journalUid }));
   }
 }
 

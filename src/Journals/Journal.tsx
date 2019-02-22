@@ -43,7 +43,7 @@ const JournalCalendar = journalView(PersistCalendar, Event);
 const JournalTaskList = journalView(TaskList, Event);
 
 class Journal extends React.Component<PropsTypeInner> {
-  state: {
+  public state: {
     tab: number,
   };
 
@@ -55,7 +55,7 @@ class Journal extends React.Component<PropsTypeInner> {
     };
   }
 
-  render() {
+  public render() {
     const { theme, isOwner, syncJournal } = this.props;
     let currentTab = this.state.tab;
     let journalOnly = false;

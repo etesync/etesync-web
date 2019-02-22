@@ -17,7 +17,7 @@ interface FormErrors {
 }
 
 class LoginForm extends React.PureComponent {
-  state: {
+  public state: {
     showAdvanced: boolean;
     errors: FormErrors;
 
@@ -27,7 +27,7 @@ class LoginForm extends React.PureComponent {
     encryptionPassword: string;
   };
 
-  props: {
+  public props: {
     onSubmit: (username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) => void;
     loading?: boolean;
     error?: Error;
@@ -48,15 +48,15 @@ class LoginForm extends React.PureComponent {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleInputChange(event: React.ChangeEvent<any>) {
+  public handleInputChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
-  generateEncryption(e: any) {
+  public generateEncryption(e: any) {
     e.preventDefault();
     const server = this.state.showAdvanced ? this.state.server : undefined;
 
@@ -64,7 +64,7 @@ class LoginForm extends React.PureComponent {
     const password = this.state.password;
     const encryptionPassword = this.state.encryptionPassword;
 
-    let errors: FormErrors = {};
+    const errors: FormErrors = {};
     const fieldRequired = 'This field is required!';
     if (!username) {
       errors.errorEmail = fieldRequired;
@@ -83,7 +83,7 @@ class LoginForm extends React.PureComponent {
     }
 
     if (Object.keys(errors).length) {
-      this.setState({errors: errors});
+      this.setState({errors});
       return;
     } else {
       this.setState({errors: {}});
@@ -92,11 +92,11 @@ class LoginForm extends React.PureComponent {
     this.props.onSubmit(username, password, encryptionPassword, server);
   }
 
-  toggleAdvancedSettings() {
+  public toggleAdvancedSettings() {
     this.setState({showAdvanced: !this.state.showAdvanced});
   }
 
-  render() {
+  public render() {
     const styles = {
       form: {
       },

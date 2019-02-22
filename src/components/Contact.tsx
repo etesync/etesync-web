@@ -13,11 +13,11 @@ import PimItemHeader from './PimItemHeader';
 import { ContactType } from '../pim-types';
 
 class Contact extends React.PureComponent {
-  props: {
+  public props: {
     item?: ContactType,
   };
 
-  render() {
+  public render() {
     if (this.props.item === undefined) {
       throw Error('Contact should be defined!');
     }
@@ -29,7 +29,7 @@ class Contact extends React.PureComponent {
     const lastModified = (revProp) ?
       'Modified: ' + moment(revProp.getFirstValue().toJSDate()).format('LLLL') : undefined;
 
-    let lists = [];
+    const lists = [];
 
     function getAllType(
       propName: string,
@@ -57,9 +57,9 @@ class Contact extends React.PureComponent {
       'tel',
       {
         leftIcon: <CommunicationCall />,
-        rightIcon: <CommunicationChatBubble />
+        rightIcon: <CommunicationChatBubble />,
       },
-      (x) => ('tel:' + x),
+      (x) => ('tel:' + x)
     ));
 
     lists.push(getAllType(
@@ -67,44 +67,44 @@ class Contact extends React.PureComponent {
       {
         leftIcon: <CommunicationEmail />,
       },
-      (x) => ('mailto:' + x),
+      (x) => ('mailto:' + x)
     ));
 
     lists.push(getAllType(
       'impp',
       {
-        leftIcon: <CommunicationChatBubble />
+        leftIcon: <CommunicationChatBubble />,
       },
       (x) => x,
       (x) => (x.substring(x.indexOf(':') + 1)),
-      (x) => (x.substring(0, x.indexOf(':'))),
+      (x) => (x.substring(0, x.indexOf(':')))
     ));
 
     lists.push(getAllType(
       'adr',
       {
-        leftIcon: <IconHome />
-      },
+        leftIcon: <IconHome />,
+      }
     ));
 
     lists.push(getAllType(
       'bday',
       {
-        leftIcon: <IconDate />
+        leftIcon: <IconDate />,
       },
       undefined,
       ((x: any) => moment(x.toJSDate()).format('dddd, LL')),
-      () => 'Birthday',
+      () => 'Birthday'
     ));
 
     lists.push(getAllType(
       'anniversary',
       {
-        leftIcon: <IconDate />
+        leftIcon: <IconDate />,
       },
       undefined,
       ((x: any) => moment(x.toJSDate()).format('dddd, LL')),
-      () => 'Anniversary',
+      () => 'Anniversary'
     ));
 
     const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'anniversary', 'rev',
@@ -126,7 +126,7 @@ class Contact extends React.PureComponent {
       return values;
     });
 
-    function listIfNotEmpty(items: Array<Array<JSX.Element>>) {
+    function listIfNotEmpty(items: JSX.Element[][]) {
       if (items.length > 0) {
         return (
           <React.Fragment>

@@ -21,7 +21,7 @@ interface PropsTypeInner extends PropsType {
 }
 
 class JournalMembers extends React.PureComponent<PropsTypeInner> {
-  state = {
+  public state = {
     members: null as EteSync.JournalMemberJson[] | null,
   };
 
@@ -29,7 +29,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     super(props);
   }
 
-  render() {
+  public render() {
     const { info } = this.props;
     const { members } = this.state;
 
@@ -57,7 +57,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     );
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this.fetchMembers();
   }
 

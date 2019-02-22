@@ -28,16 +28,16 @@ const tasksTitle = 'Tasks';
 const PersistCalendar = historyPersistor('Calendar')(Calendar);
 
 interface PropsType {
-  contacts: Array<ContactType>;
-  events: Array<EventType>;
-  tasks: Array<TaskType>;
+  contacts: ContactType[];
+  events: EventType[];
+  tasks: TaskType[];
   location?: Location;
   history?: History;
   theme: Theme;
 }
 
 class PimMain extends React.PureComponent<PropsType> {
-  state: {
+  public state: {
     tab: number;
   };
 
@@ -51,35 +51,35 @@ class PimMain extends React.PureComponent<PropsType> {
     this.newEvent = this.newEvent.bind(this);
   }
 
-  eventClicked(event: ICAL.Event) {
+  public eventClicked(event: ICAL.Event) {
     const uid = event.uid;
 
     this.props.history!.push(
       routeResolver.getRoute('pim.events._id', { itemUid: uid }));
   }
 
-  taskClicked(event: ICAL.Event) {
+  public taskClicked(event: ICAL.Event) {
     const uid = event.uid;
 
     this.props.history!.push(
       routeResolver.getRoute('pim.tasks._id', { itemUid: uid }));
   }
 
-  contactClicked(contact: ContactType) {
+  public contactClicked(contact: ContactType) {
     const uid = contact.uid;
 
     this.props.history!.push(
       routeResolver.getRoute('pim.contacts._id', { itemUid: uid }));
   }
 
-  newEvent(start?: Date, end?: Date) {
+  public newEvent(start?: Date, end?: Date) {
     this.props.history!.push(
       routeResolver.getRoute('pim.events.new'),
       {start, end}
     );
   }
 
-  floatingButtonClicked() {
+  public floatingButtonClicked() {
     if (this.state.tab === 0) {
       this.props.history!.push(
         routeResolver.getRoute('pim.contacts.new')
@@ -93,7 +93,7 @@ class PimMain extends React.PureComponent<PropsType> {
     }
   }
 
-  render() {
+  public render() {
     const { theme } = this.props;
     const { tab } = this.state;
     const style = {

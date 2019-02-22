@@ -18,15 +18,15 @@ import { TaskType, EventType, ContactType } from '../pim-types';
 import * as EteSync from '../api/EteSync';
 
 class JournalEntries extends React.PureComponent {
-  static defaultProps = {
+  public static defaultProps = {
     prevUid: null,
   };
 
-  state: {
+  public state: {
     dialog?: string;
   };
 
-  props: {
+  public props: {
     journal: EteSync.Journal,
     entries: Immutable.List<EteSync.SyncEntry>,
     uid?: string,
@@ -37,7 +37,7 @@ class JournalEntries extends React.PureComponent {
     this.state = {};
   }
 
-  render() {
+  public render() {
     if (this.props.journal === undefined) {
       return (<div>Loading</div>);
     }
@@ -87,7 +87,7 @@ class JournalEntries extends React.PureComponent {
           secondaryText={uid}
           onClick={() => {
             this.setState({
-              dialog: syncEntry.content
+              dialog: syncEntry.content,
             });
           }}
         />

@@ -7,11 +7,11 @@ import { formatDateRange } from '../helpers';
 import { EventType } from '../pim-types';
 
 class Event extends React.PureComponent {
-  props: {
+  public props: {
     item?: EventType,
   };
 
-  render() {
+  public render() {
     if (this.props.item === undefined) {
       throw Error('Event should be defined!');
     }
@@ -27,7 +27,7 @@ class Event extends React.PureComponent {
     return (
       <React.Fragment>
         <PimItemHeader text={this.props.item.summary} backgroundColor={this.props.item.color}>
-          <div>{formatDateRange(this.props.item.startDate, this.props.item.endDate)} { timezone && <small>({timezone})</small>}</div>
+          <div>{formatDateRange(this.props.item.startDate, this.props.item.endDate)} {timezone && <small>({timezone})</small>}</div>
           <br/>
           <div><u>{this.props.item.location}</u></div>
         </PimItemHeader>
