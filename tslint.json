@@ -1,6 +1,7 @@
 {
   "extends": ["tslint:recommended", "tslint-react"],
   "rules": {
+      "no-console": [true, "error"],
       "interface-name": [true, "never-prefix"],
       "ordered-imports": false,
       "jsx-curly-spacing": [true, "never"],
