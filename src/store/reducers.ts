@@ -193,13 +193,23 @@ const mapReducerActionsMapCreator = <T extends Record<any>, V extends BaseModel>
   };
 };
 
-export const entries = handleAction(
-  combineActions(actions.fetchEntries, actions.createEntries),
-  (state: EntriesTypeImmutable, action: any) => {
-    const prevState = state.get(action.meta.journal);
-    const extend = action.meta.prevUid != null;
-    return state.set(action.meta.journal,
-                     fetchTypeIdentityReducer(prevState, action, extend));
+function fetchCreateEntriesReducer(state: EntriesTypeImmutable, action: any) {
+  const prevState = state.get(action.meta.journal);
+  const extend = action.meta.prevUid != null;
+  return state.set(action.meta.journal,
+                   fetchTypeIdentityReducer(prevState, action, extend));
+}
+
+export const entries = handleActions(
+  {
+    [actions.fetchEntries.toString()]: fetchCreateEntriesReducer,
+    [actions.createEntries.toString()]: fetchCreateEntriesReducer,
+    [actions.addJournal.toString()]: (state: EntriesTypeImmutable, action: any) => {
+      const journal = action.meta.item.uid;
+      const prevState = state.get(journal);
+      return state.set(journal,
+        fetchTypeIdentityReducer(prevState, { payload: [] }, false));
+    },
   },
   ImmutableMap({})
 );
