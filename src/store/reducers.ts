@@ -173,9 +173,9 @@ const deleteMapModelReducer = <T extends Record<any>>(state: T, action: any) => 
       return state;
     }
 
-    const id = payload as number;
+    const uid = payload.uid;
     let value = state.get('value', null)!;
-    value = value.delete(id);
+    value = value.delete(uid);
     return state.set('value', value);
   }
 };
