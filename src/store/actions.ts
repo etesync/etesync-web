@@ -147,6 +147,20 @@ export const createUserInfo = createAction(
   }
 );
 
+export function fetchJournalEntries(etesync: CredentialsData, currentEntries: EntriesType, journal: EteSync.Journal) {
+  return (dispatch: any) => {
+    let prevUid: string | null = null;
+    const entries = currentEntries.get(journal.uid);
+    if (entries && entries.value) {
+      const last = entries.value.last() as EteSync.Entry;
+      prevUid = (last) ? last.uid : null;
+    }
+
+    return dispatch(fetchEntries(etesync, journal.uid, prevUid));
+  };
+}
+
+
 export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
   return (dispatch: any) => {
     return dispatch(fetchListJournal(etesync)).then((journalsAction: any) => {
@@ -156,14 +170,7 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
       }
 
       journals.forEach((journal, uid) => {
-        let prevUid: string | null = null;
-        const entries = currentEntries.get(journal.uid);
-        if (entries && entries.value) {
-          const last = entries.value.last() as EteSync.Entry;
-          prevUid = (last) ? last.uid : null;
-        }
-
-        dispatch(fetchEntries(etesync, journal.uid, prevUid));
+        dispatch(fetchJournalEntries(etesync, currentEntries, journal));
       });
 
       return true;
