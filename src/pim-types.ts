@@ -106,6 +106,11 @@ export class TaskType extends EventType {
     return this.component.getFirstPropertyValue('due');
   }
 
+  get endDate() {
+    // XXX: A hack to override this as it shouldn't be used
+    return undefined as any;
+  }
+
   public clone() {
     const ret = new TaskType(new ICAL.Component(this.component.toJSON()));
     ret.color = this.color;
