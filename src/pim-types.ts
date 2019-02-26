@@ -111,6 +111,10 @@ export class TaskType extends EventType {
     return undefined as any;
   }
 
+  get allDay() {
+    return !!((this.startDate && this.startDate.isDate) || (this.dueDate && this.dueDate.isDate));
+  }
+
   public clone() {
     const ret = new TaskType(new ICAL.Component(this.component.toJSON()));
     ret.color = this.color;
