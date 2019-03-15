@@ -74,6 +74,7 @@ class Calendar extends React.PureComponent<PropsType> {
       <div style={{width: '100%', height: 'calc(100vh - 230px)', minHeight: 500}}>
         <BigCalendar
           defaultDate={new Date()}
+          scrollToTime={new Date(1970, 1, 1, 8)}
           localizer={calendarLocalizer}
           events={entries}
           selectable
