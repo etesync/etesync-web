@@ -203,7 +203,7 @@ function fetchCreateEntriesReducer(state: EntriesTypeImmutable, action: any) {
 export const entries = handleActions(
   {
     [actions.fetchEntries.toString()]: fetchCreateEntriesReducer,
-    [actions.createEntries.toString()]: fetchCreateEntriesReducer,
+    [actions.addEntries.toString()]: fetchCreateEntriesReducer,
     [actions.addJournal.toString()]: (state: EntriesTypeImmutable, action: any) => {
       const journal = action.meta.item.uid;
       const prevState = state.get(journal);

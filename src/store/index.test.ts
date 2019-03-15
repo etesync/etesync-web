@@ -1,4 +1,4 @@
-import { createEntries, fetchEntries } from './actions';
+import { addEntries, fetchEntries } from './actions';
 import { entries, EntriesTypeImmutable } from './reducers';
 
 import { Map } from 'immutable';
@@ -43,7 +43,7 @@ it('Entries reducer', () => {
   expect(journal.value.size).toBe(2);
 
   // Creating entries should also work the same
-  action.type = createEntries.toString();
+  action.type = addEntries.toString();
   state = entries(state, action as any);
   journal = state.get(jId) as any;
   expect(journal.value.size).toBe(3);

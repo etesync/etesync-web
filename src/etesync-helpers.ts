@@ -1,7 +1,7 @@
 import * as EteSync from './api/EteSync';
 
 import { CredentialsData, UserInfoData } from './store';
-import { createEntries } from './store/actions';
+import { addEntries } from './store/actions';
 
 export function createJournalEntry(
   etesync: CredentialsData,
@@ -30,5 +30,5 @@ export function createJournalEntry(
   const entry = new EteSync.Entry();
   entry.setSyncEntry(cryptoManager, syncEntry, prevUid);
 
-  return createEntries(etesync, journal.uid, [entry], prevUid);
+  return addEntries(etesync, journal.uid, [entry], prevUid);
 }

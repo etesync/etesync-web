@@ -96,7 +96,7 @@ export const deleteJournal = createAction(
   }
 );
 
-export const { fetchEntries, createEntries } = createActions({
+export const { fetchEntries, addEntries } = createActions({
   FETCH_ENTRIES: [
     (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
       const creds = etesync.credentials;
@@ -109,7 +109,7 @@ export const { fetchEntries, createEntries } = createActions({
       return { journal: journalUid, prevUid };
     },
   ],
-  CREATE_ENTRIES: [
+  ADD_ENTRIES: [
     (etesync: CredentialsData, journalUid: string, newEntries: EteSync.Entry[], prevUid: string | null) => {
       const creds = etesync.credentials;
       const apiBase = etesync.serviceApiUrl;
