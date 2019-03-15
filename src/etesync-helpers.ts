@@ -3,7 +3,7 @@ import * as EteSync from './api/EteSync';
 import { CredentialsData, UserInfoData } from './store';
 import { addEntries } from './store/actions';
 
-export function addJournalEntry(
+export function createJournalEntry(
   etesync: CredentialsData,
   userInfo: UserInfoData,
   journal: EteSync.Journal,
@@ -30,5 +30,17 @@ export function addJournalEntry(
   const entry = new EteSync.Entry();
   entry.setSyncEntry(cryptoManager, syncEntry, prevUid);
 
+  return entry;
+}
+
+export function addJournalEntry(
+  etesync: CredentialsData,
+  userInfo: UserInfoData,
+  journal: EteSync.Journal,
+  prevUid: string | null,
+  action: EteSync.SyncEntryAction,
+  content: string) {
+
+  const entry = createJournalEntry(etesync, userInfo, journal, prevUid, action, content);
   return addEntries(etesync, journal.uid, [entry], prevUid);
 }
