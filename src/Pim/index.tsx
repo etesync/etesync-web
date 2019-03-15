@@ -36,7 +36,7 @@ import { fetchEntries } from '../store/actions';
 
 import { SyncInfo } from '../SyncGate';
 
-import { createJournalEntry } from '../etesync-helpers';
+import { addJournalEntry } from '../etesync-helpers';
 
 import { syncEntriesToItemMap, syncEntriesToEventItemMap, syncEntriesToTaskItemMap } from '../journal-processors';
 
@@ -261,7 +261,7 @@ class Pim extends React.PureComponent {
       }
 
       const saveEvent = store.dispatch(
-        createJournalEntry(
+        addJournalEntry(
           this.props.etesync, this.props.userInfo, journal,
           prevUid, action, item.toIcal()));
       (saveEvent as any).then(() => {
@@ -296,7 +296,7 @@ class Pim extends React.PureComponent {
       }
 
       const deleteItem = store.dispatch(
-        createJournalEntry(
+        addJournalEntry(
           this.props.etesync, this.props.userInfo, journal,
           prevUid, action, item.toIcal()));
       (deleteItem as any).then(() => {

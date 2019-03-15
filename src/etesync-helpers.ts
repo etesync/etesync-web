@@ -3,7 +3,7 @@ import * as EteSync from './api/EteSync';
 import { CredentialsData, UserInfoData } from './store';
 import { addEntries } from './store/actions';
 
-export function createJournalEntry(
+export function addJournalEntry(
   etesync: CredentialsData,
   userInfo: UserInfoData,
   journal: EteSync.Journal,
