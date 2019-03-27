@@ -100,6 +100,8 @@ class Journals extends React.PureComponent {
                   path={routeResolver.getRoute('journals._id')}
                   render={() => (
                     <Journal
+                      etesync={this.props.etesync}
+                      userInfo={this.props.userInfo}
                       syncInfo={this.props.syncInfo}
                       syncJournal={syncJournal}
                       isOwner={isOwner}

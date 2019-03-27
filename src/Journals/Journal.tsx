@@ -5,6 +5,7 @@ import Tabs from '@material-ui/core/Tabs';
 import { Theme, withTheme } from '@material-ui/core/styles';
 import IconEdit from '@material-ui/icons/Edit';
 import IconMembers from '@material-ui/icons/People';
+import IconImport from '@material-ui/icons/ImportExport';
 
 import SearchableAddressBook from '../components/SearchableAddressBook';
 import Contact from '../components/Contact';
@@ -18,6 +19,7 @@ import Container from '../widgets/Container';
 
 import JournalEntries from '../components/JournalEntries';
 import journalView from './journalView';
+import ImportDialog from './ImportDialog';
 
 import { syncEntriesToItemMap, syncEntriesToEventItemMap, syncEntriesToTaskItemMap } from '../journal-processors';
 
@@ -28,7 +30,11 @@ import { Link } from 'react-router-dom';
 import { routeResolver } from '../App';
 import { historyPersistor } from '../persist-state-history';
 
+import { CredentialsData, UserInfoData } from '../store';
+
 interface PropsType {
+  etesync: CredentialsData;
+  userInfo: UserInfoData;
   syncInfo: SyncInfo;
   syncJournal: SyncInfoJournal;
   isOwner: boolean;
@@ -46,13 +52,16 @@ const JournalTaskList = journalView(TaskList, Task);
 class Journal extends React.Component<PropsTypeInner> {
   public state: {
     tab: number,
+    importDialogOpen: boolean,
   };
 
   constructor(props: PropsTypeInner) {
     super(props);
 
+    this.importDialogToggle = this.importDialogToggle.bind(this);
     this.state = {
       tab: 0,
+      importDialogOpen: false,
     };
   }
 
@@ -114,6 +123,12 @@ class Journal extends React.Component<PropsTypeInner> {
               </IconButton>
             </>
           }
+          <IconButton
+            title="Import"
+            onClick={this.importDialogToggle}
+          >
+            <IconImport />
+          </IconButton>
         </AppBarOverride>
         <Tabs
           variant="fullWidth"
@@ -134,8 +149,20 @@ class Journal extends React.Component<PropsTypeInner> {
             <JournalEntries journal={journal} entries={syncEntries} />
           </Container>
         }
+
+        <ImportDialog
+          etesync={this.props.etesync}
+          userInfo={this.props.userInfo}
+          syncJournal={this.props.syncJournal}
+          open={this.state.importDialogOpen}
+          onClose={this.importDialogToggle}
+        />
       </React.Fragment>
     );
+  }
+
+  private importDialogToggle() {
+    this.setState((state: any) => ({ importDialogOpen: !state.importDialogOpen }));
   }
 }
 

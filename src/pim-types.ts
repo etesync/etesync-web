@@ -16,6 +16,7 @@ export class EventType extends ICAL.Event implements PimType {
   }
 
   public color: string;
+  public timezoneComp: ICAL.Component | null;
 
   get timezone() {
     if (this.startDate) {
@@ -53,6 +54,9 @@ export class EventType extends ICAL.Event implements PimType {
     comp.updatePropertyWithValue('version', '4.0');
 
     comp.addSubcomponent(this.component);
+    if (this.timezoneComp) {
+      comp.addSubcomponent(this.timezoneComp);
+    }
     return comp.toString();
   }
 
