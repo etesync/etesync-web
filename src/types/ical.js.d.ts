@@ -10,6 +10,7 @@ declare module 'ical.js' {
     public toJSON(): any[];
 
     public getFirstSubcomponent(name?: string): Component | null;
+    public getAllSubcomponents(name?: string): Component[];
 
     public getFirstPropertyValue(name?: string): any;
 
