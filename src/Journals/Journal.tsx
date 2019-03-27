@@ -10,6 +10,7 @@ import SearchableAddressBook from '../components/SearchableAddressBook';
 import Contact from '../components/Contact';
 import Calendar from '../components/Calendar';
 import Event from '../components/Event';
+import Task from '../components/Task';
 import TaskList from '../components/TaskList';
 
 import AppBarOverride from '../widgets/AppBarOverride';
@@ -40,7 +41,7 @@ interface PropsTypeInner extends PropsType {
 const JournalAddressBook = journalView(SearchableAddressBook, Contact);
 const PersistCalendar = historyPersistor('Calendar')(Calendar);
 const JournalCalendar = journalView(PersistCalendar, Event);
-const JournalTaskList = journalView(TaskList, Event);
+const JournalTaskList = journalView(TaskList, Task);
 
 class Journal extends React.Component<PropsTypeInner> {
   public state: {
