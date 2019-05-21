@@ -32,6 +32,14 @@ export class IntegrityError extends ExtendableError {
   }
 }
 
+export class EncryptionPasswordError extends ExtendableError {
+  constructor(message: any) {
+    super(message);
+    Object.setPrototypeOf(this, EncryptionPasswordError.prototype);
+    this.name = this.constructor.name;
+  }
+}
+
 // FIXME: Make secure + types
 function CastJson(json: any, to: any) {
   return Object.assign(to, json);

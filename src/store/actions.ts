@@ -36,6 +36,13 @@ export const { deriveKey } = createActions({
   },
 });
 
+export const resetKey = createAction(
+  'RESET_KEY',
+  () => {
+    return null;
+  }
+);
+
 export const login = (username: string, password: string, encryptionPassword: string, server: string) => {
   return (dispatch: any) => {
     dispatch(fetchCredentials(username, password, server)).then(() =>

@@ -84,6 +84,9 @@ export const encryptionKeyReducer = handleActions(
     [actions.deriveKey.toString()]: (state: {key: string | null}, action: any) => (
       {key: action.payload}
     ),
+    [actions.resetKey.toString()]: (state: {key: string | null}, action: any) => (
+      {key: null}
+    ),
     [actions.logout.toString()]: (state: {key: string | null}, action: any) => {
       return {out: true, key: null};
     },

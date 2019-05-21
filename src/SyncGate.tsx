@@ -54,6 +54,17 @@ const syncInfoSelector = createSelector(
   (etesync, journals, entries, userInfo) => {
     const derived = etesync.encryptionKey;
     let asymmetricCryptoManager: EteSync.AsymmetricCryptoManager;
+    try {
+      const userInfoCryptoManager = new EteSync.CryptoManager(etesync.encryptionKey, 'userInfo');
+      userInfo.verify(userInfoCryptoManager);
+    } catch (error) {
+      if (error instanceof EteSync.IntegrityError) {
+        throw new EteSync.EncryptionPasswordError(error.message);
+      } else {
+        throw error;
+      }
+    }
+
     return journals.reduce(
       (ret, journal) => {
         const journalEntries = entries.get(journal.uid);
