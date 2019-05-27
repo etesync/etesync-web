@@ -1,9 +1,9 @@
-import { createAction, createActions } from 'redux-actions';
+import { Action, createAction, createActions } from 'redux-actions';
 
 import * as EteSync from '../api/EteSync';
 import { UserInfo } from '../api/EteSync';
 
-import { CredentialsData, EntriesType, JournalsData, SettingsType } from './';
+import { CredentialsData, EntriesType, SettingsType } from './';
 
 export const { fetchCredentials, logout } = createActions({
   FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
@@ -170,13 +170,13 @@ export function fetchJournalEntries(etesync: CredentialsData, currentEntries: En
 
 export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
   return (dispatch: any) => {
-    return dispatch(fetchListJournal(etesync)).then((journalsAction: any) => {
-      const journals: JournalsData = journalsAction.payload;
-      if (!journals || journals.isEmpty) {
+    return dispatch(fetchListJournal(etesync)).then((journalsAction: Action<EteSync.Journal[]>) => {
+      const journals = journalsAction.payload;
+      if (!journals || (journals.length === 0)) {
         return false;
       }
 
-      journals.forEach((journal, uid) => {
+      journals.forEach((journal) => {
         dispatch(fetchJournalEntries(etesync, currentEntries, journal));
       });
 
