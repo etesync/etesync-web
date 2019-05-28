@@ -105,6 +105,11 @@ export class CryptoManager {
     return sjcl.codec.utf8String.fromBits(this.decryptBits(content));
   }
 
+  public getEncryptedKey(keyPair: AsymmetricKeyPair, publicKey: byte[]) {
+    const cryptoManager = new AsymmetricCryptoManager(keyPair);
+    return cryptoManager.encryptBytes(publicKey, sjcl.codec.bytes.fromBits(this.key));
+  }
+
   public hmac(content: byte[]): byte[] {
     return sjcl.codec.bytes.fromBits(this.hmacBase(content));
   }
