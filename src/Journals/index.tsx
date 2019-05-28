@@ -92,7 +92,8 @@ class Journals extends React.PureComponent {
                   render={() => (
                     <JournalMembers
                       etesync={this.props.etesync}
-                      info={collectionInfo}
+                      syncJournal={syncJournal}
+                      userInfo={this.props.userInfo}
                     />
                   )}
                 />

@@ -1,20 +1,27 @@
 import * as React from 'react';
+import * as sjcl from 'sjcl';
 
 import { List, ListItem } from '../widgets/List';
 
 import { Theme, withTheme } from '@material-ui/core/styles';
+import IconMemberAdd from '@material-ui/icons/PersonAdd';
 
 import AppBarOverride from '../widgets/AppBarOverride';
 import Container from '../widgets/Container';
 import LoadingIndicator from '../widgets/LoadingIndicator';
 import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
+import JournalMemberAddDialog from './JournalMemberAddDialog';
+
 import * as EteSync from '../api/EteSync';
-import { CredentialsData } from '../store';
+import { CredentialsData, UserInfoData } from '../store';
+
+import { SyncInfoJournal } from '../SyncGate';
 
 interface PropsType {
   etesync: CredentialsData;
-  info: EteSync.CollectionInfo;
+  syncJournal: SyncInfoJournal;
+  userInfo: UserInfoData;
 }
 
 interface PropsTypeInner extends PropsType {
@@ -25,6 +32,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
   public state = {
     members: null as EteSync.JournalMemberJson[] | null,
     revokeUser: null as string | null,
+    addMemberOpen: false,
   };
 
   constructor(props: PropsTypeInner) {
@@ -32,30 +40,38 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
 
     this.onRevokeRequest = this.onRevokeRequest.bind(this);
     this.onRevokeDo = this.onRevokeDo.bind(this);
+    this.onMemberAdd = this.onMemberAdd.bind(this);
   }
 
   public render() {
-    const { info } = this.props;
-    const { members, revokeUser } = this.state;
+    const { syncJournal } = this.props;
+    const { members, revokeUser, addMemberOpen } = this.state;
+
+    const info = syncJournal.collection;
 
     return (
       <>
         <AppBarOverride title={`${info.displayName} - Members`} />
         <Container style={{maxWidth: '30rem'}}>
           { members ?
-              (members.length > 0 ?
-                <List>
-                  { members.map((member) => (
+              <List>
+                <ListItem rightIcon={<IconMemberAdd />} onClick={() => this.setState({ addMemberOpen: true })}>
+                  Add member
+                </ListItem>
+                {(members.length > 0 ?
+                  members.map((member) => (
                     <ListItem key={member.user} onClick={() => this.onRevokeRequest(member.user)}>
                       {member.user}
                     </ListItem>
-                  ))}
+                  ))
+                :
+                  <ListItem>
+                    No members
+                  </ListItem>
+                )}
               </List>
-              :
-              <div>No members</div>
-              )
             :
-            <LoadingIndicator />
+              <LoadingIndicator />
           }
         </Container>
         <ConfirmationDialog
@@ -68,6 +84,15 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
           Would you like to revoke {revokeUser}'s access?<br />
           Please be advised that a malicious user would potentially be able to retain access to encryption keys. Please refer to the FAQ for more information.
         </ConfirmationDialog>
+
+        { addMemberOpen &&
+          <JournalMemberAddDialog
+            etesync={this.props.etesync}
+            info={info}
+            onOk={this.onMemberAdd}
+            onClose={() => this.setState({ addMemberOpen: false })}
+          />
+        }
       </>
     );
   }
@@ -77,7 +102,8 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
   }
 
   private fetchMembers() {
-    const { etesync, info } = this.props;
+    const { etesync, syncJournal } = this.props;
+    const info = syncJournal.collection;
 
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
@@ -96,8 +122,9 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
   }
 
   private onRevokeDo() {
-    const { etesync, info } = this.props;
+    const { etesync, syncJournal } = this.props;
     const { revokeUser } = this.state;
+    const info = syncJournal.collection;
 
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
@@ -107,6 +134,35 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     });
     this.setState({
       revokeUser: null,
+    });
+  }
+
+  private onMemberAdd(user: string, publicKey: string) {
+    const { etesync, syncJournal, userInfo } = this.props;
+    const journal = syncJournal.journal;
+    const derived = this.props.etesync.encryptionKey;
+
+    const keyPair = userInfo.getKeyPair(new EteSync.CryptoManager(derived, 'userInfo', userInfo.version));
+    let cryptoManager: EteSync.CryptoManager;
+    if (journal.key) {
+      const asymmetricCryptoManager = new EteSync.AsymmetricCryptoManager(keyPair);
+      const derivedJournalKey = asymmetricCryptoManager.decryptBytes(journal.key);
+      cryptoManager = EteSync.CryptoManager.fromDerivedKey(derivedJournalKey, journal.version);
+    } else {
+      cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
+    }
+
+    const pubkeyBytes = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(publicKey));
+    const encryptedKey = sjcl.codec.base64.fromBits(sjcl.codec.bytes.toBits(cryptoManager.getEncryptedKey(keyPair, pubkeyBytes)));
+
+    const creds = etesync.credentials;
+    const apiBase = etesync.serviceApiUrl;
+    const journalMembersManager = new EteSync.JournalMembersManager(creds, apiBase, journal.uid);
+    journalMembersManager.create({ user, key: encryptedKey }).then(() => {
+      this.fetchMembers();
+    });
+    this.setState({
+      addMemberOpen: false,
     });
   }
 }
