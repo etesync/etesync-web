@@ -26,9 +26,16 @@
   outline: 0;
 }
 
-.ListItem .ListIcon {
+.ListItem .ListIconLeft {
   margin-left: 5px;
   margin-right: 20px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.ListItem .ListIconRight {
+  margin-left: auto;
+  margin-right: 5px;
   margin-top: 8px;
   margin-bottom: 8px;
 }

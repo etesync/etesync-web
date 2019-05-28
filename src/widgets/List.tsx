@@ -85,7 +85,11 @@ export const ListItem = pure((_props: any) => {
   } = _props;
 
   const leftIconHolder = (leftIcon) ? (
-    <div className="ListIcon">{leftIcon}</div>
+    <div className="ListIconLeft">{leftIcon}</div>
+  ) : undefined;
+
+  const rightIconHolder = (rightIcon) ? (
+    <div className="ListIconRight">{rightIcon}</div>
   ) : undefined;
 
   let textHolder = primaryText;
@@ -105,6 +109,7 @@ export const ListItem = pure((_props: any) => {
       {leftIconHolder}
       {textHolder}
       {children}
+      {rightIconHolder}
     </ListItemRaw>
   );
 });
