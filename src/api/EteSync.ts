@@ -86,7 +86,9 @@ class BaseItem<T extends BaseItemJson> {
 
   public deserialize(json: T) {
     this._json = Object.assign({}, json);
-    this._encrypted = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(json.content));
+    if (json.content) {
+      this._encrypted = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(json.content));
+    }
     this._content = undefined;
   }
 
