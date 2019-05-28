@@ -529,6 +529,23 @@ export class JournalMembersManager extends BaseManager {
       });
     });
   }
+
+  public create(journalMember: JournalMemberJson): Promise<{}> {
+    const extra = {
+      method: 'post',
+      body: JSON.stringify(journalMember),
+    };
+
+    return this.newCall([], extra);
+  }
+
+  public delete(journalMember: JournalMemberJson): Promise<{}> {
+    const extra = {
+      method: 'delete',
+    };
+
+    return this.newCall([journalMember.user, ''], extra);
+  }
 }
 
 export class UserInfoManager extends BaseManager {
