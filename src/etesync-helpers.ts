@@ -13,8 +13,17 @@ export function createJournalEntry(
 
   const syncEntry = new EteSync.SyncEntry();
   syncEntry.action = action;
-
   syncEntry.content = content;
+
+  return createJournalEntryFromSyncEntry(etesync, userInfo, journal, prevUid, syncEntry);
+}
+
+export function createJournalEntryFromSyncEntry(
+  etesync: CredentialsData,
+  userInfo: UserInfoData,
+  journal: EteSync.Journal,
+  prevUid: string | null,
+  syncEntry: EteSync.SyncEntry) {
 
   const derived = etesync.encryptionKey;
 
