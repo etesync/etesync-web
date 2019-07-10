@@ -48,6 +48,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     const { members, revokeUser, addMemberOpen } = this.state;
 
     const info = syncJournal.collection;
+    const sharingAllowed = syncJournal.journal.version > 1;
 
     return (
       <>
@@ -86,12 +87,24 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
         </ConfirmationDialog>
 
         { addMemberOpen &&
-          <JournalMemberAddDialog
-            etesync={this.props.etesync}
-            info={info}
-            onOk={this.onMemberAdd}
-            onClose={() => this.setState({ addMemberOpen: false })}
-          />
+          (sharingAllowed ?
+            <JournalMemberAddDialog
+              etesync={this.props.etesync}
+              info={info}
+              onOk={this.onMemberAdd}
+              onClose={() => this.setState({ addMemberOpen: false })}
+            />
+          :
+            <ConfirmationDialog
+              title="Now Allowed"
+              labelOk="OK"
+              open
+              onOk={() => this.setState({ addMemberOpen: false })}
+              onClose={() => this.setState({ addMemberOpen: false })}
+            >
+              Sharing of old-style journals is not allowed. In order to share this journal, create a new one, and copy its contents over using the "import" dialog. If you are experiencing any issues, please contact support.
+            </ConfirmationDialog>
+          )
         }
       </>
     );
