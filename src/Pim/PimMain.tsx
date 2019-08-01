@@ -52,24 +52,27 @@ class PimMain extends React.PureComponent<PropsType> {
   }
 
   public eventClicked(event: ICAL.Event) {
-    const uid = event.uid;
+    // FIXME:Hack
+    const itemUid = `${(event as any).journalUid}|${event.uid}`;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.events._id', { itemUid: uid }));
+      routeResolver.getRoute('pim.events._id', { itemUid }));
   }
 
   public taskClicked(event: ICAL.Event) {
-    const uid = event.uid;
+    // FIXME:Hack
+    const itemUid = `${(event as any).journalUid}|${event.uid}`;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.tasks._id', { itemUid: uid }));
+      routeResolver.getRoute('pim.tasks._id', { itemUid }));
   }
 
   public contactClicked(contact: ContactType) {
-    const uid = contact.uid;
+    // FIXME:Hack
+    const itemUid = `${(contact as any).journalUid}|${contact.uid}`;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.contacts._id', { itemUid: uid }));
+      routeResolver.getRoute('pim.contacts._id', { itemUid }));
   }
 
   public newEvent(start?: Date, end?: Date) {

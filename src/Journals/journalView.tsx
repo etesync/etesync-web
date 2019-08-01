@@ -50,7 +50,7 @@ export function journalView(JournalList: any, JournalItem: any) {
             render={({match}) => {
 
               return (
-                <JournalItem item={items[match.params.itemUid]} />
+                <JournalItem item={items[`${match.params.journalUid}|${match.params.itemUid}`]} />
               );
             }}
           />

@@ -13,10 +13,9 @@ export function syncEntriesToItemMap(
   entries.forEach((syncEntry) => {
     const comp = new ContactType(new ICAL.Component(ICAL.parse(syncEntry.content)));
 
-    const uid = comp.uid;
-
     // FIXME:Hack
     (comp as any).journalUid = collection.uid;
+    const uid = `${collection.uid}|${comp.uid}`;
 
     if ((syncEntry.action === EteSync.SyncEntryAction.Add) ||
       (syncEntry.action === EteSync.SyncEntryAction.Change)) {
@@ -66,10 +65,9 @@ function syncEntriesToCalendarItemMap<T extends EventType>(
 
     comp.color = color;
 
-    const uid = comp.uid;
-
     // FIXME:Hack
     (comp as any).journalUid = collection.uid;
+    const uid = `${collection.uid}|${comp.uid}`;
 
     if ((syncEntry.action === EteSync.SyncEntryAction.Add) ||
       (syncEntry.action === EteSync.SyncEntryAction.Change)) {

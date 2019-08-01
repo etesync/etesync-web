@@ -81,11 +81,13 @@ const itemsSelector = createSelector(
 const ItemChangeLog = pure((props: any) => {
   const {
     syncInfo,
-    items,
-    uid,
+    paramItemUid,
   } = props;
 
-  const journalItem = syncInfo.get(items[uid].journalUid);
+  const tmp = paramItemUid.split('|');
+  const journalUid = tmp.shift();
+  const uid = tmp.join('|');
+  const journalItem = syncInfo.get(journalUid);
 
   return (
     <React.Fragment>
@@ -169,8 +171,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
               <Container>
                 <ItemChangeLog
                   syncInfo={props.syncInfo}
-                  items={props.items}
-                  uid={match.params.itemUid}
+                  paramItemUid={match.params.itemUid}
                 />
               </Container>
             )}
