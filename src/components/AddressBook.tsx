@@ -50,7 +50,7 @@ const AddressBookItem = pure((_props: any) => {
     <ListItem
       leftIcon={
         <Avatar style={{backgroundColor: getContactColor(entry)}}>
-          {name[0].toUpperCase()}
+          {name && name[0].toUpperCase()}
         </Avatar>}
       primaryText={name}
       onClick={() => onClick(entry)}
