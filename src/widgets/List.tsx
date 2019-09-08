@@ -4,7 +4,9 @@ import { pure } from 'recompose';
 import ExternalLink from './ExternalLink';
 
 import './List.css';
-
+import copy from 'clipboard-copy';
+import { IconButton } from '@material-ui/core';
+import CopyToClipboard from 'react-copy-to-clipboard';
 export const List = pure((props: { children: React.ReactNode[] | React.ReactNode }) => (
   <ul className="List">
     {props.children}
@@ -27,7 +29,7 @@ export const ListItemRaw = pure((_props: any) => {
       </ExternalLink>
     ) :
     children
-  ;
+    ;
 
   const nestedContent = nestedItems ?
     (
@@ -36,7 +38,7 @@ export const ListItemRaw = pure((_props: any) => {
       </List>
     ) :
     undefined
-  ;
+    ;
 
   return (
     <React.Fragment>
@@ -81,6 +83,7 @@ export const ListItem = pure((_props: any) => {
     primaryText,
     secondaryText,
     children,
+    clipIcon,
     ...props
   } = _props;
 
@@ -91,6 +94,23 @@ export const ListItem = pure((_props: any) => {
   const rightIconHolder = (rightIcon) ? (
     <div className="ListIconRight">{rightIcon}</div>
   ) : undefined;
+
+  const clipText = (clipIcon) ? (
+    <div className="ListItem-text-holder" >
+      <CopyToClipboard text={primaryText}>
+        <IconButton
+          onClick={(e) => {
+            e.preventDefault();
+            copy(primaryText);
+          }
+          }
+        >
+          {clipIcon}
+        </IconButton>
+      </CopyToClipboard>
+    </div>
+  ) : undefined;
+
 
   let textHolder = primaryText;
   if (secondaryText) {
@@ -108,6 +128,7 @@ export const ListItem = pure((_props: any) => {
     >
       {leftIconHolder}
       {textHolder}
+      {clipText}
       {children}
       {rightIconHolder}
     </ListItemRaw>

@@ -5,6 +5,8 @@
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
+    "@types/react-copy-to-clipboard": "^4.2.6",
+    "clipboard-copy": "^3.1.0",
     "ical.js": "^1.2.2",
     "immutable": "^4.0.0-rc.12",
     "localforage": "^1.7.3",

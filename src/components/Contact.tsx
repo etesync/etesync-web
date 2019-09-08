@@ -7,7 +7,7 @@ import IconDate from '@material-ui/icons/DateRange';
 import CommunicationCall from '@material-ui/icons/Call';
 import CommunicationChatBubble from '@material-ui/icons/ChatBubble';
 import CommunicationEmail from '@material-ui/icons/Email';
-
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import PimItemHeader from './PimItemHeader';
 
 import { ContactType } from '../pim-types';
@@ -57,6 +57,7 @@ class Contact extends React.PureComponent {
       'tel',
       {
         leftIcon: <CommunicationCall />,
+        clipIcon: <AssignmentIcon />,
         rightIcon: <CommunicationChatBubble />,
       },
       (x) => ('tel:' + x)
@@ -65,6 +66,7 @@ class Contact extends React.PureComponent {
     lists.push(getAllType(
       'email',
       {
+        clipIcon: <AssignmentIcon />,
         leftIcon: <CommunicationEmail />,
       },
       (x) => ('mailto:' + x)
@@ -73,6 +75,7 @@ class Contact extends React.PureComponent {
     lists.push(getAllType(
       'impp',
       {
+        clipIcon: <AssignmentIcon />,
         leftIcon: <CommunicationChatBubble />,
       },
       (x) => x,
@@ -83,6 +86,7 @@ class Contact extends React.PureComponent {
     lists.push(getAllType(
       'adr',
       {
+        clipIcon: <AssignmentIcon />,
         leftIcon: <IconHome />,
       }
     ));
@@ -90,6 +94,7 @@ class Contact extends React.PureComponent {
     lists.push(getAllType(
       'bday',
       {
+        clipIcon: <AssignmentIcon />,
         leftIcon: <IconDate />,
       },
       undefined,
@@ -100,6 +105,7 @@ class Contact extends React.PureComponent {
     lists.push(getAllType(
       'anniversary',
       {
+        clipIcon: <AssignmentIcon />,
         leftIcon: <IconDate />,
       },
       undefined,
@@ -111,7 +117,7 @@ class Contact extends React.PureComponent {
       'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
-      )).map((prop, idx) => {
+    )).map((prop, idx) => {
       const values = prop.getValues().map((_val) => {
         const val = (_val instanceof String) ? _val : _val.toString();
         return (
@@ -147,14 +153,14 @@ class Contact extends React.PureComponent {
       <div>
         <PimItemHeader text={name}>
           {lastModified && (
-            <span style={{fontSize: '90%'}}>{lastModified}</span>
+            <span style={{ fontSize: '90%' }}>{lastModified}</span>
           )}
         </PimItemHeader>
         {lists.map((list, idx) => (
           <React.Fragment key={idx}>
             {listIfNotEmpty(list)}
           </React.Fragment>
-          ))}
+        ))}
         <List>
           {theRest}
         </List>
