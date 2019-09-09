@@ -7,10 +7,12 @@ import IconDate from '@material-ui/icons/DateRange';
 import CommunicationCall from '@material-ui/icons/Call';
 import CommunicationChatBubble from '@material-ui/icons/ChatBubble';
 import CommunicationEmail from '@material-ui/icons/Email';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 import PimItemHeader from './PimItemHeader';
 
 import { ContactType } from '../pim-types';
+import { IconButton } from '@material-ui/core';
 
 class Contact extends React.PureComponent {
   public props: {
@@ -40,15 +42,30 @@ class Contact extends React.PureComponent {
 
       return contact.comp.getAllProperties(propName).map((prop, idx) => {
         const type = prop.toJSON()[1].type;
-        const values = prop.getValues().map((val) => (
-          <ListItem
-            key={idx}
-            href={valueToHref ? valueToHref(val, type) : undefined}
-            primaryText={primaryTransform ? primaryTransform(val, type) : val}
-            secondaryText={secondaryTransform ? secondaryTransform(val, type) : type}
-            {...props}
-          />
-        ));
+        const values = prop.getValues().map((val) => {
+          const primaryText = primaryTransform ? primaryTransform(val, type) : val;
+          const clipboardButton = (
+            <IconButton
+              onClick={(e) => {
+                e.preventDefault();
+                (window as any).navigator.clipboard.writeText(primaryText);
+              }}
+            >
+              <AssignmentIcon />
+            </IconButton>
+          );
+
+          return (
+            <ListItem
+              key={idx}
+              href={valueToHref ? valueToHref(val, type) : undefined}
+              primaryText={primaryText}
+              rightIcon={clipboardButton}
+              secondaryText={secondaryTransform ? secondaryTransform(val, type) : type}
+              {...props}
+            />
+          );
+        });
         return values;
       });
     }
@@ -57,7 +74,6 @@ class Contact extends React.PureComponent {
       'tel',
       {
         leftIcon: <CommunicationCall />,
-        rightIcon: <CommunicationChatBubble />,
       },
       (x) => ('tel:' + x)
     ));
@@ -111,7 +127,7 @@ class Contact extends React.PureComponent {
       'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
-      )).map((prop, idx) => {
+    )).map((prop, idx) => {
       const values = prop.getValues().map((_val) => {
         const val = (_val instanceof String) ? _val : _val.toString();
         return (
@@ -147,14 +163,14 @@ class Contact extends React.PureComponent {
       <div>
         <PimItemHeader text={name}>
           {lastModified && (
-            <span style={{fontSize: '90%'}}>{lastModified}</span>
+            <span style={{ fontSize: '90%' }}>{lastModified}</span>
           )}
         </PimItemHeader>
         {lists.map((list, idx) => (
           <React.Fragment key={idx}>
             {listIfNotEmpty(list)}
           </React.Fragment>
-          ))}
+        ))}
         <List>
           {theRest}
         </List>
