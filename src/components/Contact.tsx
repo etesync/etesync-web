@@ -11,6 +11,8 @@ import CommunicationEmail from '@material-ui/icons/Email';
 import PimItemHeader from './PimItemHeader';
 
 import { ContactType } from '../pim-types';
+import { IconButton } from '@material-ui/core';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 class Contact extends React.PureComponent {
   public props: {
@@ -47,7 +49,32 @@ class Contact extends React.PureComponent {
             primaryText={primaryTransform ? primaryTransform(val, type) : val}
             secondaryText={secondaryTransform ? secondaryTransform(val, type) : type}
             {...props}
-          />
+          >
+            <IconButton
+              onClick={(e) => {
+                e.preventDefault();
+                const node = e.currentTarget.parentElement;
+                if (node) {
+                  const text = node.innerText;
+                  if (text) {
+                    const selBox = document.createElement('textarea');
+                    selBox.style.position = 'fixed';
+                    selBox.style.left = '0';
+                    selBox.style.top = '0';
+                    selBox.style.opacity = '0';
+                    selBox.value = text.split('\n')[0];
+                    document.body.appendChild(selBox);
+                    selBox.focus();
+                    selBox.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(selBox);
+                  }
+                }
+              }}
+            >
+              <AssignmentIcon />
+            </IconButton>
+          </ListItem>
         ));
         return values;
       });
@@ -111,7 +138,7 @@ class Contact extends React.PureComponent {
       'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
-      )).map((prop, idx) => {
+    )).map((prop, idx) => {
       const values = prop.getValues().map((_val) => {
         const val = (_val instanceof String) ? _val : _val.toString();
         return (
@@ -147,14 +174,14 @@ class Contact extends React.PureComponent {
       <div>
         <PimItemHeader text={name}>
           {lastModified && (
-            <span style={{fontSize: '90%'}}>{lastModified}</span>
+            <span style={{ fontSize: '90%' }}>{lastModified}</span>
           )}
         </PimItemHeader>
         {lists.map((list, idx) => (
           <React.Fragment key={idx}>
             {listIfNotEmpty(list)}
           </React.Fragment>
-          ))}
+        ))}
         <List>
           {theRest}
         </List>
