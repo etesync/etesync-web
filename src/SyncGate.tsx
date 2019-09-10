@@ -110,10 +110,6 @@ const syncInfoSelector = createSelector(
 const PimRouter = withRouter(Pim);
 
 class SyncGate extends React.PureComponent<PropsTypeInner> {
-  constructor(props: PropsTypeInner) {
-    super(props);
-  }
-
   public componentDidMount() {
     const me = this.props.etesync.credentials.email;
     const syncAll = () => {
