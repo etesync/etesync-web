@@ -7,7 +7,7 @@ import IconDate from '@material-ui/icons/DateRange';
 import CommunicationCall from '@material-ui/icons/Call';
 import CommunicationChatBubble from '@material-ui/icons/ChatBubble';
 import CommunicationEmail from '@material-ui/icons/Email';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import CopyIcon from '../icons/Copy';
 
 import PimItemHeader from './PimItemHeader';
 
@@ -51,7 +51,7 @@ class Contact extends React.PureComponent {
                 (window as any).navigator.clipboard.writeText(primaryText);
               }}
             >
-              <AssignmentIcon />
+              <CopyIcon />
             </IconButton>
           );
 
