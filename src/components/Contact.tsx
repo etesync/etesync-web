@@ -42,40 +42,29 @@ class Contact extends React.PureComponent {
 
       return contact.comp.getAllProperties(propName).map((prop, idx) => {
         const type = prop.toJSON()[1].type;
-        const values = prop.getValues().map((val) => (
-          <ListItem
-            key={idx}
-            href={valueToHref ? valueToHref(val, type) : undefined}
-            primaryText={primaryTransform ? primaryTransform(val, type) : val}
-            secondaryText={secondaryTransform ? secondaryTransform(val, type) : type}
-            {...props}
-          >
+        const values = prop.getValues().map((val) => {
+          const primaryText = primaryTransform ? primaryTransform(val, type) : val;
+          const clipText = (
             <IconButton
               onClick={(e) => {
                 e.preventDefault();
-                const node = e.currentTarget.parentElement;
-                if (node) {
-                  const text = node.innerText;
-                  if (text) {
-                    const selBox = document.createElement('textarea');
-                    selBox.style.position = 'fixed';
-                    selBox.style.left = '0';
-                    selBox.style.top = '0';
-                    selBox.style.opacity = '0';
-                    selBox.value = text.split('\n')[0];
-                    document.body.appendChild(selBox);
-                    selBox.focus();
-                    selBox.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(selBox);
-                  }
-                }
+                (window as any).navigator.clipboard.writeText(primaryText);
               }}
             >
               <AssignmentIcon />
             </IconButton>
-          </ListItem>
-        ));
+          );
+          return (
+            <ListItem
+              key={idx}
+              href={valueToHref ? valueToHref(val, type) : undefined}
+              primaryText={primaryText}
+              rightIcon={clipText}
+              secondaryText={secondaryTransform ? secondaryTransform(val, type) : type}
+              {...props}
+            />
+          );
+        });
         return values;
       });
     }
@@ -84,7 +73,6 @@ class Contact extends React.PureComponent {
       'tel',
       {
         leftIcon: <CommunicationCall />,
-        rightIcon: <CommunicationChatBubble />,
       },
       (x) => ('tel:' + x)
     ));
