@@ -76,7 +76,7 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
     return (
       <div style={{ overflowX: 'hidden', width: 250}}>
         <div className="App-drawer-header">
-          <img className="App-drawer-logo" src={logo} />
+          <img alt="App logo" className="App-drawer-logo" src={logo} />
           <div style={{ color: theme.palette.secondary.contrastText }} >
             {username}
           </div>
