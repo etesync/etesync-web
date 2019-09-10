@@ -44,7 +44,7 @@ class Contact extends React.PureComponent {
         const type = prop.toJSON()[1].type;
         const values = prop.getValues().map((val) => {
           const primaryText = primaryTransform ? primaryTransform(val, type) : val;
-          const clipText = (
+          const clipBoardButton = (
             <IconButton
               onClick={(e) => {
                 e.preventDefault();
@@ -59,7 +59,7 @@ class Contact extends React.PureComponent {
               key={idx}
               href={valueToHref ? valueToHref(val, type) : undefined}
               primaryText={primaryText}
-              rightIcon={clipText}
+              rightIcon={clipBoardButton}
               secondaryText={secondaryTransform ? secondaryTransform(val, type) : type}
               {...props}
             />
