@@ -205,9 +205,13 @@ class ContactEdit extends React.PureComponent<PropsType> {
     if ((this.props.collections !== nextProps.collections) ||
       (this.props.initialCollection !== nextProps.initialCollection)) {
       if (nextProps.initialCollection) {
-        this.state.journalUid = nextProps.initialCollection;
+        this.setState({
+          journalUid: nextProps.initialCollection,
+        });
       } else if (nextProps.collections[0]) {
-        this.state.journalUid = nextProps.collections[0].uid;
+        this.setState({
+          journalUid: nextProps.collections[0].uid,
+        });
       }
     }
   }
