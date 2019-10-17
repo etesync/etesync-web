@@ -7,6 +7,8 @@ import { byte, base64, stringToByteArray } from './Helpers';
 import { CryptoManager, AsymmetricKeyPair, HMAC_SIZE_BYTES } from './Crypto';
 export { CryptoManager, AsymmetricCryptoManager, AsymmetricKeyPair, deriveKey, genUid } from './Crypto';
 
+type URI = typeof URI;
+
 class ExtendableError extends Error {
   constructor(message: any) {
     super(message);
@@ -307,7 +309,7 @@ export class UserInfo extends BaseItem<UserInfoJson> {
 
 class BaseNetwork {
 
-  public static urlExtend(_baseUrl: URL, segments: string[]): URL {
+  public static urlExtend(_baseUrl: URI, segments: string[]): URI {
     let baseUrl = _baseUrl as any;
     baseUrl = baseUrl.clone();
     for (const segment of segments) {
@@ -322,7 +324,7 @@ class BaseNetwork {
   }
 
   // FIXME: Get the correct type for extra
-  public newCall(segments: string[] = [], extra: any = {}, _apiBase: URL = this.apiBase): Promise<{} | any[]> {
+  public newCall(segments: string[] = [], extra: any = {}, _apiBase: URI = this.apiBase): Promise<any> {
     const apiBase = BaseNetwork.urlExtend(_apiBase, segments);
 
     extra = Object.assign({}, extra);
@@ -399,7 +401,7 @@ export class BaseManager extends BaseNetwork {
   }
 
   // FIXME: Get the correct type for extra
-  public newCall(segments: string[] = [], extra: any = {}, apiBase: any = this.apiBase): Promise<{} | any[]> {
+  public newCall(segments: string[] = [], extra: any = {}, apiBase: any = this.apiBase): Promise<any> {
     extra = Object.assign({}, extra);
     extra.headers = Object.assign(
       {
@@ -431,7 +433,7 @@ export class JournalManager extends BaseManager {
 
   public list(): Promise<Journal[]> {
     return new Promise((resolve, reject) => {
-      this.newCall().then((json: Array<{}>) => {
+      this.newCall().then((json: JournalJson[]) => {
         resolve(json.map((val: JournalJson) => {
           const journal = new Journal(val.version);
           journal.deserialize(val);
@@ -522,7 +524,7 @@ export class JournalMembersManager extends BaseManager {
 
   public list(): Promise<JournalMemberJson[]> {
     return new Promise((resolve, reject) => {
-      this.newCall().then((json: Array<{}>) => {
+      this.newCall().then((json: JournalMemberJson[]) => {
         resolve(json.map((val: JournalMemberJson) => {
           return val;
         }));
