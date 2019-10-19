@@ -6,8 +6,6 @@ import { byte, base64 } from './Helpers';
 
 (sjcl as any).beware['CBC mode is dangerous because it doesn\'t protect message integrity.']();
 
-sjcl.random.startCollectors();
-
 export const HMAC_SIZE_BYTES = 32;
 
 export class AsymmetricKeyPair {
