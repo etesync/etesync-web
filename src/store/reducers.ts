@@ -253,7 +253,7 @@ const fetchActions = [
 ] as Array<ActionFunctionAny<Action<any>>>;
 
 for (const func in actions) {
-  if (func.startsWith('fetchList') ||
+  if (func.startsWith('fetch') ||
     func.startsWith('add') ||
     func.startsWith('update') ||
     func.startsWith('delete')) {
