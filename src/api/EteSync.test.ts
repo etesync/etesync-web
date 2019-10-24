@@ -6,6 +6,9 @@ const testApiBase = 'http://localhost:8000';
 
 import { USER, PASSWORD, keyBase64 } from './TestConstants';
 
+sjcl.random.addEntropy('seedForTheTests', 1024, 'FakeSeed');
+
+
 let credentials: EteSync.Credentials;
 
 beforeEach(async () => {

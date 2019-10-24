@@ -4,7 +4,7 @@ import URI from 'urijs';
 import * as Constants from './Constants';
 
 import { byte, base64, stringToByteArray } from './Helpers';
-import { CryptoManager, AsymmetricKeyPair, HMAC_SIZE_BYTES } from './Crypto';
+import { CryptoManager, AsymmetricCryptoManager, AsymmetricKeyPair, HMAC_SIZE_BYTES } from './Crypto';
 export { CryptoManager, AsymmetricCryptoManager, AsymmetricKeyPair, deriveKey, genUid } from './Crypto';
 
 type URI = typeof URI;
@@ -83,7 +83,7 @@ class BaseItem<T extends BaseItemJson> {
   protected _content?: object;
 
   constructor() {
-    this._json = {} as any;
+    this._json = {} as T;
   }
 
   public deserialize(json: T) {
@@ -131,9 +131,13 @@ export interface JournalJson extends BaseJson {
 }
 
 export class Journal extends BaseJournal<JournalJson> {
-  constructor(version: number = Constants.CURRENT_VERSION) {
+  constructor(initial?: Partial<JournalJson>, version: number = Constants.CURRENT_VERSION) {
     super();
-    this._json.version = version;
+    this._json = {
+      ...this._json,
+      version,
+      ...initial,
+    };
   }
 
   get key(): byte[] | undefined {
@@ -150,6 +154,16 @@ export class Journal extends BaseJournal<JournalJson> {
 
   get version(): number {
     return this._json.version;
+  }
+
+  public getCryptoManager(derived: string, keyPair: AsymmetricKeyPair) {
+    if (this.key) {
+      const asymmetricCryptoManager = new AsymmetricCryptoManager(keyPair);
+      const derivedJournalKey = asymmetricCryptoManager.decryptBytes(this.key);
+      return CryptoManager.fromDerivedKey(derivedJournalKey, this.version);
+    } else {
+      return new CryptoManager(derived, this.uid, this.version);
+    }
   }
 
   public setInfo(cryptoManager: CryptoManager, info: CollectionInfo) {
@@ -270,6 +284,10 @@ export class UserInfo extends BaseItem<UserInfoJson> {
     return ret;
   }
 
+  public getCryptoManager(derived: string) {
+    return new CryptoManager(derived, 'userInfo', this.version);
+  }
+
   public setKeyPair(cryptoManager: CryptoManager, keyPair: AsymmetricKeyPair) {
     this._json.pubkey = sjcl.codec.base64.fromBits(sjcl.codec.bytes.toBits(keyPair.publicKey));
     this._content = keyPair.privateKey;
@@ -323,14 +341,16 @@ class BaseNetwork {
     this.apiBase = URI(apiBase).normalize();
   }
 
-  // FIXME: Get the correct type for extra
-  public newCall(segments: string[] = [], extra: any = {}, _apiBase: URI = this.apiBase): Promise<any> {
+  public newCall<T = any>(segments: string[] = [], extra: RequestInit = {}, _apiBase: URI = this.apiBase): Promise<T> {
     const apiBase = BaseNetwork.urlExtend(_apiBase, segments);
 
-    extra = Object.assign({}, extra);
-    extra.headers = Object.assign(
-      { Accept: 'application/json' },
-      extra.headers);
+    extra = {
+      ...extra,
+      headers: {
+        Accept: 'application/json',
+        ...extra.headers,
+      },
+    };
 
     return new Promise((resolve, reject) => {
       fetch(apiBase.toString(), extra).then((response) => {
@@ -382,7 +402,7 @@ export class Authenticator extends BaseNetwork {
         body: form,
       };
 
-      this.newCall([], extra).then((json: {token: string}) => {
+      this.newCall<{token: string}>([], extra).then((json) => {
         resolve(json.token);
       }).catch((error: Error) => {
         reject(error);
@@ -400,15 +420,15 @@ export class BaseManager extends BaseNetwork {
     this.apiBase = BaseNetwork.urlExtend(this.apiBase, ['api', 'v1'].concat(segments));
   }
 
-  // FIXME: Get the correct type for extra
-  public newCall(segments: string[] = [], extra: any = {}, apiBase: any = this.apiBase): Promise<any> {
-    extra = Object.assign({}, extra);
-    extra.headers = Object.assign(
-      {
+  public newCall<T = any>(segments: string[] = [], extra: RequestInit = {}, apiBase: any = this.apiBase): Promise<T> {
+    extra = {
+      ...extra,
+      headers: {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': 'Token ' + this.credentials.authToken,
+        ...extra.headers,
       },
-      extra.headers);
+    };
 
     return super.newCall(segments, extra, apiBase);
   }
@@ -421,8 +441,8 @@ export class JournalManager extends BaseManager {
 
   public fetch(journalUid: string): Promise<Journal> {
     return new Promise((resolve, reject) => {
-      this.newCall([journalUid, '']).then((json: JournalJson) => {
-        const journal = new Journal(json.version);
+      this.newCall<JournalJson>([journalUid, '']).then((json) => {
+        const journal = new Journal({ uid: json.uid }, json.version);
         journal.deserialize(json);
         resolve(journal);
       }).catch((error: Error) => {
@@ -433,9 +453,9 @@ export class JournalManager extends BaseManager {
 
   public list(): Promise<Journal[]> {
     return new Promise((resolve, reject) => {
-      this.newCall().then((json: JournalJson[]) => {
+      this.newCall<JournalJson[]>().then((json) => {
         resolve(json.map((val: JournalJson) => {
-          const journal = new Journal(val.version);
+          const journal = new Journal({ uid: val.uid }, val.version);
           journal.deserialize(val);
           return journal;
         }));
@@ -451,7 +471,7 @@ export class JournalManager extends BaseManager {
       body: JSON.stringify(journal.serialize()),
     };
 
-    return this.newCall([], extra);
+    return this.newCall<Journal>([], extra);
   }
 
   public update(journal: Journal): Promise<{}> {
@@ -460,7 +480,7 @@ export class JournalManager extends BaseManager {
       body: JSON.stringify(journal.serialize()),
     };
 
-    return this.newCall([journal.uid, ''], extra);
+    return this.newCall<Journal>([journal.uid, ''], extra);
   }
 
   public delete(journal: Journal): Promise<{}> {
@@ -485,8 +505,8 @@ export class EntryManager extends BaseManager {
     });
 
     return new Promise((resolve, reject) => {
-      this.newCall(undefined, undefined, apiBase).then((json: Array<{}>) => {
-        resolve(json.map((val: any) => {
+      this.newCall<EntryJson[]>(undefined, undefined, apiBase).then((json) => {
+        resolve(json.map((val) => {
           const entry = new Entry();
           entry.deserialize(val);
           return entry;
@@ -524,8 +544,8 @@ export class JournalMembersManager extends BaseManager {
 
   public list(): Promise<JournalMemberJson[]> {
     return new Promise((resolve, reject) => {
-      this.newCall().then((json: JournalMemberJson[]) => {
-        resolve(json.map((val: JournalMemberJson) => {
+      this.newCall<JournalMemberJson[]>().then((json) => {
+        resolve(json.map((val) => {
           return val;
         }));
       }).catch((error: Error) => {
@@ -559,7 +579,7 @@ export class UserInfoManager extends BaseManager {
 
   public fetch(owner: string): Promise<UserInfo> {
     return new Promise((resolve, reject) => {
-      this.newCall([owner, '']).then((json: UserInfoJson) => {
+      this.newCall<UserInfoJson>([owner, '']).then((json) => {
         const userInfo = new UserInfo(owner, json.version);
         userInfo.deserialize(json);
         resolve(userInfo);

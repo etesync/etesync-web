@@ -56,7 +56,7 @@ const journalsDeserialize = (state: {}) => {
   const newState = new Map<string, EteSync.Journal>();
   Object.keys(state).forEach((uid) => {
     const x = state[uid];
-    const ret = new EteSync.Journal(x.version);
+    const ret = new EteSync.Journal(uid, x.version);
     ret.deserialize(x);
     newState.set(uid, ret);
   });
