@@ -53,9 +53,8 @@ const syncInfoSelector = createSelector(
   (props: PropsTypeInner) => props.userInfo.value!,
   (etesync, journals, entries, userInfo) => {
     const derived = etesync.encryptionKey;
-    let asymmetricCryptoManager: EteSync.AsymmetricCryptoManager;
+    const userInfoCryptoManager = userInfo.getCryptoManager(etesync.encryptionKey);
     try {
-      const userInfoCryptoManager = new EteSync.CryptoManager(etesync.encryptionKey, 'userInfo');
       userInfo.verify(userInfoCryptoManager);
     } catch (error) {
       if (error instanceof EteSync.IntegrityError) {
@@ -74,17 +73,8 @@ const syncInfoSelector = createSelector(
           return ret;
         }
 
-        let cryptoManager: EteSync.CryptoManager;
-        if (journal.key) {
-          if (!asymmetricCryptoManager) {
-            const keyPair = userInfo.getKeyPair(new EteSync.CryptoManager(derived, 'userInfo', userInfo.version));
-            asymmetricCryptoManager = new EteSync.AsymmetricCryptoManager(keyPair);
-          }
-          const derivedJournalKey = asymmetricCryptoManager.decryptBytes(journal.key);
-          cryptoManager = EteSync.CryptoManager.fromDerivedKey(derivedJournalKey, journal.version);
-        } else {
-          cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-        }
+        const keyPair = userInfo.getKeyPair(userInfoCryptoManager);
+        const cryptoManager = journal.getCryptoManager(derived, keyPair);
 
         const collectionInfo = journal.getInfo(cryptoManager);
 
@@ -124,7 +114,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
           collection.type = collectionType;
           collection.displayName = 'Default';
 
-          const journal = new EteSync.Journal();
+          const journal = new EteSync.Journal({ uid: collection.uid });
           const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, collection.uid);
           journal.setInfo(cryptoManager, collection);
           store.dispatch<any>(addJournal(this.props.etesync, journal)).then(
@@ -144,7 +134,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
       } else {
         const userInfo = new EteSync.UserInfo(me, CURRENT_VERSION);
         const keyPair = EteSync.AsymmetricCryptoManager.generateKeyPair();
-        const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, 'userInfo');
+        const cryptoManager = userInfo.getCryptoManager(this.props.etesync.encryptionKey);
 
         userInfo.setKeyPair(cryptoManager, keyPair);
 

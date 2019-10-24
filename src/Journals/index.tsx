@@ -118,8 +118,14 @@ class Journals extends React.PureComponent {
   }
 
   public onItemSave(info: EteSync.CollectionInfo, originalInfo?: EteSync.CollectionInfo) {
-    const journal = new EteSync.Journal();
-    const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, info.uid);
+    const syncJournal = this.props.syncInfo.get(info.uid);
+
+    const derived = this.props.etesync.encryptionKey;
+    const userInfo = this.props.userInfo;
+    const existingJournal = (syncJournal) ? syncJournal.journal.serialize() : { uid: info.uid };
+    const journal = new EteSync.Journal(existingJournal);
+    const keyPair = userInfo.getKeyPair(userInfo.getCryptoManager(derived));
+    const cryptoManager = journal.getCryptoManager(derived, keyPair);
     journal.setInfo(cryptoManager, info);
 
     if (originalInfo) {
@@ -134,8 +140,14 @@ class Journals extends React.PureComponent {
   }
 
   public onItemDelete(info: EteSync.CollectionInfo) {
-    const journal = new EteSync.Journal();
-    const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, info.uid);
+    const syncJournal = this.props.syncInfo.get(info.uid);
+
+    const derived = this.props.etesync.encryptionKey;
+    const userInfo = this.props.userInfo;
+    const existingJournal = (syncJournal) ? syncJournal.journal.serialize() : { uid: info.uid };
+    const journal = new EteSync.Journal(existingJournal);
+    const keyPair = userInfo.getKeyPair(userInfo.getCryptoManager(derived));
+    const cryptoManager = journal.getCryptoManager(derived, keyPair);
     journal.setInfo(cryptoManager, info);
 
     store.dispatch<any>(deleteJournal(this.props.etesync, journal)).then(() =>

@@ -155,15 +155,8 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     const journal = syncJournal.journal;
     const derived = this.props.etesync.encryptionKey;
 
-    const keyPair = userInfo.getKeyPair(new EteSync.CryptoManager(derived, 'userInfo', userInfo.version));
-    let cryptoManager: EteSync.CryptoManager;
-    if (journal.key) {
-      const asymmetricCryptoManager = new EteSync.AsymmetricCryptoManager(keyPair);
-      const derivedJournalKey = asymmetricCryptoManager.decryptBytes(journal.key);
-      cryptoManager = EteSync.CryptoManager.fromDerivedKey(derivedJournalKey, journal.version);
-    } else {
-      cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-    }
+    const keyPair = userInfo.getKeyPair(userInfo.getCryptoManager(derived));
+    const cryptoManager = journal.getCryptoManager(derived, keyPair);
 
     const pubkeyBytes = sjcl.codec.bytes.fromBits(sjcl.codec.base64.toBits(publicKey));
     const encryptedKey = sjcl.codec.base64.fromBits(sjcl.codec.bytes.toBits(cryptoManager.getEncryptedKey(keyPair, pubkeyBytes)));

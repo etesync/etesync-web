@@ -27,15 +27,8 @@ export function createJournalEntryFromSyncEntry(
 
   const derived = etesync.encryptionKey;
 
-  let cryptoManager: EteSync.CryptoManager;
-  if (journal.key) {
-    const keyPair = userInfo.getKeyPair(new EteSync.CryptoManager(derived, 'userInfo', userInfo.version));
-    const asymmetricCryptoManager = new EteSync.AsymmetricCryptoManager(keyPair);
-    const derivedJournalKey = asymmetricCryptoManager.decryptBytes(journal.key);
-    cryptoManager = EteSync.CryptoManager.fromDerivedKey(derivedJournalKey, journal.version);
-  } else {
-    cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-  }
+  const keyPair = userInfo.getKeyPair(userInfo.getCryptoManager(derived));
+  const cryptoManager = journal.getCryptoManager(derived, keyPair);
   const entry = new EteSync.Entry();
   entry.setSyncEntry(cryptoManager, syncEntry, prevUid);
 

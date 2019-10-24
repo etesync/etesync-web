@@ -11,8 +11,6 @@ import { List, ListItem } from '../widgets/List';
 import AppBarOverride from '../widgets/AppBarOverride';
 import Container from '../widgets/Container';
 
-import * as EteSync from '../api/EteSync';
-
 import { routeResolver } from '../App';
 
 import { JournalsData, UserInfoData, CredentialsData } from '../store';
@@ -32,21 +30,11 @@ class JournalsList extends React.PureComponent {
 
   public render() {
     const derived = this.props.etesync.encryptionKey;
-    let asymmetricCryptoManager: EteSync.AsymmetricCryptoManager;
     const journalMap = this.props.journals.reduce(
       (ret, journal) => {
-        let cryptoManager: EteSync.CryptoManager;
-        if (journal.key) {
-          if (!asymmetricCryptoManager) {
-            const userInfo = this.props.userInfo;
-            const keyPair = userInfo.getKeyPair(new EteSync.CryptoManager(derived, 'userInfo', userInfo.version));
-            asymmetricCryptoManager = new EteSync.AsymmetricCryptoManager(keyPair);
-          }
-          const derivedJournalKey = asymmetricCryptoManager.decryptBytes(journal.key);
-          cryptoManager = EteSync.CryptoManager.fromDerivedKey(derivedJournalKey, journal.version);
-        } else {
-          cryptoManager = new EteSync.CryptoManager(derived, journal.uid, journal.version);
-        }
+        const userInfo = this.props.userInfo;
+        const keyPair = userInfo.getKeyPair(userInfo.getCryptoManager(derived));
+        const cryptoManager = journal.getCryptoManager(derived, keyPair);
         const info = journal.getInfo(cryptoManager);
         ret[info.type] = ret[info.type] || [];
         ret[info.type].push(
