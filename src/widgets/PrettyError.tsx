@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { pure } from 'recompose';
 
-export const PrettyError = pure((props: any) => (
+export const PrettyError = React.memo((props: any) => (
   <div>
     <h2>Something went wrong!</h2>
     <pre>

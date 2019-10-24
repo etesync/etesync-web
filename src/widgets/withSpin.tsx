@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { pure } from 'recompose';
 
 import './withSpin.css';
 
 const withSpin = (Component: any) => {
-  return pure((_props: any) => {
+  return React.memo((_props: any) => {
     const {
       spin,
       ...props

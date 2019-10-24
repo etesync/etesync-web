@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { pure } from 'recompose';
 import { createSelector } from 'reselect';
 
 import * as colors from '@material-ui/core/colors';
@@ -39,7 +38,7 @@ function getContactColor(contact: ContactType) {
   return colorOptions[sum % colorOptions.length];
 }
 
-const AddressBookItem = pure((_props: any) => {
+const AddressBookItem = React.memo((_props: any) => {
   const {
     entry,
     onClick,

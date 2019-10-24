@@ -6,9 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
-import { pure } from 'recompose';
-
-export default pure((_props: any) => {
+export default React.memo((_props: any) => {
   const {
     title,
     children,

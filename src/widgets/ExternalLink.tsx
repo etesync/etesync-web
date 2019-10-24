@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { pure } from 'recompose';
 
-export const ExternalLink = pure(({children, ...props}: any) => (
+export const ExternalLink = React.memo(({children, ...props}: any) => (
   <a target="_blank" rel="noopener" {...props}>
     {children}
   </a>

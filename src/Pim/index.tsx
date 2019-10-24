@@ -12,7 +12,6 @@ import { Action } from 'redux-actions';
 import * as EteSync from '../api/EteSync';
 
 import { createSelector } from 'reselect';
-import { pure } from 'recompose';
 
 import { History } from 'history';
 
@@ -78,7 +77,7 @@ const itemsSelector = createSelector(
   }
 );
 
-const ItemChangeLog = pure((props: any) => {
+const ItemChangeLog = React.memo((props: any) => {
   const {
     syncInfo,
     paramItemUid,

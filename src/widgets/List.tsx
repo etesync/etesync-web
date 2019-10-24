@@ -1,17 +1,16 @@
 import * as React from 'react';
-import { pure } from 'recompose';
 
 import ExternalLink from './ExternalLink';
 
 import './List.css';
 
-export const List = pure((props: { children: React.ReactNode[] | React.ReactNode }) => (
+export const List = React.memo((props: { children: React.ReactNode[] | React.ReactNode }) => (
   <ul className="List">
     {props.children}
   </ul>
 ));
 
-export const ListItemRaw = pure((_props: any) => {
+export const ListItemRaw = React.memo((_props: any) => {
   const {
     href,
     children,
@@ -53,7 +52,7 @@ export const ListItemRaw = pure((_props: any) => {
   );
 });
 
-export const ListSubheader = pure((props: any) => (
+export const ListSubheader = React.memo((props: any) => (
   <li
     {...props}
     className="ListItem ListSubheader"
@@ -62,7 +61,7 @@ export const ListSubheader = pure((props: any) => (
   </li>
 ));
 
-export const ListDivider = pure((_props: any) => {
+export const ListDivider = React.memo((_props: any) => {
   const {
     inset,
     ...props
@@ -74,7 +73,7 @@ export const ListDivider = pure((_props: any) => {
   );
 });
 
-export const ListItem = pure((_props: any) => {
+export const ListItem = React.memo((_props: any) => {
   const {
     leftIcon,
     rightIcon,

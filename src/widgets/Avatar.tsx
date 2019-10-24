@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { pure } from 'recompose';
 
-export const Avatar = pure((props: { children: React.ReactNode[] | React.ReactNode, size?: number, style?: any }) => {
+export const Avatar = React.memo((props: { children: React.ReactNode[] | React.ReactNode, size?: number, style?: any }) => {
   const size = (props.size) ? props.size : 40;
 
   return (

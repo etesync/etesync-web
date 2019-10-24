@@ -1,13 +1,12 @@
 import * as React from 'react';
 
-import { pure } from 'recompose';
 import { createSelector } from 'reselect';
 
 import { List, ListItem } from '../widgets/List';
 
 import { TaskType } from '../pim-types';
 
-const TaskListItem = pure((_props: any) => {
+const TaskListItem = React.memo((_props: any) => {
   const {
     entry,
     onClick,
