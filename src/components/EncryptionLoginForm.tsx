@@ -89,7 +89,7 @@ class EncryptionLoginForm extends React.PureComponent {
               color="secondary"
               disabled={this.props.loading}
             >
-              {this.props.loading ? 'Loading…' : 'Log In'}
+              {this.props.loading ? 'Loading…' : 'Continue'}
             </Button>
           </div>
         </form>

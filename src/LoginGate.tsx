@@ -7,11 +7,57 @@ import LoginForm from './components/LoginForm';
 import EncryptionLoginForm from './components/EncryptionLoginForm';
 
 import { store, CredentialsType } from './store';
-import { login, deriveKey } from './store/actions';
+import { deriveKey, fetchCredentials, fetchUserInfo } from './store/actions';
 
 import * as C from './constants';
 
 import SignedPagesBadge from './images/signed-pages-badge.svg';
+import LoadingIndicator from './widgets/LoadingIndicator';
+
+
+function EncryptionPart(props: { credentials: CredentialsType, onEncryptionFormSubmit: (encryptionPassword: string) => void }) {
+  const [fetched, setFetched] = React.useState(false);
+  const [isNewUser, setIsNewUser] = React.useState(false);
+
+  const credentials = props.credentials.value!;
+
+  React.useEffect(() => {
+    store.dispatch<any>(fetchUserInfo(credentials, credentials.credentials.email)).then((userInfo: any) => {
+      setIsNewUser(userInfo.error);
+    }).finally(() => {
+      setFetched(true);
+    });
+  }, [credentials]);
+
+  if (!fetched) {
+    return <LoadingIndicator />;
+  }
+
+
+  return (
+    <Container style={{maxWidth: '30rem'}}>
+      <h2>Encryption Password</h2>
+      { (isNewUser) ?
+        <div>
+          <h3>Welcome to EteSync!</h3>
+          <p>
+            Please set your encryption password below, and make sure you got it right, as it <em>can't</em> be recovered if lost!
+          </p>
+        </div>
+        :
+        <p>
+          You are logged in as <strong>{credentials.credentials.email}</strong>.
+          Please enter your encryption password to continue, or log out from the side menu.
+        </p>
+      }
+
+      <EncryptionLoginForm
+        onSubmit={props.onEncryptionFormSubmit}
+      />
+    </Container>
+  );
+}
+
 
 class LoginGate extends React.Component {
   public props: {
@@ -24,9 +70,9 @@ class LoginGate extends React.Component {
     this.onEncryptionFormSubmit = this.onEncryptionFormSubmit.bind(this);
   }
 
-  public onFormSubmit(username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) {
+  public onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
     serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
-    store.dispatch<any>(login(username, password, encryptionPassword, serviceApiUrl));
+    store.dispatch<any>(fetchCredentials(username, password, serviceApiUrl));
   }
 
   public onEncryptionFormSubmit(encryptionPassword: string) {
@@ -71,16 +117,7 @@ class LoginGate extends React.Component {
       );
     } else if (this.props.credentials.value.encryptionKey === null) {
       return (
-        <Container style={{maxWidth: '30rem'}}>
-          <h2>Encryption Password</h2>
-          <p>
-            You are logged in as <strong>{this.props.credentials.value.credentials.email}</strong>.
-            Please enter your encryption password to continue, or log out from the side menu.
-          </p>
-          <EncryptionLoginForm
-            onSubmit={this.onEncryptionFormSubmit}
-          />
-        </Container>
+        <EncryptionPart credentials={this.props.credentials} onEncryptionFormSubmit={this.onEncryptionFormSubmit} />
       );
     }
 

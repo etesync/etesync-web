@@ -24,11 +24,10 @@ class LoginForm extends React.PureComponent {
     server: string;
     username: string;
     password: string;
-    encryptionPassword: string;
   };
 
   public props: {
-    onSubmit: (username: string, password: string, encryptionPassword: string, serviceApiUrl?: string) => void;
+    onSubmit: (username: string, password: string, serviceApiUrl?: string) => void;
     loading?: boolean;
     error?: Error;
   };
@@ -41,7 +40,6 @@ class LoginForm extends React.PureComponent {
       server: '',
       username: '',
       password: '',
-      encryptionPassword: '',
     };
     this.generateEncryption = this.generateEncryption.bind(this);
     this.toggleAdvancedSettings = this.toggleAdvancedSettings.bind(this);
@@ -62,7 +60,6 @@ class LoginForm extends React.PureComponent {
 
     const username = this.state.username;
     const password = this.state.password;
-    const encryptionPassword = this.state.encryptionPassword;
 
     const errors: FormErrors = {};
     const fieldRequired = 'This field is required!';
@@ -71,9 +68,6 @@ class LoginForm extends React.PureComponent {
     }
     if (!password) {
       errors.errorPassword = fieldRequired;
-    }
-    if (!encryptionPassword) {
-      errors.errorEncryptionPassword = fieldRequired;
     }
 
     if (process.env.NODE_ENV !== 'development') {
@@ -89,7 +83,7 @@ class LoginForm extends React.PureComponent {
       this.setState({errors: {}});
     }
 
-    this.props.onSubmit(username, password, encryptionPassword, server);
+    this.props.onSubmit(username, password, server);
   }
 
   public toggleAdvancedSettings() {
@@ -159,16 +153,6 @@ class LoginForm extends React.PureComponent {
           <div style={styles.forgotPassword}>
             <ExternalLink href={C.forgotPassword}>Forgot password?</ExternalLink>
           </div>
-          <TextField
-            type="password"
-            style={styles.textField}
-            error={!!this.state.errors.errorEncryptionPassword}
-            helperText={this.state.errors.errorEncryptionPassword || 'Choose a new one if not already set'}
-            label="Encryption Password"
-            name="encryptionPassword"
-            value={this.state.encryptionPassword}
-            onChange={this.handleInputChange}
-          />
           <FormGroup>
             <FormControlLabel
               control={
