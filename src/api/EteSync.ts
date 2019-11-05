@@ -127,6 +127,7 @@ class BaseJournal<T extends BaseJson> extends BaseItem<T> {
 export interface JournalJson extends BaseJson {
   version: number;
   owner: string;
+  readOnly?: boolean;
   key?: base64;
 }
 
@@ -150,6 +151,10 @@ export class Journal extends BaseJournal<JournalJson> {
 
   get owner(): string | undefined {
     return this._json.owner;
+  }
+
+  get readOnly(): boolean | undefined {
+    return this._json.readOnly;
   }
 
   get version(): number {
@@ -535,6 +540,7 @@ export class EntryManager extends BaseManager {
 export interface JournalMemberJson {
   user: string;
   key: base64;
+  readOnly?: boolean;
 }
 
 export class JournalMembersManager extends BaseManager {
