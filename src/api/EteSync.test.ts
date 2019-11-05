@@ -2,9 +2,9 @@ import * as EteSync from './EteSync';
 
 import * as sjcl from 'sjcl';
 
-const testApiBase = 'http://localhost:8000';
-
 import { USER, PASSWORD, keyBase64 } from './TestConstants';
+
+const testApiBase = 'http://localhost:8000';
 
 sjcl.random.addEntropy('seedForTheTests', 1024, 'FakeSeed');
 
