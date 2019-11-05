@@ -74,60 +74,68 @@ it('Journal Entry sync', async () => {
 
   const entryManager = new EteSync.EntryManager(credentials, testApiBase, journal.uid);
 
-  let entries = await entryManager.list(null);
-  expect(entries.length).toBe(0);
+  {
+    const entries = await entryManager.list(null);
+    expect(entries.length).toBe(0);
+  }
 
   const syncEntry = new EteSync.SyncEntry({ action: 'ADD', content: 'bla' });
   let prevUid = null;
   const entry = new EteSync.Entry();
   entry.setSyncEntry(cryptoManager, syncEntry, prevUid);
 
-  entries = [entry];
-  await expect(entryManager.create(entries, prevUid)).resolves.toBeDefined();
+  await expect(entryManager.create([entry], prevUid)).resolves.toBeDefined();
   prevUid = entry.uid;
 
-  // Verify we get back what we sent
-  entries = await entryManager.list(null);
-  expect(entries[0].serialize()).toEqual(entry.serialize());
-  syncEntry.uid = entries[0].uid;
-  expect(entries[0].getSyncEntry(cryptoManager, null)).toEqual(syncEntry);
+  {
+    // Verify we get back what we sent
+    const entries = await entryManager.list(null);
+    expect(entries[0].serialize()).toEqual(entry.serialize());
+    syncEntry.uid = entries[0].uid;
+    expect(entries[0].getSyncEntry(cryptoManager, null)).toEqual(syncEntry);
+  }
 
   let entry2 = new EteSync.Entry();
   entry2.setSyncEntry(cryptoManager, syncEntry, prevUid);
 
-  // Try to push good entries with a bad prevUid
-  entries = [entry2];
-  await expect(entryManager.create(entries, null)).rejects.toBeInstanceOf(EteSync.HTTPError);
+  {
+    // Try to push good entries with a bad prevUid
+    const entries = [entry2];
+    await expect(entryManager.create(entries, null)).rejects.toBeInstanceOf(EteSync.HTTPError);
 
-  // Second try with good prevUid
-  await expect(entryManager.create(entries, prevUid)).resolves.toBeDefined();
-  prevUid = entry2.uid;
+    // Second try with good prevUid
+    await expect(entryManager.create(entries, prevUid)).resolves.toBeDefined();
+    prevUid = entry2.uid;
+  }
 
-  // Check last works:
-  entries = await entryManager.list(null);
-  expect(entries.length).toBe(2);
+  {
+    // Check last works:
+    let entries = await entryManager.list(null);
+    expect(entries.length).toBe(2);
 
-  entries = await entryManager.list(entry.uid);
-  expect(entries.length).toBe(1);
+    entries = await entryManager.list(entry.uid);
+    expect(entries.length).toBe(1);
 
-  entries = await entryManager.list(entry2.uid);
-  expect(entries.length).toBe(0);
+    entries = await entryManager.list(entry2.uid);
+    expect(entries.length).toBe(0);
+  }
 
-  // Corrupt the journal and verify we get it:
-  entry2 = new EteSync.Entry();
-  entry2.setSyncEntry(cryptoManager, syncEntry, 'somebaduid');
-  entries = [entry2];
-  await expect(entryManager.create(entries, prevUid)).resolves.toBeDefined();
+  {
+    // Corrupt the journal and verify we get it:
+    entry2 = new EteSync.Entry();
+    entry2.setSyncEntry(cryptoManager, syncEntry, 'somebaduid');
+    await expect(entryManager.create([entry2], prevUid)).resolves.toBeDefined();
 
-  entries = await entryManager.list(null);
+    const entries = await entryManager.list(null);
 
-  expect(() => {
-    let prev = null;
-    for (const ent of entries) {
-      expect(ent.getSyncEntry(cryptoManager, prev)).toBeDefined();
-      prev = ent.uid;
-    }
-  }).toThrowError();
+    expect(() => {
+      let prev = null;
+      for (const ent of entries) {
+        expect(ent.getSyncEntry(cryptoManager, prev)).toBeDefined();
+        prev = ent.uid;
+      }
+    }).toThrowError();
+  }
 });
 
 it('User info sync', async () => {
