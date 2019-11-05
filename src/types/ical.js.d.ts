@@ -1,5 +1,10 @@
 declare module 'ical.js' {
   function parse(input: string): any[];
+
+  class helpers { // tslint:disable-line:class-name
+    static public updateTimezones(vcal: Component): Component;
+  }
+
   class Component {
     static public fromString(str: string): Component;
 
@@ -79,10 +84,18 @@ declare module 'ical.js' {
     public timezone: string;
     public zone: Timezone;
 
+    public year: number;
+    public month: number;
+    public day: number;
+    public hour: number;
+    public minute: number;
+    public second: number;
+
     constructor(data?: TimeJsonData);
     public compare(aOther: Time): number;
 
     public clone(): Time;
+    public convertToZone(zone: Timezone): Time;
 
     public adjust(
       aExtraDays: number, aExtraHours: number, aExtraMinutes: number, aExtraSeconds: number, aTimeopt?: Time): void;
@@ -90,6 +103,7 @@ declare module 'ical.js' {
     public addDuration(aDuration: Duration): void;
     public subtractDateTz(aDate: Time): Duration;
 
+    public toUnixTime(): number;
     public toJSDate(): Date;
     public toJSON(): TimeJsonData;
   }
@@ -105,9 +119,27 @@ declare module 'ical.js' {
   }
 
   class Timezone {
+    static public utcTimezone: Timezone;
     static public localTimezone: Timezone;
     static public convert_time(tt: Time, fromZone: Timezone, toZone: Timezone): Time;
 
     public tzid: string;
+    public component: Component;
+
+    constructor(data: Component | {
+      component: string | Component,
+      tzid?: string,
+      location?: string,
+      tznames?: string,
+      latitude?: number,
+      longitude?: number,
+    });
+  }
+
+  class TimezoneService {
+    static public get(tzid: string): Timezone | null;
+    static public has(tzid: string): boolean;
+    static public register(tzid: string, zone: Timezone | Component);
+    static public remove(tzid: string): Timezone | null;
   }
 }
