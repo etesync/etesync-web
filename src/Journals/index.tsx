@@ -62,7 +62,7 @@ class Journals extends React.PureComponent {
         />
         <Route
           path={routeResolver.getRoute('journals._id')}
-          render={({match}) => {
+          render={({ match }) => {
             const journalUid = match.params.journalUid;
 
             const syncJournal = this.props.syncInfo.get(journalUid);

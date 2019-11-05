@@ -123,7 +123,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
               if (!journalAction.error) {
                 store.dispatch(fetchEntries(this.props.etesync, collection.uid));
               }
-          });
+            });
         });
       });
     };
@@ -162,14 +162,14 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
       const errors: Array<{journal: string, error: Error}> = [];
       this.props.entries.forEach((entry, journal) => {
         if (entry.error) {
-          errors.push({journal, error: entry.error});
+          errors.push({ journal, error: entry.error });
         }
       });
 
       if (errors.length > 0) {
         return (
           <ul>
-            {errors.map((error) => (<li>{error.journal}: {error.error.toString()}</li>))}
+            {errors.map((error, idx) => (<li key={idx}>{error.journal}: {error.error.toString()}</li>))}
           </ul>
         );
       }
@@ -178,8 +178,8 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
     if ((this.props.userInfo.value === null) || (journals === null) ||
       ((this.props.fetchCount > 0) &&
         ((entryArrays.size === 0) || !entryArrays.every((x: any) => (x.value !== null))))
-      ) {
-      return (<LoadingIndicator style={{display: 'block', margin: '40px auto'}} />);
+    ) {
+      return (<LoadingIndicator style={{ display: 'block', margin: '40px auto' }} />);
     }
 
     // FIXME: Shouldn't be here
@@ -193,13 +193,13 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
         <Route
           path={routeResolver.getRoute('home')}
           exact
-          render={({match}) => (
+          render={() => (
             <Redirect to={routeResolver.getRoute('pim')} />
           )}
         />
         <Route
           path={routeResolver.getRoute('pim')}
-          render={({match, history}) => (
+          render={({ history }) => (
             <>
               <AppBarOverride title="EteSync" />
               <PimRouter
@@ -227,7 +227,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
         <Route
           path={routeResolver.getRoute('settings')}
           exact
-          render={({history}) => (
+          render={({ history }) => (
             <Settings
               history={history}
             />
@@ -238,7 +238,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
   }
 }
 
-const mapStateToProps = (state: StoreState, props: PropsType) => {
+const mapStateToProps = (state: StoreState, _props: PropsType) => {
   return {
     settings: state.settings,
     journals: state.cache.journals,

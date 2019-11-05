@@ -24,24 +24,24 @@ import * as EteSync from '../api/EteSync';
 import { ContactType } from '../pim-types';
 
 const telTypes = [
-  {type: 'Home'},
-  {type: 'Work'},
-  {type: 'Cell'},
-  {type: 'Other'},
+  { type: 'Home' },
+  { type: 'Work' },
+  { type: 'Cell' },
+  { type: 'Other' },
 ];
 
 const emailTypes = telTypes;
 
 const addressTypes = [
-  {type: 'Home'},
-  {type: 'Work'},
-  {type: 'Other'},
+  { type: 'Home' },
+  { type: 'Work' },
+  { type: 'Other' },
 ];
 
 const imppTypes = [
-  {type: 'Jabber'},
-  {type: 'Hangouts'},
-  {type: 'Other'},
+  { type: 'Jabber' },
+  { type: 'Hangouts' },
+  { type: 'Other' },
 ];
 
 const TypeSelector = (props: any) => {
@@ -122,7 +122,7 @@ interface PropsType {
 
 class ContactEdit extends React.PureComponent<PropsType> {
   public state: {
-    uid: string,
+    uid: string;
     fn: string;
     phone: ValueType[];
     email: ValueType[];
@@ -297,7 +297,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     setProperties('email', this.state.email);
     setProperties('adr', this.state.address);
     setProperties('impp', this.state.impp.map((x) => (
-      {type: x.type, value: x.type + ':' + x.value}
+      { type: x.type, value: x.type + ':' + x.value }
     )));
 
     function setProperty(name: string, value: string) {
@@ -341,7 +341,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           {this.props.item ? 'Edit Contact' : 'New Contact'}
         </h2>
         <form style={styles.form} onSubmit={this.onSubmit}>
-          <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth} >
+          <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
             <InputLabel>
               Saving to
             </InputLabel>
@@ -382,7 +382,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               value={this.state.phone[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
-                this.handleValueTypeChange(name, idx, {type, value})
+                this.handleValueTypeChange(name, idx, { type, value })
               )}
             />
           ))}
@@ -405,7 +405,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               value={this.state.email[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
-                this.handleValueTypeChange(name, idx, {type, value})
+                this.handleValueTypeChange(name, idx, { type, value })
               )}
             />
           ))}
@@ -428,7 +428,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               value={this.state.impp[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
-                this.handleValueTypeChange(name, idx, {type, value})
+                this.handleValueTypeChange(name, idx, { type, value })
               )}
             />
           ))}
@@ -451,7 +451,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               value={this.state.address[idx]}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
-                this.handleValueTypeChange(name, idx, {type, value})
+                this.handleValueTypeChange(name, idx, { type, value })
               )}
             />
           ))}
@@ -486,17 +486,17 @@ class ContactEdit extends React.PureComponent<PropsType> {
               variant="contained"
               onClick={this.props.onCancel}
             >
-             <IconCancel style={{marginRight: 8}} />
+              <IconCancel style={{ marginRight: 8 }} />
               Cancel
             </Button>
 
             {this.props.item &&
               <Button
                 variant="contained"
-                style={{marginLeft: 15, backgroundColor: colors.red[500], color: 'white'}}
+                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
                 onClick={this.onDeleteRequest}
               >
-                <IconDelete style={{marginRight: 8}} />
+                <IconDelete style={{ marginRight: 8 }} />
                 Delete
               </Button>
             }
@@ -505,9 +505,9 @@ class ContactEdit extends React.PureComponent<PropsType> {
               type="submit"
               variant="contained"
               color="secondary"
-              style={{marginLeft: 15}}
+              style={{ marginLeft: 15 }}
             >
-              <IconSave style={{marginRight: 8}} />
+              <IconSave style={{ marginRight: 8 }} />
               Save
             </Button>
           </div>
@@ -518,15 +518,15 @@ class ContactEdit extends React.PureComponent<PropsType> {
           </div>
         </form>
 
-      <ConfirmationDialog
-        title="Delete Confirmation"
-        labelOk="Delete"
-        open={this.state.showDeleteDialog}
-        onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
-        onCancel={() => this.setState({showDeleteDialog: false})}
-      >
+        <ConfirmationDialog
+          title="Delete Confirmation"
+          labelOk="Delete"
+          open={this.state.showDeleteDialog}
+          onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
+          onCancel={() => this.setState({ showDeleteDialog: false })}
+        >
         Are you sure you would like to delete this contact?
-      </ConfirmationDialog>
+        </ConfirmationDialog>
       </React.Fragment>
     );
   }

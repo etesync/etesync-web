@@ -72,7 +72,7 @@ class Calendar extends React.PureComponent<PropsType> {
     });
 
     return (
-      <div style={{width: '100%', height: 'calc(100vh - 230px)', minHeight: 500}}>
+      <div style={{ width: '100%', height: 'calc(100vh - 230px)', minHeight: 500 }}>
         <BigCalendar
           defaultDate={new Date()}
           scrollToTime={new Date(1970, 1, 1, 8)}
@@ -81,7 +81,7 @@ class Calendar extends React.PureComponent<PropsType> {
           selectable
           onSelectEvent={this.props.onItemClick as any}
           onSelectSlot={this.slotClicked as any}
-          formats={{agendaHeaderFormat: agendaHeaderFormat as any}}
+          formats={{ agendaHeaderFormat: agendaHeaderFormat as any }}
           eventPropGetter={eventPropGetter}
           date={this.state.currentDate}
           onNavigate={this.onNavigate}
@@ -93,11 +93,11 @@ class Calendar extends React.PureComponent<PropsType> {
   }
 
   private onNavigate(currentDate: Date) {
-    this.setState({currentDate});
+    this.setState({ currentDate });
   }
 
   private onView(view: string) {
-    this.setState({view});
+    this.setState({ view });
   }
 
   private slotClicked(slotInfo: {start: Date, end: Date}) {

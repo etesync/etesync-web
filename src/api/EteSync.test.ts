@@ -30,7 +30,7 @@ it('Simple sync', async () => {
 
   const uid1 = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash('id1'));
   const cryptoManager = new EteSync.CryptoManager(keyBase64, USER);
-  const info1 = new EteSync.CollectionInfo({uid: uid1, content: 'test', displayName: 'Dislpay 1'});
+  const info1 = new EteSync.CollectionInfo({ uid: uid1, content: 'test', displayName: 'Dislpay 1' });
   const journal = new EteSync.Journal();
   journal.setInfo(cryptoManager, info1);
 
@@ -66,7 +66,7 @@ it('Journal Entry sync', async () => {
 
   const uid1 = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash('id1'));
   const cryptoManager = new EteSync.CryptoManager(keyBase64, USER);
-  const info1 = new EteSync.CollectionInfo({uid: uid1, content: 'test', displayName: 'Dislpay 1'});
+  const info1 = new EteSync.CollectionInfo({ uid: uid1, content: 'test', displayName: 'Dislpay 1' });
   const journal = new EteSync.Journal();
   journal.setInfo(cryptoManager, info1);
 
@@ -77,7 +77,7 @@ it('Journal Entry sync', async () => {
   let entries = await entryManager.list(null);
   expect(entries.length).toBe(0);
 
-  const syncEntry = new EteSync.SyncEntry({action: 'ADD', content: 'bla'});
+  const syncEntry = new EteSync.SyncEntry({ action: 'ADD', content: 'bla' });
   let prevUid = null;
   const entry = new EteSync.Entry();
   entry.setSyncEntry(cryptoManager, syncEntry, prevUid);

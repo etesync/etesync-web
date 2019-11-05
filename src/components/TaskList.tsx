@@ -41,8 +41,8 @@ const sortSelector = createSelector(
 
 class TaskList extends React.PureComponent {
   public props: {
-    entries: TaskType[],
-    onItemClick: (contact: TaskType) => void,
+    entries: TaskType[];
+    onItemClick: (contact: TaskType) => void;
   };
 
   public render() {

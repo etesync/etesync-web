@@ -43,7 +43,7 @@ class PimMain extends React.PureComponent<PropsType> {
 
   constructor(props: any) {
     super(props);
-    this.state = {tab: 1};
+    this.state = { tab: 1 };
     this.eventClicked = this.eventClicked.bind(this);
     this.taskClicked = this.taskClicked.bind(this);
     this.contactClicked = this.contactClicked.bind(this);
@@ -78,7 +78,7 @@ class PimMain extends React.PureComponent<PropsType> {
   public newEvent(start?: Date, end?: Date) {
     this.props.history!.push(
       routeResolver.getRoute('pim.events.new'),
-      {start, end}
+      { start, end }
     );
   }
 
@@ -116,7 +116,7 @@ class PimMain extends React.PureComponent<PropsType> {
           variant="fullWidth"
           style={{ backgroundColor: theme.palette.primary.main }}
           value={tab}
-          onChange={(event, value) => this.setState({tab: value})}
+          onChange={(event, value) => this.setState({ tab: value })}
         >
           <Tab
             label={addressBookTitle}

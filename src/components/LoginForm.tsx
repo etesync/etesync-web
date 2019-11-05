@@ -77,17 +77,17 @@ class LoginForm extends React.PureComponent {
     }
 
     if (Object.keys(errors).length) {
-      this.setState({errors});
+      this.setState({ errors });
       return;
     } else {
-      this.setState({errors: {}});
+      this.setState({ errors: {} });
     }
 
     this.props.onSubmit(username, password, server);
   }
 
   public toggleAdvancedSettings() {
-    this.setState({showAdvanced: !this.state.showAdvanced});
+    this.setState({ showAdvanced: !this.state.showAdvanced });
   }
 
   public render() {
@@ -109,19 +109,19 @@ class LoginForm extends React.PureComponent {
     let advancedSettings = null;
     if (this.state.showAdvanced) {
       advancedSettings = (
-          <React.Fragment>
-            <TextField
-              type="url"
-              style={styles.textField}
-              error={!!this.state.errors.errorServer}
-              helperText={this.state.errors.errorServer}
-              label="Server"
-              name="server"
-              value={this.state.server}
-              onChange={this.handleInputChange}
-            />
-            <br />
-          </React.Fragment>
+        <React.Fragment>
+          <TextField
+            type="url"
+            style={styles.textField}
+            error={!!this.state.errors.errorServer}
+            helperText={this.state.errors.errorServer}
+            label="Server"
+            name="server"
+            value={this.state.server}
+            onChange={this.handleInputChange}
+          />
+          <br />
+        </React.Fragment>
       );
     }
 

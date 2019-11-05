@@ -56,7 +56,7 @@ class JournalsList extends React.PureComponent {
           <IconButton
             component={Link}
             title="New"
-            {...{to: routeResolver.getRoute('journals.new')}}
+            {...{ to: routeResolver.getRoute('journals.new') }}
           >
             <IconAdd />
           </IconButton>

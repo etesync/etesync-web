@@ -119,7 +119,7 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
         publicKey: userInfo.publicKey,
       });
     }).catch((error) => {
-      this.setState({error});
+      this.setState({ error });
     });
   }
 

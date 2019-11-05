@@ -48,7 +48,7 @@ function CastJson(json: any, to: any) {
 }
 
 function hmacToHex(hmac: byte[]): string {
-    return sjcl.codec.hex.fromBits(sjcl.codec.bytes.toBits(hmac));
+  return sjcl.codec.hex.fromBits(sjcl.codec.bytes.toBits(hmac));
 }
 
 export class Credentials {
@@ -497,7 +497,7 @@ export class EntryManager extends BaseManager {
     super(credentials, apiBase, ['journals', journalId, 'entries', '']);
   }
 
-  public list(lastUid: string | null, limit: number = 0): Promise<Entry[]> {
+  public list(lastUid: string | null, limit = 0): Promise<Entry[]> {
     let apiBase = this.apiBase.clone();
     apiBase = apiBase.search({
       last: (lastUid !== null) ? lastUid : undefined,

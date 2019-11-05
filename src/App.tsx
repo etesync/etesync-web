@@ -97,11 +97,11 @@ export const routeResolver = new RouteResolver({
 const AppBarWitHistory = withRouter(
   class extends React.PureComponent {
     public props: {
-      title: string,
-      toggleDrawerIcon: any,
+      title: string;
+      toggleDrawerIcon: any;
       history?: History;
       staticContext?: any;
-      iconElementRight: any,
+      iconElementRight: any;
     };
 
     constructor(props: any) {
@@ -159,7 +159,7 @@ const IconRefreshWithSpin = withSpin(NavigationRefresh);
 
 class App extends React.PureComponent {
   public state: {
-    drawerOpen: boolean,
+    drawerOpen: boolean;
   };
 
   public props: {
@@ -193,37 +193,37 @@ class App extends React.PureComponent {
     return (
       <ThemeProvider theme={muiTheme}>
         <BrowserRouter>
-        <div style={styles.main}>
-          <AppBarWitHistory
-            toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
-            iconElementRight={
-              <IconButton disabled={!credentials || fetching} onClick={this.refresh} title="Refresh">
-                <IconRefreshWithSpin spin={fetching} />
-              </IconButton>}
+          <div style={styles.main}>
+            <AppBarWitHistory
+              toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
+              iconElementRight={
+                <IconButton disabled={!credentials || fetching} onClick={this.refresh} title="Refresh">
+                  <IconRefreshWithSpin spin={fetching} />
+                </IconButton>}
 
-          />
-          <Drawer
-            open={this.state.drawerOpen}
-            onClose={this.toggleDrawer}
-          >
-            <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
-          </Drawer>
+            />
+            <Drawer
+              open={this.state.drawerOpen}
+              onClose={this.toggleDrawer}
+            >
+              <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
+            </Drawer>
 
-          <ErrorBoundary>
-            <LoginGate credentials={this.props.credentials} />
-          </ErrorBoundary>
-        </div>
+            <ErrorBoundary>
+              <LoginGate credentials={this.props.credentials} />
+            </ErrorBoundary>
+          </div>
         </BrowserRouter>
       </ThemeProvider>
     );
   }
 
   private toggleDrawer() {
-    this.setState({drawerOpen: !this.state.drawerOpen});
+    this.setState({ drawerOpen: !this.state.drawerOpen });
   }
 
   private closeDrawer() {
-    this.setState({drawerOpen: false});
+    this.setState({ drawerOpen: false });
   }
 
   private refresh() {
@@ -238,7 +238,7 @@ const credentialsSelector = createSelector(
   (state: store.StoreState) => state.encryptionKey.key,
   (value, error, fetching, encryptionKey) => {
     if (value === null) {
-      return {value, error, fetching};
+      return { value, error, fetching };
     }
 
     return {

@@ -12,8 +12,8 @@ import AddressBook from '../components/AddressBook';
 
 class SearchableAddressBook extends React.PureComponent {
   public props: {
-    entries: ContactType[],
-    onItemClick: (contact: ContactType) => void,
+    entries: ContactType[];
+    onItemClick: (contact: ContactType) => void;
   };
 
   public state: {
@@ -22,7 +22,7 @@ class SearchableAddressBook extends React.PureComponent {
 
   constructor(props: any) {
     super(props);
-    this.state = {searchQuery: ''};
+    this.state = { searchQuery: '' };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
@@ -47,12 +47,12 @@ class SearchableAddressBook extends React.PureComponent {
         <TextField
           name="searchQuery"
           value={this.state.searchQuery}
-          style={{fontSize: '120%', marginLeft: 20}}
+          style={{ fontSize: '120%', marginLeft: 20 }}
           placeholder="Find Contacts"
           onChange={this.handleInputChange}
         />
         {this.state.searchQuery &&
-          <IconButton onClick={() => this.setState({searchQuery: ''})}>
+          <IconButton onClick={() => this.setState({ searchQuery: '' })}>
             <IconClear />
           </IconButton>
         }

@@ -17,7 +17,7 @@ it('Entries reducer', () => {
 
   const action = {
     type: fetchEntries.toString(),
-    meta: {journal: jId, prevUid: null as string | null},
+    meta: { journal: jId, prevUid: null as string | null },
     payload: [entry],
   };
 

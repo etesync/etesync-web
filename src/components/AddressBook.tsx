@@ -48,7 +48,7 @@ const AddressBookItem = React.memo((_props: any) => {
   return (
     <ListItem
       leftIcon={
-        <Avatar style={{backgroundColor: getContactColor(entry)}}>
+        <Avatar style={{ backgroundColor: getContactColor(entry) }}>
           {name && name[0].toUpperCase()}
         </Avatar>}
       primaryText={name}
@@ -64,7 +64,7 @@ const sortSelector = createSelector(
       const a = _a.fn;
       const b = _b.fn;
 
-      return a.localeCompare(b, undefined, {sensitivity: 'base'});
+      return a.localeCompare(b, undefined, { sensitivity: 'base' });
     });
   }
 );

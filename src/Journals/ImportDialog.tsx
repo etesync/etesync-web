@@ -71,14 +71,14 @@ class ImportDialog extends React.Component<PropsType> {
           <DialogTitle>Import entries from file?</DialogTitle>
           <DialogContent>
             { loading ?
-              <LoadingIndicator style={{display: 'block', margin: 'auto'}} />
+              <LoadingIndicator style={{ display: 'block', margin: 'auto' }} />
               :
               <Dropzone
                 onDrop={dropFunction}
                 multiple={false}
                 accept={acceptTypes}
               >
-                {({getRootProps, getInputProps}) => (
+                {({ getRootProps, getInputProps }) => (
                   <section>
                     <div {...getRootProps()}>
                       <input {...getInputProps()} />
@@ -87,7 +87,7 @@ class ImportDialog extends React.Component<PropsType> {
                       </DialogContentText>
                     </div>
                   </section>
-                  )}
+                )}
               </Dropzone>
             }
           </DialogContent>

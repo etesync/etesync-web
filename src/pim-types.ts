@@ -91,7 +91,7 @@ export class TaskType extends EventType {
   }
 
   set status(status: TaskStatusType) {
-      this.component.updatePropertyWithValue('status', status);
+    this.component.updatePropertyWithValue('status', status);
   }
 
   get status(): TaskStatusType {

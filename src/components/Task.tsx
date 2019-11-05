@@ -8,7 +8,7 @@ import { TaskType } from '../pim-types';
 
 class Task extends React.PureComponent {
   public props: {
-    item?: TaskType,
+    item?: TaskType;
   };
 
   public render() {

@@ -101,12 +101,12 @@ const ItemChangeLog = React.memo((props: any) => {
 });
 
 type CollectionRoutesPropsType = RouteComponentProps<{}> & {
-  syncInfo: SyncInfo,
-  routePrefix: string,
-  collections: EteSync.CollectionInfo[],
-  componentEdit: any,
-  componentView: any,
-  items: {[key: string]: PimType},
+  syncInfo: SyncInfo;
+  routePrefix: string;
+  collections: EteSync.CollectionInfo[];
+  componentEdit: any;
+  componentView: any;
+  items: {[key: string]: PimType};
   onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
   onItemDelete: (item: PimType, journalUid: string) => void;
   onItemCancel: () => void;
@@ -135,8 +135,8 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           <Route
             path={routeResolver.getRoute(props.routePrefix + '.new')}
             exact
-            render={({match}) => (
-              <Container style={{maxWidth: '30rem'}}>
+            render={({ match }) => (
+              <Container style={{ maxWidth: '30rem' }}>
                 <ComponentEdit
                   collections={props.collections}
                   onSave={props.onItemSave}
@@ -148,8 +148,8 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id.edit')}
             exact
-            render={({match}) => (
-              <Container style={{maxWidth: '30rem'}}>
+            render={({ match }) => (
+              <Container style={{ maxWidth: '30rem' }}>
                 {(match.params.itemUid in props.items) &&
                   <ComponentEdit
                     initialCollection={(props.items[match.params.itemUid] as any).journalUid}
@@ -166,7 +166,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id.log')}
             exact
-            render={({match}) => (
+            render={({ match }) => (
               <Container>
                 <ItemChangeLog
                   syncInfo={props.syncInfo}
@@ -178,19 +178,19 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id')}
             exact
-            render={({match, history}) => (
+            render={({ match, history }) => (
               <Container>
-                <div style={{textAlign: 'right', marginBottom: 15}}>
+                <div style={{ textAlign: 'right', marginBottom: 15 }}>
                   <Button
                     variant="contained"
                     className={classes.button}
                     onClick={() =>
                       history.push(routeResolver.getRoute(
                         props.routePrefix + '._id.log',
-                        {itemUid: match.params.itemUid}))
+                        { itemUid: match.params.itemUid }))
                     }
                   >
-                   <IconChangeHistory className={classes.leftIcon} />
+                    <IconChangeHistory className={classes.leftIcon} />
                    Change History
                   </Button>
 
@@ -199,11 +199,11 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                     variant="contained"
                     disabled={!props.componentEdit}
                     className={classes.button}
-                    style={{marginLeft: 15}}
+                    style={{ marginLeft: 15 }}
                     onClick={() =>
                       history.push(routeResolver.getRoute(
                         props.routePrefix + '._id.edit',
-                        {itemUid: match.params.itemUid}))
+                        { itemUid: match.params.itemUid }))
                     }
                   >
                     <IconEdit className={classes.leftIcon} />
@@ -254,20 +254,20 @@ class Pim extends React.PureComponent {
     store.dispatch<any>(fetchEntries(this.props.etesync, journal.uid, prevUid))
       .then((entriesAction: Action<EteSync.Entry[]>) => {
 
-      last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
+        last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
 
-      if (last) {
-        prevUid = last.uid;
-      }
+        if (last) {
+          prevUid = last.uid;
+        }
 
-      const saveEvent = store.dispatch(
-        addJournalEntry(
-          this.props.etesync, this.props.userInfo, journal,
-          prevUid, action, item.toIcal()));
-      (saveEvent as any).then(() => {
-        this.props.history.goBack();
+        const saveEvent = store.dispatch(
+          addJournalEntry(
+            this.props.etesync, this.props.userInfo, journal,
+            prevUid, action, item.toIcal()));
+        (saveEvent as any).then(() => {
+          this.props.history.goBack();
+        });
       });
-    });
   }
 
   public onItemDelete(item: PimType, journalUid: string) {
@@ -289,20 +289,20 @@ class Pim extends React.PureComponent {
     store.dispatch<any>(fetchEntries(this.props.etesync, journal.uid, prevUid))
       .then((entriesAction: Action<EteSync.Entry[]>) => {
 
-      last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
+        last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
 
-      if (last) {
-        prevUid = last.uid;
-      }
+        if (last) {
+          prevUid = last.uid;
+        }
 
-      const deleteItem = store.dispatch(
-        addJournalEntry(
-          this.props.etesync, this.props.userInfo, journal,
-          prevUid, action, item.toIcal()));
-      (deleteItem as any).then(() => {
-        this.props.history.push(routeResolver.getRoute('pim'));
+        const deleteItem = store.dispatch(
+          addJournalEntry(
+            this.props.etesync, this.props.userInfo, journal,
+            prevUid, action, item.toIcal()));
+        (deleteItem as any).then(() => {
+          this.props.history.push(routeResolver.getRoute('pim'));
+        });
       });
-    });
   }
 
   public onCancel() {
@@ -317,7 +317,7 @@ class Pim extends React.PureComponent {
         <Route
           path={routeResolver.getRoute('pim')}
           exact
-          render={({history}) => (
+          render={({ history }) => (
             <PimMain
               contacts={objValues(addressBookItems)}
               events={objValues(calendarItems)}

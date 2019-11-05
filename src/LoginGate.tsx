@@ -35,7 +35,7 @@ function EncryptionPart(props: { credentials: CredentialsType, onEncryptionFormS
 
 
   return (
-    <Container style={{maxWidth: '30rem'}}>
+    <Container style={{ maxWidth: '30rem' }}>
       <h2>Encryption Password</h2>
       { (isNewUser) ?
         <div>
@@ -93,7 +93,7 @@ class LoginGate extends React.Component {
       };
 
       return (
-        <Container style={{maxWidth: '30rem'}}>
+        <Container style={{ maxWidth: '30rem' }}>
           <h2>Please Log In</h2>
           <LoginForm
             onSubmit={this.onFormSubmit}

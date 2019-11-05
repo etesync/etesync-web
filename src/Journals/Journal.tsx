@@ -51,8 +51,8 @@ const JournalTaskList = journalView(TaskList, Task);
 
 class Journal extends React.Component<PropsTypeInner> {
   public state: {
-    tab: number,
-    importDialogOpen: boolean,
+    tab: number;
+    importDialogOpen: boolean;
   };
 
   constructor(props: PropsTypeInner) {
@@ -87,7 +87,7 @@ class Journal extends React.Component<PropsTypeInner> {
       itemsView =
         <JournalAddressBook journal={journal} entries={syncEntriesToItemMap(collectionInfo, syncEntries)} />;
       itemsTitle = 'Contacts';
-    } else if (collectionInfo.type === 'TASKS')  {
+    } else if (collectionInfo.type === 'TASKS') {
       itemsView = (
         <JournalTaskList
           journal={journal}
@@ -110,14 +110,14 @@ class Journal extends React.Component<PropsTypeInner> {
               <IconButton
                 component={Link}
                 title="Edit"
-                {...{to: routeResolver.getRoute('journals._id.edit', { journalUid: journal.uid })}}
+                {...{ to: routeResolver.getRoute('journals._id.edit', { journalUid: journal.uid }) }}
               >
                 <IconEdit />
               </IconButton>
               <IconButton
                 component={Link}
                 title="Members"
-                {...{to: routeResolver.getRoute('journals._id.members', { journalUid: journal.uid })}}
+                {...{ to: routeResolver.getRoute('journals._id.members', { journalUid: journal.uid }) }}
               >
                 <IconMembers />
               </IconButton>

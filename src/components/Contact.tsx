@@ -16,7 +16,7 @@ import { IconButton } from '@material-ui/core';
 
 class Contact extends React.PureComponent {
   public props: {
-    item?: ContactType,
+    item?: ContactType;
   };
 
   public render() {

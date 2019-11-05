@@ -189,6 +189,6 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
 export const setSettings = createAction(
   'SET_SETTINGS',
   (settings: SettingsType) => {
-    return {...settings};
+    return { ...settings };
   }
 );

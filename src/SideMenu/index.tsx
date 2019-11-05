@@ -68,16 +68,16 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
               this.props.history.push(routeResolver.getRoute('settings'));
             }}
           />
-          <ListItem primaryText="Log Out" leftIcon={<LogoutIcon />}  onClick={this.logout} />
+          <ListItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={this.logout} />
         </React.Fragment>
       );
     }
 
     return (
-      <div style={{ overflowX: 'hidden', width: 250}}>
+      <div style={{ overflowX: 'hidden', width: 250 }}>
         <div className="App-drawer-header">
           <img alt="App logo" className="App-drawer-logo" src={logo} />
-          <div style={{ color: theme.palette.secondary.contrastText }} >
+          <div style={{ color: theme.palette.secondary.contrastText }}>
             {username}
           </div>
         </div>

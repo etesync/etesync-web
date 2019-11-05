@@ -73,14 +73,14 @@ const entriesSerialize = (state: FetchType<EntriesData>) => {
 
 const entriesDeserialize = (state: EteSync.EntryJson[]): FetchType<EntriesData> => {
   if (state === null) {
-    return new EntriesFetchRecord({value: null});
+    return new EntriesFetchRecord({ value: null });
   }
 
-  return new EntriesFetchRecord({value: List(state.map((x: any) => {
+  return new EntriesFetchRecord({ value: List(state.map((x: any) => {
     const ret = new EteSync.Entry();
     ret.deserialize(x);
     return ret;
-  }))});
+  })) });
 };
 
 const userInfoSerialize = (state: FetchType<UserInfoData>) => {
@@ -125,9 +125,9 @@ const cacheDeserialize = (state: any, key: string) => {
     });
     return ImmutableMap(ret);
   } else if (key === 'journals') {
-    return new JournalsFetchRecord({value: journalsDeserialize(state)});
+    return new JournalsFetchRecord({ value: journalsDeserialize(state) });
   } else if (key === 'userInfo') {
-    return new UserInfoFetchRecord({value: userInfoDeserialize(state)});
+    return new UserInfoFetchRecord({ value: userInfoDeserialize(state) });
   }
 
   return state;
@@ -147,7 +147,7 @@ const cachePersistConfig = {
   version: 1,
   storage: localforage,
   transforms: [createTransform(cacheSerialize, cacheDeserialize)],
-  migrate: createMigrate(cacheMigrations, { debug: false}),
+  migrate: createMigrate(cacheMigrations, { debug: false }),
 };
 
 const reducers = combineReducers({

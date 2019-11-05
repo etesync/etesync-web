@@ -14,9 +14,9 @@ function objValues(obj: any) {
 export function journalView(JournalList: any, JournalItem: any) {
   return withRouter(class extends React.PureComponent {
     public props: {
-      journal: EteSync.Journal,
-      entries: {[key: string]: any},
-      history?: History,
+      journal: EteSync.Journal;
+      entries: {[key: string]: any};
+      history?: History;
     };
 
     constructor(props: any) {
@@ -41,13 +41,13 @@ export function journalView(JournalList: any, JournalItem: any) {
             exact
             render={() => (
               <JournalList entries={objValues(items)} onItemClick={this.itemClicked} />
-              )
+            )
             }
           />
           <Route
             path={routeResolver.getRoute('journals._id.items._id')}
             exact
-            render={({match}) => {
+            render={({ match }) => {
 
               return (
                 <JournalItem item={items[`${match.params.journalUid}|${match.params.itemUid}`]} />

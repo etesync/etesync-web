@@ -53,7 +53,7 @@ export type UserInfoType = FetchType<UserInfoData>;
 export type UserInfoTypeImmutable = Record<UserInfoType>;
 
 function fetchTypeIdentityReducer(
-  state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend: boolean = false) {
+  state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend = false) {
   if (action.error) {
     return state.set('error', action.payload);
   } else {
@@ -82,22 +82,22 @@ function fetchTypeIdentityReducer(
 export const encryptionKeyReducer = handleActions(
   {
     [actions.deriveKey.toString()]: (state: {key: string | null}, action: any) => (
-      {key: action.payload}
+      { key: action.payload }
     ),
     [actions.resetKey.toString()]: (state: {key: string | null}, action: any) => (
-      {key: null}
+      { key: null }
     ),
     [actions.logout.toString()]: (state: {key: string | null}, action: any) => {
-      return {out: true, key: null};
+      return { out: true, key: null };
     },
   },
-  {key: null}
+  { key: null }
 );
 
 export const credentials = handleActions(
   {
     [actions.fetchCredentials.toString()]: (
-      state: CredentialsTypeRemote, action: any, extend: boolean = false) => {
+      state: CredentialsTypeRemote, action: any, extend = false) => {
       if (action.error) {
         return {
           value: null,
@@ -119,10 +119,10 @@ export const credentials = handleActions(
       }
     },
     [actions.logout.toString()]: (state: CredentialsTypeRemote, action: any) => {
-      return {out: true, value: null};
+      return { out: true, value: null };
     },
   },
-  {value: null}
+  { value: null }
 );
 
 const setMapModelReducer = <T extends Record<any>, V extends BaseModel>(state: T, action: any) => {
@@ -200,7 +200,7 @@ function fetchCreateEntriesReducer(state: EntriesTypeImmutable, action: any) {
   const prevState = state.get(action.meta.journal);
   const extend = action.meta.prevUid != null;
   return state.set(action.meta.journal,
-                   fetchTypeIdentityReducer(prevState, action, extend));
+    fetchTypeIdentityReducer(prevState, action, extend));
 }
 
 export const entries = handleActions(
@@ -229,7 +229,7 @@ export const userInfo = handleAction(
     actions.fetchUserInfo,
     actions.createUserInfo
   ),
-  (state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend: boolean = false) => {
+  (state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend = false) => {
     if (action.error) {
       return state.set('error', action.payload);
     } else {
@@ -285,7 +285,7 @@ export interface SettingsType {
 export const settingsReducer = handleActions(
   {
     [actions.setSettings.toString()]: (state: {key: string | null}, action: any) => (
-      {...action.payload}
+      { ...action.payload }
     ),
   },
   { locale: 'en-gb' }

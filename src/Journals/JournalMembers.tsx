@@ -53,26 +53,26 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     return (
       <>
         <AppBarOverride title={`${info.displayName} - Members`} />
-        <Container style={{maxWidth: '30rem'}}>
+        <Container style={{ maxWidth: '30rem' }}>
           { members ?
-              <List>
-                <ListItem rightIcon={<IconMemberAdd />} onClick={() => this.setState({ addMemberOpen: true })}>
+            <List>
+              <ListItem rightIcon={<IconMemberAdd />} onClick={() => this.setState({ addMemberOpen: true })}>
                   Add member
-                </ListItem>
-                {(members.length > 0 ?
-                  members.map((member) => (
-                    <ListItem key={member.user} onClick={() => this.onRevokeRequest(member.user)}>
-                      {member.user}
-                    </ListItem>
-                  ))
-                :
-                  <ListItem>
-                    No members
+              </ListItem>
+              {(members.length > 0 ?
+                members.map((member) => (
+                  <ListItem key={member.user} onClick={() => this.onRevokeRequest(member.user)}>
+                    {member.user}
                   </ListItem>
-                )}
-              </List>
+                ))
+                :
+                <ListItem>
+                    No members
+                </ListItem>
+              )}
+            </List>
             :
-              <LoadingIndicator />
+            <LoadingIndicator />
           }
         </Container>
         <ConfirmationDialog
@@ -80,7 +80,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
           labelOk="OK"
           open={revokeUser !== null}
           onOk={this.onRevokeDo}
-          onCancel={() => this.setState({revokeUser: null})}
+          onCancel={() => this.setState({ revokeUser: null })}
         >
           Would you like to revoke {revokeUser}'s access?<br />
           Please be advised that a malicious user would potentially be able to retain access to encryption keys. Please refer to the FAQ for more information.
@@ -94,7 +94,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
               onOk={this.onMemberAdd}
               onClose={() => this.setState({ addMemberOpen: false })}
             />
-          :
+            :
             <ConfirmationDialog
               title="Now Allowed"
               labelOk="OK"

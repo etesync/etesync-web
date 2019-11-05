@@ -8,7 +8,7 @@ interface FormErrors {
 
 class EncryptionLoginForm extends React.PureComponent {
   public state: {
-    errors: FormErrors,
+    errors: FormErrors;
     encryptionPassword: string;
   };
 
@@ -48,10 +48,10 @@ class EncryptionLoginForm extends React.PureComponent {
     }
 
     if (Object.keys(errors).length) {
-      this.setState({errors});
+      this.setState({ errors });
       return;
     } else {
-      this.setState({errors: {}});
+      this.setState({ errors: {} });
     }
 
     this.props.onSubmit(encryptionPassword);

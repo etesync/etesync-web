@@ -27,9 +27,9 @@ class JournalEntries extends React.PureComponent {
   };
 
   public props: {
-    journal: EteSync.Journal,
-    entries: Immutable.List<EteSync.SyncEntry>,
-    uid?: string,
+    journal: EteSync.Journal;
+    entries: Immutable.List<EteSync.SyncEntry>;
+    uid?: string;
   };
 
   constructor(props: any) {
@@ -47,11 +47,11 @@ class JournalEntries extends React.PureComponent {
 
       let icon;
       if (syncEntry.action === EteSync.SyncEntryAction.Add) {
-        icon = (<IconAdd style={{color: '#16B14B'}} />);
+        icon = (<IconAdd style={{ color: '#16B14B' }} />);
       } else if (syncEntry.action === EteSync.SyncEntryAction.Change) {
-        icon = (<IconEdit style={{color: '#FEB115'}} />);
+        icon = (<IconEdit style={{ color: '#FEB115' }} />);
       } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
-        icon = (<IconDelete style={{color: '#F20C0C'}} />);
+        icon = (<IconDelete style={{ color: '#F20C0C' }} />);
       }
 
       let name;
@@ -91,7 +91,7 @@ class JournalEntries extends React.PureComponent {
             });
           }}
         />
-        );
+      );
     }).reverse();
 
     return (
@@ -99,7 +99,7 @@ class JournalEntries extends React.PureComponent {
         <Dialog
           open={this.state.dialog !== undefined}
           onClose={() => {
-            this.setState({dialog: undefined});
+            this.setState({ dialog: undefined });
           }}
         >
           <DialogTitle>
@@ -112,7 +112,7 @@ class JournalEntries extends React.PureComponent {
             <Button
               color="primary"
               onClick={() => {
-                this.setState({dialog: undefined});
+                this.setState({ dialog: undefined });
               }}
             >
               Close

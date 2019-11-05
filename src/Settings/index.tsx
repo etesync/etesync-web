@@ -35,7 +35,7 @@ class Settings extends React.PureComponent<PropsTypeInner> {
         <AppBarOverride title="Settings" />
         <Container>
           <h1>Date & Time</h1>
-          <FormControl style={{width: '15em'}}>
+          <FormControl style={{ width: '15em' }}>
             <InputLabel>
               Locale
             </InputLabel>
@@ -62,7 +62,7 @@ class Settings extends React.PureComponent<PropsTypeInner> {
     const value = event.target.value;
 
     const { settings } = this.props;
-    store.dispatch(setSettings({ ...settings, [name]: value}));
+    store.dispatch(setSettings({ ...settings, [name]: value }));
   }
 }
 

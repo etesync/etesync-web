@@ -42,7 +42,7 @@ interface PropsType {
 
 class TaskEdit extends React.PureComponent<PropsType> {
   public state: {
-    uid: string,
+    uid: string;
     title: string;
     status: TaskStatusType;
     allDay: boolean;
@@ -131,7 +131,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
   }
 
   public toggleAllDay() {
-    this.setState({allDay: !this.state.allDay});
+    this.setState({ allDay: !this.state.allDay });
   }
 
   public onSubmit(e: React.FormEvent<any>) {
@@ -156,7 +156,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
     if (startDate && dueDate) {
       if (startDate.compare(dueDate) >= 0) {
-        this.setState({error: 'End time must be later than start time!'});
+        this.setState({ error: 'End time must be later than start time!' });
         return;
       }
     }
@@ -230,7 +230,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             onChange={this.handleInputChange}
           />
 
-          <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth} >
+          <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
             <InputLabel>
               Saving to
             </InputLabel>
@@ -246,7 +246,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             </Select>
           </FormControl>
 
-          <FormControl style={styles.fullWidth} >
+          <FormControl style={styles.fullWidth}>
             <InputLabel>
               Status
             </InputLabel>
@@ -281,16 +281,16 @@ class TaskEdit extends React.PureComponent<PropsType> {
               dateOnly={this.state.allDay}
               placeholder="Start"
               value={this.state.start}
-              onChange={(date?: Date) => this.setState({start: date})}
+              onChange={(date?: Date) => this.setState({ start: date })}
             />
-              </div>
+          </div>
 
           <div>
             <DateTimePicker
               dateOnly={this.state.allDay}
               placeholder="End"
               value={this.state.due}
-              onChange={(date?: Date) => this.setState({due: date})}
+              onChange={(date?: Date) => this.setState({ due: date })}
             />
           </div>
 
@@ -316,17 +316,17 @@ class TaskEdit extends React.PureComponent<PropsType> {
               variant="contained"
               onClick={this.props.onCancel}
             >
-             <IconCancel style={{marginRight: 8}} />
+              <IconCancel style={{ marginRight: 8 }} />
               Cancel
             </Button>
 
             {this.props.item &&
               <Button
                 variant="contained"
-                style={{marginLeft: 15, backgroundColor: colors.red[500], color: 'white'}}
+                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
                 onClick={this.onDeleteRequest}
               >
-                <IconDelete style={{marginRight: 8}} />
+                <IconDelete style={{ marginRight: 8 }} />
                 Delete
               </Button>
             }
@@ -335,9 +335,9 @@ class TaskEdit extends React.PureComponent<PropsType> {
               type="submit"
               variant="contained"
               color="secondary"
-              style={{marginLeft: 15}}
+              style={{ marginLeft: 15 }}
             >
-              <IconSave style={{marginRight: 8}} />
+              <IconSave style={{ marginRight: 8 }} />
               Save
             </Button>
           </div>
@@ -348,15 +348,15 @@ class TaskEdit extends React.PureComponent<PropsType> {
           </div>
         </form>
 
-      <ConfirmationDialog
-        title="Delete Confirmation"
-        labelOk="Delete"
-        open={this.state.showDeleteDialog}
-        onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
-        onCancel={() => this.setState({showDeleteDialog: false})}
-      >
+        <ConfirmationDialog
+          title="Delete Confirmation"
+          labelOk="Delete"
+          open={this.state.showDeleteDialog}
+          onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
+          onCancel={() => this.setState({ showDeleteDialog: false })}
+        >
         Are you sure you would like to delete this event?
-      </ConfirmationDialog>
+        </ConfirmationDialog>
       </React.Fragment>
     );
   }

@@ -7,7 +7,7 @@ function isPromise(val: any) {
 export default function promiseMiddleware({ dispatch }: any) {
   return (next: any) => (action: any) => {
     if (isPromise(action.payload)) {
-      dispatch({...action, payload: undefined});
+      dispatch({ ...action, payload: undefined });
 
       return action.payload.then(
         (result: any) => dispatch({ ...action, payload: result }),

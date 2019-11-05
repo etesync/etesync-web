@@ -6,17 +6,21 @@ import { resetKey } from '../store/actions';
 import { EncryptionPasswordError, IntegrityError } from '../api/EteSync';
 import PrettyError from '../widgets/PrettyError';
 
-class ErrorBoundary extends React.Component {
+interface PropsType {
+  children: React.ReactNode | React.ReactNode[];
+}
+
+class ErrorBoundary extends React.Component<PropsType> {
   public state: {
     error?: Error;
   };
 
-  constructor(props: any) {
+  constructor(props: PropsType) {
     super(props);
     this.state = { };
   }
 
-  public componentDidCatch(error: Error, info: any) {
+  public componentDidCatch(error: Error, _info: any) {
     if (error instanceof EncryptionPasswordError) {
       store.dispatch(resetKey());
     } else if (error instanceof IntegrityError) {
@@ -46,7 +50,7 @@ class ErrorBoundary extends React.Component {
               Please log out from the menu, refresh the page and try again, and if the problem persists, contact support.
             </p>
             <pre>
-                {error.message}
+              {error.message}
             </pre>
           </div>
         );

@@ -8,7 +8,7 @@ import { EventType } from '../pim-types';
 
 class Event extends React.PureComponent {
   public props: {
-    item?: EventType,
+    item?: EventType;
   };
 
   public render() {

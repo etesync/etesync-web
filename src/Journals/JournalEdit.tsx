@@ -54,7 +54,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
     if (this.props.item !== undefined) {
       const collection = this.props.item;
 
-      this.state.info = {...collection};
+      this.state.info = { ...collection };
     } else {
       this.state.info.uid = EteSync.genUid();
       this.state.info.type = 'ADDRESS_BOOK';
@@ -86,9 +86,9 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
     return (
       <>
         <AppBarOverride title={pageTitle} />
-        <Container style={{maxWidth: '30rem'}}>
+        <Container style={{ maxWidth: '30rem' }}>
           <form onSubmit={this.onSubmit}>
-            <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth} >
+            <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
               <InputLabel>
                 Collection type
               </InputLabel>
@@ -126,17 +126,17 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
                 variant="contained"
                 onClick={onCancel}
               >
-               <IconCancel style={{marginRight: 8}} />
+                <IconCancel style={{ marginRight: 8 }} />
                 Cancel
               </Button>
 
               {this.props.item &&
                 <Button
                   variant="contained"
-                  style={{marginLeft: 15, backgroundColor: colors.red[500], color: 'white'}}
+                  style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
                   onClick={this.onDeleteRequest}
                 >
-                  <IconDelete style={{marginRight: 8}} />
+                  <IconDelete style={{ marginRight: 8 }} />
                   Delete
                 </Button>
               }
@@ -145,9 +145,9 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
                 type="submit"
                 variant="contained"
                 color="secondary"
-                style={{marginLeft: 15}}
+                style={{ marginLeft: 15 }}
               >
-                <IconSave style={{marginRight: 8}} />
+                <IconSave style={{ marginRight: 8 }} />
                 Save
               </Button>
             </div>
@@ -158,7 +158,7 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
           labelOk="Delete"
           open={this.state.showDeleteDialog}
           onOk={() => onDelete(this.props.item!)}
-          onCancel={() => this.setState({showDeleteDialog: false})}
+          onCancel={() => this.setState({ showDeleteDialog: false })}
         >
           Are you sure you would like to delete this journal?
         </ConfirmationDialog>
