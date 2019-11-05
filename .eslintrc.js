@@ -70,6 +70,7 @@ module.exports = {
       "exports": "always-multiline",
       "functions": "never"
     }],
+    "comma-spacing": ["error"],
     "eqeqeq": ["error", "smart"],
     "indent": ["error", 2, {
       "SwitchCase": 1,
