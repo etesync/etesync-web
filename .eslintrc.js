@@ -94,5 +94,6 @@ module.exports = {
     "consistent-return": "error",
     "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
     "jsx-quotes": ["error"],
+    "array-bracket-spacing": "error",
   }
 };
