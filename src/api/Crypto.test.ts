@@ -3,7 +3,7 @@ import { USER, PASSWORD, keyBase64 } from './TestConstants';
 
 import { stringToByteArray } from './Helpers';
 
-import * as sjcl from 'sjcl';
+import sjcl from 'sjcl';
 sjcl.random.addEntropy('seedForTheTests', 1024, 'FakeSeed');
 
 it('Derive key', () => {

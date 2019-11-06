@@ -1,4 +1,4 @@
-import * as sjcl from 'sjcl';
+import sjcl from 'sjcl';
 import NodeRSA from 'node-rsa';
 
 import * as Constants from './Constants';

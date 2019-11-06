@@ -1,6 +1,6 @@
 import * as EteSync from './EteSync';
 
-import * as sjcl from 'sjcl';
+import sjcl from 'sjcl';
 
 import { USER, PASSWORD, keyBase64 } from './TestConstants';
 

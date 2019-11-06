@@ -1,7 +1,7 @@
 import * as React from 'react';
 import BigCalendar, { View } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as ICAL from 'ical.js';
 
 import { EventType } from '../pim-types';

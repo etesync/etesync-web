@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Action } from 'redux-actions';
 import { Route, Switch, Redirect, RouteComponentProps, withRouter } from 'react-router';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import 'moment/locale/en-gb';
 
 import { List, Map } from 'immutable';

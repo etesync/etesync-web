@@ -1,4 +1,4 @@
-import * as sjcl from 'sjcl';
+import sjcl from 'sjcl';
 import URI from 'urijs';
 
 import * as Constants from './Constants';
