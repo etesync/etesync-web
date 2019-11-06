@@ -85,7 +85,7 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
             onOk={this.onAddRequest}
             onCancel={onClose}
           >
-            { userChosen ?
+            {userChosen ?
               <LoadingIndicator />
               :
               <TextField

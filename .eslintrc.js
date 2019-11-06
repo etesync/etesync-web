@@ -56,8 +56,12 @@ module.exports = {
       "beforeClosing": "never"
     }],
     "react/jsx-boolean-value": ["error", "never"],
-    "react/jsx-curly-spacing": ["error", "never"],
+    "react/jsx-curly-spacing": ["error", { "when": "never", "children": true }],
+    "react/jsx-equals-spacing": ["error", "never"],
+    "react/jsx-indent-props": ["error", 2],
+    "react/jsx-curly-brace-presence": ["error", "never"],
     "react/jsx-key": ["error", { "checkFragmentShorthand": true }],
+    "react/jsx-indent": ["error", 2, { checkAttributes: true, indentLogicalExpressions: true }],
 
     "quotes": "off",
     "@typescript-eslint/quotes": ["error", "single", { "allowTemplateLiterals": true, "avoidEscape": true }],

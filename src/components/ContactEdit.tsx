@@ -101,11 +101,9 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
       <TypeSelector
         value={props.value.type}
         types={props.types}
-        onChange={
-          (event: React.ChangeEvent<HTMLSelectElement>) => (
-            props.onChange(props.name, event.target.value, props.value.value)
-          )
-        }
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => (
+          props.onChange(props.name, event.target.value, props.value.value)
+        )}
       />
     </React.Fragment>
   );

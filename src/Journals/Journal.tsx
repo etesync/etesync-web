@@ -105,7 +105,7 @@ class Journal extends React.Component<PropsTypeInner> {
     return (
       <React.Fragment>
         <AppBarOverride title={collectionInfo.displayName}>
-          { isOwner &&
+          {isOwner &&
             <>
               <IconButton
                 component={Link}
@@ -139,12 +139,12 @@ class Journal extends React.Component<PropsTypeInner> {
           <Tab label={itemsTitle} disabled={journalOnly} />
           <Tab label="Journal Entries" />
         </Tabs>
-        { currentTab === 0 &&
+        {currentTab === 0 &&
           <Container>
             {itemsView}
           </Container>
         }
-        { currentTab === 1 &&
+        {currentTab === 1 &&
           <Container>
             <JournalEntries journal={journal} entries={syncEntries} />
           </Container>

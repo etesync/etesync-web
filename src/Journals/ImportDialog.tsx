@@ -70,7 +70,7 @@ class ImportDialog extends React.Component<PropsType> {
         >
           <DialogTitle>Import entries from file?</DialogTitle>
           <DialogContent>
-            { loading ?
+            {loading ?
               <LoadingIndicator style={{ display: 'block', margin: 'auto' }} />
               :
               <Dropzone

@@ -29,10 +29,10 @@ class Task extends React.PureComponent {
     return (
       <React.Fragment>
         <PimItemHeader text={this.props.item.summary} backgroundColor={this.props.item.color}>
-          { item.startDate &&
+          {item.startDate &&
             <div>Start: {formatDate(item.startDate)} {timezone && <small>({timezone})</small>}</div>
           }
-          { item.dueDate &&
+          {item.dueDate &&
             <div>Due: {formatDate(item.dueDate)} {timezone && <small>({timezone})</small>}</div>
           }
           <br />

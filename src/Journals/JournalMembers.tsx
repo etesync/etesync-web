@@ -54,7 +54,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
       <>
         <AppBarOverride title={`${info.displayName} - Members`} />
         <Container style={{ maxWidth: '30rem' }}>
-          { members ?
+          {members ?
             <List>
               <ListItem rightIcon={<IconMemberAdd />} onClick={() => this.setState({ addMemberOpen: true })}>
                   Add member
@@ -86,7 +86,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
           Please be advised that a malicious user would potentially be able to retain access to encryption keys. Please refer to the FAQ for more information.
         </ConfirmationDialog>
 
-        { addMemberOpen &&
+        {addMemberOpen &&
           (sharingAllowed ?
             <JournalMemberAddDialog
               etesync={this.props.etesync}

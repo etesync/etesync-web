@@ -130,17 +130,17 @@ class PimMain extends React.PureComponent<PropsType> {
         </Tabs>
 
         <Container>
-          { tab === 0 &&
+          {tab === 0 &&
             <SearchableAddressBook entries={this.props.contacts} onItemClick={this.contactClicked} />
           }
-          { tab === 1 &&
+          {tab === 1 &&
             <PersistCalendar
               entries={this.props.events}
               onItemClick={this.eventClicked}
               onSlotClick={this.newEvent}
             />
           }
-          { tab === 2 &&
+          {tab === 2 &&
             <TaskList
               entries={this.props.tasks}
               onItemClick={this.taskClicked}

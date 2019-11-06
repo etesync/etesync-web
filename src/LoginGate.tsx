@@ -37,7 +37,7 @@ function EncryptionPart(props: { credentials: CredentialsType, onEncryptionFormS
   return (
     <Container style={{ maxWidth: '30rem' }}>
       <h2>Encryption Password</h2>
-      { (isNewUser) ?
+      {(isNewUser) ?
         <div>
           <h3>Welcome to EteSync!</h3>
           <p>
