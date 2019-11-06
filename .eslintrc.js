@@ -60,9 +60,9 @@ module.exports = {
     "react/jsx-key": ["error", { "checkFragmentShorthand": true }],
 
     "quotes": "off",
-    "@typescript-eslint/quotes": ["error", "single", { "allowTemplateLiterals": true }],
-    "semi": ["error", "always", { "omitLastInOneLineBlock": true }],
-    "camelcase": ["error"],
+    "@typescript-eslint/quotes": ["error", "single", { "allowTemplateLiterals": true, "avoidEscape": true }],
+    "semi": "off",
+    "@typescript-eslint/semi": ["error", "always", { "omitLastInOneLineBlock": true }],
     "comma-dangle": ["error", {
       "arrays": "always-multiline",
       "objects": "always-multiline",
@@ -72,7 +72,8 @@ module.exports = {
     }],
     "comma-spacing": ["error"],
     "eqeqeq": ["error", "smart"],
-    "indent": ["error", 2, {
+    "indent": "off",
+    "@typescript-eslint/indent": ["error", 2, {
       "SwitchCase": 1,
     }],
     "no-multi-spaces": "error",
@@ -93,8 +94,15 @@ module.exports = {
     "curly": ["error", "all"],
     "space-infix-ops": "error",
     "consistent-return": "error",
-    "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
     "jsx-quotes": ["error"],
     "array-bracket-spacing": "error",
+    "brace-style": "off",
+    "@typescript-eslint/brace-style": [
+      "error",
+      "1tbs",
+      { allowSingleLine: true },
+    ],
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-useless-constructor": "warn",
   }
 };
