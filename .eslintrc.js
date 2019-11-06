@@ -62,6 +62,8 @@ module.exports = {
     "react/jsx-curly-brace-presence": ["error", "never"],
     "react/jsx-key": ["error", { "checkFragmentShorthand": true }],
     "react/jsx-indent": ["error", 2, { checkAttributes: true, indentLogicalExpressions: true }],
+    "react/void-dom-elements-no-children": ["error"],
+    "react/no-unknown-property": ["error"],
 
     "quotes": "off",
     "@typescript-eslint/quotes": ["error", "single", { "allowTemplateLiterals": true, "avoidEscape": true }],
