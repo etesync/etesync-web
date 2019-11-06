@@ -1,8 +1,7 @@
 module.exports = {
   "env": {
-    "browser": true,
+    "shared-node-browser": true,
     "es6": true,
-    "node": true
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
