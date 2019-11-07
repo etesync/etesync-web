@@ -81,13 +81,13 @@ function fetchTypeIdentityReducer(
 
 export const encryptionKeyReducer = handleActions(
   {
-    [actions.deriveKey.toString()]: (state: {key: string | null}, action: any) => (
+    [actions.deriveKey.toString()]: (_state: {key: string | null}, action: any) => (
       { key: action.payload }
     ),
-    [actions.resetKey.toString()]: (state: {key: string | null}, action: any) => (
+    [actions.resetKey.toString()]: (_state: {key: string | null}, _action: any) => (
       { key: null }
     ),
-    [actions.logout.toString()]: (state: {key: string | null}, action: any) => {
+    [actions.logout.toString()]: (_state: {key: string | null}, _action: any) => {
       return { out: true, key: null };
     },
   },
@@ -97,7 +97,7 @@ export const encryptionKeyReducer = handleActions(
 export const credentials = handleActions(
   {
     [actions.fetchCredentials.toString()]: (
-      state: CredentialsTypeRemote, action: any, extend = false) => {
+      _state: CredentialsTypeRemote, action: any) => {
       if (action.error) {
         return {
           value: null,
@@ -118,7 +118,7 @@ export const credentials = handleActions(
         };
       }
     },
-    [actions.logout.toString()]: (state: CredentialsTypeRemote, action: any) => {
+    [actions.logout.toString()]: (_state: CredentialsTypeRemote, _action: any) => {
       return { out: true, value: null };
     },
   },
@@ -229,7 +229,7 @@ export const userInfo = handleAction(
     actions.fetchUserInfo,
     actions.createUserInfo
   ),
-  (state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend = false) => {
+  (state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any) => {
     if (action.error) {
       return state.set('error', action.payload);
     } else {
@@ -284,7 +284,7 @@ export interface SettingsType {
 
 export const settingsReducer = handleActions(
   {
-    [actions.setSettings.toString()]: (state: {key: string | null}, action: any) => (
+    [actions.setSettings.toString()]: (_state: {key: string | null}, action: any) => (
       { ...action.payload }
     ),
   },

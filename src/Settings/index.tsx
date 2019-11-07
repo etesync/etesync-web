@@ -66,7 +66,7 @@ class Settings extends React.PureComponent<PropsTypeInner> {
   }
 }
 
-const mapStateToProps = (state: StoreState, props: PropsType) => {
+const mapStateToProps = (state: StoreState, _props: PropsType) => {
   return {
     settings: state.settings,
   };

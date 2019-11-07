@@ -122,7 +122,7 @@ export const { fetchEntries, addEntries } = createActions({
       const apiBase = etesync.serviceApiUrl;
       const entryManager = new EteSync.EntryManager(creds, apiBase, journalUid);
 
-      return entryManager.create(newEntries, prevUid).then((response) => newEntries);
+      return entryManager.create(newEntries, prevUid).then(() => newEntries);
     },
     (etesync: CredentialsData, journalUid: string, newEntries: EteSync.Entry[], prevUid: string | null) => {
       return { journal: journalUid, entries: newEntries, prevUid };

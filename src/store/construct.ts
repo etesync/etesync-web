@@ -45,7 +45,7 @@ const journalsSerialize = (state: JournalsData) => {
     return null;
   }
 
-  return state.map((x, uid) => x.serialize()).toJS();
+  return state.map((x, _uid) => x.serialize()).toJS();
 };
 
 const journalsDeserialize = (state: {}) => {

@@ -135,7 +135,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           <Route
             path={routeResolver.getRoute(props.routePrefix + '.new')}
             exact
-            render={({ match }) => (
+            render={() => (
               <Container style={{ maxWidth: '30rem' }}>
                 <ComponentEdit
                   collections={props.collections}

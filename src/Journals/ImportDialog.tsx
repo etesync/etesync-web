@@ -101,7 +101,8 @@ class ImportDialog extends React.Component<PropsType> {
     );
   }
 
-  private onFileDropCommon(itemsCreator: (fileText: string) => PimType[], acceptedFiles: File[], rejectedFiles: File[]) {
+  private onFileDropCommon(itemsCreator: (fileText: string) => PimType[], acceptedFiles: File[], _rejectedFiles: File[]) {
+    // XXX: implement handling of rejectedFiles
     const reader = new FileReader();
 
     reader.onabort = () => alert('file reading was aborted');

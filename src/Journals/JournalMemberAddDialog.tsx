@@ -103,7 +103,7 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
     }
   }
 
-  private onAddRequest(user: string) {
+  private onAddRequest(_user: string) {
     this.setState({
       userChosen: true,
     });

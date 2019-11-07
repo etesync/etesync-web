@@ -83,7 +83,7 @@ class AddressBook extends React.PureComponent<PropsType> {
       sortedEntries.filter(this.props.filter)
       : sortedEntries;
 
-    const itemList = entries.map((entry, idx, array) => {
+    const itemList = entries.map((entry) => {
       const uid = entry.uid;
 
       return (

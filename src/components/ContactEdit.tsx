@@ -216,7 +216,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
   public addValueType(name: string, _type?: string) {
     const type = _type ? _type : 'home';
-    this.setState((prevState, props) => {
+    this.setState((prevState) => {
       const newArray = prevState[name].slice(0);
       newArray.push(new ValueType(type));
       return {
@@ -227,7 +227,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
   }
 
   public removeValueType(name: string, idx: number) {
-    this.setState((prevState, props) => {
+    this.setState((prevState) => {
       const newArray = prevState[name].slice(0);
       newArray.splice(idx, 1);
       return {
@@ -238,7 +238,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
   }
 
   public handleValueTypeChange(name: string, idx: number, value: ValueType) {
-    this.setState((prevState, props) => {
+    this.setState((prevState) => {
       const newArray = prevState[name].slice(0);
       newArray[idx] = value;
       return {
