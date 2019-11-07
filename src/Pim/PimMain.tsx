@@ -116,7 +116,7 @@ class PimMain extends React.PureComponent<PropsType> {
           variant="fullWidth"
           style={{ backgroundColor: theme.palette.primary.main }}
           value={tab}
-          onChange={(event, value) => this.setState({ tab: value })}
+          onChange={(_event, value) => this.setState({ tab: value })}
         >
           <Tab
             label={addressBookTitle}

@@ -134,7 +134,7 @@ class Journal extends React.Component<PropsTypeInner> {
           variant="fullWidth"
           style={{ backgroundColor: theme.palette.primary.main }}
           value={currentTab}
-          onChange={(event, tab) => this.setState({ tab })}
+          onChange={(_event, tab) => this.setState({ tab })}
         >
           <Tab label={itemsTitle} disabled={journalOnly} />
           <Tab label="Journal Entries" />

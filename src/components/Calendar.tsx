@@ -21,7 +21,7 @@ function eventPropGetter(event: EventType) {
   };
 }
 
-function agendaHeaderFormat(date: {start: Date, end: Date}, culture: string, localizer: any) {
+function agendaHeaderFormat(date: {start: Date, end: Date}, _culture: string, localizer: any) {
   const format = 'll';
   return localizer.format(date.start, format) + ' - ' + localizer.format(date.end, format);
 }

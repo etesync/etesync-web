@@ -377,7 +377,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               name="phone"
               placeholder="Phone"
               types={telTypes}
-              value={this.state.phone[idx]}
+              value={x}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
                 this.handleValueTypeChange(name, idx, { type, value })
@@ -400,7 +400,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               name="email"
               placeholder="Email"
               types={emailTypes}
-              value={this.state.email[idx]}
+              value={x}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
                 this.handleValueTypeChange(name, idx, { type, value })
@@ -423,7 +423,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               name="impp"
               placeholder="IMPP"
               types={imppTypes}
-              value={this.state.impp[idx]}
+              value={x}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
                 this.handleValueTypeChange(name, idx, { type, value })
@@ -446,7 +446,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               name="address"
               placeholder="Address"
               types={addressTypes}
-              value={this.state.address[idx]}
+              value={x}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
                 this.handleValueTypeChange(name, idx, { type, value })

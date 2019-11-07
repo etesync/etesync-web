@@ -70,7 +70,7 @@ export const addJournal = createAction(
 
     return journalManager.create(journal);
   },
-  (etesync: CredentialsData, journal: EteSync.Journal) => {
+  (_etesync: CredentialsData, journal: EteSync.Journal) => {
     return { item: journal };
   }
 );
@@ -84,7 +84,7 @@ export const updateJournal = createAction(
 
     return journalManager.update(journal);
   },
-  (etesync: CredentialsData, journal: EteSync.Journal) => {
+  (_etesync: CredentialsData, journal: EteSync.Journal) => {
     return { item: journal };
   }
 );
@@ -98,7 +98,7 @@ export const deleteJournal = createAction(
 
     return journalManager.delete(journal);
   },
-  (etesync: CredentialsData, journal: EteSync.Journal) => {
+  (_etesync: CredentialsData, journal: EteSync.Journal) => {
     return { item: journal };
   }
 );
@@ -112,7 +112,7 @@ export const { fetchEntries, addEntries } = createActions({
 
       return entryManager.list(prevUid);
     },
-    (etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
+    (_etesync: CredentialsData, journalUid: string, prevUid: string | null) => {
       return { journal: journalUid, prevUid };
     },
   ],
@@ -124,7 +124,7 @@ export const { fetchEntries, addEntries } = createActions({
 
       return entryManager.create(newEntries, prevUid).then(() => newEntries);
     },
-    (etesync: CredentialsData, journalUid: string, newEntries: EteSync.Entry[], prevUid: string | null) => {
+    (_etesync: CredentialsData, journalUid: string, newEntries: EteSync.Entry[], prevUid: string | null) => {
       return { journal: journalUid, entries: newEntries, prevUid };
     },
   ],
@@ -149,7 +149,7 @@ export const createUserInfo = createAction(
 
     return userInfoManager.create(userInfo);
   },
-  (etesync: CredentialsData, userInfo: UserInfo) => {
+  (_etesync: CredentialsData, userInfo: UserInfo) => {
     return { userInfo };
   }
 );
