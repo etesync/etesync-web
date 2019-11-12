@@ -2,7 +2,7 @@ import { Action, ActionFunctionAny, combineActions, handleAction, handleActions 
 
 import { List, Map as ImmutableMap, Record } from 'immutable';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 
 import * as actions from './actions';
 

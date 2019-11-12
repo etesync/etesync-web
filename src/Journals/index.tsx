@@ -13,7 +13,7 @@ import { store, JournalsData, UserInfoData, CredentialsData } from '../store';
 import { addJournal, deleteJournal, updateJournal } from '../store/actions';
 import { SyncInfo } from '../SyncGate';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 
 class Journals extends React.PureComponent {
   public props: {

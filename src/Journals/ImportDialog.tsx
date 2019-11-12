@@ -16,7 +16,7 @@ import { SyncInfoJournal } from '../SyncGate';
 import { store, CredentialsData, UserInfoData } from '../store';
 import { addEntries } from '../store/actions';
 import { createJournalEntry } from '../etesync-helpers';
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 
 import * as ICAL from 'ical.js';
 import { ContactType, EventType, TaskType, PimType } from '../pim-types';

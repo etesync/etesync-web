@@ -5,7 +5,7 @@ import session from 'redux-persist/lib/storage/session';
 
 import { List, Map as ImmutableMap } from 'immutable';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 import {
   JournalsData, FetchType, EntriesData, EntriesFetchRecord, UserInfoData, JournalsFetchRecord, UserInfoFetchRecord,
   CredentialsTypeRemote, JournalsType, EntriesType, UserInfoType, SettingsType,

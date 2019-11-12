@@ -4,7 +4,7 @@ import * as ICAL from 'ical.js';
 
 import { EventType, ContactType, TaskType } from './pim-types';
 
-import * as EteSync from './api/EteSync';
+import * as EteSync from 'etesync';
 
 export function syncEntriesToItemMap(
   collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: ContactType} = {}) {

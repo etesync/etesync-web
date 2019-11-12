@@ -1,7 +1,7 @@
 import * as React from 'react';
 import sjcl from 'sjcl';
 
-import { byte, base64 } from '../api/Helpers';
+import { byte, base64 } from 'etesync';
 
 function byteArray4ToNumber(bytes: byte[], offset: number) {
   // tslint:disable:no-bitwise

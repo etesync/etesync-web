@@ -15,7 +15,7 @@ import AppBarOverride from '../widgets/AppBarOverride';
 import Container from '../widgets/Container';
 import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 import { SyncInfo } from '../SyncGate';
 import { handleInputChange } from '../helpers';
 

@@ -9,7 +9,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Action } from 'redux-actions';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 
 import { createSelector } from 'reselect';
 

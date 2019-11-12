@@ -5,11 +5,11 @@
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
+    "etesync": "^0.1.1",
     "ical.js": "^1.2.2",
     "immutable": "^4.0.0-rc.12",
     "localforage": "^1.7.3",
     "moment": "^2.24.0",
-    "node-rsa": "^1.0.3",
     "react": "^16.10.2",
     "react-big-calendar": "^0.20.3",
     "react-datetime": "^2.16.3",
@@ -25,8 +25,6 @@
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
-    "sjcl": "git+https://github.com/etesync/sjcl",
-    "urijs": "^1.19.1",
     "uuid": "^3.1.0"
   },
   "scripts": {

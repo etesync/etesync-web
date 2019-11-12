@@ -4062,6 +4062,15 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
+etesync@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/etesync/-/etesync-0.1.1.tgz#f856c9b9bc31f78200a2a34a0f1b9d1035f80d72"
+  integrity sha512-islIOoSopNgW0+MzLBU/lE0V0K64JCWl4mL5aNc/3MfbMQO6Db+ofmXNZo98EVB06vseglUs2ANc/wVrb9VL+w==
+  dependencies:
+    node-rsa "^1.0.6"
+    sjcl "git+https://github.com/etesync/sjcl"
+    urijs "^1.19.1"
+
 eventemitter3@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.0.tgz#d65176163887ee59f386d64c82610b696a4a74eb"
@@ -6934,10 +6943,10 @@ node-releases@^1.1.29, node-releases@^1.1.38:
   dependencies:
     semver "^6.3.0"
 
-node-rsa@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/node-rsa/-/node-rsa-1.0.3.tgz#e2d23be0096caeca014b139af480ca7bc614a589"
-  integrity sha512-gQowjnOunjmojrpO+d8x1ubL9X2Zpj4MRmY2J2hPtVF8g1VgOX1yNWUeCCoyzkRHunJf1/3orLzit5PiRtDz1A==
+node-rsa@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/node-rsa/-/node-rsa-1.0.6.tgz#47d22eba8b41192cd6f06db15870c67126f00aa4"
+  integrity sha512-v42495lozKpuQmrcIzld9ds/Tn7pwjuh0BHSHnhPrKkAVSyTAyrZodFLFafOfWiUKamLt4lgWdngP8W/LzCm2w==
   dependencies:
     asn1 "^0.2.4"
 
@@ -9487,9 +9496,9 @@ sisteransi@^1.0.3:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.3.tgz#98168d62b79e3a5e758e27ae63c4a053d748f4eb"
   integrity sha512-SbEG75TzH8G7eVXFSN5f9EExILKfly7SUvVY5DhhYLvfhKqhDFY0OzevWa/zwak0RLRfWS5AvfMWpd9gJvr5Yg==
 
-"sjcl@git+https://github.com/etesync/sjcl":
+"sjcl@git+https://github.com/etesync/sjcl.git":
   version "1.0.7"
-  resolved "git+https://github.com/etesync/sjcl#cf7673694e75d41902a68c69eb45ecc696393945"
+  resolved "git+https://github.com/etesync/sjcl.git#f259515e3c5cf8f437cdfa99c1cf0a8ad7321556"
 
 slash@^1.0.0:
   version "1.0.0"
@@ -10363,9 +10372,9 @@ uri-js@^4.2.2:
     punycode "^2.1.0"
 
 urijs@^1.19.1:
-  version "1.19.1"
-  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.1.tgz#5b0ff530c0cbde8386f6342235ba5ca6e995d25a"
-  integrity sha512-xVrGVi94ueCJNrBSTjWqjvtgvl3cyOTThp2zaMaFNGp3F542TR6sM3f2o8RqZl+AwteClSVmoCyt0ka4RjQOQg==
+  version "1.19.2"
+  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.2.tgz#f9be09f00c4c5134b7cb3cf475c1dd394526265a"
+  integrity sha512-s/UIq9ap4JPZ7H1EB5ULo/aOUbWqfDi7FKzMC2Nz+0Si8GiT1rIEaprt8hy3Vy2Ex2aJPpOQv4P4DuOZ+K1c6w==
 
 urix@^0.1.0:
   version "0.1.0"

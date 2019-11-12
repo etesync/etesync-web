@@ -3,7 +3,7 @@ import { entries, EntriesTypeImmutable } from './reducers';
 
 import { Map } from 'immutable';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 
 it('Entries reducer', () => {
   const jId = '24324324324';

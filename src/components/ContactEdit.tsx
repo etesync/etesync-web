@@ -19,7 +19,7 @@ import ConfirmationDialog from '../widgets/ConfirmationDialog';
 import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 
 import { ContactType } from '../pim-types';
 

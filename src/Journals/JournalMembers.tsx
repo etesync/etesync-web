@@ -13,7 +13,7 @@ import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
 import JournalMemberAddDialog from './JournalMemberAddDialog';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 import { CredentialsData, UserInfoData } from '../store';
 
 import { SyncInfoJournal } from '../SyncGate';

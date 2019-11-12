@@ -3,7 +3,7 @@ import * as React from 'react';
 import { store, persistor } from '../store';
 import { resetKey } from '../store/actions';
 
-import { EncryptionPasswordError, IntegrityError } from '../api/EteSync';
+import { EncryptionPasswordError, IntegrityError } from 'etesync';
 import PrettyError from '../widgets/PrettyError';
 
 interface PropsType {

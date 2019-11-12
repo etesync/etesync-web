@@ -6,7 +6,7 @@ import LoadingIndicator from '../widgets/LoadingIndicator';
 import ConfirmationDialog from '../widgets/ConfirmationDialog';
 import PrettyFingerprint from '../widgets/PrettyFingerprint';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 import { CredentialsData } from '../store';
 
 import { handleInputChange } from '../helpers';

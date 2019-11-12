@@ -15,7 +15,7 @@ import * as ICAL from 'ical.js';
 
 import { TaskType, EventType, ContactType } from '../pim-types';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 
 class JournalEntries extends React.PureComponent {
   public static defaultProps = {

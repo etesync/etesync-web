@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Route, Switch, withRouter } from 'react-router';
 
-import * as EteSync from '../api/EteSync';
+import * as EteSync from 'etesync';
 
 import { routeResolver } from '../App';
 

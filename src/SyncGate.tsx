@@ -19,8 +19,8 @@ import Journals from './Journals';
 import Settings from './Settings';
 import Pim from './Pim';
 
-import * as EteSync from './api/EteSync';
-import { CURRENT_VERSION } from './api/Constants';
+import * as EteSync from 'etesync';
+import { CURRENT_VERSION } from 'etesync';
 
 import { store, SettingsType, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoType } from './store';
 import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';

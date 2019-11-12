@@ -1,4 +1,4 @@
-import * as EteSync from './api/EteSync';
+import * as EteSync from 'etesync';
 
 import { CredentialsData, UserInfoData } from './store';
 import { addEntries } from './store/actions';
