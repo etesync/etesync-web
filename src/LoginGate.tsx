@@ -22,8 +22,9 @@ function EncryptionPart(props: { credentials: CredentialsType, onEncryptionFormS
   const credentials = props.credentials.value!;
 
   React.useEffect(() => {
-    store.dispatch<any>(fetchUserInfo(credentials, credentials.credentials.email)).then((userInfo: any) => {
-      setIsNewUser(userInfo.error);
+    // FIXME: verify the error is a 404
+    store.dispatch<any>(fetchUserInfo(credentials, credentials.credentials.email)).catch(() => {
+      setIsNewUser(true);
     }).finally(() => {
       setFetched(true);
     });
