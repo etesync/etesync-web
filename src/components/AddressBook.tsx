@@ -49,7 +49,7 @@ const AddressBookItem = React.memo((_props: any) => {
     <ListItem
       leftIcon={
         <Avatar style={{ backgroundColor: getContactColor(entry) }}>
-          {name && name[0].toUpperCase()}
+          {name && name[0] && name[0].toUpperCase()}
         </Avatar>}
       primaryText={name}
       onClick={() => onClick(entry)}
