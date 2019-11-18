@@ -44,9 +44,6 @@ const muiTheme = createMuiTheme({
       contrastText: 'white',
     },
   },
-  typography: {
-    useNextVariants: true,
-  },
 });
 
 export const routeResolver = new RouteResolver({

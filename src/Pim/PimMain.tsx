@@ -160,4 +160,4 @@ class PimMain extends React.PureComponent<PropsType> {
   }
 }
 
-export default withTheme()(historyPersistor('PimMain')(PimMain));
+export default withTheme(historyPersistor('PimMain')(PimMain));

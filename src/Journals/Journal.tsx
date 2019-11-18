@@ -166,4 +166,4 @@ class Journal extends React.Component<PropsTypeInner> {
   }
 }
 
-export default withTheme()(Journal);
+export default withTheme(Journal);

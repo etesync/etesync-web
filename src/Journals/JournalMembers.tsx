@@ -173,4 +173,4 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
   }
 }
 
-export default withTheme()(JournalMembers);
+export default withTheme(JournalMembers);

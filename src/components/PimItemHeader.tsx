@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Theme, withTheme } from '@material-ui/core/styles';
 
-export default withTheme()((props: {text: string, backgroundColor?: string, children?: any, theme: Theme}) => {
+export default withTheme((props: {text: string, backgroundColor?: string, children?: any, theme: Theme}) => {
   const style = {
     header: {
       backgroundColor: (props.backgroundColor !== undefined) ?

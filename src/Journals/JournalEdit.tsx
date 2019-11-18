@@ -183,4 +183,4 @@ class JournalEdit extends React.PureComponent<PropsTypeInner> {
 
 }
 
-export default withTheme()(JournalEdit);
+export default withTheme(JournalEdit);

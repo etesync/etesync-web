@@ -110,6 +110,6 @@ const mapStateToProps = (state: StoreState, _props: PropsType) => {
   };
 };
 
-export default withTheme()(withRouter(connect(
+export default withTheme(withRouter(connect(
   mapStateToProps
 )(SideMenu)));
