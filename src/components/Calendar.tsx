@@ -1,5 +1,5 @@
 import * as React from 'react';
-import BigCalendar, { View } from 'react-big-calendar';
+import { Calendar as BigCalendar, momentLocalizer, View } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import * as ICAL from 'ical.js';
@@ -8,7 +8,7 @@ import { EventType } from '../pim-types';
 
 import './Calendar.css';
 
-const calendarLocalizer = BigCalendar.momentLocalizer(moment);
+const calendarLocalizer = momentLocalizer(moment);
 
 const MAX_RECURRENCE_DATE = ICAL.Time.now();
 MAX_RECURRENCE_DATE.adjust(800, 0, 0, 0);
