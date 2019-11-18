@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { List as ImmutableList } from 'immutable';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
@@ -10,13 +11,18 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge';
 
 import NavigationMenu from '@material-ui/icons/Menu';
 import NavigationBack from '@material-ui/icons/ArrowBack';
 import NavigationRefresh from '@material-ui/icons/Refresh';
+import ErrorsIcon from '@material-ui/icons/Error';
 
 import './App.css';
 
+import ConfirmationDialog from './widgets/ConfirmationDialog';
+import PrettyError from './widgets/PrettyError';
+import { List, ListItem } from './widgets/List';
 import withSpin from './widgets/withSpin';
 import ErrorBoundary from './components/ErrorBoundary';
 import SideMenu from './SideMenu';
@@ -160,17 +166,19 @@ const IconRefreshWithSpin = withSpin(NavigationRefresh);
 class App extends React.PureComponent {
   public state: {
     drawerOpen: boolean;
+    errorsDialog: boolean;
   };
 
   public props: {
     credentials: store.CredentialsType;
     entries: store.EntriesType;
     fetchCount: number;
+    errors: ImmutableList<Error>;
   };
 
   constructor(props: any) {
     super(props);
-    this.state = { drawerOpen: false };
+    this.state = { drawerOpen: false, errorsDialog: false };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
@@ -180,6 +188,7 @@ class App extends React.PureComponent {
   public render() {
     const credentials = (this.props.credentials) ? this.props.credentials.value : null;
 
+    const errors = this.props.errors;
     const fetching = this.props.fetchCount > 0;
 
     const styles = {
@@ -197,11 +206,43 @@ class App extends React.PureComponent {
             <AppBarWitHistory
               toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
               iconElementRight={
-                <IconButton disabled={!credentials || fetching} onClick={this.refresh} title="Refresh">
-                  <IconRefreshWithSpin spin={fetching} />
-                </IconButton>}
-
+                <>
+                  {(errors.size > 0) && (
+                    <IconButton onClick={() => this.setState({ errorsDialog: true })} title="Parse Errors">
+                      <Badge badgeContent={errors.size} color="error">
+                        <ErrorsIcon />
+                      </Badge>
+                    </IconButton>
+                  )}
+                  <IconButton disabled={!credentials || fetching} onClick={this.refresh} title="Refresh">
+                    <IconRefreshWithSpin spin={fetching} />
+                  </IconButton>
+                </>
+              }
             />
+            <ConfirmationDialog
+              title="Parse Errors"
+              open={this.state.errorsDialog}
+              labelOk="OK"
+              onCancel={() => this.setState({ errorsDialog: false })}
+              onOk={() => this.setState({ errorsDialog: false })}
+            >
+              <h4>
+                This should not happen, please contact developers!
+              </h4>
+              <List>
+                {errors.map((error, index) => (
+                  <ListItem
+                    key={index}
+                    style={{ height: 'unset' }}
+                    onClick={() => (window as any).navigator.clipboard.writeText(`${error.message}\n\n${error.stack}`)}
+                  >
+                    <PrettyError error={error} />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmationDialog>
+
             <Drawer
               open={this.state.drawerOpen}
               onClose={this.toggleDrawer}
@@ -257,6 +298,7 @@ const mapStateToProps = (state: store.StoreState) => {
     credentials: credentialsSelector(state),
     entries: state.cache.entries,
     fetchCount: state.fetchCount,
+    errors: state.errors,
   };
 };
 

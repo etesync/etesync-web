@@ -3,6 +3,8 @@ import { List } from 'immutable';
 import * as ICAL from 'ical.js';
 
 import { EventType, ContactType, TaskType } from './pim-types';
+import { store } from './store';
+import { addError } from './store/actions';
 
 import * as EteSync from 'etesync';
 
@@ -11,7 +13,16 @@ export function syncEntriesToItemMap(
   const items = base;
 
   entries.forEach((syncEntry) => {
-    const comp = new ContactType(new ICAL.Component(ICAL.parse(syncEntry.content)));
+    // FIXME: this is a terrible hack to handle parsing errors
+    let parsed;
+    try {
+      parsed = ICAL.parse(syncEntry.content);
+    } catch (e) {
+      e.message = `${e.message}\nWhile processing: ${syncEntry.content}`;
+      store.dispatch(addError(undefined as any, e));
+      return;
+    }
+    const comp = new ContactType(new ICAL.Component(parsed));
 
     // FIXME:Hack
     (comp as any).journalUid = collection.uid;
@@ -57,7 +68,16 @@ function syncEntriesToCalendarItemMap<T extends EventType>(
   const color = colorIntToHtml(collection.color);
 
   entries.forEach((syncEntry) => {
-    const comp = ItemType.fromVCalendar(new ICAL.Component(ICAL.parse(syncEntry.content)));
+    // FIXME: this is a terrible hack to handle parsing errors
+    let parsed;
+    try {
+      parsed = ICAL.parse(syncEntry.content);
+    } catch (e) {
+      e.message = `${e.message}\nWhile processing: ${syncEntry.content}`;
+      store.dispatch(addError(undefined as any, e));
+      return;
+    }
+    const comp = ItemType.fromVCalendar(new ICAL.Component(parsed));
 
     if (comp === null) {
       return;

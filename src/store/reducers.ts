@@ -277,6 +277,19 @@ export const fetchCount = handleAction(
   0
 );
 
+export const errorsReducer = handleActions(
+  {
+    [actions.addError.toString()]: (state: List<Error>, action: Action<any>) => {
+      return state.push(action.payload);
+    },
+    [actions.clearErros.toString()]: (state: List<Error>, _action: Action<any>) => {
+      return state.clear();
+    },
+  },
+  List([])
+);
+
+
 // FIXME Move all the below (potentially the fetchCount ones too) to their own file
 export interface SettingsType {
   locale: string;

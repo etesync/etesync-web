@@ -185,6 +185,20 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
   };
 }
 
+export const addError = createAction(
+  'ADD_ERRORS',
+  (_etesync: CredentialsData, error: Error) => {
+    return error;
+  }
+);
+
+export const clearErros = createAction(
+  'CLEAR_ERRORS',
+  (_etesync: CredentialsData) => {
+    return true;
+  }
+);
+
 // FIXME: Move the rest to their own file
 export const setSettings = createAction(
   'SET_SETTINGS',

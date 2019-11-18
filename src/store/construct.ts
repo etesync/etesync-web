@@ -9,7 +9,7 @@ import * as EteSync from 'etesync';
 import {
   JournalsData, FetchType, EntriesData, EntriesFetchRecord, UserInfoData, JournalsFetchRecord, UserInfoFetchRecord,
   CredentialsTypeRemote, JournalsType, EntriesType, UserInfoType, SettingsType,
-  fetchCount, journals, entries, credentials, userInfo, settingsReducer, encryptionKeyReducer,
+  fetchCount, journals, entries, credentials, userInfo, settingsReducer, encryptionKeyReducer, errorsReducer,
 } from './reducers';
 
 export interface StoreState {
@@ -22,6 +22,7 @@ export interface StoreState {
     entries: EntriesType;
     userInfo: UserInfoType;
   };
+  errors: List<Error>;
 }
 
 const settingsPersistConfig = {
@@ -160,6 +161,7 @@ const reducers = combineReducers({
     journals,
     userInfo,
   })),
+  errors: errorsReducer,
 });
 
 export default reducers;
