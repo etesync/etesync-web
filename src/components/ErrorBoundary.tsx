@@ -59,7 +59,10 @@ class ErrorBoundary extends React.Component<PropsType> {
 
     if (error) {
       return (
-        <PrettyError error={this.state.error} />
+        <div>
+          <h2>Something went wrong!</h2>
+          <PrettyError error={this.state.error} />
+        </div>
       );
     }
     return this.props.children;
