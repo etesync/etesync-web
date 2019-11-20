@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { Action } from 'redux-actions';
+
 import Container from './widgets/Container';
 import ExternalLink from './widgets/ExternalLink';
 import SyncGate from './SyncGate';
@@ -9,22 +11,24 @@ import EncryptionLoginForm from './components/EncryptionLoginForm';
 import { store, CredentialsType } from './store';
 import { deriveKey, fetchCredentials, fetchUserInfo } from './store/actions';
 
+import * as EteSync from 'etesync';
 import * as C from './constants';
 
 import SignedPagesBadge from './images/signed-pages-badge.svg';
 import LoadingIndicator from './widgets/LoadingIndicator';
 
 
-function EncryptionPart(props: { credentials: CredentialsType, onEncryptionFormSubmit: (encryptionPassword: string) => void }) {
+function EncryptionPart(props: { credentials: CredentialsType }) {
   const [fetched, setFetched] = React.useState(false);
-  const [isNewUser, setIsNewUser] = React.useState(false);
+  const [userInfo, setUserInfo] = React.useState<EteSync.UserInfo>();
+  const [error, setError] = React.useState<Error>();
 
   const credentials = props.credentials.value!;
 
   React.useEffect(() => {
     // FIXME: verify the error is a 404
-    store.dispatch<any>(fetchUserInfo(credentials, credentials.credentials.email)).catch(() => {
-      setIsNewUser(true);
+    store.dispatch<any>(fetchUserInfo(credentials, credentials.credentials.email)).then((fetchedUserInfo: Action<EteSync.UserInfo>) => {
+      setUserInfo(fetchedUserInfo.payload);
     }).finally(() => {
       setFetched(true);
     });
@@ -34,6 +38,21 @@ function EncryptionPart(props: { credentials: CredentialsType, onEncryptionFormS
     return <LoadingIndicator />;
   }
 
+  function onEncryptionFormSubmit(encryptionPassword: string) {
+    const derivedAction = deriveKey(props.credentials.value!.credentials.email, encryptionPassword);
+    if (userInfo) {
+      const userInfoCryptoManager = userInfo.getCryptoManager(derivedAction.payload!);
+      try {
+        userInfo.verify(userInfoCryptoManager);
+      } catch (e) {
+        setError(new EteSync.EncryptionPasswordError('Wrong encryption password'));
+        return;
+      }
+    }
+    store.dispatch(derivedAction);
+  }
+
+  const isNewUser = !userInfo;
 
   return (
     <Container style={{ maxWidth: '30rem' }}>
@@ -53,7 +72,8 @@ function EncryptionPart(props: { credentials: CredentialsType, onEncryptionFormS
       }
 
       <EncryptionLoginForm
-        onSubmit={props.onEncryptionFormSubmit}
+        error={error}
+        onSubmit={onEncryptionFormSubmit}
       />
     </Container>
   );
@@ -68,16 +88,11 @@ class LoginGate extends React.Component {
   constructor(props: any) {
     super(props);
     this.onFormSubmit = this.onFormSubmit.bind(this);
-    this.onEncryptionFormSubmit = this.onEncryptionFormSubmit.bind(this);
   }
 
   public onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
     serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
     store.dispatch<any>(fetchCredentials(username, password, serviceApiUrl));
-  }
-
-  public onEncryptionFormSubmit(encryptionPassword: string) {
-    store.dispatch(deriveKey(this.props.credentials.value!.credentials.email, encryptionPassword));
   }
 
   public render() {
@@ -118,7 +133,7 @@ class LoginGate extends React.Component {
       );
     } else if (this.props.credentials.value.encryptionKey === null) {
       return (
-        <EncryptionPart credentials={this.props.credentials} onEncryptionFormSubmit={this.onEncryptionFormSubmit} />
+        <EncryptionPart credentials={this.props.credentials} />
       );
     }
 
