@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import IconAdd from '@material-ui/icons/Add';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
+import IconError from '@material-ui/icons/Error';
 
 import * as ICAL from 'ical.js';
 
@@ -43,7 +44,26 @@ class JournalEntries extends React.PureComponent {
     }
 
     const entries = this.props.entries.map((syncEntry, idx) => {
-      const comp = new ICAL.Component(ICAL.parse(syncEntry.content));
+      let parsed;
+      try {
+        parsed = ICAL.parse(syncEntry.content);
+      } catch (e) {
+        const icon = (<IconError style={{ color: 'red' }} />);
+        return (
+          <ListItem
+            key={idx}
+            leftIcon={icon}
+            primaryText="Failed parsing item"
+            secondaryText="Unknown"
+            onClick={() => {
+              this.setState({
+                dialog: syncEntry.content,
+              });
+            }}
+          />
+        );
+      }
+      const comp = new ICAL.Component(parsed);
 
       let icon;
       if (syncEntry.action === EteSync.SyncEntryAction.Add) {
