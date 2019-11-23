@@ -6,6 +6,7 @@ import Journal from './Journal';
 import JournalEdit from './JournalEdit';
 import JournalMembers from './JournalMembers';
 import JournalsList from './JournalsList';
+import JournalsListImport from './JournalsListImport';
 
 import { routeResolver } from '../App';
 
@@ -45,6 +46,21 @@ class Journals extends React.PureComponent {
                 etesync={this.props.etesync}
                 journals={this.props.journals}
                 history={history}
+              />
+            </>
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('journals.import')}
+          exact
+          render={({ history }) => (
+            <>
+              <JournalsListImport
+                userInfo={this.props.userInfo}
+                etesync={this.props.etesync}
+                journals={this.props.journals}
+                history={history}
+                syncInfo={this.props.syncInfo}
               />
             </>
           )}

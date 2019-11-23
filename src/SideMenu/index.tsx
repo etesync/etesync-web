@@ -10,6 +10,7 @@ import ActionJournals from '@material-ui/icons/LibraryBooks';
 import ActionBugReport from '@material-ui/icons/BugReport';
 import ActionQuestionAnswer from '@material-ui/icons/QuestionAnswer';
 import LogoutIcon from '@material-ui/icons/PowerSettingsNew';
+import IconImport from '@material-ui/icons/ImportExport';
 
 import logo from '../images/logo.svg';
 
@@ -58,6 +59,14 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
             onClick={() => {
               this.props.onCloseDrawerRequest();
               this.props.history.push(routeResolver.getRoute('journals'));
+            }}
+          />
+          <ListItem
+            primaryText="Import"
+            leftIcon={<IconImport />}
+            onClick={() => {
+              this.props.onCloseDrawerRequest();
+              this.props.history.push(routeResolver.getRoute('journals.import'));
             }}
           />
           <ListItem
