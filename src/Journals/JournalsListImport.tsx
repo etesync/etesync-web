@@ -1,16 +1,9 @@
 import * as React from 'react';
 
-import { Link } from 'react-router-dom';
-
-import IconButton from '@material-ui/core/IconButton';
-import IconAdd from '@material-ui/icons/Add';
-
 import { List, ListItem } from '../widgets/List';
 
 import AppBarOverride from '../widgets/AppBarOverride';
 import Container from '../widgets/Container';
-
-import { routeResolver } from '../App';
 
 import { JournalsData, UserInfoData, CredentialsData } from '../store';
 import ImportDialog from './ImportDialog';
@@ -48,17 +41,8 @@ export default function JournalsList(props: PropsType) {
     });
 
   return (
-
     <Container>
-      <AppBarOverride title="Journals Import">
-        <IconButton
-          component={Link}
-          title="New"
-          {...{ to: routeResolver.getRoute('journals.new') }}
-        >
-          <IconAdd />
-        </IconButton>
-      </AppBarOverride>
+      <AppBarOverride title="Journals Import" />
       <List>
         <ListItem
           primaryText="Address Books"
