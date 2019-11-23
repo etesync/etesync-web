@@ -92,6 +92,7 @@ export const routeResolver = new RouteResolver({
       },
     },
     new: 'new',
+    import: 'import',
   },
   settings: {
   },
