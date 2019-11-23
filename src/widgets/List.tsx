@@ -80,6 +80,7 @@ export const ListItem = React.memo((_props: any) => {
     primaryText,
     secondaryText,
     children,
+    style,
     ...props
   } = _props;
 
@@ -101,8 +102,11 @@ export const ListItem = React.memo((_props: any) => {
     );
   }
 
+  const pressedStyle = (_props.onClick) ? { cursor: 'pointer' } : undefined;
+
   return (
     <ListItemRaw
+      style={{ ...pressedStyle, ...style }}
       {...props}
     >
       {leftIconHolder}
