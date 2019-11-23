@@ -53,13 +53,12 @@ class Journals extends React.PureComponent {
         <Route
           path={routeResolver.getRoute('journals.import')}
           exact
-          render={({ history }) => (
+          render={() => (
             <>
               <JournalsListImport
                 userInfo={this.props.userInfo}
                 etesync={this.props.etesync}
                 journals={this.props.journals}
-                history={history}
                 syncInfo={this.props.syncInfo}
               />
             </>
