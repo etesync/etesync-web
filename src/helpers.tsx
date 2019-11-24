@@ -100,3 +100,7 @@ export function formatOurTimezoneOffset() {
 
   return `GMT${prefix}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
+
+export function getCurrentTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
