@@ -102,7 +102,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
   }
 
-  public componentWillReceiveProps(nextProps: any) {
+  public UNSAFE_componentWillReceiveProps(nextProps: any) {
     if ((this.props.collections !== nextProps.collections) ||
       (this.props.initialCollection !== nextProps.initialCollection)) {
       if (nextProps.initialCollection) {
