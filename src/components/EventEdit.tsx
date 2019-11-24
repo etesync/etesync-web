@@ -20,6 +20,7 @@ import IconSave from '@material-ui/icons/Save';
 import DateTimePicker from '../widgets/DateTimePicker';
 
 import ConfirmationDialog from '../widgets/ConfirmationDialog';
+import TimezonePicker from '../widgets/TimezonePicker';
 
 import { Location } from 'history';
 import { withRouter } from 'react-router';
@@ -29,7 +30,9 @@ import * as ICAL from 'ical.js';
 
 import * as EteSync from 'etesync';
 
-import { EventType } from '../pim-types';
+import { getCurrentTimezone } from '../helpers';
+
+import { EventType, timezoneLoadFromName } from '../pim-types';
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
@@ -48,6 +51,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     allDay: boolean;
     start?: Date;
     end?: Date;
+    timezone: string | null;
     location: string;
     description: string;
     journalUid: string;
@@ -64,6 +68,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       allDay: false,
       location: '',
       description: '',
+      timezone: null,
 
       journalUid: '',
       showDeleteDialog: false,
@@ -94,13 +99,16 @@ class EventEdit extends React.PureComponent<PropsType> {
       this.state.uid = event.uid;
       this.state.title = event.title ? event.title : '';
       this.state.allDay = allDay;
-      this.state.start = event.startDate.toJSDate();
-      this.state.end = endDate.toJSDate();
+      this.state.start = event.startDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
+      this.state.end = endDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
+      this.state.timezone = event.timezone;
     } else {
       this.state.uid = uuid.v4();
     }
+
+    this.state.timezone = this.state.timezone || getCurrentTimezone();
 
     if (props.initialCollection) {
       this.state.journalUid = props.initialCollection;
@@ -189,6 +197,13 @@ class EventEdit extends React.PureComponent<PropsType> {
     event.endDate = endDate;
     event.location = this.state.location;
     event.description = this.state.description;
+    if (this.state.timezone) {
+      const timezone = timezoneLoadFromName(this.state.timezone);
+      if (timezone) {
+        event.startDate = event.startDate?.convertToZone(timezone);
+        event.endDate = event.endDate?.convertToZone(timezone);
+      }
+    }
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
@@ -218,6 +233,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     };
 
     const recurring = this.props.item && this.props.item.isRecurring();
+    const differentTimezone = this.state.timezone && (this.state.timezone !== getCurrentTimezone()) && timezoneLoadFromName(this.state.timezone);
 
     return (
       <React.Fragment>
@@ -267,6 +283,9 @@ class EventEdit extends React.PureComponent<PropsType> {
               value={this.state.start}
               onChange={(date?: Date) => this.setState({ start: date })}
             />
+            {differentTimezone && this.state.start && (
+              <FormHelperText>{ICAL.Time.fromJSDate(this.state.start, false).convertToZone(differentTimezone!).toJSDate().toString()}</FormHelperText>
+            )}
           </FormControl>
 
           <FormControl>
@@ -277,6 +296,9 @@ class EventEdit extends React.PureComponent<PropsType> {
               value={this.state.end}
               onChange={(date?: Date) => this.setState({ end: date })}
             />
+            {differentTimezone && this.state.end && (
+              <FormHelperText>{ICAL.Time.fromJSDate(this.state.end, false).convertToZone(differentTimezone!).toJSDate().toString()}</FormHelperText>
+            )}
           </FormControl>
 
           <FormGroup>
@@ -292,6 +314,10 @@ class EventEdit extends React.PureComponent<PropsType> {
               label="All Day"
             />
           </FormGroup>
+
+          {(!this.state.allDay) && (
+            <TimezonePicker value={this.state.timezone} onChange={(zone) => this.setState({ timezone: zone })} />
+          )}
 
           <TextField
             name="location"
