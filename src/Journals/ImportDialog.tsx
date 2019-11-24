@@ -130,6 +130,7 @@ class ImportDialog extends React.Component<PropsType> {
         addEntries(this.props.etesync, syncJournal.journal.uid, journalItems, lastUid)
       ).then(() => {
         if (this.props.onClose) {
+          this.setState({ loading: false });
           this.props.onClose();
         }
       });
