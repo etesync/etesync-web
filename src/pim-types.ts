@@ -1,9 +1,46 @@
 import * as ICAL from 'ical.js';
+import * as zones from './data/zones.json';
+
+export const PRODID = '-//iCal.js EteSync iOS';
 
 export interface PimType {
   uid: string;
   toIcal(): string;
   clone(): PimType;
+}
+
+export function timezoneLoadFromName(timezone: string | null) {
+  if (!timezone) {
+    return null;
+  }
+
+  let zone = zones.zones[timezone];
+  if (!zone && zones.aliases[timezone]) {
+    zone = zones.zones[zones.aliases[timezone]];
+  }
+
+  if (!zone) {
+    return null;
+  }
+
+  if (ICAL.TimezoneService.has(timezone)) {
+    return ICAL.TimezoneService.get(timezone);
+  }
+
+  const component = new ICAL.Component('vtimezone');
+  zone.ics.forEach((zonePart: string) => {
+    component.addSubcomponent(new ICAL.Component(ICAL.parse(zonePart)));
+  });
+  component.addPropertyWithValue('tzid', timezone);
+
+  const retZone = new ICAL.Timezone({
+    component,
+    tzid: timezone,
+  });
+
+  ICAL.TimezoneService.register(timezone, retZone);
+
+  return retZone;
 }
 
 export class EventType extends ICAL.Event implements PimType {
@@ -12,11 +49,13 @@ export class EventType extends ICAL.Event implements PimType {
   }
 
   public static fromVCalendar(comp: ICAL.Component) {
-    return new EventType(comp.getFirstSubcomponent('vevent'));
+    const event = new EventType(comp.getFirstSubcomponent('vevent'));
+    // FIXME: we need to clone it so it loads the correct timezone and applies it
+    timezoneLoadFromName(event.timezone);
+    return event.clone();
   }
 
   public color: string;
-  public timezoneComp: ICAL.Component | null;
 
   get timezone() {
     if (this.startDate) {
@@ -50,13 +89,11 @@ export class EventType extends ICAL.Event implements PimType {
 
   public toIcal() {
     const comp = new ICAL.Component(['vcalendar', [], []]);
-    comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
+    comp.updatePropertyWithValue('prodid', PRODID);
     comp.updatePropertyWithValue('version', '2.0');
 
     comp.addSubcomponent(this.component);
-    if (this.timezoneComp) {
-      comp.addSubcomponent(this.timezoneComp);
-    }
+    ICAL.helpers.updateTimezones(comp);
     return comp.toString();
   }
 
@@ -76,12 +113,15 @@ export enum TaskStatusType {
 
 export class TaskType extends EventType {
   public static fromVCalendar(comp: ICAL.Component) {
-    return new TaskType(comp.getFirstSubcomponent('vtodo'));
+    const task = new TaskType(comp.getFirstSubcomponent('vtodo'));
+    // FIXME: we need to clone it so it loads the correct timezone and applies it
+    timezoneLoadFromName(task.timezone);
+    return task.clone();
   }
 
   public color: string;
 
-  constructor(comp: ICAL.Component | null) {
+  constructor(comp?: ICAL.Component | null) {
     super(comp ? comp : new ICAL.Component('vtodo'));
   }
 
@@ -110,13 +150,25 @@ export class TaskType extends EventType {
     return this.component.getFirstPropertyValue('due');
   }
 
+  set completionDate(date: ICAL.Time | undefined) {
+    if (date) {
+      this.component.updatePropertyWithValue('completed', date);
+    } else {
+      this.component.removeAllProperties('completed');
+    }
+  }
+
+  get completionDate() {
+    return this.component.getFirstPropertyValue('completed');
+  }
+
   get endDate() {
     // XXX: A hack to override this as it shouldn't be used
     return undefined as any;
   }
 
   get allDay() {
-    return !!((this.startDate && this.startDate.isDate) || (this.dueDate && this.dueDate.isDate));
+    return !!((this.startDate?.isDate) || (this.dueDate?.isDate));
   }
 
   public clone() {
@@ -147,5 +199,10 @@ export class ContactType implements PimType {
 
   get fn() {
     return this.comp.getFirstPropertyValue('fn');
+  }
+
+  get group() {
+    const kind = this.comp.getFirstPropertyValue('kind');
+    return kind in ['group', 'organization'];
   }
 }
