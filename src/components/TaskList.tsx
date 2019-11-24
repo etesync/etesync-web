@@ -23,20 +23,7 @@ const TaskListItem = React.memo((_props: any) => {
 
 const sortSelector = createSelector(
   (entries: TaskType[]) => entries,
-  (entries) => {
-    return entries.sort((_a, _b) => {
-      const a = _a.title;
-      const b = _b.title;
-
-      if (a < b) {
-        return -1;
-      } else if (a > b) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-  }
+  (entries) => entries.sort((a, b) => a.title.localeCompare(b.title))
 );
 
 class TaskList extends React.PureComponent {
