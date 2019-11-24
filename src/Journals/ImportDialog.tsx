@@ -154,11 +154,8 @@ class ImportDialog extends React.Component<PropsType> {
   private onFileDropEvent(acceptedFiles: File[], rejectedFiles: File[]) {
     const itemsCreator = (fileText: string) => {
       const calendarComp = new ICAL.Component(ICAL.parse(fileText));
-      const timezoneComp = calendarComp.getFirstSubcomponent('vtimezone');
       return calendarComp.getAllSubcomponents('vevent').map((comp) => {
-        const ret = new EventType(comp);
-        ret.timezoneComp = timezoneComp;
-        return ret;
+        return new EventType(comp);
       });
     };
 
@@ -168,11 +165,8 @@ class ImportDialog extends React.Component<PropsType> {
   private onFileDropTask(acceptedFiles: File[], rejectedFiles: File[]) {
     const itemsCreator = (fileText: string) => {
       const calendarComp = new ICAL.Component(ICAL.parse(fileText));
-      const timezoneComp = calendarComp.getFirstSubcomponent('vtimezone');
       return calendarComp.getAllSubcomponents('vtodo').map((comp) => {
-        const ret = new TaskType(comp);
-        ret.timezoneComp = timezoneComp;
-        return ret;
+        return new TaskType(comp);
       });
     };
 
