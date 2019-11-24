@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import PimItemHeader from './PimItemHeader';
 
-import { formatDateRange } from '../helpers';
+import { formatDateRange, formatOurTimezoneOffset } from '../helpers';
 
 import { EventType } from '../pim-types';
 
@@ -27,7 +27,7 @@ class Event extends React.PureComponent {
     return (
       <React.Fragment>
         <PimItemHeader text={this.props.item.summary} backgroundColor={this.props.item.color}>
-          <div>{formatDateRange(this.props.item.startDate, this.props.item.endDate)} {timezone && <small>({timezone})</small>}</div>
+          <div>{formatDateRange(this.props.item.startDate, this.props.item.endDate)} {timezone && <small>({formatOurTimezoneOffset()})</small>}</div>
           <br />
           <div><u>{this.props.item.location}</u></div>
         </PimItemHeader>

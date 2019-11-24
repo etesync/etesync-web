@@ -90,3 +90,13 @@ export function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
 
   return strStart + ' - ' + strEnd;
 }
+
+export function formatOurTimezoneOffset() {
+  let offset = new Date().getTimezoneOffset();
+  const prefix = (offset > 0) ? '-' : '+';
+  offset = Math.abs(offset);
+  const hours = Math.floor(offset / 60);
+  const minutes = offset % 60;
+
+  return `GMT${prefix}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
