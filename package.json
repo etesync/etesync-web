@@ -51,7 +51,7 @@
     "@types/sjcl": "^1.0.28",
     "@types/urijs": "^1.15.38",
     "@types/uuid": "^3.4.3",
-    "typescript": "^3.3.3"
+    "typescript": "^3.7.2"
   },
   "browserslist": [
     ">0.2%",
