@@ -6,11 +6,11 @@ import { List, ListItem } from '../widgets/List';
 
 import { TaskType } from '../pim-types';
 
-const TaskListItem = React.memo((_props: any) => {
+const TaskListItem = React.memo((props: { entry: TaskType, onClick: (entry: TaskType) => void }) => {
   const {
     entry,
     onClick,
-  } = _props;
+  } = props;
   const title = entry.title;
 
   return (
@@ -29,7 +29,7 @@ const sortSelector = createSelector(
 class TaskList extends React.PureComponent {
   public props: {
     entries: TaskType[];
-    onItemClick: (contact: TaskType) => void;
+    onItemClick: (entry: TaskType) => void;
   };
 
   public render() {
