@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import * as colors from '@material-ui/core/colors';
 
@@ -258,6 +259,26 @@ class EventEdit extends React.PureComponent<PropsType> {
             </Select>
           </FormControl>
 
+          <FormControl>
+            <FormHelperText>FROM</FormHelperText>
+            <DateTimePicker
+              dateOnly={this.state.allDay}
+              placeholder="Start"
+              value={this.state.start}
+              onChange={(date?: Date) => this.setState({ start: date })}
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormHelperText>TO</FormHelperText>
+            <DateTimePicker
+              dateOnly={this.state.allDay}
+              placeholder="End"
+              value={this.state.end}
+              onChange={(date?: Date) => this.setState({ end: date })}
+            />
+          </FormControl>
+
           <FormGroup>
             <FormControlLabel
               control={
@@ -271,24 +292,6 @@ class EventEdit extends React.PureComponent<PropsType> {
               label="All Day"
             />
           </FormGroup>
-
-          <div>
-            <DateTimePicker
-              dateOnly={this.state.allDay}
-              placeholder="Start"
-              value={this.state.start}
-              onChange={(date?: Date) => this.setState({ start: date })}
-            />
-          </div>
-
-          <div>
-            <DateTimePicker
-              dateOnly={this.state.allDay}
-              placeholder="End"
-              value={this.state.end}
-              onChange={(date?: Date) => this.setState({ end: date })}
-            />
-          </div>
 
           <TextField
             name="location"
