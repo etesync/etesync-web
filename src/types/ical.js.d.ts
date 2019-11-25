@@ -142,4 +142,33 @@ declare module 'ical.js' {
     static public register(tzid: string, zone: Timezone | Component);
     static public remove(tzid: string): Timezone | null;
   }
+
+  export type FrequencyValues = 'YEARLY' | 'MONTHLY' | 'WEEKLY' | 'DAILY' | 'HOURLY' | 'MINUTELY' | 'SECONDLY';
+
+  export enum WeekDay {
+    SUNDAY = 1,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+  }
+
+  export class Recur {
+    public freq?: FrequencyValues;
+    public interval?: number;
+    public wkst?: WeekDay;
+    public until?: Time;
+    public count?: number;
+    public bysecond?: number[];
+    public byminute?: number[];
+    public byhour?: number[];
+    public byday?: number[];
+    public bymonthday?: number[];
+    public byyearday?: number[];
+    public byweekno?: number[];
+    public bymonth?: number[];
+    public bysetpos?: number[];
+  }
 }
