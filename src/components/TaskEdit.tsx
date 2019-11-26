@@ -188,9 +188,15 @@ class TaskEdit extends React.PureComponent<PropsType> {
     if (this.state.timezone) {
       const timezone = timezoneLoadFromName(this.state.timezone);
       if (timezone) {
-        event.startDate = event.startDate?.convertToZone(timezone);
-        event.dueDate = event.dueDate?.convertToZone(timezone);
-        event.completionDate = event.completionDate?.convertToZone(timezone);
+        if (event.startDate) {
+          event.startDate = event.startDate.convertToZone(timezone);
+        }
+        if (event.dueDate) {
+          event.dueDate = event.dueDate.convertToZone(timezone);
+        }
+        if (event.completionDate) {
+          event.completionDate = event.completionDate.convertToZone(timezone);
+        }
       }
     }
 
