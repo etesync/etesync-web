@@ -26,34 +26,30 @@ const sortSelector = createSelector(
   (entries) => entries.sort((a, b) => a.title.localeCompare(b.title))
 );
 
-class TaskList extends React.PureComponent {
-  public props: {
-    entries: TaskType[];
-    onItemClick: (entry: TaskType) => void;
-  };
-
-  public render() {
-    const entries = this.props.entries.filter((x) => !x.finished);
-    const sortedEntries = sortSelector(entries);
-
-    const itemList = sortedEntries.map((entry) => {
-      const uid = entry.uid;
-
-      return (
-        <TaskListItem
-          key={uid}
-          entry={entry}
-          onClick={this.props.onItemClick}
-        />
-      );
-    });
-
-    return (
-      <List>
-        {itemList}
-      </List>
-    );
-  }
+interface PropsType {
+  entries: TaskType[];
+  onItemClick: (entry: TaskType) => void;
 }
 
-export default TaskList;
+export default React.memo(function TaskList(props: PropsType) {
+  const entries = props.entries.filter((x) => !x.finished);
+  const sortedEntries = sortSelector(entries);
+
+  const itemList = sortedEntries.map((entry) => {
+    const uid = entry.uid;
+
+    return (
+      <TaskListItem
+        key={uid}
+        entry={entry}
+        onClick={props.onItemClick}
+      />
+    );
+  });
+
+  return (
+    <List>
+      {itemList}
+    </List>
+  );
+});
