@@ -146,7 +146,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
       syncAll();
     } else {
       const fetching = store.dispatch(fetchUserInfo(this.props.etesync, me)) as any;
-      fetching.then(sync);
+      fetching.then(sync).catch(() => sync());
     }
   }
 

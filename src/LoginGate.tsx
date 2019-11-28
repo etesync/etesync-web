@@ -29,6 +29,8 @@ function EncryptionPart(props: { credentials: CredentialsType }) {
     // FIXME: verify the error is a 404
     store.dispatch<any>(fetchUserInfo(credentials, credentials.credentials.email)).then((fetchedUserInfo: Action<EteSync.UserInfo>) => {
       setUserInfo(fetchedUserInfo.payload);
+    }).catch(() => {
+      // Do nothing.
     }).finally(() => {
       setFetched(true);
     });
