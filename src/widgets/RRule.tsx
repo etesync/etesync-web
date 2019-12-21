@@ -28,7 +28,7 @@ export default function RRuleEteSync(props: PropsType) {
       <Container>
         <RadioGroup
           row
-          value={RRule.fromString(props.rrule)}
+          value={RRule.fromString(props.rrule).options.freq}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             const freq: Frequency = Number(event.currentTarget.value);
             updateRule(props.rrule, freq, 'freq');
