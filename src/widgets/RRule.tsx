@@ -1,37 +1,37 @@
 import * as React from 'react';
 import Container from './Container';
-import { Input, RadioGroup, FormControlLabel, Radio, FormLabel } from '@material-ui/core';
+import { RadioGroup, FormControlLabel, Radio, TextField } from '@material-ui/core';
 import RRule, { RRuleSet, Frequency } from 'rrule';
+import DateTimePicker from '../widgets/DateTimePicker';
 
-interface PropsType { sendRRule: (rRule: string) => void }
-
+interface PropsType {
+  onChange: (rrule: string) => void;
+  rrule: string;
+}
 export default function RRuleEteSync(props: PropsType) {
-  const [frequency, setFrequency] = React.useState(RRuleSet.HOURLY);
-  const [interval, setInterval] = React.useState<number | undefined>();
-  const [ends, setEnds] = React.useState('never');
-  const [until, setUntil] = React.useState<Date | null>(null);
-  const [count, setCount] = React.useState<number | null | undefined>();
-  const rule = new RRule({
-    freq: frequency,
-    interval: interval,
-    dtstart: new Date(),
-    until: until,
-    count: count,
-  });
 
-  props.sendRRule(rule.toString());
+  const updateRule = (rule: string, value: any, name: string) => {
+    const prevOptions = RRule.fromString(rule).options;
+    const options = {
+      freq: prevOptions.freq,
+      interval: prevOptions.interval,
+      until: prevOptions.until,
+      count: prevOptions.count,
+    };
+    options[name] = value;
+    const newRule = new RRule(options);
+    props.onChange(newRule.toString());
+  };
+
   return (
     <div>
       <Container>
-        <FormLabel component="legend">
-          {`Repeat ${Frequency[frequency].toLowerCase()}`}
-        </FormLabel>
         <RadioGroup
           row
-          value={frequency}
+          value={RRule.fromString(props.rrule)}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             const freq: Frequency = Number(event.currentTarget.value);
-            setFrequency(freq);
+            updateRule(props.rrule, freq, 'freq');
           }}
         >
           <FormControlLabel value={RRuleSet.HOURLY} control={<Radio />} label="Hour" />
@@ -42,59 +42,44 @@ export default function RRuleEteSync(props: PropsType) {
         </RadioGroup>
       </Container>
       <Container>
-        <FormLabel component="legend">Ends</FormLabel>
-        <RadioGroup
-          row
-          value={ends}
-          onChange={(event: React.FormEvent<{ value: unknown }>) => { setEnds(event.currentTarget.value as string) }}
-        >
-          <FormControlLabel value="never" control={<Radio />} label="Never" />
-          <FormControlLabel value="after" control={<Radio />} label="After" />
-          <FormControlLabel value="onDate" control={<Radio />} label="On Date" />
-        </RadioGroup>
-        <Input
+        <TextField
           type="number"
           placeholder="Interval"
           inputProps={{ min: 1, max: 1000 }}
-          value={interval}
+          value={RRule.fromString(props.rrule).options.interval}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             event.preventDefault();
             const inputNode = event.currentTarget as HTMLInputElement;
             if (inputNode.value === '') {
-              setInterval(undefined);
+              updateRule(props.rrule, undefined, 'interval');
             } else if (inputNode.valueAsNumber) {
-              setInterval(inputNode.valueAsNumber);
+              updateRule(props.rrule, inputNode.valueAsNumber, 'interval');
             }
           }}
         />
-        <Input
-          disabled={ends !== 'after'}
+        <TextField
+          //disabled={ends !== 'after'}
           type="number"
           placeholder="Number of repetitions"
-          value={count}
+          value={RRule.fromString(props.rrule).options.count}
           inputProps={{ min: 1, step: 1 }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             event.preventDefault();
             const inputNode = event.currentTarget as HTMLInputElement;
             if (inputNode.value === '') {
-              setCount(null);
+              updateRule(props.rrule, null, 'count');
             } else if (inputNode.valueAsNumber) {
-              setCount(inputNode.valueAsNumber);
+              updateRule(props.rrule, inputNode.valueAsNumber, 'count');
             }
           }}
         />
-        <Input
-          disabled={ends !== 'onDate'}
-          type="date"
-          value={until?.toISOString().split('T')[0]}
-          onChange={(event: React.FormEvent<{ value: unknown }>) => {
-            const dateInput = event.currentTarget as HTMLInputElement;
-            setUntil(dateInput.valueAsDate);
-          }}
+        <DateTimePicker
+          dateOnly
+          //disabled={ends !== 'onDate'}
+          value={RRule.fromString(props.rrule).options.until as Date || undefined}
+          placeholder="Ends"
+          onChange={(date?: Date) => updateRule(props.rrule, date, 'until')}
         />
-      </Container>
-      <Container>
-        {rule.toText()}
       </Container>
     </div>
   );
