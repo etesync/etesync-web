@@ -115,30 +115,32 @@ export default function RRuleEteSync(props: PropsType) {
         <MenuItem value="after">After</MenuItem>
         <MenuItem value="onDate">On Date</MenuItem>
       </Select>
-      <TextField
-        type="number"
-        placeholder="Number of repetitions"
-        disabled={!options.count}
-        value={options.count}
-        inputProps={{ min: 1, step: 1 }}
-        onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          event.preventDefault();
-          const inputNode = event.currentTarget as HTMLInputElement;
-          if (inputNode.value === '') {
-            updateRule({ count: null });
-          } else if (inputNode.valueAsNumber) {
-            updateRule({ count: inputNode.valueAsNumber });
-          }
-        }}
-      />
-      <DateTimePicker
-        dateOnly
-        value={options.until || undefined}
-        disabled={!options.until}
-        placeholder="Ends"
-        onChange={(date?: Date) =>
-          updateRule({ until: date })}
-      />
+      {options.count &&
+        <TextField
+          type="number"
+          placeholder="Number of repetitions"
+          value={options.count}
+          inputProps={{ min: 1, step: 1 }}
+          onChange={(event: React.FormEvent<{ value: unknown }>) => {
+            event.preventDefault();
+            const inputNode = event.currentTarget as HTMLInputElement;
+            if (inputNode.value === '') {
+              updateRule({ count: null });
+            } else if (inputNode.valueAsNumber) {
+              updateRule({ count: inputNode.valueAsNumber });
+            }
+          }}
+        />}
+
+      {options.until &&
+        <DateTimePicker
+          dateOnly
+          value={options.until || undefined}
+          placeholder="Ends"
+          onChange={(date?: Date) =>
+            updateRule({ until: date })}
+        />
+      }
     </Container>
   );
 }
