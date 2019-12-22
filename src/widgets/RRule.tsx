@@ -1,7 +1,9 @@
 import * as React from 'react';
 import Container from './Container';
 import { TextField, Select, InputLabel, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
-import RRule from 'rrule';
+//import RRule, { Options, WeekdayStr } from 'rrule';
+import RRule, { Options, Weekday } from 'rrule';
+
 import DateTimePicker from '../widgets/DateTimePicker';
 
 interface PropsType {
@@ -14,7 +16,7 @@ const frequency = {
   weekly: 2,
   daily: 3,
 };
-const weekdays = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+const weekdays = { 0: 'MO', 1: 'TU', 2: 'WE', 3: 'TH', 4: 'FR', 5: 'SA', 6: 'SU' };
 const menuItemsFrequency = Object.keys(frequency).map((key) => {
   return (
     <MenuItem key={key} value={frequency[key]}>{key}</MenuItem>
@@ -23,16 +25,11 @@ const menuItemsFrequency = Object.keys(frequency).map((key) => {
 
 export default function RRuleEteSync(props: PropsType) {
   const options = RRule.fromString(props.rrule).origOptions;
-  const updateRule = (optionsObjbect: Record<string, any>) => {
-    const updatedOptions = {
-      freq: options.freq,
-      interval: options.interval,
-      until: options.until,
-      count: options.count,
-      byweekday: options.byweekday,
-    };
-    for (const key in optionsObjbect) {
-      updatedOptions[key] = optionsObjbect[key];
+
+  const updateRule = (newOptions: Partial<Options>) => {
+    const updatedOptions = { ...options };
+    for (const key in newOptions) {
+      updatedOptions[key] = newOptions[key];
     }
     const newRule = new RRule(updatedOptions);
     props.onChange(newRule.toString());
@@ -48,12 +45,20 @@ export default function RRuleEteSync(props: PropsType) {
     }
   };
 
-  const checkboxWeekDays = weekdays.map((value) => {
+  const checkboxWeekDays = Object.keys(weekdays).map((key) => {
     return (
       <FormControlLabel
-        control={<Checkbox key={value} value={value} />}
-        key={value}
-        label={value}
+        control={
+          <Checkbox
+            key={key}
+            value={key}
+            onChange={(event: React.FormEvent<{ value: unknown }>) => {
+              const value = Number((event.target as HTMLInputElement).value);
+              updateRule({ byweekday: new Weekday(value) });
+            }}
+          />}
+        key={key}
+        label={weekdays[key]}
       />
     );
   });
@@ -88,7 +93,8 @@ export default function RRuleEteSync(props: PropsType) {
       />
 
       {options.freq === frequency['weekly'] &&
-        <FormGroup row>
+        <FormGroup
+          row>
           {checkboxWeekDays}
         </FormGroup>
       }
