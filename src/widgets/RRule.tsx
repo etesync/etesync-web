@@ -10,25 +10,24 @@ interface PropsType {
 }
 
 const frequency = {
-  YEARLY: 0,
-  MONTHLY: 1,
-  WEEKLY: 2,
-  DAILY: 3,
-  HOURLY: 4,
-  MINUTELY: 5,
-  SECONDLY: 6,
+  yearly: 0,
+  monthly: 1,
+  weekly: 2,
+  daily: 3,
 };
 
 export default function RRuleEteSync(props: PropsType) {
   const options = RRule.fromString(props.rrule).origOptions;
-  const updateRule = (value: any, name: string) => {
+  const updateRule = (optionsObjbect: Record<string, any>) => {
     const updatedOptions = {
       freq: options.freq,
       interval: options.interval,
       until: options.until,
       count: options.count,
     };
-    updatedOptions[name] = value;
+    for (const key in optionsObjbect) {
+      updatedOptions[key] = optionsObjbect[key];
+    }
     const newRule = new RRule(updatedOptions);
     props.onChange(newRule.toString());
   };
@@ -39,10 +38,20 @@ export default function RRuleEteSync(props: PropsType) {
         key={key}
         value={frequency[key]}
         control={<Radio />}
-        label={key.toLowerCase()}
+        label={key}
       />
     );
   });
+
+  const getEnds = () => {
+    if (options.until && !options.count) {
+      return 'onDate';
+    } else if (!options.until && options.count) {
+      return 'after';
+    } else {
+      return 'never';
+    }
+  };
 
   return (
     <div>
@@ -50,10 +59,31 @@ export default function RRuleEteSync(props: PropsType) {
         <RadioGroup
           value={options.freq}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
-            updateRule(Number(event.currentTarget.value), 'freq');
+            updateRule({ freq: Number(event.currentTarget.value) });
           }}
         >
           {radioButtonsFrequency}
+        </RadioGroup>
+      </Container>
+      <Container>
+        <RadioGroup
+          value={getEnds()}
+          onChange={(event: React.FormEvent<{ value: unknown }>) => {
+            const value = event.currentTarget.value as string;
+            console.log(value);
+            if (value === 'never') {
+              updateRule({ count: null, until: undefined });
+            } else if (value === 'onDate') {
+              updateRule({ count: null, until: new Date() });
+            } else if (value === 'after') {
+              updateRule({ until: undefined, count: 1 });
+            }
+
+          }}
+        >
+          <FormControlLabel value="never" control={<Radio />} label="Never" />
+          <FormControlLabel value="after" control={<Radio />} label="After" />
+          <FormControlLabel value="onDate" control={<Radio />} label="On Date" />
         </RadioGroup>
       </Container>
       <Container>
@@ -66,32 +96,35 @@ export default function RRuleEteSync(props: PropsType) {
             event.preventDefault();
             const inputNode = event.currentTarget as HTMLInputElement;
             if (inputNode.value === '') {
-              updateRule(undefined, 'interval');
+              updateRule({ interval: undefined });
             } else if (inputNode.valueAsNumber) {
-              updateRule(inputNode.valueAsNumber, 'interval');
+              updateRule({ interval: inputNode.valueAsNumber });
             }
           }}
         />
         <TextField
           type="number"
           placeholder="Number of repetitions"
+          disabled={!options.count}
           value={options.count}
           inputProps={{ min: 1, step: 1 }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             event.preventDefault();
             const inputNode = event.currentTarget as HTMLInputElement;
             if (inputNode.value === '') {
-              updateRule(null, 'count');
+              updateRule({ count: null });
             } else if (inputNode.valueAsNumber) {
-              updateRule(inputNode.valueAsNumber, 'count');
+              updateRule({ count: inputNode.valueAsNumber });
             }
           }}
         />
         <DateTimePicker
           dateOnly
-          value={options.until as Date || undefined}
+          value={options.until || undefined}
+          disabled={!options.until}
           placeholder="Ends"
-          onChange={(date?: Date) => updateRule(date, 'until')}
+          onChange={(date?: Date) =>
+            updateRule({ until: date })}
         />
       </Container>
     </div>
