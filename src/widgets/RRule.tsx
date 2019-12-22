@@ -1,28 +1,47 @@
 import * as React from 'react';
 import Container from './Container';
-import { RadioGroup, FormControlLabel, Radio, TextField } from '@material-ui/core';
-import RRule, { RRuleSet, Frequency } from 'rrule';
+import { Radio, TextField, FormControlLabel, RadioGroup } from '@material-ui/core';
+import RRule from 'rrule';
 import DateTimePicker from '../widgets/DateTimePicker';
 
 interface PropsType {
   onChange: (rrule: string) => void;
   rrule: string;
 }
-export default function RRuleEteSync(props: PropsType) {
 
-  const updateRule = (rule: string, value: any, name: string) => {
-    const prevOptions = RRule.fromString(rule).options;
-    const options = {
-      freq: prevOptions.freq,
-      interval: prevOptions.interval,
-      until: prevOptions.until,
-      count: prevOptions.count,
+const frequency = {
+  YEARLY: 0,
+  MONTHLY: 1,
+  WEEKLY: 2,
+  DAILY: 3,
+  HOURLY: 4,
+  MINUTELY: 5,
+  SECONDLY: 6,
+};
+
+export default function RRuleEteSync(props: PropsType) {
+  const options = RRule.fromString(props.rrule).origOptions;
+  const updateRule = (value: any, name: string) => {
+    const updatedOptions = {
+      freq: options.freq,
+      interval: options.interval,
+      until: options.until,
+      count: options.count,
     };
-    options[name] = value;
-    const newRule = new RRule(options);
+    updatedOptions[name] = value;
+    const newRule = new RRule(updatedOptions);
     props.onChange(newRule.toString());
   };
 
+  const radioButtonsFrequency = Object.keys(frequency).map((key) => {
+    return (
+      <FormControlLabel
+        key={key}
+        value={frequency[key]}
+        control={<Radio />}
+        label={key.toLowerCase()}
+      />
+    );
   return (
     <div>
       <Container>
@@ -36,9 +55,7 @@ export default function RRuleEteSync(props: PropsType) {
         >
           <FormControlLabel value={RRuleSet.HOURLY} control={<Radio />} label="Hour" />
           <FormControlLabel value={RRuleSet.DAILY} control={<Radio />} label="Day" />
-          <FormControlLabel value={RRuleSet.WEEKLY} control={<Radio />} label="Week" />
-          <FormControlLabel value={RRuleSet.MONTHLY} control={<Radio />} label="Month" />
-          <FormControlLabel value={RRuleSet.YEARLY} control={<Radio />} label="Year" />
+          {radioButtonsFrequency}
         </RadioGroup>
       </Container>
       <Container>
@@ -46,28 +63,26 @@ export default function RRuleEteSync(props: PropsType) {
           type="number"
           placeholder="Interval"
           inputProps={{ min: 1, max: 1000 }}
-          value={RRule.fromString(props.rrule).options.interval}
+          value={options.interval}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             event.preventDefault();
             const inputNode = event.currentTarget as HTMLInputElement;
             if (inputNode.value === '') {
-              updateRule(props.rrule, undefined, 'interval');
+              updateRule(undefined, 'interval');
             } else if (inputNode.valueAsNumber) {
-              updateRule(props.rrule, inputNode.valueAsNumber, 'interval');
+              updateRule(inputNode.valueAsNumber, 'interval');
             }
           }}
         />
         <TextField
-          //disabled={ends !== 'after'}
           type="number"
           placeholder="Number of repetitions"
-          value={RRule.fromString(props.rrule).options.count}
+          value={options.count}
           inputProps={{ min: 1, step: 1 }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             event.preventDefault();
             const inputNode = event.currentTarget as HTMLInputElement;
             if (inputNode.value === '') {
-              updateRule(props.rrule, null, 'count');
             } else if (inputNode.valueAsNumber) {
               updateRule(props.rrule, inputNode.valueAsNumber, 'count');
             }
