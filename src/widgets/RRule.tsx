@@ -42,19 +42,17 @@ export default function RRuleEteSync(props: PropsType) {
         label={key.toLowerCase()}
       />
     );
+  });
+
   return (
     <div>
       <Container>
         <RadioGroup
-          row
-          value={RRule.fromString(props.rrule).options.freq}
+          value={options.freq}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
-            const freq: Frequency = Number(event.currentTarget.value);
-            updateRule(props.rrule, freq, 'freq');
+            updateRule(Number(event.currentTarget.value), 'freq');
           }}
         >
-          <FormControlLabel value={RRuleSet.HOURLY} control={<Radio />} label="Hour" />
-          <FormControlLabel value={RRuleSet.DAILY} control={<Radio />} label="Day" />
           {radioButtonsFrequency}
         </RadioGroup>
       </Container>
@@ -83,17 +81,17 @@ export default function RRuleEteSync(props: PropsType) {
             event.preventDefault();
             const inputNode = event.currentTarget as HTMLInputElement;
             if (inputNode.value === '') {
+              updateRule(null, 'count');
             } else if (inputNode.valueAsNumber) {
-              updateRule(props.rrule, inputNode.valueAsNumber, 'count');
+              updateRule(inputNode.valueAsNumber, 'count');
             }
           }}
         />
         <DateTimePicker
           dateOnly
-          //disabled={ends !== 'onDate'}
-          value={RRule.fromString(props.rrule).options.until as Date || undefined}
+          value={options.until as Date || undefined}
           placeholder="Ends"
-          onChange={(date?: Date) => updateRule(props.rrule, date, 'until')}
+          onChange={(date?: Date) => updateRule(date, 'until')}
         />
       </Container>
     </div>
