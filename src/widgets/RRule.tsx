@@ -26,10 +26,14 @@ const menuItemsFrequency = Object.keys(frequency).map((key) => {
 export default function RRuleEteSync(props: PropsType) {
   const options = RRule.fromString(props.rrule).origOptions;
 
-  const updateRule = (newOptions: Partial<Options>) => {
-    const updatedOptions = { ...options };
-    for (const key in newOptions) {
-      updatedOptions[key] = newOptions[key];
+  const updateRule = (newOptions: Partial<Options> = {}, weekdayToRemove: Weekday | null = null) => {
+    const updatedOptions = { ...options, ...newOptions };
+    if (Array.isArray(options.byweekday) && Array.isArray(newOptions.byweekday)) {
+      updatedOptions.byweekday = [...options.byweekday, ...newOptions.byweekday];
+    } else if (weekdayToRemove && Array.isArray(updatedOptions.byweekday)) {
+      updatedOptions.byweekday = updatedOptions.byweekday.filter((day) => {
+        return day.toString() !== weekdayToRemove.toString();
+      });
     }
     const newRule = new RRule(updatedOptions);
     props.onChange(newRule.toString());
@@ -44,7 +48,9 @@ export default function RRuleEteSync(props: PropsType) {
       return 'never';
     }
   };
-
+  const isWeekdayChecked = (value: string) => {
+    return options.byweekday?.toString().includes(weekdays[value]);
+  };
   const checkboxWeekDays = Object.keys(weekdays).map((key) => {
     return (
       <FormControlLabel
@@ -52,9 +58,16 @@ export default function RRuleEteSync(props: PropsType) {
           <Checkbox
             key={key}
             value={key}
+            checked={isWeekdayChecked(key)}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
-              const value = Number((event.target as HTMLInputElement).value);
-              updateRule({ byweekday: new Weekday(value) });
+              const checkbox = event.target as HTMLInputElement;
+              const weekday = new Weekday(Number(checkbox.value));
+              if (!checkbox.checked) {
+                updateRule({}, weekday);
+              } else {
+                updateRule({ byweekday: [weekday] });
+              }
+
             }}
           />}
         key={key}
