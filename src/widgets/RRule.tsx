@@ -82,8 +82,12 @@ export default function RRuleEteSync(props: PropsType) {
       <Select
         value={options.freq}
         onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          const value = (event.target as HTMLSelectElement).value;
-          updateRule({ freq: Number(value) });
+          const value = Number((event.target as HTMLSelectElement).value);
+          if (value === 2) {
+            updateRule({ freq: value });
+          } else {
+            updateRule({ freq: value, byweekday: null });
+          }
         }}
         labelId="freq-label"
       >
