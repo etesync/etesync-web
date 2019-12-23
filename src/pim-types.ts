@@ -43,6 +43,11 @@ export function timezoneLoadFromName(timezone: string | null) {
   return retZone;
 }
 
+export function parseString(content: string) {
+  content = content.replace(/^[a-zA-Z0-9]*\./gm, ''); // FIXME: ugly hack to ignore item groups.
+  return new ICAL.Component(ICAL.parse(content));
+}
+
 export class EventType extends ICAL.Event implements PimType {
   public static isEvent(comp: ICAL.Component) {
     return !!comp.getFirstSubcomponent('vevent');
@@ -53,6 +58,10 @@ export class EventType extends ICAL.Event implements PimType {
     // FIXME: we need to clone it so it loads the correct timezone and applies it
     timezoneLoadFromName(event.timezone);
     return event.clone();
+  }
+
+  public static parse(content: string) {
+    return EventType.fromVCalendar(parseString(content));
   }
 
   public color: string;
@@ -119,6 +128,10 @@ export class TaskType extends EventType {
     return task.clone();
   }
 
+  public static parse(content: string) {
+    return TaskType.fromVCalendar(parseString(content));
+  }
+
   public color: string;
 
   constructor(comp?: ICAL.Component | null) {
@@ -180,6 +193,13 @@ export class TaskType extends EventType {
 
 export class ContactType implements PimType {
   public comp: ICAL.Component;
+
+  public static parse(content: string) {
+    if (content.search(/davdroid/i)) {
+      console.log(content);
+    }
+    return new ContactType(parseString(content));
+  }
 
   constructor(comp: ICAL.Component) {
     this.comp = comp;

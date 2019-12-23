@@ -12,9 +12,7 @@ import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
 import IconError from '@material-ui/icons/Error';
 
-import * as ICAL from 'ical.js';
-
-import { TaskType, EventType, ContactType } from '../pim-types';
+import { TaskType, EventType, ContactType, parseString } from '../pim-types';
 
 import * as EteSync from 'etesync';
 
@@ -44,9 +42,9 @@ class JournalEntries extends React.PureComponent {
     }
 
     const entries = this.props.entries.map((syncEntry, idx) => {
-      let parsed;
+      let comp;
       try {
-        parsed = ICAL.parse(syncEntry.content);
+        comp = parseString(syncEntry.content);
       } catch (e) {
         const icon = (<IconError style={{ color: 'red' }} />);
         return (
@@ -63,7 +61,6 @@ class JournalEntries extends React.PureComponent {
           />
         );
       }
-      const comp = new ICAL.Component(parsed);
 
       let icon;
       if (syncEntry.action === EteSync.SyncEntryAction.Add) {

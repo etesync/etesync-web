@@ -1,7 +1,5 @@
 import { List } from 'immutable';
 
-import * as ICAL from 'ical.js';
-
 import { EventType, ContactType, TaskType } from './pim-types';
 import { store } from './store';
 import { addError } from './store/actions';
@@ -14,15 +12,14 @@ export function syncEntriesToItemMap(
 
   entries.forEach((syncEntry) => {
     // FIXME: this is a terrible hack to handle parsing errors
-    let parsed;
+    let comp;
     try {
-      parsed = ICAL.parse(syncEntry.content);
+      comp = ContactType.parse(syncEntry.content);
     } catch (e) {
       e.message = `${e.message}\nWhile processing: ${syncEntry.content}`;
       store.dispatch(addError(undefined as any, e));
       return;
     }
-    const comp = new ContactType(new ICAL.Component(parsed));
 
     // FIXME:Hack
     (comp as any).journalUid = collection.uid;
@@ -69,15 +66,14 @@ function syncEntriesToCalendarItemMap<T extends EventType>(
 
   entries.forEach((syncEntry) => {
     // FIXME: this is a terrible hack to handle parsing errors
-    let parsed;
+    let comp;
     try {
-      parsed = ICAL.parse(syncEntry.content);
+      comp = ItemType.parse(syncEntry.content);
     } catch (e) {
       e.message = `${e.message}\nWhile processing: ${syncEntry.content}`;
       store.dispatch(addError(undefined as any, e));
       return;
     }
-    const comp = ItemType.fromVCalendar(new ICAL.Component(parsed));
 
     if (comp === null) {
       return;
