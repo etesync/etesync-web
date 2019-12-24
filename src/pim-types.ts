@@ -195,9 +195,6 @@ export class ContactType implements PimType {
   public comp: ICAL.Component;
 
   public static parse(content: string) {
-    if (content.search(/davdroid/i)) {
-      console.log(content);
-    }
     return new ContactType(parseString(content));
   }
 
