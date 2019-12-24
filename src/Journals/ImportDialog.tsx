@@ -108,32 +108,42 @@ class ImportDialog extends React.Component<PropsType> {
     reader.onabort = () => alert('file reading was aborted');
     reader.onerror = () => alert('file reading has failed');
     reader.onload = () => {
-      const fileText = reader.result as string;
-      const items = itemsCreator(fileText);
+      try {
+        const fileText = reader.result as string;
+        const items = itemsCreator(fileText);
 
-      const { syncJournal } = this.props;
-      const last = syncJournal.journalEntries.last() as EteSync.Entry;
-      const lastUid = last ? last.uid : null;
+        const { syncJournal } = this.props;
+        const last = syncJournal.journalEntries.last() as EteSync.Entry;
+        const lastUid = last ? last.uid : null;
 
-      // XXX implement chunked push most likely...
-      let prevUid = lastUid;
-      const journalItems = items.map((item) => {
-        const ret = createJournalEntry(
-          this.props.etesync, this.props.userInfo, syncJournal.journal,
-          prevUid, EteSync.SyncEntryAction.Add, item.toIcal());
+        // XXX implement chunked push most likely...
+        let prevUid = lastUid;
+        const journalItems = items.map((item) => {
+          const ret = createJournalEntry(
+            this.props.etesync, this.props.userInfo, syncJournal.journal,
+            prevUid, EteSync.SyncEntryAction.Add, item.toIcal());
 
-        prevUid = ret.uid;
-        return ret;
-      });
+          prevUid = ret.uid;
+          return ret;
+        });
 
-      store.dispatch<any>(
-        addEntries(this.props.etesync, syncJournal.journal.uid, journalItems, lastUid)
-      ).then(() => {
+        store.dispatch<any>(
+          addEntries(this.props.etesync, syncJournal.journal.uid, journalItems, lastUid)
+        ).then(() => {
+          if (this.props.onClose) {
+            this.setState({ loading: false });
+            this.props.onClose();
+          }
+        });
+      } catch (e) {
+        console.error(e);
+        alert('An error has occurred, please contact developers.');
         if (this.props.onClose) {
           this.setState({ loading: false });
           this.props.onClose();
         }
-      });
+        throw e;
+      }
     };
 
     this.setState({ loading: true });
