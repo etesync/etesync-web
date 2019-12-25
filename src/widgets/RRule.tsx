@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Container from './Container';
 import { TextField, Select, InputLabel, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
-//import RRule, { Options, WeekdayStr } from 'rrule';
 import RRule, { Options, Weekday } from 'rrule';
 
 import DateTimePicker from '../widgets/DateTimePicker';
@@ -51,6 +50,7 @@ export default function RRuleEteSync(props: PropsType) {
   const isWeekdayChecked = (value: string) => {
     return options.byweekday?.toString().includes(weekdays[value]);
   };
+
   const checkboxWeekDays = Object.keys(weekdays).map((key) => {
     return (
       <FormControlLabel
@@ -75,6 +75,12 @@ export default function RRuleEteSync(props: PropsType) {
       />
     );
   });
+  const menuItemDaysNumbers = [];
+  for (let index = 0; index < 31; index++) {
+    menuItemDaysNumbers[index] = (<MenuItem key={index} value={index + 1}>{index + 1}</MenuItem>);
+  }
+
+
 
   return (
     <Container>
@@ -84,9 +90,9 @@ export default function RRuleEteSync(props: PropsType) {
         onChange={(event: React.FormEvent<{ value: unknown }>) => {
           const value = Number((event.target as HTMLSelectElement).value);
           if (value === 2) {
-            updateRule({ freq: value });
+            updateRule({ freq: value, bysetpos: null, bymonthday: null });
           } else {
-            updateRule({ freq: value, byweekday: null });
+            updateRule({ freq: value, byweekday: null, bysetpos: null, bymonthday: null });
           }
         }}
         labelId="freq-label"
@@ -116,6 +122,16 @@ export default function RRuleEteSync(props: PropsType) {
         </FormGroup>
       }
 
+
+      {options.freq === frequency['monthly'] &&
+        <Select value={options.bymonthday || 1} onChange={(event: React.FormEvent<{ value: unknown }>) => {
+          const value = (event.target as HTMLInputElement).value;
+          updateRule({ bymonthday: Number(value) });
+        }}>
+          {menuItemDaysNumbers}
+        </Select>
+      }
+
       <InputLabel id="end-label">End</InputLabel>
       <Select
         labelId="end-label"
@@ -138,6 +154,7 @@ export default function RRuleEteSync(props: PropsType) {
         <MenuItem value="after">After</MenuItem>
         <MenuItem value="onDate">On Date</MenuItem>
       </Select>
+
       {options.count &&
         <TextField
           type="number"
