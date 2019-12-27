@@ -16,6 +16,11 @@ const frequency = {
   daily: 3,
 };
 const weekdays = { 0: 'MO', 1: 'TU', 2: 'WE', 3: 'TH', 4: 'FR', 5: 'SA', 6: 'SU' };
+const bysetposWeekDay = Object.keys(weekdays).map((key) => {
+  return (
+    <MenuItem key={key} value={key}>{weekdays[key]}</MenuItem>
+  );
+});
 const menuItemsFrequency = Object.keys(frequency).map((key) => {
   return (
     <MenuItem key={key} value={frequency[key]}>{key}</MenuItem>
@@ -45,6 +50,15 @@ export default function RRuleEteSync(props: PropsType) {
       return 'after';
     } else {
       return 'never';
+    }
+  };
+  const getMonthReapetType = () => {
+    if (options.bysetpos) {
+      return 'bysetpos';
+    } else if (options.bymonthday) {
+      return 'bymonthday';
+    } else {
+      return undefined;
     }
   };
   const isWeekdayChecked = (value: string) => {
@@ -79,7 +93,6 @@ export default function RRuleEteSync(props: PropsType) {
   for (let index = 0; index < 31; index++) {
     menuItemDaysNumbers[index] = (<MenuItem key={index} value={index + 1}>{index + 1}</MenuItem>);
   }
-
 
   return (
     <Container>
@@ -133,6 +146,7 @@ export default function RRuleEteSync(props: PropsType) {
           }
         }}
       />
+
       {options.freq === frequency['weekly'] &&
         <FormGroup
           row>
@@ -140,18 +154,57 @@ export default function RRuleEteSync(props: PropsType) {
         </FormGroup>
       }
       {options.freq === frequency['monthly'] &&
-        <Select
-          value={options.bymonthday || 1}
-          onChange={(event: React.FormEvent<{ value: unknown }>) => {
-            updateRule({ bymonthday: Number((event.target as HTMLInputElement).value) });
-          }}>
-          {menuItemDaysNumbers}
-        </Select>
+        <span>
+          <Select
+            value={getMonthReapetType()}
+            onChange={(event: React.FormEvent<{ value: unknown }>) => {
+              const value = (event.target as HTMLInputElement).value;
+              if (value === 'bymonthday') {
+                updateRule({ bymonthday: 1, bysetpos: null });
+              } else if (value === 'bysetpos') {
+                updateRule({ bymonthday: null, bysetpos: 1 });
+              }
+
+            }}
+          >
+            <MenuItem value="bymonthday">On day</MenuItem>
+            <MenuItem value="bysetpos">On the</MenuItem>
+          </Select>
+        </span>
+      }
+      {options.bymonthday && <Select
+        value={options.bymonthday || 1}
+        onChange={(event: React.FormEvent<{ value: unknown }>) => {
+          updateRule({ bymonthday: Number((event.target as HTMLInputElement).value) });
+        }}>
+        {menuItemDaysNumbers}
+      </Select>
+      }
+      {options.bysetpos &&
+        <span>
+          <Select
+            value={options.bysetpos}
+            onChange={(event: React.FormEvent<{ value: unknown }>) => {
+              updateRule({ bysetpos: Number((event.target as HTMLInputElement).value) });
+            }}>
+            <MenuItem value={1}>First</MenuItem>
+            <MenuItem value={2}>Second</MenuItem>
+            <MenuItem value={3}>Third</MenuItem>
+            <MenuItem value={4}>Foruth</MenuItem>
+            <MenuItem value={-1}>Last</MenuItem>
+          </Select>
+          <Select
+            value={options.byweekday ? options.byweekday[0].weekday : undefined}
+            onChange={(event: React.FormEvent<{ value: unknown }>) => {
+              updateRule({ byweekday: new Weekday(Number((event.target as HTMLInputElement).value)) });
+            }}>
+            {bysetposWeekDay}
+          </Select>
+        </span>
       }
       {options.count &&
         <TextField
           type="number"
-          placeholder="Number of repetitions"
           value={options.count}
           inputProps={{ min: 1, step: 1 }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
