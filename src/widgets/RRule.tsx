@@ -3,12 +3,17 @@ import Container from './Container';
 import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 import RRule, { Options, Weekday, Frequency } from 'rrule';
 import { ALL_WEEKDAYS } from 'rrule/dist/esm/src/weekday';
-
 import DateTimePicker from '../widgets/DateTimePicker';
 
 interface PropsType {
   onChange: (rrule: string) => void;
   rrule: string;
+}
+enum Ends {
+  never,
+  onDate,
+  after,
+
 }
 const frequency = [Frequency.YEARLY, Frequency.MONTHLY, Frequency.MONTHLY, Frequency.WEEKLY, Frequency.DAILY];
 
@@ -36,7 +41,6 @@ const menuItemsFrequency = frequency.map((value) => {
 
 export default function RRuleEteSync(props: PropsType) {
   const options = RRule.fromString(props.rrule).origOptions;
-
   const updateRule = (newOptions: Partial<Options> = {}, weekdayToRemove: Weekday | null = null) => {
     const updatedOptions = { ...options, ...newOptions };
     if (Array.isArray(options.byweekday) && Array.isArray(newOptions.byweekday)) {
@@ -50,15 +54,15 @@ export default function RRuleEteSync(props: PropsType) {
     props.onChange(newRule.toString());
   };
 
-  const getEnds = () => {
+  function getEnds(): Ends {
     if (options.until && !options.count) {
-      return 'onDate';
+      return Ends.onDate;
     } else if (!options.until && options.count) {
-      return 'after';
+      return Ends.after;
     } else {
-      return 'never';
+      return Ends.never;
     }
-  };
+  }
   const getMonthReapetType = () => {
     if (options.bysetpos) {
       return 'bysetpos';
@@ -121,12 +125,12 @@ export default function RRuleEteSync(props: PropsType) {
       <Select
         value={getEnds()}
         onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          const value = (event.target as HTMLSelectElement).value;
+          const value = Number((event.target as HTMLSelectElement).value);
           switch (value) {
-            case 'onDate':
+            case Ends.onDate:
               updateRule({ count: null, until: new Date() });
               break;
-            case 'after':
+            case Ends.after:
               updateRule({ until: undefined, count: 1 });
               break;
             default:
@@ -134,9 +138,9 @@ export default function RRuleEteSync(props: PropsType) {
               break;
           }
         }}>
-        <MenuItem value="never">Never</MenuItem>
-        <MenuItem value="after">After</MenuItem>
-        <MenuItem value="onDate">On Date</MenuItem>
+        <MenuItem value={Ends.never}>Never</MenuItem>
+        <MenuItem value={Ends.after}>After</MenuItem>
+        <MenuItem value={Ends.onDate}>On Date</MenuItem>
       </Select>
 
       <TextField
