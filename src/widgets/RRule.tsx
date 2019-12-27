@@ -2,6 +2,7 @@ import * as React from 'react';
 import Container from './Container';
 import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 import RRule, { Options, Weekday } from 'rrule';
+import { ALL_WEEKDAYS } from 'rrule/dist/esm/src/weekday';
 
 import DateTimePicker from '../widgets/DateTimePicker';
 
@@ -15,7 +16,6 @@ const frequency = {
   weekly: 2,
   daily: 3,
 };
-const weekdays = { 0: 'MO', 1: 'TU', 2: 'WE', 3: 'TH', 4: 'FR', 5: 'SA', 6: 'SU' };
 const months = {
   1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun', 7: 'Jul',
   8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec',
@@ -26,9 +26,9 @@ const menueItemsMonths = Object.keys(months).map((key) => {
   );
 });
 
-const bysetposWeekDay = Object.keys(weekdays).map((key) => {
+const bysetposWeekDay = ALL_WEEKDAYS.map((value, index) => {
   return (
-    <MenuItem key={key} value={key}>{weekdays[key]}</MenuItem>
+    <MenuItem key={index} value={index}>{value}</MenuItem>
   );
 });
 const menuItemsFrequency = Object.keys(frequency).map((key) => {
@@ -73,17 +73,17 @@ export default function RRuleEteSync(props: PropsType) {
     }
   };
   const isWeekdayChecked = (value: string) => {
-    return options.byweekday?.toString().includes(weekdays[value]);
+    return options.byweekday?.toString().includes(value);
   };
 
-  const checkboxWeekDays = Object.keys(weekdays).map((key) => {
+  const checkboxWeekDays = ALL_WEEKDAYS.map((value, index) => {
     return (
       <FormControlLabel
         control={
           <Checkbox
-            key={key}
-            value={key}
-            checked={isWeekdayChecked(key)}
+            key={index}
+            value={index}
+            checked={isWeekdayChecked(value)}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               const checkbox = event.target as HTMLInputElement;
               const weekday = new Weekday(Number(checkbox.value));
@@ -95,8 +95,8 @@ export default function RRuleEteSync(props: PropsType) {
 
             }}
           />}
-        key={key}
-        label={weekdays[key]}
+        key={index}
+        label={value}
       />
     );
   });
