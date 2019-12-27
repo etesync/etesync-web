@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Container from './Container';
-import { TextField, Select, InputLabel, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
+import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 import RRule, { Options, Weekday } from 'rrule';
 
 import DateTimePicker from '../widgets/DateTimePicker';
@@ -81,60 +81,23 @@ export default function RRuleEteSync(props: PropsType) {
   }
 
 
-
   return (
     <Container>
-      <InputLabel id="freq-label">Repeat</InputLabel>
       <Select
         value={options.freq}
         onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          const value = Number((event.target as HTMLSelectElement).value);
-          if (value === 2) {
-            updateRule({ freq: value, bysetpos: null, bymonthday: null });
-          } else {
-            updateRule({ freq: value, byweekday: null, bysetpos: null, bymonthday: null });
-          }
+          const updatedOptions = {
+            freq: Number((event.target as HTMLSelectElement).value),
+            bysetpos: null,
+            bymonthday: null,
+            byweekday: null,
+          };
+          updateRule(updatedOptions);
         }}
-        labelId="freq-label"
       >
         {menuItemsFrequency}
       </Select>
-      <TextField
-        type="number"
-        placeholder="Interval"
-        inputProps={{ min: 1, max: 1000 }}
-        value={options.interval}
-        onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          event.preventDefault();
-          const inputNode = event.currentTarget as HTMLInputElement;
-          if (inputNode.value === '') {
-            updateRule({ interval: undefined });
-          } else if (inputNode.valueAsNumber) {
-            updateRule({ interval: inputNode.valueAsNumber });
-          }
-        }}
-      />
-
-      {options.freq === frequency['weekly'] &&
-        <FormGroup
-          row>
-          {checkboxWeekDays}
-        </FormGroup>
-      }
-
-
-      {options.freq === frequency['monthly'] &&
-        <Select value={options.bymonthday || 1} onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          const value = (event.target as HTMLInputElement).value;
-          updateRule({ bymonthday: Number(value) });
-        }}>
-          {menuItemDaysNumbers}
-        </Select>
-      }
-
-      <InputLabel id="end-label">End</InputLabel>
       <Select
-        labelId="end-label"
         value={getEnds()}
         onChange={(event: React.FormEvent<{ value: unknown }>) => {
           const value = (event.target as HTMLSelectElement).value;
@@ -155,6 +118,36 @@ export default function RRuleEteSync(props: PropsType) {
         <MenuItem value="onDate">On Date</MenuItem>
       </Select>
 
+      <TextField
+        type="number"
+        placeholder="Interval"
+        inputProps={{ min: 1, max: 1000 }}
+        value={options.interval}
+        onChange={(event: React.FormEvent<{ value: unknown }>) => {
+          event.preventDefault();
+          const inputNode = event.currentTarget as HTMLInputElement;
+          if (inputNode.value === '') {
+            updateRule({ interval: undefined });
+          } else if (inputNode.valueAsNumber) {
+            updateRule({ interval: inputNode.valueAsNumber });
+          }
+        }}
+      />
+      {options.freq === frequency['weekly'] &&
+        <FormGroup
+          row>
+          {checkboxWeekDays}
+        </FormGroup>
+      }
+      {options.freq === frequency['monthly'] &&
+        <Select
+          value={options.bymonthday || 1}
+          onChange={(event: React.FormEvent<{ value: unknown }>) => {
+            updateRule({ bymonthday: Number((event.target as HTMLInputElement).value) });
+          }}>
+          {menuItemDaysNumbers}
+        </Select>
+      }
       {options.count &&
         <TextField
           type="number"
@@ -171,14 +164,12 @@ export default function RRuleEteSync(props: PropsType) {
             }
           }}
         />}
-
       {options.until &&
         <DateTimePicker
           dateOnly
           value={options.until || undefined}
           placeholder="Ends"
-          onChange={(date?: Date) =>
-            updateRule({ until: date })}
+          onChange={(date?: Date) => updateRule({ until: date })}
         />
       }
     </Container>
