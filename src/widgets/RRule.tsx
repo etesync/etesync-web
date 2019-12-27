@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Container from './Container';
 import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
-import RRule, { Options, Weekday } from 'rrule';
+import RRule, { Options, Weekday, Frequency } from 'rrule';
 import { ALL_WEEKDAYS } from 'rrule/dist/esm/src/weekday';
 
 import DateTimePicker from '../widgets/DateTimePicker';
@@ -10,12 +10,8 @@ interface PropsType {
   onChange: (rrule: string) => void;
   rrule: string;
 }
-const frequency = {
-  yearly: 0,
-  monthly: 1,
-  weekly: 2,
-  daily: 3,
-};
+const frequency = [Frequency.YEARLY, Frequency.MONTHLY, Frequency.MONTHLY, Frequency.WEEKLY, Frequency.DAILY];
+
 const months = {
   1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun', 7: 'Jul',
   8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec',
@@ -31,9 +27,9 @@ const bysetposWeekDay = ALL_WEEKDAYS.map((value, index) => {
     <MenuItem key={index} value={index}>{value}</MenuItem>
   );
 });
-const menuItemsFrequency = Object.keys(frequency).map((key) => {
+const menuItemsFrequency = frequency.map((value) => {
   return (
-    <MenuItem key={key} value={frequency[key]}>{key}</MenuItem>
+    <MenuItem key={value} value={value}>{Frequency[value].toLowerCase()}</MenuItem>
   );
 });
 
@@ -159,13 +155,13 @@ export default function RRuleEteSync(props: PropsType) {
         }}
       />
 
-      {(options.freq === frequency['weekly']) &&
+      {(options.freq === Frequency.WEEKLY) &&
         <FormGroup
           row>
           {checkboxWeekDays}
         </FormGroup>
       }
-      {(options.freq === frequency['monthly'] || options.freq === frequency['yearly']) &&
+      {(options.freq === Frequency.MONTHLY || options.freq === Frequency.YEARLY) &&
         <Select
           value={getMonthReapetType()}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
@@ -213,7 +209,7 @@ export default function RRuleEteSync(props: PropsType) {
           {bysetposWeekDay}
         </Select>
       }
-      {(options.freq === frequency['yearly'] && options.bymonth) &&
+      {(options.freq === Frequency.YEARLY && options.bymonth) &&
         <Select value={options.bymonth} onChange={(event: React.FormEvent<{ value: unknown }>) => {
           updateRule({ bymonth: Number((event.target as HTMLInputElement).value) });
         }}
