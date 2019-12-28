@@ -32,7 +32,18 @@ enum MonthReapet {
   bysetpos,
   bymonthday,
 }
-
+enum Position {
+  First = 1,
+  Second = 2,
+  Third = 3,
+  Fourth = 4,
+  Last = -1,
+}
+const menueItemsPosition = Object.keys(Position).filter((key) => Number(key)).map((key) => {
+  return (
+    <MenuItem key={key} value={key}>{Position[key]}</MenuItem>
+  );
+});
 const menueItemsMonths = Object.keys(Months).filter((key) => Number(key)).map((key) => {
   return (
     <MenuItem key={key} value={key}>{Months[key]}</MenuItem>
@@ -49,10 +60,15 @@ const menuItemsFrequency = Object.keys(Frequency).filter((key) => Number(key) < 
     <MenuItem key={value} value={value}>{Frequency[value].toLowerCase()}</MenuItem>
   );
 });
-
+const menuItemDaysNumbers = Array.from(Array(31).keys()).map((value: number) => {
+  return (
+    <MenuItem key={value} value={value + 1}>{value + 1}</MenuItem>
+  );
+});
 
 export default function RRuleEteSync(props: PropsType) {
   const options = RRule.fromString(props.rrule).origOptions;
+
   function updateRule(newOptions: Partial<Options>): void {
     const updatedOptions = { ...options, ...newOptions };
     props.onChange((new RRule(updatedOptions)).toString());
@@ -64,13 +80,6 @@ export default function RRuleEteSync(props: PropsType) {
       return Ends.after;
     } else {
       return Ends.never;
-    }
-  }
-  function getMonthReapet(): MonthReapet {
-    if (options.bysetpos) {
-      return MonthReapet.bysetpos;
-    } else {
-      return MonthReapet.bymonthday;
     }
   }
   function handleCheckboxWeekday(event: React.FormEvent<{ value: unknown }>): void {
@@ -107,23 +116,17 @@ export default function RRuleEteSync(props: PropsType) {
             onChange={handleCheckboxWeekday}
           />}
         key={index}
-        label={value}
-      />
+        label={value} />
     );
   });
-  const menuItemDaysNumbers = [];
-  for (let index = 0; index < 31; index++) {
-    menuItemDaysNumbers[index] = (<MenuItem key={index} value={index + 1}>{index + 1}</MenuItem>);
-  }
 
   return (
     <Container>
       <div>
         <FormControl>
-          <InputLabel id="select-label-freq">Repeat</InputLabel>
+          <InputLabel>Repeat</InputLabel>
           <Select
             value={options.freq}
-            labelId="select-label-freq"
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               const freq = Number((event.target as HTMLSelectElement).value);
               const updatedOptions = {
@@ -139,11 +142,9 @@ export default function RRuleEteSync(props: PropsType) {
             {menuItemsFrequency}
           </Select>
         </FormControl>
-
         <FormControl>
-          <InputLabel id="select-label-ends">Ends</InputLabel>
+          <InputLabel>Ends</InputLabel>
           <Select
-            labelId="select-label-ends"
             value={getEnds()}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               const value = Number((event.target as HTMLSelectElement).value);
@@ -162,7 +163,6 @@ export default function RRuleEteSync(props: PropsType) {
             <MenuItem value={Ends.onDate}>On Date</MenuItem>
           </Select>
         </FormControl>
-
         {options.until &&
           <DateTimePicker
             dateOnly
@@ -172,7 +172,6 @@ export default function RRuleEteSync(props: PropsType) {
           />
         }
       </div>
-
       <div>
         <TextField
           type="number"
@@ -208,19 +207,13 @@ export default function RRuleEteSync(props: PropsType) {
           />
         }
       </div>
-
-
-
       {(options.freq === Frequency.WEEKLY) &&
-        <FormGroup
-          row>
-          {checkboxWeekDays}
-        </FormGroup>
+        <FormGroup row>{checkboxWeekDays}</FormGroup>
       }
       {(options.freq === Frequency.MONTHLY || options.freq === Frequency.YEARLY) &&
         <div>
           <Select
-            value={getMonthReapet()}
+            value={options.bysetpos ? MonthReapet.bysetpos : MonthReapet.bymonthday}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               const value = Number((event.target as HTMLInputElement).value);
               if (value === MonthReapet.bymonthday) {
@@ -237,9 +230,8 @@ export default function RRuleEteSync(props: PropsType) {
       }
       {options.bymonthday &&
         <FormControl>
-          <InputLabel id="day-of-month-label">Day</InputLabel>
+          <InputLabel>Day</InputLabel>
           <Select
-            labelId="day-of-month-label"
             value={options.bymonthday || 1}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               updateRule({ bymonthday: Number((event.target as HTMLInputElement).value) });
@@ -257,11 +249,7 @@ export default function RRuleEteSync(props: PropsType) {
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               updateRule({ bysetpos: Number((event.target as HTMLInputElement).value) });
             }}>
-            <MenuItem value={1}>First</MenuItem>
-            <MenuItem value={2}>Second</MenuItem>
-            <MenuItem value={3}>Third</MenuItem>
-            <MenuItem value={4}>Fourth</MenuItem>
-            <MenuItem value={-1}>Last</MenuItem>
+            {menueItemsPosition}
           </Select>
         </FormControl>
       }
@@ -280,10 +268,11 @@ export default function RRuleEteSync(props: PropsType) {
       {(options.freq === Frequency.YEARLY && options.bymonth) &&
         <FormControl>
           <InputLabel>Month</InputLabel>
-          <Select value={options.bymonth} onChange={(event: React.FormEvent<{ value: unknown }>) => {
-            updateRule({ bymonth: Number((event.target as HTMLInputElement).value) });
-          }}
-          >
+          <Select
+            value={options.bymonth}
+            onChange={(event: React.FormEvent<{ value: unknown }>) => {
+              updateRule({ bymonth: Number((event.target as HTMLInputElement).value) });
+            }}>
             {menueItemsMonths}
           </Select>
         </FormControl>
