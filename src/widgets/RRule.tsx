@@ -10,9 +10,9 @@ interface PropsType {
   rrule: string;
 }
 enum Ends {
-  never,
-  onDate,
-  after,
+  Never,
+  Date,
+  After,
 }
 enum Months {
   Jan = 1,
@@ -49,7 +49,11 @@ const menueItemsMonths = Object.keys(Months).filter((key) => Number(key)).map((k
     <MenuItem key={key} value={key}>{Months[key]}</MenuItem>
   );
 });
-
+const menueItemsEnds = [Ends.Never, Ends.Date, Ends.After].map((key) => {
+  return (
+    <MenuItem key={key} value={key}>{Ends[key]}</MenuItem>
+  );
+});
 const bysetposWeekDay = ALL_WEEKDAYS.map((value, index) => {
   return (
     <MenuItem key={index} value={index}>{value}</MenuItem>
@@ -75,11 +79,11 @@ export default function RRuleEteSync(props: PropsType) {
   }
   function getEnds(): Ends {
     if (options.until && !options.count) {
-      return Ends.onDate;
+      return Ends.Date;
     } else if (!options.until && options.count) {
-      return Ends.after;
+      return Ends.After;
     } else {
-      return Ends.never;
+      return Ends.Never;
     }
   }
   function handleCheckboxWeekday(event: React.FormEvent<{ value: unknown }>): void {
@@ -149,18 +153,16 @@ export default function RRuleEteSync(props: PropsType) {
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               const value = Number((event.target as HTMLSelectElement).value);
               let updateOptions;
-              if (value === Ends.onDate) {
+              if (value === Ends.Date) {
                 updateOptions = { count: null, until: new Date() };
-              } else if (value === Ends.after) {
+              } else if (value === Ends.After) {
                 updateOptions = { until: undefined, count: 1 };
               } else {
                 updateOptions = { count: null, until: undefined };
               }
               updateRule(updateOptions);
             }}>
-            <MenuItem value={Ends.never}>Never</MenuItem>
-            <MenuItem value={Ends.after}>After</MenuItem>
-            <MenuItem value={Ends.onDate}>On Date</MenuItem>
+            {menueItemsEnds}
           </Select>
         </FormControl>
         {options.until &&
