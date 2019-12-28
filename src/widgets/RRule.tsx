@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Container from './Container';
-import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
+import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, InputLabel, FormControl } from '@material-ui/core';
 import RRule, { Options, Weekday, Frequency, ByWeekday } from 'rrule';
 import { ALL_WEEKDAYS } from 'rrule/dist/esm/src/weekday';
 import DateTimePicker from '../widgets/DateTimePicker';
@@ -118,56 +118,98 @@ export default function RRuleEteSync(props: PropsType) {
 
   return (
     <Container>
-      <Select
-        value={options.freq}
-        onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          const freq = Number((event.target as HTMLSelectElement).value);
-          const updatedOptions = {
-            freq: freq,
-            bysetpos: null,
-            bymonthday: freq === Frequency.MONTHLY ? Months.Jan : null,
-            byweekday: null,
-            bymonth: freq === Frequency.YEARLY ? 1 : null,
-          };
-          updateRule(updatedOptions);
-        }}
-      >
-        {menuItemsFrequency}
-      </Select>
-      <Select
-        value={getEnds()}
-        onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          const value = Number((event.target as HTMLSelectElement).value);
-          let updateOptions;
-          if (value === Ends.onDate) {
-            updateOptions = { count: null, until: new Date() };
-          } else if (value === Ends.after) {
-            updateOptions = { until: undefined, count: 1 };
-          } else {
-            updateOptions = { count: null, until: undefined };
-          }
-          updateRule(updateOptions);
-        }}>
-        <MenuItem value={Ends.never}>Never</MenuItem>
-        <MenuItem value={Ends.after}>After</MenuItem>
-        <MenuItem value={Ends.onDate}>On Date</MenuItem>
-      </Select>
+      <div>
+        <FormControl>
+          <InputLabel id="select-label-freq">Repeat</InputLabel>
+          <Select
+            value={options.freq}
+            labelId="select-label-freq"
+            onChange={(event: React.FormEvent<{ value: unknown }>) => {
+              const freq = Number((event.target as HTMLSelectElement).value);
+              const updatedOptions = {
+                freq: freq,
+                bysetpos: null,
+                bymonthday: freq === Frequency.MONTHLY ? Months.Jan : null,
+                byweekday: null,
+                bymonth: freq === Frequency.YEARLY ? 1 : null,
+              };
+              updateRule(updatedOptions);
+            }}
+          >
+            {menuItemsFrequency}
+          </Select>
+        </FormControl>
 
-      <TextField
-        type="number"
-        placeholder="Interval"
-        inputProps={{ min: 1, max: 1000 }}
-        value={options.interval}
-        onChange={(event: React.FormEvent<{ value: unknown }>) => {
-          event.preventDefault();
-          const inputNode = event.currentTarget as HTMLInputElement;
-          if (inputNode.value === '') {
-            updateRule({ interval: undefined });
-          } else if (inputNode.valueAsNumber) {
-            updateRule({ interval: inputNode.valueAsNumber });
-          }
-        }}
-      />
+        <FormControl>
+          <InputLabel id="select-label-ends">Ends</InputLabel>
+          <Select
+            labelId="select-label-ends"
+            value={getEnds()}
+            onChange={(event: React.FormEvent<{ value: unknown }>) => {
+              const value = Number((event.target as HTMLSelectElement).value);
+              let updateOptions;
+              if (value === Ends.onDate) {
+                updateOptions = { count: null, until: new Date() };
+              } else if (value === Ends.after) {
+                updateOptions = { until: undefined, count: 1 };
+              } else {
+                updateOptions = { count: null, until: undefined };
+              }
+              updateRule(updateOptions);
+            }}>
+            <MenuItem value={Ends.never}>Never</MenuItem>
+            <MenuItem value={Ends.after}>After</MenuItem>
+            <MenuItem value={Ends.onDate}>On Date</MenuItem>
+          </Select>
+        </FormControl>
+
+        {options.until &&
+          <DateTimePicker
+            dateOnly
+            value={options.until || undefined}
+            placeholder="Ends"
+            onChange={(date?: Date) => updateRule({ until: date })}
+          />
+        }
+      </div>
+
+      <div>
+        <TextField
+          type="number"
+          label="Interval"
+          inputProps={{ min: 1, max: 1000 }}
+          value={options.interval}
+          onChange={(event: React.FormEvent<{ value: unknown }>) => {
+            event.preventDefault();
+            const inputNode = event.currentTarget as HTMLInputElement;
+            if (inputNode.value === '') {
+              updateRule({ interval: undefined });
+            } else if (inputNode.valueAsNumber) {
+              updateRule({ interval: inputNode.valueAsNumber });
+            }
+          }}
+        />
+        {options.count &&
+          <TextField
+            type="number"
+            value={options.count}
+            label="Count"
+            style={{ width: 60 }}
+            inputProps={{ min: 1, step: 1 }}
+            onChange={(event: React.FormEvent<{ value: unknown }>) => {
+              event.preventDefault();
+              const inputNode = event.currentTarget as HTMLInputElement;
+              if (inputNode.value === '') {
+                updateRule({ count: 1 });
+              } else if (inputNode.valueAsNumber) {
+                updateRule({ count: inputNode.valueAsNumber });
+              }
+            }}
+          />
+        }
+      </div>
+
+
 
       {(options.freq === Frequency.WEEKLY) &&
         <FormGroup
@@ -187,7 +229,7 @@ export default function RRuleEteSync(props: PropsType) {
             }
           }}
         >
-          <MenuItem value={MonthReapet.bymonthday}>On day</MenuItem>
+          <MenuItem value={MonthReapet.bymonthday}>On</MenuItem>
           <MenuItem value={MonthReapet.bysetpos}>On the</MenuItem>
         </Select>
       }
@@ -210,7 +252,7 @@ export default function RRuleEteSync(props: PropsType) {
           <MenuItem value={1}>First</MenuItem>
           <MenuItem value={2}>Second</MenuItem>
           <MenuItem value={3}>Third</MenuItem>
-          <MenuItem value={4}>Foruth</MenuItem>
+          <MenuItem value={4}>Fourth</MenuItem>
           <MenuItem value={-1}>Last</MenuItem>
         </Select>
       }
@@ -230,29 +272,6 @@ export default function RRuleEteSync(props: PropsType) {
         >
           {menueItemsMonths}
         </Select>
-      }
-      {options.count &&
-        <TextField
-          type="number"
-          value={options.count}
-          inputProps={{ min: 1, step: 1 }}
-          onChange={(event: React.FormEvent<{ value: unknown }>) => {
-            event.preventDefault();
-            const inputNode = event.currentTarget as HTMLInputElement;
-            if (inputNode.value === '') {
-              updateRule({ count: null });
-            } else if (inputNode.valueAsNumber) {
-              updateRule({ count: inputNode.valueAsNumber });
-            }
-          }}
-        />}
-      {options.until &&
-        <DateTimePicker
-          dateOnly
-          value={options.until || undefined}
-          placeholder="Ends"
-          onChange={(date?: Date) => updateRule({ until: date })}
-        />
       }
     </Container>
   );
