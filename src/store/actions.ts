@@ -170,17 +170,24 @@ export function fetchJournalEntries(etesync: CredentialsData, currentEntries: En
 
 export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
   return (dispatch: any) => {
-    return dispatch(fetchListJournal(etesync)).then((journalsAction: Action<EteSync.Journal[]>) => {
-      const journals = journalsAction.payload;
-      if (!journals || (journals.length === 0)) {
-        return false;
-      }
+    return new Promise<boolean>((resolve, reject) => {
+      dispatch(fetchListJournal(etesync)).then((journalsAction: Action<EteSync.Journal[]>) => {
+        const journals = journalsAction.payload;
+        if (!journals || (journals.length === 0)) {
+          resolve(false);
+          return;
+        }
 
-      journals.forEach((journal) => {
-        dispatch(fetchJournalEntries(etesync, currentEntries, journal));
-      });
+        Promise.all(journals.map((journal) => {
+          const prevUid = currentEntries.get(journal.uid)?.value?.last(undefined)?.uid ?? null;
 
-      return true;
+          // FIXME: expose it in a non-hacky way.
+          if (prevUid === (journal as any)._json.lastUid) {
+            return true;
+          }
+          return dispatch(fetchEntries(etesync, journal.uid, prevUid));
+        })).then(() => resolve(true)).catch(reject);
+      }).catch(reject);
     });
   };
 }
