@@ -18,6 +18,7 @@ import { addEntries } from '../store/actions';
 import { createJournalEntry } from '../etesync-helpers';
 import * as EteSync from 'etesync';
 
+import * as uuid from 'uuid';
 import * as ICAL from 'ical.js';
 import { ContactType, EventType, TaskType, PimType } from '../pim-types';
 
@@ -155,7 +156,13 @@ class ImportDialog extends React.Component<PropsType> {
   private onFileDropContact(acceptedFiles: File[], rejectedFiles: File[]) {
     const itemsCreator = (fileText: string) => {
       const mainComp = ICAL.parse(fileText);
-      return mainComp.map((comp) => new ContactType(new ICAL.Component(comp)));
+      return mainComp.map((comp) => {
+        const ret = new ContactType(new ICAL.Component(comp));
+        if (!ret.uid) {
+          ret.uid = uuid.v4();
+        }
+        return ret;
+      });
     };
 
     this.onFileDropCommon(itemsCreator, acceptedFiles, rejectedFiles);
@@ -165,7 +172,11 @@ class ImportDialog extends React.Component<PropsType> {
     const itemsCreator = (fileText: string) => {
       const calendarComp = new ICAL.Component(ICAL.parse(fileText));
       return calendarComp.getAllSubcomponents('vevent').map((comp) => {
-        return new EventType(comp);
+        const ret = new EventType(comp);
+        if (!ret.uid) {
+          ret.uid = uuid.v4();
+        }
+        return ret;
       });
     };
 
@@ -176,7 +187,11 @@ class ImportDialog extends React.Component<PropsType> {
     const itemsCreator = (fileText: string) => {
       const calendarComp = new ICAL.Component(ICAL.parse(fileText));
       return calendarComp.getAllSubcomponents('vtodo').map((comp) => {
-        return new TaskType(comp);
+        const ret = new TaskType(comp);
+        if (!ret.uid) {
+          ret.uid = uuid.v4();
+        }
+        return ret;
       });
     };
 

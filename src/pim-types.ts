@@ -214,6 +214,10 @@ export class ContactType implements PimType {
     return this.comp.getFirstPropertyValue('uid');
   }
 
+  set uid(uid: string) {
+    this.comp.updatePropertyWithValue('uid', uid);
+  }
+
   get fn() {
     return this.comp.getFirstPropertyValue('fn');
   }
