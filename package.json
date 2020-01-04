@@ -27,6 +27,7 @@
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
+    "rrule": "^2.6.3",
     "uuid": "^3.1.0"
   },
   "scripts": {
