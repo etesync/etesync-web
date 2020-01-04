@@ -11,12 +11,14 @@ interface PropsType {
 export interface RRuleOptions {
   freq: Frequency;
   interval: number;
-  bymonth?: Months;
-  bymonthday?: number;
-  byweekday?: Weekday[];
-  bysetpos?: number;
   until?: Date;
   count?: number;
+  byweekday?: Weekday[];
+  bymonthday?: number;
+  byyearday?: number;
+  byweekno?: number;
+  bymonth?: Months;
+  bysetpos?: number;
 }
 
 enum Frequency {
