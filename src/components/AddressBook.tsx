@@ -29,6 +29,12 @@ function getContactColor(contact: ContactType) {
     colors.deepOrange[500],
   ];
 
+  if (!contact.uid) {
+    console.error(`Contact uid is null for contact ${contact.fn}`);
+    console.error(contact.toIcal());
+    return colorOptions[0];
+  }
+
   let sum = 0;
   const uid = contact.uid;
   for (let i = 0 ; i < uid.length ; i++) {
