@@ -9,7 +9,6 @@ interface PropsType {
   placeholder: string;
   value?: Date;
   dateOnly?: boolean;
-  disabled?: boolean;
   onChange: (date?: Date) => void;
 }
 
@@ -23,7 +22,6 @@ class DateTimePicker extends React.PureComponent<PropsType> {
     const inputProps = {
       placeholder: this.props.placeholder,
       readOnly: true,
-      disabled: this.props.disabled,
     };
     return (
       <Datetime
