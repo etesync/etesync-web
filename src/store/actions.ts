@@ -182,7 +182,7 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
           const prevUid = currentEntries.get(journal.uid)?.value?.last(undefined)?.uid ?? null;
 
           // FIXME: expose it in a non-hacky way.
-          if (prevUid === (journal as any)._json.lastUid) {
+          if (prevUid && (prevUid === (journal as any)._json.lastUid)) {
             return true;
           }
           return dispatch(fetchEntries(etesync, journal.uid, prevUid));
