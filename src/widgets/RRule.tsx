@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Container from './Container';
 import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, InputLabel, FormControl } from '@material-ui/core';
 import DateTimePicker from '../widgets/DateTimePicker';
 import { isNumber } from 'util';
@@ -136,7 +135,7 @@ export default function RRuleEteSync(props: PropsType) {
   });
 
   return (
-    <Container>
+    <>
       <div style={{ display: 'flex' }}>
         <FormControlLabel
           value={options.freq}
@@ -288,6 +287,6 @@ export default function RRuleEteSync(props: PropsType) {
           />
         }
       </div>
-    </Container>
+    </>
   );
 }
