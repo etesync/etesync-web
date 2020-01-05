@@ -18,13 +18,17 @@ export interface RRuleOptions {
   byweekno?: number;
   bymonth?: Months;
   bysetpos?: number;
-}
+  wkst?: Weekday;
+  bysecond?: number[];
+  byminute?: number[];
+  byday?: number[];
 
+}
 enum Frequency {
-  Year = 0,
-  Month = 1,
-  Week = 2,
-  Day = 3,
+  YEARLY,
+  MONTHLY,
+  WEEKLY,
+  DAILY,
 }
 enum Ends {
   Never,
@@ -70,7 +74,7 @@ const menuItemsEnds = [Ends.Never, Ends.Date, Ends.After].map((key) => {
   );
 });
 const weekdays = [Weekday.Mo, Weekday.Tu, Weekday.We, Weekday.Th, Weekday.Fr, Weekday.Sa, Weekday.Su];
-const menuItemsFrequency = [Frequency.Year, Frequency.Month, Frequency.Week, Frequency.Day].map((value) => {
+const menuItemsFrequency = [Frequency.YEARLY, Frequency.MONTHLY, Frequency.WEEKLY, Frequency.DAILY].map((value) => {
   return (
     <MenuItem key={value} value={value}>{Frequency[value]}</MenuItem>
   );
@@ -164,9 +168,9 @@ export default function RRuleEteSync(props: PropsType) {
             const updatedOptions = {
               freq: freq,
               bysetpos: undefined,
-              bymonthday: freq === Frequency.Month || Frequency.Year === freq ? 1 : undefined,
+              bymonthday: freq === Frequency.MONTHLY || Frequency.YEARLY === freq ? 1 : undefined,
               byweekday: undefined,
-              bymonth: freq === Frequency.Year ? Months.Jan : undefined,
+              bymonth: freq === Frequency.YEARLY ? Months.Jan : undefined,
             };
             updateRule(updatedOptions);
           }}
@@ -176,7 +180,7 @@ export default function RRuleEteSync(props: PropsType) {
       </div>
       <div style={{ display: 'flex' }}>
 
-        {(options.freq === Frequency.Month) &&
+        {(options.freq === Frequency.MONTHLY) &&
           <Select
             value={options.bysetpos ? MonthRepeat.Bysetpos : MonthRepeat.Bymonthday}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
@@ -207,7 +211,7 @@ export default function RRuleEteSync(props: PropsType) {
             <MenuItem value={-1}>Last</MenuItem>
           </Select>
         }
-        {(options.freq === Frequency.Year && options.bymonth) &&
+        {(options.freq === Frequency.YEARLY && options.bymonth) &&
           <Select
             value={options.bymonth}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
@@ -238,7 +242,7 @@ export default function RRuleEteSync(props: PropsType) {
         }
       </div>
       <div>
-        {options.freq !== Frequency.Day &&
+        {options.freq !== Frequency.DAILY &&
           <FormGroup row>{checkboxWeekDays}</FormGroup>
         }
         <FormControl>
