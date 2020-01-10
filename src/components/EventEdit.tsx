@@ -236,7 +236,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     const differentTimezone = this.state.timezone && (this.state.timezone !== getCurrentTimezone()) && timezoneLoadFromName(this.state.timezone);
 
     return (
-      <React.Fragment>
+      <>
         <h2>
           {this.props.item ? 'Edit Event' : 'New Event'}
         </h2>
@@ -382,7 +382,7 @@ class EventEdit extends React.PureComponent<PropsType> {
         >
         Are you sure you would like to delete this event?
         </ConfirmationDialog>
-      </React.Fragment>
+      </>
     );
   }
 }
