@@ -33,6 +33,7 @@ import * as EteSync from 'etesync';
 import { getCurrentTimezone } from '../helpers';
 
 import { EventType, timezoneLoadFromName } from '../pim-types';
+import RRuleEteSync, { RRuleOptions } from '../widgets/RRule';
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
