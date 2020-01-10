@@ -17,7 +17,7 @@ declare module 'ical.js' {
     public getFirstSubcomponent(name?: string): Component | null;
     public getAllSubcomponents(name?: string): Component[];
 
-    public getFirstPropertyValue(name?: string): any;
+    public getFirstPropertyValue<T = any>(name?: string): T;
 
     public getFirstProperty(name?: string): Property;
     public getAllProperties(name?: string): Property[];
@@ -55,11 +55,12 @@ declare module 'ical.js' {
 
     constructor(jCal: any[] | string, parent?: Component);
 
-    public getFirstValue(): any;
-    public getValues(): any[];
+    public getFirstValue<T = any>(): T;
+    public getValues<T = any>(): T[];
 
     public setParameter(name: string, value: string | string[]): void;
     public setValue(value: string | object): void;
+    public setValues(values: (string | object)[]): void;
     public toJSON(): any;
   }
 
@@ -146,16 +147,16 @@ declare module 'ical.js' {
   export type FrequencyValues = 'YEARLY' | 'MONTHLY' | 'WEEKLY' | 'DAILY' | 'HOURLY' | 'MINUTELY' | 'SECONDLY';
 
   export enum WeekDay {
-    SUNDAY = 1,
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
-    SATURDAY,
+    SU = 1,
+    MO,
+    TU,
+    WE,
+    TH,
+    FR,
+    SA,
   }
 
-  export class Recur {
+  export class RecurData {
     public freq?: FrequencyValues;
     public interval?: number;
     public wkst?: WeekDay;
@@ -164,11 +165,15 @@ declare module 'ical.js' {
     public bysecond?: number[];
     public byminute?: number[];
     public byhour?: number[];
-    public byday?: number[];
+    public byday?: string[];
     public bymonthday?: number[];
     public byyearday?: number[];
     public byweekno?: number[];
     public bymonth?: number[];
     public bysetpos?: number[];
+  }
+
+  export class Recur extends RecurData {
+    constructor(data?: RecurData);
   }
 }
