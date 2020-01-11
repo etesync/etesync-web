@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, InputLabel, FormControl, FormLabel } from '@material-ui/core';
+import { TextField, Select, MenuItem, FormControlLabel, InputLabel, FormControl } from '@material-ui/core';
 import DateTimePicker from '../widgets/DateTimePicker';
-import { isNumber } from 'util';
 import * as ICAL from 'ical.js';
 
 interface PropsType {
@@ -63,7 +62,15 @@ const menuItemsEnds = [Ends.Never, Ends.Date, Ends.After].map((key) => {
     <MenuItem key={key} value={key}>{Ends[key]}</MenuItem>
   );
 });
-const weekdays = [WeekDay.Su, WeekDay.Mo, WeekDay.Tu, WeekDay.We, WeekDay.Th, WeekDay.Fr, WeekDay.Sa];
+const weekdays = [
+  WeekDay.Su,
+  WeekDay.Mo,
+  WeekDay.Tu,
+  WeekDay.We,
+  WeekDay.Th,
+  WeekDay.Fr,
+  WeekDay.Sa,
+];
 const months = [
   Months.Jan,
   Months.Feb,
@@ -78,21 +85,27 @@ const months = [
   Months.Nov,
   Months.Dec,
 ];
-
 const menuItemsFrequency = ['YEARLY', 'MONTHLY', 'WEEKLY', 'DAILY'].map((value) => {
   return (
     <MenuItem key={value} value={value}>{value.toLowerCase()}</MenuItem>
   );
 });
-
+const menuItemMonths = months.map((month) => {
+  return (
+    <MenuItem key={month} value={month}>{Months[month]}</MenuItem>
+  );
+});
+const menuItemsWeekDays = weekdays.map((day) => {
+  return (
+    <MenuItem key={day} value={day}>{WeekDay[day]}</MenuItem>
+  );
+});
 export default function RRuleEteSync(props: PropsType) {
   const options = props.rrule;
-
   function updateRule(newOptions: Partial<RRuleOptions>): void {
     const updatedOptions = { ...options, ...newOptions };
     props.onChange(updatedOptions);
   }
-
   function getEnds(): Ends {
     if (options.until && !options.count) {
       return Ends.Date;
@@ -102,81 +115,6 @@ export default function RRuleEteSync(props: PropsType) {
       return Ends.Never;
     }
   }
-
-  function handleCheckboxWeekday(event: React.FormEvent<{ value: unknown }>): void {
-    const checkbox = event.target as HTMLInputElement;
-    const weekday = Number(checkbox.value);
-    let byweekdayArray = options.byday as WeekDay[];
-    let byweekday;
-    if (!checkbox.checked && byweekdayArray) {
-      byweekday = byweekdayArray.filter((day) => day !== weekday);
-    } else if (byweekdayArray) {
-      byweekdayArray = byweekdayArray.filter((day) => day !== weekday);
-      byweekday = [...byweekdayArray, weekday];
-    } else {
-      byweekday = [weekday];
-    }
-    updateRule({ byday: byweekday });
-  }
-  function handleCheckboxMonth(event: React.FormEvent<{ value: unknown }>): void {
-    const checkbox = event.target as HTMLInputElement;
-    const month = Number(checkbox.value);
-    let bymonthArray = options.bymonth as Months[];
-    let bymonth;
-    if (!checkbox.checked && bymonthArray) {
-      bymonth = bymonthArray.filter((day) => day !== month);
-    } else if (bymonthArray) {
-      bymonthArray = bymonthArray.filter((day) => day !== month);
-      bymonth = [...bymonthArray, month];
-    } else {
-      bymonth = [month];
-    }
-    updateRule({ bymonth: bymonth });
-  }
-  function isMonthChecked(month: number): boolean {
-    if (options.bymonth) {
-      return isNumber(options.bymonth.find((value) => Months[value] === Months[month]));
-    } else {
-      return false;
-    }
-  }
-  function isWeekdayChecked(day: number): boolean {
-    if (options.byday) {
-      return isNumber(options.byday.find((value) => WeekDay[value] === WeekDay[day]));
-    } else {
-      return false;
-    }
-  }
-  const checkboxMonths = months.map((month) => {
-    return (
-      <FormControlLabel
-        control={
-          <Checkbox
-            key={month}
-            value={month}
-            checked={isMonthChecked(month)}
-            onChange={handleCheckboxMonth}
-          />}
-        key={month}
-        label={Months[month]} />
-    );
-  });
-
-  const checkboxWeekDays = weekdays.map((day) => {
-    return (
-      <FormControlLabel
-        control={
-          <Checkbox
-            key={day}
-            value={day}
-            checked={isWeekdayChecked(day)}
-            onChange={handleCheckboxWeekday}
-          />}
-        key={day}
-        label={WeekDay[day]} />
-    );
-  });
-
   return (
     <>
       <div style={{ display: 'flex' }}>
@@ -204,14 +142,7 @@ export default function RRuleEteSync(props: PropsType) {
           style={{ alignSelf: 'flex-end', marginLeft: 20 }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             const freq = (event.target as HTMLSelectElement).value as Frequency;
-            const updatedOptions = {
-              freq: freq,
-              bysetpos: undefined,
-              bymonthday: freq === 'MONTHLY' || 'YEARLY' === freq ? [1] : undefined,
-              byweekday: undefined,
-              bymonth: freq === 'YEARLY' ? [Months.Jan] : undefined,
-            };
-            updateRule(updatedOptions);
+            updateRule({ freq: freq });
           }}
         >
           {menuItemsFrequency}
@@ -265,34 +196,40 @@ export default function RRuleEteSync(props: PropsType) {
       <div>
         {options.freq === 'YEARLY' &&
           <div>
-            <InputLabel>Months</InputLabel>
-            <Select
-              value={options.bymonth ? options.bymonth : []}
-              multiple
-              onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                const value = event.target.value as string[];
-                if (value) {
-                  updateRule({ bymonth: value.map((month) => Number(month)) });
-                }
-              }}>
-              {menuItemMonths}
-            </Select>
+            <FormControl>
+              <InputLabel>Months</InputLabel>
+              <Select
+                style={{ width: 200 }}
+                value={options.bymonth ? options.bymonth : []}
+                multiple
+                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                  const value = event.target.value as string[];
+                  if (value) {
+                    updateRule({ bymonth: value.map((month) => Number(month)) });
+                  }
+                }}>
+                {menuItemMonths}
+              </Select>
+            </FormControl>
           </div>
         }
         {(options.freq && options.freq !== 'DAILY') &&
           <div>
-            <InputLabel>Weekdays</InputLabel>
-            <Select
-              value={options.byday ? options.byday : []}
-              multiple
-              onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                const value = event.target.value as string[];
-                if (value) {
-                  updateRule({ byday: value.map((day) => Number(day)) });
-                }
-              }}>
-              {menuItemsWeekDays}
-            </Select>
+            <FormControl>
+              <InputLabel>Weekdays</InputLabel>
+              <Select
+                value={options.byday ? options.byday : []}
+                multiple
+                style={{ width: 200 }}
+                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                  const value = event.target.value as string[];
+                  if (value) {
+                    updateRule({ byday: value.map((day) => Number(day)) });
+                  }
+                }}>
+                {menuItemsWeekDays}
+              </Select>
+            </FormControl>
           </div>
         }
         <FormControl>
