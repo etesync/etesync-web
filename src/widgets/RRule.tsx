@@ -2,33 +2,29 @@ import * as React from 'react';
 import { TextField, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, InputLabel, FormControl } from '@material-ui/core';
 import DateTimePicker from '../widgets/DateTimePicker';
 import { isNumber } from 'util';
+import * as ICAL from 'ical.js';
 
 interface PropsType {
   onChange: (rrule: RRuleOptions) => void;
   rrule: RRuleOptions;
 }
+type Frequency = 'YEARLY' | 'MONTHLY' | 'WEEKLY' | 'DAILY' | 'HOURLY' | 'MINUTELY' | 'SECONDLY';
+
 export interface RRuleOptions {
   freq: Frequency;
-  interval: number;
-  until?: Date;
+  interval?: number;
+  wkst?: WeekDay;
+  until?: ICAL.Time;
   count?: number;
-  byweekday?: Weekday[];
-  bymonthday?: number;
-  byyearday?: number;
-  byweekno?: number;
-  bymonth?: Months;
-  bysetpos?: number;
-  wkst?: Weekday;
   bysecond?: number[];
   byminute?: number[];
+  byhour?: number[];
   byday?: number[];
-
-}
-enum Frequency {
-  YEARLY,
-  MONTHLY,
-  WEEKLY,
-  DAILY,
+  bymonthday?: number[];
+  byyearday?: number[];
+  byweekno?: number[];
+  bymonth?: number[];
+  bysetpos?: number[];
 }
 enum Ends {
   Never,
@@ -53,14 +49,14 @@ enum MonthRepeat {
   Bysetpos,
   Bymonthday,
 }
-enum Weekday {
+enum WeekDay {
+  Su = 1,
   Mo,
   Tu,
   We,
   Th,
   Fr,
   Sa,
-  Su
 }
 
 const menuItemsMonths = Object.keys(Months).filter((key) => Number(key)).map((key) => {
@@ -73,10 +69,10 @@ const menuItemsEnds = [Ends.Never, Ends.Date, Ends.After].map((key) => {
     <MenuItem key={key} value={key}>{Ends[key]}</MenuItem>
   );
 });
-const weekdays = [Weekday.Mo, Weekday.Tu, Weekday.We, Weekday.Th, Weekday.Fr, Weekday.Sa, Weekday.Su];
-const menuItemsFrequency = [Frequency.YEARLY, Frequency.MONTHLY, Frequency.WEEKLY, Frequency.DAILY].map((value) => {
+const weekdays = [WeekDay.Su, WeekDay.Mo, WeekDay.Tu, WeekDay.We, WeekDay.Th, WeekDay.Fr, WeekDay.Sa];
+const menuItemsFrequency = ['YEARLY', 'MONTHLY', 'WEEKLY', 'DAILY'].map((value) => {
   return (
-    <MenuItem key={value} value={value}>{Frequency[value]}</MenuItem>
+    <MenuItem key={value} value={value}>{value}</MenuItem>
   );
 });
 
@@ -101,7 +97,7 @@ export default function RRuleEteSync(props: PropsType) {
   function handleCheckboxWeekday(event: React.FormEvent<{ value: unknown }>): void {
     const checkbox = event.target as HTMLInputElement;
     const weekday = Number(checkbox.value);
-    let byweekdayArray = options.byweekday as Weekday[];
+    let byweekdayArray = options.byday as WeekDay[];
     let byweekday;
     if (!checkbox.checked && byweekdayArray) {
       byweekday = byweekdayArray.filter((day) => day !== weekday);
@@ -111,30 +107,29 @@ export default function RRuleEteSync(props: PropsType) {
     } else {
       byweekday = [weekday];
     }
-    updateRule({ byweekday: byweekday });
+    updateRule({ byday: byweekday });
   }
 
   function isWeekdayChecked(day: number): boolean {
-    const weekdayArray = options.byweekday;
-    if (weekdayArray) {
-      return isNumber(weekdayArray.find((value) => Weekday[value] === Weekday[day]));
+    if (options.byday) {
+      return isNumber(options.byday.find((value) => WeekDay[value] === WeekDay[day]));
     } else {
       return false;
     }
   }
 
-  const checkboxWeekDays = weekdays.map((_, index) => {
+  const checkboxWeekDays = weekdays.map((day) => {
     return (
       <FormControlLabel
         control={
           <Checkbox
-            key={index}
-            value={index}
-            checked={isWeekdayChecked(index)}
+            key={day}
+            value={day}
+            checked={isWeekdayChecked(day)}
             onChange={handleCheckboxWeekday}
           />}
-        key={index}
-        label={Weekday[index]} />
+        key={day}
+        label={WeekDay[day]} />
     );
   });
 
@@ -164,13 +159,13 @@ export default function RRuleEteSync(props: PropsType) {
           value={options.freq}
           style={{ alignSelf: 'flex-end', marginLeft: 20 }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
-            const freq = Number((event.target as HTMLSelectElement).value);
+            const freq = (event.target as HTMLSelectElement).value as Frequency;
             const updatedOptions = {
               freq: freq,
               bysetpos: undefined,
-              bymonthday: freq === Frequency.MONTHLY || Frequency.YEARLY === freq ? 1 : undefined,
+              bymonthday: freq === 'MONTHLY' || 'YEARLY' === freq ? [1] : undefined,
               byweekday: undefined,
-              bymonth: freq === Frequency.YEARLY ? Months.Jan : undefined,
+              bymonth: freq === 'YEARLY' ? [Months.Jan] : undefined,
             };
             updateRule(updatedOptions);
           }}
@@ -180,15 +175,15 @@ export default function RRuleEteSync(props: PropsType) {
       </div>
       <div style={{ display: 'flex' }}>
 
-        {(options.freq === Frequency.MONTHLY) &&
+        {(options.freq === 'MONTHLY') &&
           <Select
             value={options.bysetpos ? MonthRepeat.Bysetpos : MonthRepeat.Bymonthday}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               const value = Number((event.target as HTMLInputElement).value);
               if (value === MonthRepeat.Bymonthday) {
-                updateRule({ bymonthday: 1, bysetpos: undefined, bymonth: Months.Jan });
+                updateRule({ bymonthday: [1], bysetpos: undefined, bymonth: [Months.Jan] });
               } else if (value === MonthRepeat.Bysetpos) {
-                updateRule({ bysetpos: 1, bymonthday: undefined, bymonth: undefined });
+                updateRule({ bysetpos: [1], bymonthday: undefined, bymonth: undefined });
               }
             }}
           >
@@ -200,9 +195,9 @@ export default function RRuleEteSync(props: PropsType) {
 
         {options.bysetpos &&
           <Select
-            value={options.bysetpos}
+            value={options.bysetpos[0]}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
-              updateRule({ bysetpos: Number((event.target as HTMLInputElement).value) });
+              updateRule({ bysetpos: [Number((event.target as HTMLInputElement).value)] });
             }}>
             <MenuItem value={1}>First</MenuItem>
             <MenuItem value={2}>Second</MenuItem>
@@ -211,11 +206,11 @@ export default function RRuleEteSync(props: PropsType) {
             <MenuItem value={-1}>Last</MenuItem>
           </Select>
         }
-        {(options.freq === Frequency.YEARLY && options.bymonth) &&
+        {(options.freq === 'YEARLY' && options.bymonth) &&
           <Select
             value={options.bymonth}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
-              updateRule({ bymonth: Number((event.target as HTMLInputElement).value) });
+              updateRule({ bymonth: [Number((event.target as HTMLInputElement).value)] });
             }}>
             {menuItemsMonths}
           </Select>
@@ -223,7 +218,7 @@ export default function RRuleEteSync(props: PropsType) {
         {options.bymonthday &&
           <TextField
             type="number"
-            value={options.bymonthday}
+            value={options.bymonthday[0]}
             label="Month day"
             style={{ width: 100 }}
             inputProps={{ min: 1, step: 1, max: 31 }}
@@ -234,7 +229,7 @@ export default function RRuleEteSync(props: PropsType) {
               if (value === '') {
                 updateRule({ bymonthday: undefined });
               } else if (numberValue < 32 && numberValue > 0) {
-                updateRule({ bymonthday: numberValue });
+                updateRule({ bymonthday: [numberValue] });
               }
             }}
           />
@@ -242,7 +237,7 @@ export default function RRuleEteSync(props: PropsType) {
         }
       </div>
       <div>
-        {options.freq !== Frequency.DAILY &&
+        {(options.freq && options.freq !== 'DAILY') &&
           <FormGroup row>{checkboxWeekDays}</FormGroup>
         }
         <FormControl>
@@ -253,7 +248,7 @@ export default function RRuleEteSync(props: PropsType) {
               const value = Number((event.target as HTMLSelectElement).value);
               let updateOptions;
               if (value === Ends.Date) {
-                updateOptions = { count: undefined, until: new Date() };
+                updateOptions = { count: undefined, until: ICAL.Time.now() };
               } else if (value === Ends.After) {
                 updateOptions = { until: undefined, count: 1 };
               } else {
@@ -267,9 +262,12 @@ export default function RRuleEteSync(props: PropsType) {
         {options.until &&
           <DateTimePicker
             dateOnly
-            value={options.until || undefined}
+            value={options.until?.toJSDate() || undefined}
             placeholder="Ends"
-            onChange={(date?: Date) => updateRule({ until: date })}
+            onChange={(date?: Date) => {
+              const value = date ? date : null;
+              updateRule({ until: ICAL.Time.fromJSDate(value, true) });
+            }}
           />
         }
         {options.count &&
