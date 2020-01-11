@@ -9,7 +9,7 @@ interface PropsType {
   rrule: RRuleOptions;
 }
 type Frequency = 'YEARLY' | 'MONTHLY' | 'WEEKLY' | 'DAILY' | 'HOURLY' | 'MINUTELY' | 'SECONDLY';
-
+const disableComplex = true;
 export interface RRuleOptions {
   freq: Frequency;
   interval?: number;
@@ -236,58 +236,64 @@ export default function RRuleEteSync(props: PropsType) {
           }}
         />
       }
-      <div style={{ display: 'flex' }}>
-        {(options.freq === 'MONTHLY') &&
-          <Select
-            value={options.bysetpos ? MonthRepeat.Bysetpos : MonthRepeat.Bymonthday}
-            onChange={(event: React.FormEvent<{ value: unknown }>) => {
-              const value = Number((event.target as HTMLInputElement).value);
-              if (value === MonthRepeat.Bymonthday) {
-                updateRule({ bymonthday: [1], bysetpos: undefined, bymonth: [Months.Jan] });
-              } else if (value === MonthRepeat.Bysetpos) {
-                updateRule({ bysetpos: [1], bymonthday: undefined, bymonth: undefined });
-              }
-            }}
-          >
-            <MenuItem value={MonthRepeat.Bymonthday}>On</MenuItem>
-            <MenuItem value={MonthRepeat.Bysetpos}>On the</MenuItem>
-          </Select>
-        }
-
-
-        {options.bysetpos &&
-          <Select
-            value={options.bysetpos[0]}
-            onChange={(event: React.FormEvent<{ value: unknown }>) => {
-              updateRule({ bysetpos: [Number((event.target as HTMLInputElement).value)] });
-            }}>
-            <MenuItem value={1}>First</MenuItem>
-            <MenuItem value={2}>Second</MenuItem>
-            <MenuItem value={3}>Third</MenuItem>
-            <MenuItem value={4}>Fourth</MenuItem>
-            <MenuItem value={-1}>Last</MenuItem>
-          </Select>
-        }
-
-
-        {(options.freq === 'YEARLY' && options.bymonth) &&
-          <FormControl>
-            <FormLabel component="legend">Months</FormLabel>
-            <FormGroup row>
-              {checkboxMonths}
-            </FormGroup>
-          </FormControl>
-        }
-      </div>
+      {
+        !disableComplex && <div style={{ display: 'flex' }}>
+          {(options.freq === 'MONTHLY') &&
+            <Select value={options.bysetpos ? MonthRepeat.Bysetpos : MonthRepeat.Bymonthday}
+              onChange={(event: React.FormEvent<{ value: unknown }>) => {
+                const value = Number((event.target as HTMLInputElement).value);
+                if (value === MonthRepeat.Bymonthday) {
+                  updateRule({ bymonthday: [1], bysetpos: undefined, bymonth: [Months.Jan] });
+                } else if (value === MonthRepeat.Bysetpos) {
+                  updateRule({ bysetpos: [1], bymonthday: undefined, bymonth: undefined });
+                }
+              }}>
+              <MenuItem value={MonthRepeat.Bymonthday}>On</MenuItem>
+              <MenuItem value={MonthRepeat.Bysetpos}>On the</MenuItem>
+            </Select>}           {options.bysetpos &&
+              <Select value={options.bysetpos[0]}
+                onChange={(event: React.FormEvent<{ value: unknown }>) => {
+                  updateRule({ bysetpos: [Number((event.target as HTMLInputElement).value)] });
+                }}>
+                <MenuItem value={1}>First</MenuItem>
+                <MenuItem value={2}>Second</MenuItem>
+                <MenuItem value={3}>Third</MenuItem>
+                <MenuItem value={4}>Fourth</MenuItem>
+                <MenuItem value={-1}>Last</MenuItem>
+              </Select>}
+        </div>}
       <div>
-
+        {options.freq === 'YEARLY' &&
+          <div>
+            <InputLabel>Months</InputLabel>
+            <Select
+              value={options.bymonth ? options.bymonth : []}
+              multiple
+              onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                const value = event.target.value as string[];
+                if (value) {
+                  updateRule({ bymonth: value.map((month) => Number(month)) });
+                }
+              }}>
+              {menuItemMonths}
+            </Select>
+          </div>
+        }
         {(options.freq && options.freq !== 'DAILY') &&
-          <FormControl>
-            <FormLabel component="legend">Weekdays</FormLabel>
-            <FormGroup row>
-              {checkboxWeekDays}
-            </FormGroup>
-          </FormControl>
+          <div>
+            <InputLabel>Weekdays</InputLabel>
+            <Select
+              value={options.byday ? options.byday : []}
+              multiple
+              onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                const value = event.target.value as string[];
+                if (value) {
+                  updateRule({ byday: value.map((day) => Number(day)) });
+                }
+              }}>
+              {menuItemsWeekDays}
+            </Select>
+          </div>
         }
         <FormControl>
           <InputLabel>Ends</InputLabel>
