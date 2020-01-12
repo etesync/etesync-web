@@ -33,7 +33,7 @@ import * as EteSync from 'etesync';
 import { getCurrentTimezone } from '../helpers';
 
 import { EventType, timezoneLoadFromName } from '../pim-types';
-import RRuleEteSync, { RRuleOptions } from '../widgets/RRule';
+import RRule, { RRuleOptions } from '../widgets/RRule';
 
 
 interface PropsType {
@@ -357,8 +357,7 @@ class EventEdit extends React.PureComponent<PropsType> {
               label="Recurring"
             />
           </FormGroup>
-          {this.state.rruleOptions &&
-            <RRuleEteSync
+            <RRule
               onChange={this.handleRRuleChange}
               rrule={this.state.rruleOptions ? this.state.rruleOptions : { freq: 'DAILY', interval: 1 }}
             />
