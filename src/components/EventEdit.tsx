@@ -57,7 +57,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     location: string;
     description: string;
     journalUid: string;
-    rruleOptions?: RRuleOptions;
+    rrule?: RRuleOptions;
     error?: string;
     showDeleteDialog: boolean;
   };
@@ -105,7 +105,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
       this.state.timezone = event.timezone;
-      this.state.rruleOptions = this.props.item?.component.getFirstPropertyValue('rrule');
+      this.state.rrule = this.props.item?.component.getFirstPropertyValue('rrule');
     } else {
       this.state.uid = uuid.v4();
     }
@@ -159,14 +159,13 @@ class EventEdit extends React.PureComponent<PropsType> {
     this.setState({ allDay: !this.state.allDay });
   }
   public toggleRecurring() {
-    const value = this.state.rruleOptions ? undefined : { freq: 'WEEKLY', interval: 1 };
-    this.setState({ rruleOptions: value });
+    const value = this.state.rrule ? undefined : { freq: 'WEEKLY', interval: 1 };
+    this.setState({ rrule: value });
   }
 
 
   public handleRRuleChange(rrule: RRuleOptions): void {
-    this.setState({ rruleOptions: rrule });
-    console.log(rrule);
+    this.setState({ rrule: rrule });
   }
   public onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
@@ -354,7 +353,7 @@ class EventEdit extends React.PureComponent<PropsType> {
               control={
                 <Switch
                   name="recurring"
-                  checked={!!this.state.rruleOptions}
+                  checked={!!this.state.rrule}
                   onChange={this.toggleRecurring}
                   color="primary"
                 />
@@ -362,9 +361,10 @@ class EventEdit extends React.PureComponent<PropsType> {
               label="Recurring"
             />
           </FormGroup>
+          {this.state.rrule &&
             <RRule
               onChange={this.handleRRuleChange}
-              rrule={this.state.rruleOptions ? this.state.rruleOptions : { freq: 'DAILY', interval: 1 }}
+              rrule={this.state.rrule ? this.state.rrule : { freq: 'DAILY', interval: 1 }}
             />
           }
           <div style={styles.submit}>
