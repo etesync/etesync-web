@@ -104,7 +104,7 @@ const styles = {
   multiSelect: { minWidth: 120, maxWidth: '100%' },
   width: { width: 120 },
 };
-export default function RRuleEteSync(props: PropsType) {
+export default function RRule(props: PropsType) {
   const options = props.rrule;
   function updateRule(newOptions: Partial<RRuleOptions>): void {
     const updatedOptions = { ...options, ...newOptions };
