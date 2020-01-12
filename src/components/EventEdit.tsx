@@ -245,9 +245,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       },
     };
 
-    if (this.props.item && this.props.item.isRecurring()) {
-      console.log(1);
-    }
+    const recurring = this.props.item && this.props.item.isRecurring();
     const differentTimezone = this.state.timezone && (this.state.timezone !== getCurrentTimezone()) && timezoneLoadFromName(this.state.timezone);
 
 
@@ -256,6 +254,13 @@ class EventEdit extends React.PureComponent<PropsType> {
         <h2>
           {this.props.item ? 'Edit Event' : 'New Event'}
         </h2>
+        {recurring && (
+          <div>
+            <span style={{ color: 'red' }}>IMPORTANT: </span>
+            This is a recurring event, for now, only editing the whole series
+            (by editing the first instance) is supported.
+          </div>
+        )}
         {this.state.error && (
           <div>ERROR! {this.state.error}</div>
         )}
