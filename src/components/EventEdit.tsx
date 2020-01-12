@@ -57,6 +57,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     location: string;
     description: string;
     journalUid: string;
+
     rrule?: RRuleOptions;
     error?: string;
     showDeleteDialog: boolean;
@@ -71,6 +72,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       location: '',
       description: '',
       timezone: null,
+
       journalUid: '',
       showDeleteDialog: false,
     };
@@ -203,6 +205,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       :
       new EventType()
       ;
+
     event.uid = this.state.uid;
     event.summary = this.state.title;
     event.startDate = startDate;
@@ -403,7 +406,6 @@ class EventEdit extends React.PureComponent<PropsType> {
             the unsupported types will be copied as is.
           </div>
         </form>
-
 
         <ConfirmationDialog
           title="Delete Confirmation"
