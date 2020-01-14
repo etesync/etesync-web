@@ -220,7 +220,16 @@ class EventEdit extends React.PureComponent<PropsType> {
       }
     }
     if (this.state.rrule) {
-      event.component.updatePropertyWithValue('rrule', new ICAL.Recur(this.state.rrule!));
+      const rruleData: ICAL.RecurData = {};
+      for (const key of Object.keys(this.state.rrule)) {
+        const value = this.state.rrule[key];
+        if ((value === undefined) || (value?.length === 0)) {
+          continue;
+        }
+
+        rruleData[key] = value;
+      }
+      event.component.updatePropertyWithValue('rrule', new ICAL.Recur(rruleData));
     }
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
