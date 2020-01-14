@@ -80,7 +80,15 @@ interface PropsType {
 export default function RRule(props: PropsType) {
   const options = props.rrule;
   function updateRule(newOptions: Partial<RRuleOptions>): void {
-    const updatedOptions = { ...options, ...newOptions };
+    const updatedOptions: RRuleOptions = { ...options, ...newOptions };
+
+    for (const key of Object.keys(updatedOptions)) {
+      const value = updatedOptions[key];
+      if ((value === undefined) || (value?.length === 0)) {
+        delete updatedOptions[key];
+        continue;
+      }
+    }
     props.onChange(updatedOptions);
   }
   function getEnds(): Ends {
