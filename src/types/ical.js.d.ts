@@ -175,6 +175,8 @@ declare module 'ical.js' {
 
   export class Recur {
     constructor(data?: RecurData);
-    public toJSON(): RecurData;
+    public until: Time | null;
+
+    public toJSON(): Omit<RecurData, 'until'> & { until?: string };
   }
 }

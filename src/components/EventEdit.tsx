@@ -107,7 +107,13 @@ class EventEdit extends React.PureComponent<PropsType> {
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
       this.state.timezone = event.timezone;
-      this.state.rrule = this.props.item?.component.getFirstPropertyValue<ICAL.Recur>('rrule')?.toJSON();
+      const rruleProp = this.props.item?.component.getFirstPropertyValue<ICAL.Recur>('rrule');
+      if (rruleProp) {
+        this.state.rrule = rruleProp.toJSON();
+        if (rruleProp.until) {
+          this.state.rrule.until = rruleProp.until;
+        }
+      }
     } else {
       this.state.uid = uuid.v4();
     }
