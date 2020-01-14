@@ -207,9 +207,7 @@ export default function RRule(props: PropsType) {
                 style={styles.multiSelect}
                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
                   const value = event.target.value as string[];
-                  if (value) {
-                    updateRule({ byday: value });
-                  }
+                  updateRule({ byday: value });
                 }}>
                 {menuItemsWeekDays}
               </Select>
@@ -245,9 +243,7 @@ export default function RRule(props: PropsType) {
                 multiple
                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
                   const value = event.target.value as string[];
-                  if (value) {
-                    updateRule({ bymonth: value.map((month) => Number(month)) });
-                  }
+                  updateRule({ bymonth: value.map((month) => Number(month)) });
                 }}>
                 {menuItemMonths}
               </Select>
