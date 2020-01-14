@@ -33,6 +33,8 @@ import * as EteSync from 'etesync';
 import { getCurrentTimezone } from '../helpers';
 
 import { EventType, timezoneLoadFromName } from '../pim-types';
+import RRule, { RRuleOptions } from '../widgets/RRule';
+
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
@@ -52,6 +54,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     start?: Date;
     end?: Date;
     timezone: string | null;
+    rrule?: RRuleOptions;
     location: string;
     description: string;
     journalUid: string;
@@ -104,6 +107,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
       this.state.timezone = event.timezone;
+      this.state.rrule = this.props.item?.component.getFirstPropertyValue<ICAL.Recur>('rrule')?.toJSON();
     } else {
       this.state.uid = uuid.v4();
     }
@@ -121,6 +125,8 @@ class EventEdit extends React.PureComponent<PropsType> {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.toggleAllDay = this.toggleAllDay.bind(this);
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
+    this.toggleRecurring = this.toggleRecurring.bind(this);
+    this.handleRRuleChange = this.handleRRuleChange.bind(this);
   }
 
   public UNSAFE_componentWillReceiveProps(nextProps: any) {
@@ -154,7 +160,15 @@ class EventEdit extends React.PureComponent<PropsType> {
   public toggleAllDay() {
     this.setState({ allDay: !this.state.allDay });
   }
+  public toggleRecurring() {
+    const value = this.state.rrule ? undefined : { freq: 'WEEKLY', interval: 1 };
+    this.setState({ rrule: value });
+  }
 
+
+  public handleRRuleChange(rrule: RRuleOptions): void {
+    this.setState({ rrule: rrule });
+  }
   public onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
@@ -191,6 +205,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       :
       new EventType()
     ;
+
     event.uid = this.state.uid;
     event.summary = this.state.title;
     event.startDate = startDate;
@@ -203,6 +218,18 @@ class EventEdit extends React.PureComponent<PropsType> {
         event.startDate = event.startDate?.convertToZone(timezone);
         event.endDate = event.endDate?.convertToZone(timezone);
       }
+    }
+    if (this.state.rrule) {
+      const rruleData: ICAL.RecurData = {};
+      for (const key of Object.keys(this.state.rrule)) {
+        const value = this.state.rrule[key];
+        if ((value === undefined) || (value?.length === 0)) {
+          continue;
+        }
+
+        rruleData[key] = value;
+      }
+      event.component.updatePropertyWithValue('rrule', new ICAL.Recur(rruleData));
     }
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
@@ -236,7 +263,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     const differentTimezone = this.state.timezone && (this.state.timezone !== getCurrentTimezone()) && timezoneLoadFromName(this.state.timezone);
 
     return (
-      <React.Fragment>
+      <>
         <h2>
           {this.props.item ? 'Edit Event' : 'New Event'}
         </h2>
@@ -335,7 +362,25 @@ class EventEdit extends React.PureComponent<PropsType> {
             value={this.state.description}
             onChange={this.handleInputChange}
           />
-
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="recurring"
+                  checked={!!this.state.rrule}
+                  onChange={this.toggleRecurring}
+                  color="primary"
+                />
+              }
+              label="Recurring"
+            />
+          </FormGroup>
+          {this.state.rrule &&
+            <RRule
+              onChange={this.handleRRuleChange}
+              rrule={this.state.rrule ? this.state.rrule : { freq: 'DAILY', interval: 1 }}
+            />
+          }
           <div style={styles.submit}>
             <Button
               variant="contained"
@@ -380,9 +425,9 @@ class EventEdit extends React.PureComponent<PropsType> {
           onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
-        Are you sure you would like to delete this event?
+          Are you sure you would like to delete this event?
         </ConfirmationDialog>
-      </React.Fragment>
+      </>
     );
   }
 }
