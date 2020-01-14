@@ -3,12 +3,6 @@ import { TextField, Select, MenuItem, FormControlLabel, InputLabel, FormControl 
 import DateTimePicker from '../widgets/DateTimePicker';
 import * as ICAL from 'ical.js';
 
-interface PropsType {
-  onChange: (rrule: RRuleOptions) => void;
-  rrule: RRuleOptions;
-}
-const disableComplex = true;
-
 export type RRuleOptions = ICAL.RecurData;
 
 enum Ends {
@@ -16,6 +10,7 @@ enum Ends {
   Date,
   After,
 }
+
 enum Months {
   Jan = 1,
   Feb,
@@ -30,10 +25,12 @@ enum Months {
   Nov,
   Dec,
 }
+
 enum MonthRepeat {
   Bysetpos,
   Bymonthday,
 }
+
 enum WeekDay {
   Su = 1,
   Mo,
@@ -44,14 +41,16 @@ enum WeekDay {
   Sa,
 }
 
+const disableComplex = true;
+
+const weekdays: WeekDay[] = Array.from(Array(7)).map((_, i) => i + 1);
+const months: Months[] = Array.from(Array(12)).map((_, i) => i + 1);
+
 const menuItemsEnds = [Ends.Never, Ends.Date, Ends.After].map((key) => {
   return (
     <MenuItem key={key} value={key}>{Ends[key]}</MenuItem>
   );
 });
-const weekdays: WeekDay[] = Array.from(Array(7)).map((_, i) => i + 1);
-const months: Months[] = Array.from(Array(12)).map((_, i) => i + 1);
-
 const menuItemsFrequency = ['YEARLY', 'MONTHLY', 'WEEKLY', 'DAILY'].map((value) => {
   return (
     <MenuItem key={value} value={value}>{value.toLowerCase()}</MenuItem>
@@ -67,10 +66,17 @@ const menuItemsWeekDays = weekdays.map((day) => {
     <MenuItem key={day} value={WeekDay[day].toUpperCase()}>{WeekDay[day]}</MenuItem>
   );
 });
+
 const styles = {
   multiSelect: { minWidth: 120, maxWidth: '100%' },
   width: { width: 120 },
 };
+
+interface PropsType {
+  onChange: (rrule: RRuleOptions) => void;
+  rrule: RRuleOptions;
+}
+
 export default function RRule(props: PropsType) {
   const options = props.rrule;
   function updateRule(newOptions: Partial<RRuleOptions>): void {
