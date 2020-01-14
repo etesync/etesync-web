@@ -90,10 +90,12 @@ export default function RRule(props: PropsType) {
     <>
       <div style={{ display: 'flex' }}>
         <FormControlLabel
+          style={{ marginRight: 0 }}
           value={options.freq}
-          label="Repeat every :"
+          label="Repeat every"
           labelPlacement="start"
           control={<TextField
+            style={{ marginLeft: '0.5em', width: '4em' }}
             type="number"
             inputProps={{ min: 1, max: 1000 }}
             value={options.interval}
@@ -110,7 +112,7 @@ export default function RRule(props: PropsType) {
         />
         <Select
           value={options.freq}
-          style={{ alignSelf: 'flex-end', marginLeft: 20 }}
+          style={{ marginLeft: '0.5em' }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             const freq = (event.target as HTMLSelectElement).value as ICAL.FrequencyValues;
             updateRule({ freq: freq });
