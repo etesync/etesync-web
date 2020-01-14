@@ -54,11 +54,11 @@ class EventEdit extends React.PureComponent<PropsType> {
     start?: Date;
     end?: Date;
     timezone: string | null;
+    rrule?: RRuleOptions;
     location: string;
     description: string;
     journalUid: string;
 
-    rrule?: RRuleOptions;
     error?: string;
     showDeleteDialog: boolean;
   };
@@ -204,7 +204,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       this.props.item.clone()
       :
       new EventType()
-      ;
+    ;
 
     event.uid = this.state.uid;
     event.summary = this.state.title;
@@ -218,6 +218,9 @@ class EventEdit extends React.PureComponent<PropsType> {
         event.startDate = event.startDate?.convertToZone(timezone);
         event.endDate = event.endDate?.convertToZone(timezone);
       }
+    }
+    if (this.state.rrule) {
+      event.component.updatePropertyWithValue('rrule', new ICAL.Recur(this.state.rrule!));
     }
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
@@ -249,7 +252,6 @@ class EventEdit extends React.PureComponent<PropsType> {
 
     const recurring = this.props.item && this.props.item.isRecurring();
     const differentTimezone = this.state.timezone && (this.state.timezone !== getCurrentTimezone()) && timezoneLoadFromName(this.state.timezone);
-
 
     return (
       <>

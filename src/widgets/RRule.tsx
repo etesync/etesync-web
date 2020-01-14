@@ -7,24 +7,10 @@ interface PropsType {
   onChange: (rrule: RRuleOptions) => void;
   rrule: RRuleOptions;
 }
-type Frequency = 'YEARLY' | 'MONTHLY' | 'WEEKLY' | 'DAILY' | 'HOURLY' | 'MINUTELY' | 'SECONDLY';
 const disableComplex = true;
-export interface RRuleOptions {
-  freq: Frequency;
-  interval?: number;
-  wkst?: WeekDay;
-  until?: ICAL.Time;
-  count?: number;
-  bysecond?: number[];
-  byminute?: number[];
-  byhour?: number[];
-  byday?: number[];
-  bymonthday?: number[];
-  byyearday?: number[];
-  byweekno?: number[];
-  bymonth?: number[];
-  bysetpos?: number[];
-}
+
+export type RRuleOptions = ICAL.RecurData;
+
 enum Ends {
   Never,
   Date,
@@ -57,34 +43,15 @@ enum WeekDay {
   Fr,
   Sa,
 }
+
 const menuItemsEnds = [Ends.Never, Ends.Date, Ends.After].map((key) => {
   return (
     <MenuItem key={key} value={key}>{Ends[key]}</MenuItem>
   );
 });
-const weekdays = [
-  WeekDay.Su,
-  WeekDay.Mo,
-  WeekDay.Tu,
-  WeekDay.We,
-  WeekDay.Th,
-  WeekDay.Fr,
-  WeekDay.Sa,
-];
-const months = [
-  Months.Jan,
-  Months.Feb,
-  Months.Mar,
-  Months.Apr,
-  Months.May,
-  Months.Jun,
-  Months.Jul,
-  Months.Aug,
-  Months.Sep,
-  Months.Oct,
-  Months.Nov,
-  Months.Dec,
-];
+const weekdays: WeekDay[] = Array.from(Array(7)).map((_, i) => i + 1);
+const months: Months[] = Array.from(Array(12)).map((_, i) => i + 1);
+
 const menuItemsFrequency = ['YEARLY', 'MONTHLY', 'WEEKLY', 'DAILY'].map((value) => {
   return (
     <MenuItem key={value} value={value}>{value.toLowerCase()}</MenuItem>
@@ -97,7 +64,7 @@ const menuItemMonths = months.map((month) => {
 });
 const menuItemsWeekDays = weekdays.map((day) => {
   return (
-    <MenuItem key={day} value={day}>{WeekDay[day]}</MenuItem>
+    <MenuItem key={day} value={WeekDay[day].toUpperCase()}>{WeekDay[day]}</MenuItem>
   );
 });
 const styles = {
@@ -145,7 +112,7 @@ export default function RRule(props: PropsType) {
           value={options.freq}
           style={{ alignSelf: 'flex-end', marginLeft: 20 }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
-            const freq = (event.target as HTMLSelectElement).value as Frequency;
+            const freq = (event.target as HTMLSelectElement).value as ICAL.FrequencyValues;
             updateRule({ freq: freq });
           }}
         >
@@ -239,7 +206,7 @@ export default function RRule(props: PropsType) {
                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
                   const value = event.target.value as string[];
                   if (value) {
-                    updateRule({ byday: value.map((day) => Number(day)) });
+                    updateRule({ byday: value });
                   }
                 }}>
                 {menuItemsWeekDays}
