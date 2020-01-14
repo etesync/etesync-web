@@ -121,8 +121,8 @@ export default function RRule(props: PropsType) {
           {menuItemsFrequency}
         </Select>
       </div>
-      {
-        !disableComplex && <div style={{ display: 'flex' }}>
+      {!disableComplex && (
+        <div style={{ display: 'flex' }}>
           {(options.freq === 'MONTHLY') &&
             <Select value={options.bysetpos ? MonthRepeat.Bysetpos : MonthRepeat.Bymonthday}
               onChange={(event: React.FormEvent<{ value: unknown }>) => {
@@ -135,18 +135,22 @@ export default function RRule(props: PropsType) {
               }}>
               <MenuItem value={MonthRepeat.Bymonthday}>On</MenuItem>
               <MenuItem value={MonthRepeat.Bysetpos}>On the</MenuItem>
-            </Select>}           {options.bysetpos &&
-              <Select value={options.bysetpos[0]}
-                onChange={(event: React.FormEvent<{ value: unknown }>) => {
-                  updateRule({ bysetpos: [Number((event.target as HTMLInputElement).value)] });
-                }}>
-                <MenuItem value={1}>First</MenuItem>
-                <MenuItem value={2}>Second</MenuItem>
-                <MenuItem value={3}>Third</MenuItem>
-                <MenuItem value={4}>Fourth</MenuItem>
-                <MenuItem value={-1}>Last</MenuItem>
-              </Select>}
-        </div>}
+            </Select>
+          }
+          {options.bysetpos &&
+            <Select value={options.bysetpos[0]}
+              onChange={(event: React.FormEvent<{ value: unknown }>) => {
+                updateRule({ bysetpos: [Number((event.target as HTMLInputElement).value)] });
+              }}>
+              <MenuItem value={1}>First</MenuItem>
+              <MenuItem value={2}>Second</MenuItem>
+              <MenuItem value={3}>Third</MenuItem>
+              <MenuItem value={4}>Fourth</MenuItem>
+              <MenuItem value={-1}>Last</MenuItem>
+            </Select>
+          }
+        </div>
+      )}
       <FormControl>
         <InputLabel>Ends</InputLabel>
         <Select
