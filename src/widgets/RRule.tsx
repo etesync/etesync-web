@@ -98,12 +98,12 @@ export default function RRule(props: PropsType) {
             style={{ marginLeft: '0.5em', width: '4em' }}
             type="number"
             inputProps={{ min: 1, max: 1000 }}
-            value={options.interval}
+            value={options.interval ?? 1}
             onChange={(event: React.FormEvent<{ value: unknown }>) => {
               event.preventDefault();
               const inputNode = event.currentTarget as HTMLInputElement;
               if (inputNode.value === '') {
-                updateRule({ interval: undefined });
+                updateRule({ interval: 1 });
               } else if (inputNode.valueAsNumber) {
                 updateRule({ interval: inputNode.valueAsNumber });
               }
