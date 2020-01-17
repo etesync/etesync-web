@@ -184,6 +184,14 @@ export class TaskType extends EventType {
     return !!((this.startDate?.isDate) || (this.dueDate?.isDate));
   }
 
+  set tags(tagHash: any) {
+    this.component.updatePropertyWithValue('tags', JSON.stringify(tagHash));
+  }
+
+  get tags() {
+    return JSON.parse(this.component.getFirstPropertyValue('tags'));
+  }
+
   public clone() {
     const ret = new TaskType(new ICAL.Component(this.component.toJSON()));
     ret.color = this.color;

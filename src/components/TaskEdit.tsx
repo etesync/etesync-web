@@ -1,9 +1,5 @@
 import * as React from 'react';
 
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
@@ -20,7 +16,6 @@ import IconSave from '@material-ui/icons/Save';
 import DateTimePicker from '../widgets/DateTimePicker';
 
 import ConfirmationDialog from '../widgets/ConfirmationDialog';
-import TimezonePicker from '../widgets/TimezonePicker';
 
 import { Location } from 'history';
 import { withRouter } from 'react-router';
@@ -56,6 +51,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     location: string;
     description: string;
     journalUid: string;
+    tags: string;
 
     error?: string;
     showDeleteDialog: boolean;
@@ -71,6 +67,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       location: '',
       description: '',
       timezone: null,
+      tags: '',
 
       journalUid: '',
       showDeleteDialog: false,
@@ -92,6 +89,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
       this.state.timezone = event.timezone;
+      console.log(event);
+      this.state.tags = event.tags ? Object.keys(event.tags).join(' ') : '';
     } else {
       this.state.uid = uuid.v4();
     }
@@ -174,7 +173,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.props.item.clone()
       :
       new TaskType(null)
-    ;
+      ;
 
     event.uid = this.state.uid;
     event.summary = this.state.title;
@@ -199,6 +198,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
         }
       }
     }
+
+    event.tags = this.state.tags.split(' ').reduce((tagHash, tag) => ({ ...tagHash, [tag]: true }), {});
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
@@ -248,6 +249,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
         <form style={styles.form} onSubmit={this.onSubmit}>
           <TextField
             name="title"
+            label="Title"
             placeholder="Enter title"
             style={styles.fullWidth}
             value={this.state.title}
@@ -286,20 +288,16 @@ class TaskEdit extends React.PureComponent<PropsType> {
             </Select>
           </FormControl>
 
-          <FormControl>
-            <FormHelperText>Start</FormHelperText>
-            <DateTimePicker
-              dateOnly={this.state.allDay}
-              placeholder="Start"
-              value={this.state.start}
-              onChange={(date?: Date) => this.setState({ start: date })}
-            />
-            {differentTimezone && this.state.start && (
-              <FormHelperText>{ICAL.Time.fromJSDate(this.state.start, false).convertToZone(differentTimezone!).toJSDate().toString()}</FormHelperText>
-            )}
-          </FormControl>
+          <TextField
+            name="tags"
+            label="Tags"
+            placeholder="Enter title"
+            style={styles.fullWidth}
+            value={this.state.tags}
+            onChange={this.handleInputChange}
+          />
 
-          <FormControl>
+          <FormControl style={styles.fullWidth}>
             <FormHelperText>Due</FormHelperText>
             <DateTimePicker
               dateOnly={this.state.allDay}
@@ -311,41 +309,6 @@ class TaskEdit extends React.PureComponent<PropsType> {
               <FormHelperText>{ICAL.Time.fromJSDate(this.state.due, false).convertToZone(differentTimezone!).toJSDate().toString()}</FormHelperText>
             )}
           </FormControl>
-
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  name="allDay"
-                  checked={this.state.allDay}
-                  onChange={this.toggleAllDay}
-                  color="primary"
-                />
-              }
-              label="All Day"
-            />
-          </FormGroup>
-
-          {(!this.state.allDay) && (
-            <TimezonePicker value={this.state.timezone} onChange={(zone) => this.setState({ timezone: zone })} />
-          )}
-
-          <TextField
-            name="location"
-            placeholder="Add location"
-            style={styles.fullWidth}
-            value={this.state.location}
-            onChange={this.handleInputChange}
-          />
-
-          <TextField
-            name="description"
-            placeholder="Add description"
-            multiline
-            style={styles.fullWidth}
-            value={this.state.description}
-            onChange={this.handleInputChange}
-          />
 
           <div style={styles.submit}>
             <Button
@@ -391,7 +354,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
           onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
-        Are you sure you would like to delete this event?
+          Are you sure you would like to delete this event?
         </ConfirmationDialog>
       </React.Fragment>
     );

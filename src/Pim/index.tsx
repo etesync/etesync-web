@@ -44,14 +44,14 @@ function objValues(obj: any) {
 }
 
 const itemsSelector = createSelector(
-  (props: {syncInfo: SyncInfo}) => props.syncInfo,
+  (props: { syncInfo: SyncInfo }) => props.syncInfo,
   (syncInfo) => {
     const collectionsAddressBook: EteSync.CollectionInfo[] = [];
     const collectionsCalendar: EteSync.CollectionInfo[] = [];
     const collectionsTaskList: EteSync.CollectionInfo[] = [];
-    let addressBookItems: {[key: string]: ContactType} = {};
-    let calendarItems: {[key: string]: EventType} = {};
-    let taskListItems: {[key: string]: TaskType} = {};
+    let addressBookItems: { [key: string]: ContactType } = {};
+    let calendarItems: { [key: string]: EventType } = {};
+    let taskListItems: { [key: string]: TaskType } = {};
     syncInfo.forEach(
       (syncJournal) => {
         const syncEntries = syncJournal.entries;
@@ -106,7 +106,7 @@ type CollectionRoutesPropsType = RouteComponentProps<{}> & {
   collections: EteSync.CollectionInfo[];
   componentEdit: any;
   componentView: any;
-  items: {[key: string]: PimType};
+  items: { [key: string]: PimType };
   onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
   onItemDelete: (item: PimType, journalUid: string) => void;
   onItemCancel: () => void;
@@ -191,7 +191,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                     }
                   >
                     <IconChangeHistory className={classes.leftIcon} />
-                   Change History
+                    Change History
                   </Button>
 
                   <Button
@@ -235,7 +235,7 @@ class Pim extends React.PureComponent {
     this.onItemSave = this.onItemSave.bind(this);
   }
 
-  public onItemSave(item: PimType, journalUid: string, originalEvent?: PimType) {
+  public onItemSave(item: PimType, journalUid: string, originalEvent?: PimType, goBack = true) {
     const syncJournal = this.props.syncInfo.get(journalUid);
 
     if (syncJournal === undefined) {
@@ -265,7 +265,7 @@ class Pim extends React.PureComponent {
             this.props.etesync, this.props.userInfo, journal,
             prevUid, action, item.toIcal()));
         (saveEvent as any).then(() => {
-          this.props.history.goBack();
+          if (goBack) { this.props.history.goBack() }
         });
       });
   }
@@ -323,6 +323,8 @@ class Pim extends React.PureComponent {
               events={objValues(calendarItems)}
               tasks={objValues(taskListItems)}
               history={history}
+              onItemSave={this.onItemSave}
+              collectionsTaskList={collectionsTaskList}
             />
           )}
         />

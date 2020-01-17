@@ -41,7 +41,7 @@ const muiTheme = createMuiTheme({
       light: lightBlue.A200,
       main: lightBlue.A400,
       dark: lightBlue.A700,
-      contrastText: 'white',
+      contrastText: '#fff',
     },
   },
 });
