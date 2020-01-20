@@ -102,7 +102,7 @@ class ImportDialog extends React.Component<PropsType> {
     );
   }
 
-  private onFileDropCommon(itemsCreator: (fileText: string) => PimType[], acceptedFiles: File[], _rejectedFiles: File[]) {
+  private onFileDropCommon(itemsCreator: (fileText: string) => PimType[], acceptedFiles: File[], rejectedFiles: File[]) {
     // XXX: implement handling of rejectedFiles
     const reader = new FileReader();
 
@@ -155,10 +155,15 @@ class ImportDialog extends React.Component<PropsType> {
       }
     };
 
-    this.setState({ loading: true });
-    acceptedFiles.forEach((file) => {
-      reader.readAsText(file);
-    });
+    if (acceptedFiles.length > 0) {
+      this.setState({ loading: true });
+      acceptedFiles.forEach((file) => {
+        reader.readAsText(file);
+      });
+    } else {
+      alert('Failed importing file. Is the file type supported?');
+      console.log('Failed importing files. Rejected:', rejectedFiles);
+    }
   }
 
   private onFileDropContact(acceptedFiles: File[], rejectedFiles: File[]) {
