@@ -106,8 +106,16 @@ class ImportDialog extends React.Component<PropsType> {
     // XXX: implement handling of rejectedFiles
     const reader = new FileReader();
 
-    reader.onabort = () => alert('file reading was aborted');
-    reader.onerror = () => alert('file reading has failed');
+    reader.onabort = () => {
+      this.setState({ loading: false });
+      console.error('Import Aborted');
+      alert('file reading was aborted');
+    };
+    reader.onerror = (e) => {
+      this.setState({ loading: false });
+      console.error(e);
+      alert('file reading has failed');
+    };
     reader.onload = () => {
       try {
         const fileText = reader.result as string;
