@@ -136,6 +136,7 @@ export class TaskType extends EventType {
 
   constructor(comp?: ICAL.Component | null) {
     super(comp ? comp : new ICAL.Component('vtodo'));
+    this.component.addProperty(new ICAL.Property('categories'));
   }
 
   get finished() {
@@ -184,12 +185,12 @@ export class TaskType extends EventType {
     return !!((this.startDate?.isDate) || (this.dueDate?.isDate));
   }
 
-  set tags(tagHash: any) {
-    this.component.updatePropertyWithValue('tags', JSON.stringify(tagHash));
+  set categories(tags: string[]) {
+    this.component.getFirstProperty('categories').setValues(tags);
   }
 
-  get tags() {
-    return JSON.parse(this.component.getFirstPropertyValue('tags'));
+  get categories() {
+    return this.component.getFirstProperty('categories').getValues();
   }
 
   public clone() {

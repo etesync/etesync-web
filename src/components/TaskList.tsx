@@ -16,13 +16,16 @@ import TextField from '@material-ui/core/TextField';
 import { Chip } from '@material-ui/core';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
-const TagList = React.memo((props: { tags: any }) => (<div>{Object.keys(props.tags).map((tag, i) => <Chip key={i} color="primary" label={tag} icon={<LocalOfferIcon />} style={{ marginRight: '10px' }} />)
-}</div>));
+const TagList = React.memo((props: { tags: string[] }) => (
+  <div>
+    {props.tags.map((tag, i) => tag && <Chip key={i} color="primary" label={tag} icon={<LocalOfferIcon />} style={{ marginRight: '10px' }} />)}
+  </div>));
 
 const TaskListItem = React.memo(
   (props: { entry: TaskType, onClick: (entry: TaskType) => void, onSave: (item: PimType, journalUid: string, originalContact?: PimType, goBack?: boolean) => void }) => {
     const { entry, onClick, onSave } = props;
     const title = entry.title;
+    console.log(entry);
 
     const stopPropagation = (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
@@ -38,7 +41,7 @@ const TaskListItem = React.memo(
       primaryText={title}
       onClick={() => onClick(entry)}
       leftIcon={<Checkbox onClick={stopPropagation} onChange={toggleComplete} checked={entry.status === TaskStatusType.Completed} />}
-      rightIcon={entry.tags && <TagList tags={entry.tags} />} />;
+      rightIcon={<TagList tags={entry.categories} />} />;
   }
 );
 

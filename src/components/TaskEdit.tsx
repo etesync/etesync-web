@@ -90,7 +90,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.state.description = event.description ? event.description : '';
       this.state.timezone = event.timezone;
       console.log(event);
-      this.state.tags = event.tags ? Object.keys(event.tags).join(' ') : '';
+      this.state.tags = event.categories ? event.categories.join(' ') : '';
     } else {
       this.state.uid = uuid.v4();
     }
@@ -199,7 +199,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       }
     }
 
-    event.tags = this.state.tags.split(' ').reduce((tagHash, tag) => ({ ...tagHash, [tag]: true }), {});
+    event.categories = this.state.tags.split(' ');
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 

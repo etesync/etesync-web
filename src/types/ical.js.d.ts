@@ -43,7 +43,7 @@ declare module 'ical.js' {
 
     public component: Component;
 
-    public constructor(component?: Component | null, options?: {strictExceptions: boolean, exepctions: Array<Component | Event>});
+    public constructor(component?: Component | null, options?: { strictExceptions: boolean, exepctions: Array<Component | Event> });
 
     public isRecurring(): boolean;
     public iterator(startTime?: Time): RecurExpansion;
@@ -57,6 +57,7 @@ declare module 'ical.js' {
 
     public getFirstValue<T = any>(): T;
     public getValues<T = any>(): T[];
+    public setValues(values: any[]): void;
 
     public setParameter(name: string, value: string | string[]): void;
     public setValue(value: string | object): void;
@@ -128,12 +129,12 @@ declare module 'ical.js' {
     public component: Component;
 
     constructor(data: Component | {
-      component: string | Component,
-      tzid?: string,
-      location?: string,
-      tznames?: string,
-      latitude?: number,
-      longitude?: number,
+      component: string | Component;
+      tzid?: string;
+      location?: string;
+      tznames?: string;
+      latitude?: number;
+      longitude?: number;
     });
   }
 
