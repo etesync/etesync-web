@@ -67,8 +67,8 @@ const sortSelector = createSelector(
   (entries: ContactType[]) => entries,
   (entries) => {
     return entries.sort((_a, _b) => {
-      const a = _a.fn;
-      const b = _b.fn;
+      const a = _a.fn ?? '';
+      const b = _b.fn ?? '';
 
       return a.localeCompare(b, undefined, { sensitivity: 'base' });
     });
