@@ -96,6 +96,8 @@ export const routeResolver = new RouteResolver({
   },
   settings: {
   },
+  debug: {
+  },
 });
 
 const AppBarWitHistory = withRouter(

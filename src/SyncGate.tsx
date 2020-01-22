@@ -17,6 +17,7 @@ import PrettyError from './widgets/PrettyError';
 
 import Journals from './Journals';
 import Settings from './Settings';
+import Debug from './Debug';
 import Pim from './Pim';
 
 import * as EteSync from 'etesync';
@@ -230,6 +231,16 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
           render={({ history }) => (
             <Settings
               history={history}
+            />
+          )}
+        />
+        <Route
+          path={routeResolver.getRoute('debug')}
+          exact
+          render={() => (
+            <Debug
+              etesync={this.props.etesync}
+              userInfo={this.props.userInfo.value!}
             />
           )}
         />
