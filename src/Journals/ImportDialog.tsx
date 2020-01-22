@@ -116,7 +116,7 @@ class ImportDialog extends React.Component<PropsType> {
       console.error(e);
       alert('file reading has failed');
     };
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const fileText = reader.result as string;
         const items = itemsCreator(fileText);
@@ -136,22 +136,18 @@ class ImportDialog extends React.Component<PropsType> {
           return ret;
         });
 
-        store.dispatch<any>(
+        await store.dispatch<any>(
           addEntries(this.props.etesync, syncJournal.journal.uid, journalItems, lastUid)
-        ).then(() => {
-          if (this.props.onClose) {
-            this.setState({ loading: false });
-            this.props.onClose();
-          }
-        });
+        );
       } catch (e) {
         console.error(e);
         alert('An error has occurred, please contact developers.');
+        throw e;
+      } finally {
         if (this.props.onClose) {
           this.setState({ loading: false });
           this.props.onClose();
         }
-        throw e;
       }
     };
 
