@@ -53,13 +53,13 @@ class ImportDialog extends React.Component<PropsType> {
     let dropFunction;
 
     if (collectionInfo.type === 'ADDRESS_BOOK') {
-      acceptTypes = ['text/vcard'];
+      acceptTypes = ['text/vcard', 'text/directory', 'text/x-vcard', '.vcf'];
       dropFunction = this.onFileDropContact;
     } else if (collectionInfo.type === 'CALENDAR') {
-      acceptTypes = ['text/calendar'];
+      acceptTypes = ['text/calendar', '.ics', '.ical'];
       dropFunction = this.onFileDropEvent;
     } else if (collectionInfo.type === 'TASKS') {
-      acceptTypes = ['text/calendar'];
+      acceptTypes = ['text/calendar', '.ics', '.ical'];
       dropFunction = this.onFileDropTask;
     }
 
