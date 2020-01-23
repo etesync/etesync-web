@@ -5,7 +5,7 @@ import { UserInfo } from 'etesync';
 
 import { CredentialsData, EntriesType, SettingsType } from './';
 
-export const { fetchCredentials, logout } = createActions({
+export const { fetchCredentials } = createActions({
   FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
     const authenticator = new EteSync.Authenticator(server);
 
@@ -27,8 +27,22 @@ export const { fetchCredentials, logout } = createActions({
       );
     });
   },
-  LOGOUT: () => undefined,
 });
+
+export const logout = createAction(
+  'LOGOUT',
+  (etesync: CredentialsData) => {
+    (async () => {
+      const authenticator = new EteSync.Authenticator(etesync.serviceApiUrl);
+      try {
+        await authenticator.invalidateToken(etesync.credentials.authToken);
+      } catch {
+        // Ignore for now. It usually means the token was a legacy one.
+      }
+    })();
+    return; // We are not waiting on the above on purpose for now, just invalidate the token in the background
+  }
+);
 
 export const { deriveKey } = createActions({
   DERIVE_KEY: (username: string, encryptionPassword: string) => {

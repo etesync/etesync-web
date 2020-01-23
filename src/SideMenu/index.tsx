@@ -39,7 +39,7 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
   }
 
   public logout() {
-    store.dispatch(logout());
+    store.dispatch(logout(this.props.etesync!));
     this.props.onCloseDrawerRequest();
   }
 
