@@ -57,7 +57,7 @@ class SearchableAddressBook extends React.PureComponent {
           </IconButton>
         }
         <IconSearch />
-        <AddressBook entries={entries} filter={(ent: ContactType) => ent.fn.match(reg)} {...rest} />
+        <AddressBook entries={entries} filter={(ent: ContactType) => ent.fn?.match(reg)} {...rest} />
       </React.Fragment>
     );
   }
