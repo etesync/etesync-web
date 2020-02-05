@@ -36,9 +36,11 @@ export function syncEntriesToItemMap(
   return items;
 }
 
-function colorIntToHtml(color: number) {
+export const defaultColor = '#8BC34A';
+
+export function colorIntToHtml(color?: number) {
   if (color === undefined) {
-    return '#8BC34A';
+    return defaultColor;
   }
 
   // tslint:disable:no-bitwise
@@ -53,8 +55,26 @@ function colorIntToHtml(color: number) {
     return (ret.length === 1) ? '0' + ret : ret;
   }
 
-  return '#' + toHex(red) + toHex(green) + toHex(blue) +
-    ((alpha > 0) ? toHex(alpha) : '');
+  return '#' + toHex(red) + toHex(green) + toHex(blue) + toHex(alpha);
+}
+
+export function colorHtmlToInt(color?: string) {
+  if (!color) {
+    color = defaultColor;
+  }
+
+  const match = color.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i);
+
+  if (!match) {
+    return undefined;
+  }
+
+  const r = parseInt(match[1], 16);
+  const g = parseInt(match[2], 16);
+  const b = parseInt(match[3], 16);
+  const a = (match[4]) ? parseInt(match[4], 16) : 0xFF;
+
+  return (b | (g << 8) | (r << 16) | (a << 24));
 }
 
 function syncEntriesToCalendarItemMap<T extends EventType>(
