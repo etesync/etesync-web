@@ -134,7 +134,7 @@ class LoginForm extends React.PureComponent {
             style={styles.textField}
             error={!!this.state.errors.errorEmail}
             helperText={this.state.errors.errorEmail}
-            label="Username"
+            label="Email"
             name="username"
             value={this.state.username}
             onChange={this.handleInputChange}
