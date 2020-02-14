@@ -5,7 +5,6 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import { Theme, withTheme } from '@material-ui/core/styles';
 import IconDelete from '@material-ui/icons/Delete';
 import IconCancel from '@material-ui/icons/Clear';
 import IconSave from '@material-ui/icons/Save';
@@ -17,7 +16,6 @@ import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
 import * as EteSync from 'etesync';
 import { SyncInfo } from '../SyncGate';
-import { handleInputChange } from '../helpers';
 
 interface PropsType {
   syncInfo: SyncInfo;
@@ -27,160 +25,140 @@ interface PropsType {
   onCancel: () => void;
 }
 
-interface PropsTypeInner extends PropsType {
-  theme: Theme;
-}
+export default function JournalEdit(props: PropsType) {
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
+  const [info, setInfo] = React.useState<EteSync.CollectionInfo>();
 
-class JournalEdit extends React.PureComponent<PropsTypeInner> {
-  public state = {
-    info: {
-      uid: '',
-      type: '',
-      displayName: '',
-      description: '',
-    } as EteSync.CollectionInfo,
-
-    showDeleteDialog: false,
-  };
-
-  private handleInputChange: any;
-
-  constructor(props: PropsTypeInner) {
-    super(props);
-    this.handleInputChange = handleInputChange(this, 'info');
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onDeleteRequest = this.onDeleteRequest.bind(this);
-
-    if (this.props.item !== undefined) {
-      const collection = this.props.item;
-
-      this.state.info = { ...collection };
+  React.useEffect(() => {
+    if (props.item !== undefined) {
+      setInfo(props.item);
     } else {
-      this.state.info.uid = EteSync.genUid();
-      this.state.info.type = 'ADDRESS_BOOK';
+      setInfo({
+        uid: EteSync.genUid(),
+        type: 'ADDRESS_BOOK',
+        displayName: '',
+        description: '',
+      } as EteSync.CollectionInfo);
     }
+  }, [props.item]);
+
+  if (info === undefined) {
+    return <React.Fragment />;
   }
 
-  public render() {
-    const { item, onDelete, onCancel } = this.props;
-
-    const pageTitle = (item !== undefined) ? item.displayName : 'New Journal';
-
-    const styles = {
-      fullWidth: {
-        width: '100%',
-      },
-      submit: {
-        marginTop: 40,
-        marginBottom: 20,
-        textAlign: 'right' as any,
-      },
-    };
-
-    const journalTypes = {
-      ADDRESS_BOOK: 'Address Book',
-      CALENDAR: 'Calendar',
-      TASKS: 'Task List',
-    };
-
-    return (
-      <>
-        <AppBarOverride title={pageTitle} />
-        <Container style={{ maxWidth: '30rem' }}>
-          <form onSubmit={this.onSubmit}>
-            <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
-              <InputLabel>
-                Collection type
-              </InputLabel>
-              <Select
-                name="type"
-                required
-                value={this.state.info.type}
-                onChange={this.handleInputChange}
-              >
-                {Object.keys(journalTypes).map((x) => (
-                  <MenuItem key={x} value={x}>{journalTypes[x]}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              name="displayName"
-              required
-              label="Display name of this collection"
-              value={this.state.info.displayName}
-              onChange={this.handleInputChange}
-              style={styles.fullWidth}
-              margin="normal"
-            />
-            <TextField
-              name="description"
-              label="Description (optional)"
-              value={this.state.info.description}
-              onChange={this.handleInputChange}
-              style={styles.fullWidth}
-              margin="normal"
-            />
-
-            <div style={styles.submit}>
-              <Button
-                variant="contained"
-                onClick={onCancel}
-              >
-                <IconCancel style={{ marginRight: 8 }} />
-                Cancel
-              </Button>
-
-              {this.props.item &&
-                <Button
-                  variant="contained"
-                  style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
-                  onClick={this.onDeleteRequest}
-                >
-                  <IconDelete style={{ marginRight: 8 }} />
-                  Delete
-                </Button>
-              }
-
-              <Button
-                type="submit"
-                variant="contained"
-                color="secondary"
-                style={{ marginLeft: 15 }}
-              >
-                <IconSave style={{ marginRight: 8 }} />
-                Save
-              </Button>
-            </div>
-          </form>
-        </Container>
-        <ConfirmationDialog
-          title="Delete Confirmation"
-          labelOk="Delete"
-          open={this.state.showDeleteDialog}
-          onOk={() => onDelete(this.props.item!)}
-          onCancel={() => this.setState({ showDeleteDialog: false })}
-        >
-          Are you sure you would like to delete this journal?
-        </ConfirmationDialog>
-      </>
-    );
-  }
-
-  private onSubmit(e: React.FormEvent<any>) {
+  function onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
-    const { onSave } = this.props;
-    const item = new EteSync.CollectionInfo(this.state.info);
+    const { onSave } = props;
+    const item = new EteSync.CollectionInfo(info);
 
-    onSave(item, this.props.item);
+    onSave(item, props.item);
   }
 
-  private onDeleteRequest() {
-    this.setState({
-      showDeleteDialog: true,
-    });
+  function onDeleteRequest() {
+    setShowDeleteDialog(true);
   }
 
+  const { item, onDelete, onCancel } = props;
+
+  const pageTitle = (item !== undefined) ? item.displayName : 'New Journal';
+
+  const styles = {
+    fullWidth: {
+      width: '100%',
+    },
+    submit: {
+      marginTop: 40,
+      marginBottom: 20,
+      textAlign: 'right' as any,
+    },
+  };
+
+  const journalTypes = {
+    ADDRESS_BOOK: 'Address Book',
+    CALENDAR: 'Calendar',
+    TASKS: 'Task List',
+  };
+
+  return (
+    <>
+      <AppBarOverride title={pageTitle} />
+      <Container style={{ maxWidth: '30rem' }}>
+        <form onSubmit={onSubmit}>
+          <FormControl disabled={props.item !== undefined} style={styles.fullWidth}>
+            <InputLabel>
+              Collection type
+            </InputLabel>
+            <Select
+              name="type"
+              required
+              value={info.type}
+              onChange={(event: React.ChangeEvent<{ value: string }>) => setInfo({ ...info, type: event.target.value })}
+            >
+              {Object.keys(journalTypes).map((x) => (
+                <MenuItem key={x} value={x}>{journalTypes[x]}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            name="displayName"
+            required
+            label="Display name of this collection"
+            value={info.displayName}
+            onChange={(event: React.ChangeEvent<{ value: string }>) => setInfo({ ...info, displayName: event.target.value })}
+            style={styles.fullWidth}
+            margin="normal"
+          />
+          <TextField
+            name="description"
+            label="Description (optional)"
+            value={info.description}
+            onChange={(event: React.ChangeEvent<{ value: string }>) => setInfo({ ...info, description: event.target.value })}
+            style={styles.fullWidth}
+            margin="normal"
+          />
+
+          <div style={styles.submit}>
+            <Button
+              variant="contained"
+              onClick={onCancel}
+            >
+              <IconCancel style={{ marginRight: 8 }} />
+              Cancel
+            </Button>
+
+            {props.item &&
+              <Button
+                variant="contained"
+                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
+                onClick={onDeleteRequest}
+              >
+                <IconDelete style={{ marginRight: 8 }} />
+                Delete
+              </Button>
+            }
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="secondary"
+              style={{ marginLeft: 15 }}
+            >
+              <IconSave style={{ marginRight: 8 }} />
+              Save
+            </Button>
+          </div>
+        </form>
+      </Container>
+      <ConfirmationDialog
+        title="Delete Confirmation"
+        labelOk="Delete"
+        open={showDeleteDialog}
+        onOk={() => onDelete(props.item!)}
+        onCancel={() => setShowDeleteDialog(false)}
+      >
+        Are you sure you would like to delete this journal?
+      </ConfirmationDialog>
+    </>
+  );
 }
-
-export default withTheme(JournalEdit);
