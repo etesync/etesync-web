@@ -14,6 +14,8 @@ import Container from '../widgets/Container';
 import { routeResolver } from '../App';
 
 import { JournalsData, UserInfoData, CredentialsData } from '../store';
+import ColorBox from '../widgets/ColorBox';
+import { colorIntToHtml } from '../journal-processors';
 
 interface PropsType {
   etesync: CredentialsData;
@@ -35,16 +37,27 @@ export default function JournalsList(props: PropsType) {
       const keyPair = userInfo.getKeyPair(userInfo.getCryptoManager(derived));
       const cryptoManager = journal.getCryptoManager(derived, keyPair);
       const info = journal.getInfo(cryptoManager);
+      let colorBox: React.ReactNode;
+      switch (info.type) {
+        case 'CALENDAR':
+        case 'TASKS':
+          colorBox = (
+            <ColorBox size={24} color={colorIntToHtml(info.color)} />
+          );
+          break;
+      }
       ret[info.type] = ret[info.type] || [];
       ret[info.type].push(
-        <ListItem key={journal.uid} onClick={() => journalClicked(journal.uid)}>
+        <ListItem key={journal.uid} rightIcon={colorBox}
+          onClick={() => journalClicked(journal.uid)}>
           {info.displayName} ({journal.uid.slice(0, 5)})
         </ListItem>
       );
 
       return ret;
     },
-    { CALENDAR: [],
+    {
+      CALENDAR: [],
       ADDRESS_BOOK: [],
       TASKS: [],
     });
