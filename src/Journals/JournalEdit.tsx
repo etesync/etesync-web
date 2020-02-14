@@ -16,6 +16,8 @@ import ConfirmationDialog from '../widgets/ConfirmationDialog';
 
 import * as EteSync from 'etesync';
 import { SyncInfo } from '../SyncGate';
+import ColorPicker from '../widgets/ColorPicker';
+import { defaultColor, colorHtmlToInt, colorIntToHtml } from '../journal-processors';
 
 interface PropsType {
   syncInfo: SyncInfo;
@@ -25,13 +27,23 @@ interface PropsType {
   onCancel: () => void;
 }
 
+interface FormErrors {
+  displayName?: string;
+  color?: string;
+}
+
 export default function JournalEdit(props: PropsType) {
+  const [errors, setErrors] = React.useState<FormErrors>({});
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [info, setInfo] = React.useState<EteSync.CollectionInfo>();
+  const [selectedColor, setSelectedColor] = React.useState('');
 
   React.useEffect(() => {
     if (props.item !== undefined) {
       setInfo(props.item);
+      if (props.item.color) {
+        setSelectedColor(colorIntToHtml(props.item.color));
+      }
     } else {
       setInfo({
         uid: EteSync.genUid(),
@@ -48,10 +60,28 @@ export default function JournalEdit(props: PropsType) {
 
   function onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
+    const saveErrors: FormErrors = {};
+    const fieldRequired = 'This field is required!';
 
     const { onSave } = props;
-    const item = new EteSync.CollectionInfo(info);
 
+    const displayName = info?.displayName;
+    const color = colorHtmlToInt(selectedColor);
+
+    if (!displayName) {
+      saveErrors.displayName = fieldRequired;
+    }
+
+    if (selectedColor && !color) {
+      saveErrors.color = 'Must be of the form #RRGGBB or #RRGGBBAA or empty';
+    }
+
+    if (Object.keys(saveErrors).length > 0) {
+      setErrors(saveErrors);
+      return;
+    }
+
+    const item = new EteSync.CollectionInfo({ ...info, color: color });
     onSave(item, props.item);
   }
 
@@ -79,6 +109,20 @@ export default function JournalEdit(props: PropsType) {
     CALENDAR: 'Calendar',
     TASKS: 'Task List',
   };
+  let collectionColorBox: React.ReactNode;
+  switch (info.type) {
+    case 'CALENDAR':
+    case 'TASKS':
+      collectionColorBox = (
+        <ColorPicker
+          defaultColor={defaultColor}
+          color={selectedColor}
+          onChange={(color: string) => setSelectedColor(color)}
+          error={errors.color}
+        />
+      );
+      break;
+  }
 
   return (
     <>
@@ -108,6 +152,8 @@ export default function JournalEdit(props: PropsType) {
             onChange={(event: React.ChangeEvent<{ value: string }>) => setInfo({ ...info, displayName: event.target.value })}
             style={styles.fullWidth}
             margin="normal"
+            error={!!errors.displayName}
+            helperText={errors.displayName}
           />
           <TextField
             name="description"
@@ -117,6 +163,7 @@ export default function JournalEdit(props: PropsType) {
             style={styles.fullWidth}
             margin="normal"
           />
+          {collectionColorBox}
 
           <div style={styles.submit}>
             <Button
