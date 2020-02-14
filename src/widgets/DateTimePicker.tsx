@@ -1,15 +1,14 @@
 import * as React from 'react';
 
-import moment from 'moment';
-import Datetime from 'react-datetime';
+import MomentUtils from '@date-io/moment';
+import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardDateTimePicker } from '@material-ui/pickers';
 
-import 'react-datetime/css/react-datetime.css';
+import moment from 'moment';
 
 interface PropsType {
   placeholder: string;
   value?: Date;
   dateOnly?: boolean;
-  disabled?: boolean;
   onChange: (date?: Date) => void;
 }
 
@@ -20,24 +19,27 @@ class DateTimePicker extends React.PureComponent<PropsType> {
   }
 
   public render() {
-    const inputProps = {
-      placeholder: this.props.placeholder,
-      readOnly: true,
-      disabled: this.props.disabled,
-    };
+    const Picker = (this.props.dateOnly) ? KeyboardDatePicker : KeyboardDateTimePicker;
+    const dateFormat = (this.props.dateOnly) ? 'DD/MM/YYYY' : 'DD/MM/YYYY HH:mm';
     return (
-      <Datetime
-        inputProps={inputProps}
-        defaultValue={this.props.value}
-        onChange={this.handleInputChange}
-        timeFormat={!this.props.dateOnly}
-      />
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <Picker
+          value={this.props.value || null}
+          onChange={this.handleInputChange}
+          format={dateFormat}
+          ampm={false}
+          showTodayButton
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+        />
+      </MuiPickersUtilsProvider>
     );
   }
 
-  private handleInputChange(newDate: string | moment.Moment) {
-    if (moment.isMoment(newDate)) {
-      this.props.onChange(newDate.toDate());
+  private handleInputChange(date: moment.Moment) {
+    if (moment.isMoment(date)) {
+      this.props.onChange(date.toDate());
     } else {
       this.props.onChange(undefined);
     }
