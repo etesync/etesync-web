@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Action } from 'redux-actions';
 import { Route, Switch, Redirect, RouteComponentProps, withRouter } from 'react-router';
 
 import moment from 'moment';
@@ -118,13 +117,17 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
           const journal = new EteSync.Journal({ uid: collection.uid });
           const cryptoManager = new EteSync.CryptoManager(this.props.etesync.encryptionKey, collection.uid);
           journal.setInfo(cryptoManager, collection);
-          store.dispatch<any>(addJournal(this.props.etesync, journal)).then(
-            (journalAction: Action<EteSync.Journal>) => {
-              // FIXME: Limit based on error code to only do it for associates.
-              if (!journalAction.error) {
-                store.dispatch(fetchEntries(this.props.etesync, collection.uid));
-              }
-            });
+          (async () => {
+            try {
+              const addedJournalAction = addJournal(this.props.etesync, journal);
+              await addedJournalAction.payload;
+              store.dispatch(addedJournalAction);
+              store.dispatch(fetchEntries(this.props.etesync, collection.uid));
+            } catch (e) {
+              // FIXME: Limit based on error code to only ignore for associates
+              console.warn(`Failed creating journal for ${collection.type}. Associate?`);
+            }
+          })();
         });
       });
     };
