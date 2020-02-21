@@ -241,6 +241,20 @@ export const fetchCount = handleAction(
 
 export const errorsReducer = handleActions(
   {
+    [combineActions(
+      actions.fetchListJournal,
+      actions.addJournal,
+      actions.updateJournal,
+      actions.deleteJournal,
+      actions.fetchEntries,
+      actions.addEntries
+    ).toString()]: (state: List<Error>, action: Action<any>) => {
+      if (action.error) {
+        return state.push(action.payload);
+      }
+
+      return state;
+    },
     [actions.addError.toString()]: (state: List<Error>, action: Action<any>) => {
       return state.push(action.payload);
     },
