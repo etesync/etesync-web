@@ -21,7 +21,7 @@ import Pim from './Pim';
 import * as EteSync from 'etesync';
 import { CURRENT_VERSION } from 'etesync';
 
-import { store, SettingsType, JournalsData, EntriesType, StoreState, CredentialsData, UserInfoData } from './store';
+import { store, SettingsType, JournalsData, EntriesData, StoreState, CredentialsData, UserInfoData } from './store';
 import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
@@ -40,7 +40,7 @@ interface PropsType {
 type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
   settings: SettingsType;
   journals: JournalsData;
-  entries: EntriesType;
+  entries: EntriesData;
   userInfo: UserInfoData;
   fetchCount: number;
 };
@@ -68,7 +68,7 @@ const syncInfoSelector = createSelector(
         const journalEntries = entries.get(journal.uid);
         let prevUid: string | null = null;
 
-        if (!journalEntries || !journalEntries.value) {
+        if (!journalEntries) {
           return ret;
         }
 
@@ -77,7 +77,7 @@ const syncInfoSelector = createSelector(
 
         const collectionInfo = journal.getInfo(cryptoManager);
 
-        const syncEntries = journalEntries.value.map((entry: EteSync.Entry) => {
+        const syncEntries = journalEntries.map((entry: EteSync.Entry) => {
           const syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
           prevUid = entry.uid;
 
@@ -88,7 +88,7 @@ const syncInfoSelector = createSelector(
           entries: syncEntries,
           collection: collectionInfo,
           journal,
-          journalEntries: journalEntries.value,
+          journalEntries,
         });
       },
       Map<string, SyncInfoJournal>()
@@ -154,26 +154,9 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
     const entryArrays = this.props.entries;
     const journals = this.props.journals;
 
-    {
-      const errors: Array<{journal: string, error: Error}> = [];
-      this.props.entries.forEach((entry, journal) => {
-        if (entry.error) {
-          errors.push({ journal, error: entry.error });
-        }
-      });
-
-      if (errors.length > 0) {
-        return (
-          <ul>
-            {errors.map((error, idx) => (<li key={idx}>{error.journal}: {error.error.toString()}</li>))}
-          </ul>
-        );
-      }
-    }
-
     if ((this.props.userInfo === null) || (journals === null) ||
       ((this.props.fetchCount > 0) &&
-        ((entryArrays.size === 0) || !entryArrays.every((x: any) => (x.value !== null))))
+        ((entryArrays.size === 0) || entryArrays.some((x) => (x.size === 0))))
     ) {
       return (<LoadingIndicator style={{ display: 'block', margin: '40px auto' }} />);
     }

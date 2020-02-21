@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 
 import Container from './widgets/Container';
 import { useSelector } from 'react-redux';
-import { StoreState, CredentialsData, UserInfoData } from './store';
+import { StoreState, CredentialsData, UserInfoData, EntriesListData } from './store';
 
 interface PropsType {
   etesync: CredentialsData;
@@ -67,8 +67,8 @@ export default function Debug(props: PropsType) {
           const cryptoManager = journal.getCryptoManager(derived, keyPair);
           let prevUid: string | null = null;
 
-          const entries = journalEntries.get(journalUid)!;
-          const syncEntries = entries.value!.map((entry: EteSync.Entry) => {
+          const entries = journalEntries.get(journalUid)! as EntriesListData;
+          const syncEntries = entries.map((entry: EteSync.Entry) => {
             const syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
             prevUid = entry.uid;
 

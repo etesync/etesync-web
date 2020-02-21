@@ -7,8 +7,8 @@ import { List, Map as ImmutableMap } from 'immutable';
 
 import * as EteSync from 'etesync';
 import {
-  JournalsData, FetchType, EntriesData, EntriesFetchRecord, UserInfoData,
-  CredentialsDataRemote, EntriesType, SettingsType,
+  JournalsData, EntriesData, UserInfoData,
+  CredentialsDataRemote, SettingsType,
   fetchCount, journals, entries, credentials, userInfo, settingsReducer, encryptionKeyReducer, errorsReducer,
 } from './reducers';
 
@@ -19,7 +19,7 @@ export interface StoreState {
   encryptionKey: {key: string};
   cache: {
     journals: JournalsData;
-    entries: EntriesType;
+    entries: EntriesData;
     userInfo: UserInfoData;
   };
   errors: List<Error>;
@@ -64,24 +64,24 @@ const journalsDeserialize = (state: []) => {
   return newState.asImmutable();
 };
 
-const entriesSerialize = (state: FetchType<EntriesData>) => {
-  if ((state === null) || (state.value == null)) {
+const entriesSerialize = (state: List<EteSync.Entry>) => {
+  if (state === null) {
     return null;
   }
 
-  return state.value.map((x) => x.serialize()).toJS();
+  return state.map((x) => x.serialize()).toJS();
 };
 
-const entriesDeserialize = (state: EteSync.EntryJson[]): FetchType<EntriesData> => {
+const entriesDeserialize = (state: EteSync.EntryJson[]): List<EteSync.Entry> | null => {
   if (state === null) {
-    return new EntriesFetchRecord({ value: null });
+    return null;
   }
 
-  return new EntriesFetchRecord({ value: List(state.map((x: any) => {
+  return List(state.map((x) => {
     const ret = new EteSync.Entry();
     ret.deserialize(x);
     return ret;
-  })) });
+  }));
 };
 
 const userInfoSerialize = (state: UserInfoData) => {
@@ -102,10 +102,10 @@ const userInfoDeserialize = (state: EteSync.UserInfoJson) => {
   return ret;
 };
 
-const cacheSerialize = (state: any, key: string) => {
+const cacheSerialize = (state: any, key: string | number) => {
   if (key === 'entries') {
     const ret = {};
-    state.forEach((value: FetchType<EntriesData>, mapKey: string) => {
+    state.forEach((value: List<EteSync.Entry>, mapKey: string) => {
       ret[mapKey] = entriesSerialize(value);
     });
     return ret;
@@ -118,7 +118,7 @@ const cacheSerialize = (state: any, key: string) => {
   return state;
 };
 
-const cacheDeserialize = (state: any, key: string) => {
+const cacheDeserialize = (state: any, key: string | number) => {
   if (key === 'entries') {
     const ret = {};
     Object.keys(state).forEach((mapKey) => {

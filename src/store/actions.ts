@@ -3,7 +3,7 @@ import { Action, createAction, createActions } from 'redux-actions';
 import * as EteSync from 'etesync';
 import { UserInfo } from 'etesync';
 
-import { CredentialsData, EntriesType, SettingsType } from './';
+import { CredentialsData, EntriesData, SettingsType } from './';
 
 export const { fetchCredentials } = createActions({
   FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
@@ -168,21 +168,7 @@ export const createUserInfo = createAction(
   }
 );
 
-export function fetchJournalEntries(etesync: CredentialsData, currentEntries: EntriesType, journal: EteSync.Journal) {
-  return (dispatch: any) => {
-    let prevUid: string | null = null;
-    const entries = currentEntries.get(journal.uid);
-    if (entries && entries.value) {
-      const last = entries.value.last() as EteSync.Entry;
-      prevUid = (last) ? last.uid : null;
-    }
-
-    return dispatch(fetchEntries(etesync, journal.uid, prevUid));
-  };
-}
-
-
-export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) {
+export function fetchAll(etesync: CredentialsData, currentEntries: EntriesData) {
   return (dispatch: any) => {
     return new Promise<boolean>((resolve, reject) => {
       dispatch(fetchListJournal(etesync)).then((journalsAction: Action<EteSync.Journal[]>) => {
@@ -193,7 +179,7 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
         }
 
         Promise.all(journals.map((journal) => {
-          const prevUid = currentEntries.get(journal.uid)?.value?.last(undefined)?.uid ?? null;
+          const prevUid = currentEntries.get(journal.uid)?.last(undefined)?.uid ?? null;
 
           // FIXME: expose it in a non-hacky way.
           if (prevUid && (prevUid === (journal as any)._json.lastUid)) {
@@ -205,6 +191,7 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesType) 
     });
   };
 }
+
 
 export const addError = createAction(
   'ADD_ERRORS',

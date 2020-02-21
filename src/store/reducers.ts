@@ -1,17 +1,11 @@
 import { Action, ActionMeta, ActionFunctionAny, combineActions, handleAction, handleActions } from 'redux-actions';
 import { shallowEqual } from 'react-redux';
 
-import { List, Map as ImmutableMap, Record } from 'immutable';
+import { List, Map as ImmutableMap } from 'immutable';
 
 import * as EteSync from 'etesync';
 
 import * as actions from './actions';
-
-interface FetchTypeInterface<T> {
-  value: T | null;
-  fetching?: boolean;
-  error?: Error;
-}
 
 export interface CredentialsDataRemote {
   serviceApiUrl: string;
@@ -22,50 +16,12 @@ export interface CredentialsData extends CredentialsDataRemote {
   encryptionKey: string;
 }
 
-export type FetchType<T> = FetchTypeInterface<T>;
-
-function fetchTypeRecord<T>() {
-  return Record<FetchTypeInterface<T>>({
-    value: null as T | null,
-    error: undefined,
-  });
-}
-
 export type JournalsData = ImmutableMap<string, EteSync.Journal>;
 
-export type EntriesData = List<EteSync.Entry>;
-export const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
-export type EntriesTypeImmutable = ImmutableMap<string, Record<FetchType<EntriesData>>>;
-export type EntriesType = ImmutableMap<string, FetchType<EntriesData>>;
+export type EntriesListData = List<EteSync.Entry>;
+export type EntriesData = ImmutableMap<string, EntriesListData>;
 
 export type UserInfoData = EteSync.UserInfo;
-
-function fetchTypeIdentityReducer(
-  state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend = false) {
-  if (action.error) {
-    return state.set('error', action.payload);
-  } else {
-    const payload = (action.payload === undefined) ? null : action.payload;
-
-    state = state.set('error', undefined);
-
-    if (action.payload === undefined) {
-      return state;
-    }
-
-    let value = state.get('value', null);
-    if (extend && (value !== null)) {
-      if (payload !== null) {
-        value = value.concat(payload);
-      }
-    } else if (payload !== null) {
-      value = List(payload);
-    } else {
-      value = null;
-    }
-    return state.set('value', value);
-  }
-}
 
 export const encryptionKeyReducer = handleActions(
   {
@@ -105,22 +61,47 @@ export const credentials = handleActions(
   {} as CredentialsDataRemote
 );
 
-function fetchCreateEntriesReducer(state: EntriesTypeImmutable, action: any) {
+function entriesListSetExtend(
+  state: List<any> | undefined, action: Action<EteSync.Entry[]>, extend = false) {
+  state = state ?? List([]);
+
+  if (action.error) {
+    return state;
+  } else {
+    const payload = action.payload ?? null;
+
+    if (!payload) {
+      return state;
+    }
+
+    if (extend && (state !== null)) {
+      if (payload !== null) {
+        state = state.concat(payload);
+      }
+    } else if (payload !== null) {
+      state = List(payload);
+    }
+    return state;
+  }
+}
+
+function fetchCreateEntriesReducer(state: EntriesData, action: any) {
   const prevState = state.get(action.meta.journal);
-  const extend = action.meta.prevUid != null;
+  const extend = action.meta.prevUid !== null;
   return state.set(action.meta.journal,
-    fetchTypeIdentityReducer(prevState, action, extend));
+    entriesListSetExtend(prevState, action, extend));
 }
 
 export const entries = handleActions(
   {
     [actions.fetchEntries.toString()]: fetchCreateEntriesReducer,
     [actions.addEntries.toString()]: fetchCreateEntriesReducer,
-    [actions.addJournal.toString()]: (state: EntriesTypeImmutable, action: any) => {
+    [actions.addJournal.toString()]: (state: EntriesData, action: any) => {
       const journal = action.meta.item.uid;
-      const prevState = state.get(journal);
-      return state.set(journal,
-        fetchTypeIdentityReducer(prevState, { payload: [] }, false));
+      return state.set(journal, List([]));
+    },
+    [actions.logout.toString()]: (state: EntriesData, _action: any) => {
+      return state.clear();
     },
   },
   ImmutableMap({})

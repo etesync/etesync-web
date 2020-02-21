@@ -172,7 +172,7 @@ class App extends React.PureComponent {
 
   public props: {
     credentials: store.CredentialsData;
-    entries: store.EntriesType;
+    entries: store.EntriesData;
     fetchCount: number;
     errors: ImmutableList<Error>;
   };
