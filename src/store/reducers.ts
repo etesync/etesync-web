@@ -1,4 +1,4 @@
-import { Action, ActionFunctionAny, combineActions, handleAction, handleActions } from 'redux-actions';
+import { Action, ActionMeta, ActionFunctionAny, combineActions, handleAction, handleActions } from 'redux-actions';
 import { shallowEqual } from 'react-redux';
 
 import { List, Map as ImmutableMap, Record } from 'immutable';
@@ -31,14 +31,7 @@ function fetchTypeRecord<T>() {
   });
 }
 
-interface BaseModel {
-  uid: string;
-}
-
 export type JournalsData = ImmutableMap<string, EteSync.Journal>;
-export const JournalsFetchRecord = fetchTypeRecord<JournalsData>();
-export type JournalsType = FetchType<JournalsData>;
-export type JournalsTypeImmutable = Record<JournalsType>;
 
 export type EntriesData = List<EteSync.Entry>;
 export const EntriesFetchRecord = fetchTypeRecord<EntriesData>();
@@ -112,77 +105,6 @@ export const credentials = handleActions(
   {} as CredentialsDataRemote
 );
 
-const setMapModelReducer = <T extends Record<any>, V extends BaseModel>(state: T, action: any) => {
-  const newState = fetchTypeIdentityReducer(state, action);
-  // Compare the states and see if they are really different
-  const newItems = newState.get('value', null);
-
-  if (!newItems) {
-    return newState;
-  }
-
-  const ret = new Map<string, V>();
-
-  newItems.forEach((item: V) => {
-    ret.set(item.uid, item);
-  });
-
-  return newState.set('value', ImmutableMap(ret));
-};
-
-const addEditMapModelReducer = <T extends Record<any>, V extends BaseModel>(state: T, action: any) => {
-  if (action.error) {
-    return state.set('error', action.payload);
-  } else {
-    let payload = (action.payload === undefined) ? null : action.payload;
-    payload = (action.meta === undefined) ? payload : action.meta.item;
-
-    state = state.set('error', undefined);
-
-    if (action.payload === undefined) {
-      return state;
-    }
-
-    const item = payload as V;
-    let value = state.get('value', null)!;
-    value = value.set(item.uid, item);
-    return state.set('value', value);
-  }
-};
-
-const deleteMapModelReducer = <T extends Record<any>>(state: T, action: any) => {
-  if (action.error) {
-    return state.set('error', action.payload);
-  } else {
-    let payload = (action.payload === undefined) ? null : action.payload;
-    payload = (action.meta === undefined) ? payload : action.meta.item;
-
-    state = state.set('error', undefined);
-
-    if (action.payload === undefined) {
-      return state;
-    }
-
-    const uid = payload.uid;
-    let value = state.get('value', null)!;
-    value = value.delete(uid);
-    return state.set('value', value);
-  }
-};
-
-const mapReducerActionsMapCreator = <T extends Record<any>, V extends BaseModel>(actionName: string) => {
-  const setsReducer = (state: T, action: any) => setMapModelReducer<T, V>(state, action);
-  const addEditReducer = (state: T, action: any) => addEditMapModelReducer<T, V>(state, action);
-  const deleteReducer = (state: T, action: any) => deleteMapModelReducer<T>(state, action);
-
-  return {
-    [actions['fetchList' + actionName].toString() as string]: setsReducer,
-    [actions['add' + actionName].toString() as string]: addEditReducer,
-    [actions['update' + actionName].toString() as string]: addEditReducer,
-    [actions['delete' + actionName].toString() as string]: deleteReducer,
-  };
-};
-
 function fetchCreateEntriesReducer(state: EntriesTypeImmutable, action: any) {
   const prevState = state.get(action.meta.journal);
   const extend = action.meta.prevUid != null;
@@ -204,11 +126,77 @@ export const entries = handleActions(
   ImmutableMap({})
 );
 
+const setMapModelReducer = (state: JournalsData, action: Action<EteSync.Journal[]>) => {
+  if (action.error || !action.payload) {
+    return state;
+  }
+
+  state = state ?? ImmutableMap<string, EteSync.Journal>().asMutable();
+  const old = state.asMutable();
+
+  return state.withMutations((ret) => {
+    const items = action.payload!;
+    for (const item of items) {
+      const current = old.get(item.uid);
+      if (!current || !shallowEqual(current.serialize(), item.serialize())) {
+        ret.set(item.uid, item);
+      }
+
+      if (current) {
+        old.delete(item.uid);
+      }
+    }
+
+    // Delete all the items that were deleted remotely (not handled above).
+    for (const uid of old.keys()) {
+      ret.delete(uid);
+    }
+  });
+};
+
+const addEditMapModelReducer = (state: JournalsData, action: ActionMeta<EteSync.Journal, { item: EteSync.Journal }>) => {
+  if (action.error) {
+    return state;
+  } else {
+    let payload = (action.payload === undefined) ? null : action.payload;
+    payload = (action.meta === undefined) ? payload : action.meta.item;
+
+    if (!payload) {
+      return state;
+    }
+
+    const item = payload;
+    return state.set(item.uid, item);
+  }
+};
+
+const deleteMapModelReducer = (state: JournalsData, action: ActionMeta<EteSync.Journal, { item: EteSync.Journal }>) => {
+  if (action.error) {
+    return state;
+  } else {
+    let payload = (action.payload === undefined) ? null : action.payload;
+    payload = (action.meta === undefined) ? payload : action.meta.item;
+
+    if (!payload) {
+      return state;
+    }
+
+    const uid = payload.uid;
+    return state.delete(uid);
+  }
+};
+
 export const journals = handleActions(
   {
-    ...mapReducerActionsMapCreator<JournalsTypeImmutable, EteSync.Journal>('Journal'),
+    [actions.fetchListJournal.toString()]: setMapModelReducer as any,
+    [actions.addJournal.toString()]: addEditMapModelReducer,
+    [actions.updateJournal.toString()]: addEditMapModelReducer,
+    [actions.deleteJournal.toString()]: deleteMapModelReducer,
+    [actions.logout.toString()]: (state: JournalsData, _action: any) => {
+      return state.clear();
+    },
   },
-  new JournalsFetchRecord()
+  ImmutableMap({})
 );
 
 export const userInfo = handleActions(

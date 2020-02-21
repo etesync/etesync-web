@@ -7,8 +7,8 @@ import { List, Map as ImmutableMap } from 'immutable';
 
 import * as EteSync from 'etesync';
 import {
-  JournalsData, FetchType, EntriesData, EntriesFetchRecord, UserInfoData, JournalsFetchRecord,
-  CredentialsDataRemote, JournalsType, EntriesType, SettingsType,
+  JournalsData, FetchType, EntriesData, EntriesFetchRecord, UserInfoData,
+  CredentialsDataRemote, EntriesType, SettingsType,
   fetchCount, journals, entries, credentials, userInfo, settingsReducer, encryptionKeyReducer, errorsReducer,
 } from './reducers';
 
@@ -18,7 +18,7 @@ export interface StoreState {
   settings: SettingsType;
   encryptionKey: {key: string};
   cache: {
-    journals: JournalsType;
+    journals: JournalsData;
     entries: EntriesType;
     userInfo: UserInfoData;
   };
@@ -49,19 +49,19 @@ const journalsSerialize = (state: JournalsData) => {
   return state.map((x, _uid) => x.serialize()).toJS();
 };
 
-const journalsDeserialize = (state: {}) => {
+const journalsDeserialize = (state: []) => {
   if (state === null) {
     return null;
   }
 
-  const newState = new Map<string, EteSync.Journal>();
+  const newState = ImmutableMap<string, EteSync.Journal>().asMutable();
   Object.keys(state).forEach((uid) => {
     const x = state[uid];
     const ret = new EteSync.Journal({ uid }, x.version);
     ret.deserialize(x);
     newState.set(uid, ret);
   });
-  return ImmutableMap(newState);
+  return newState.asImmutable();
 };
 
 const entriesSerialize = (state: FetchType<EntriesData>) => {
@@ -110,7 +110,7 @@ const cacheSerialize = (state: any, key: string) => {
     });
     return ret;
   } else if (key === 'journals') {
-    return journalsSerialize(state.value);
+    return journalsSerialize(state);
   } else if (key === 'userInfo') {
     return userInfoSerialize(state);
   }
@@ -126,7 +126,7 @@ const cacheDeserialize = (state: any, key: string) => {
     });
     return ImmutableMap(ret);
   } else if (key === 'journals') {
-    return new JournalsFetchRecord({ value: journalsDeserialize(state) });
+    return journalsDeserialize(state);
   } else if (key === 'userInfo') {
     return userInfoDeserialize(state);
   }

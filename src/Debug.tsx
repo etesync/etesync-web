@@ -16,7 +16,7 @@ export default function Debug(props: PropsType) {
   const [stateJournalUid, setJournalUid] = React.useState('');
   const [entriesUids, setEntriesUids] = React.useState('');
   const [result, setResult] = React.useState('');
-  const journals = useSelector((state: StoreState) => state.cache.journals.value)!;
+  const journals = useSelector((state: StoreState) => state.cache.journals!);
   const journalEntries = useSelector((state: StoreState) => state.cache.entries);
 
   function handleInputChange(func: (value: string) => void) {

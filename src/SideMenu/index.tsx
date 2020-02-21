@@ -16,7 +16,7 @@ import logo from '../images/logo.svg';
 
 import { routeResolver } from '../App';
 
-import { store, JournalsType, UserInfoData, StoreState, CredentialsData } from '../store';
+import { store, UserInfoData, StoreState, CredentialsData } from '../store';
 import { logout } from '../store/actions';
 
 import * as C from '../constants';
@@ -27,7 +27,6 @@ interface PropsType {
 }
 
 type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
-  journals: JournalsType;
   userInfo: UserInfoData;
   theme: Theme;
 };
@@ -114,7 +113,6 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
 
 const mapStateToProps = (state: StoreState, _props: PropsType) => {
   return {
-    journals: state.cache.journals,
     userInfo: state.cache.userInfo,
   };
 };

@@ -12,7 +12,6 @@ import { routeResolver } from './App';
 
 import AppBarOverride from './widgets/AppBarOverride';
 import LoadingIndicator from './widgets/LoadingIndicator';
-import PrettyError from './widgets/PrettyError';
 
 import Journals from './Journals';
 import Settings from './Settings';
@@ -22,7 +21,7 @@ import Pim from './Pim';
 import * as EteSync from 'etesync';
 import { CURRENT_VERSION } from 'etesync';
 
-import { store, SettingsType, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoData } from './store';
+import { store, SettingsType, JournalsData, EntriesType, StoreState, CredentialsData, UserInfoData } from './store';
 import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
@@ -40,7 +39,7 @@ interface PropsType {
 
 type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
   settings: SettingsType;
-  journals: JournalsType;
+  journals: JournalsData;
   entries: EntriesType;
   userInfo: UserInfoData;
   fetchCount: number;
@@ -48,7 +47,7 @@ type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
 
 const syncInfoSelector = createSelector(
   (props: PropsTypeInner) => props.etesync,
-  (props: PropsTypeInner) => props.journals.value!,
+  (props: PropsTypeInner) => props.journals!,
   (props: PropsTypeInner) => props.entries,
   (props: PropsTypeInner) => props.userInfo,
   (etesync, journals, entries, userInfo) => {
@@ -153,11 +152,9 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
 
   public render() {
     const entryArrays = this.props.entries;
-    const journals = this.props.journals.value;
+    const journals = this.props.journals;
 
-    if (this.props.journals.error) {
-      return <PrettyError error={this.props.journals.error} />;
-    } else {
+    {
       const errors: Array<{journal: string, error: Error}> = [];
       this.props.entries.forEach((entry, journal) => {
         if (entry.error) {
