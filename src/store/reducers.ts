@@ -1,4 +1,5 @@
 import { Action, ActionFunctionAny, combineActions, handleAction, handleActions } from 'redux-actions';
+import { shallowEqual } from 'react-redux';
 
 import { List, Map as ImmutableMap, Record } from 'immutable';
 
@@ -45,9 +46,6 @@ export type EntriesTypeImmutable = ImmutableMap<string, Record<FetchType<Entries
 export type EntriesType = ImmutableMap<string, FetchType<EntriesData>>;
 
 export type UserInfoData = EteSync.UserInfo;
-export const UserInfoFetchRecord = fetchTypeRecord<UserInfoData>();
-export type UserInfoType = FetchType<UserInfoData>;
-export type UserInfoTypeImmutable = Record<UserInfoType>;
 
 function fetchTypeIdentityReducer(
   state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any, extend = false) {
@@ -213,29 +211,35 @@ export const journals = handleActions(
   new JournalsFetchRecord()
 );
 
-export const userInfo = handleAction(
-  combineActions(
-    actions.fetchUserInfo,
-    actions.createUserInfo
-  ),
-  (state: Record<FetchType<any>> = fetchTypeRecord<any>()(), action: any) => {
-    if (action.error) {
-      return state.set('error', action.payload);
-    } else {
-      let payload = (action.payload === undefined) ? null : action.payload;
+export const userInfo = handleActions(
+  {
+    [combineActions(
+      actions.fetchUserInfo,
+      actions.createUserInfo
+    ).toString()]: (state: UserInfoData | null, action: any) => {
+      if (action.error) {
+        return state;
+      } else {
+        let payload = action.payload ?? null;
 
-      state = state.set('error', undefined);
+        if (payload === null) {
+          return state;
+        }
 
-      if (payload === null) {
+        payload = action.meta?.userInfo ?? payload;
+
+        if (!state || !shallowEqual(state.serialize(), payload.serialize())) {
+          return payload;
+        }
+
         return state;
       }
-
-      payload = (action.meta === undefined) ? payload : action.meta.userInfo;
-
-      return state.set('value', payload);
-    }
+    },
+    [actions.logout.toString()]: (_state: any, _action: any) => {
+      return null;
+    },
   },
-  new UserInfoFetchRecord()
+  null
 );
 
 const fetchActions = [

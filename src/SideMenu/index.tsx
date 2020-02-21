@@ -115,7 +115,7 @@ class SideMenu extends React.PureComponent<PropsTypeInner> {
 const mapStateToProps = (state: StoreState, _props: PropsType) => {
   return {
     journals: state.cache.journals,
-    userInfo: state.cache.userInfo.value,
+    userInfo: state.cache.userInfo,
   };
 };
 

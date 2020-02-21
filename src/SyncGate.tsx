@@ -22,7 +22,7 @@ import Pim from './Pim';
 import * as EteSync from 'etesync';
 import { CURRENT_VERSION } from 'etesync';
 
-import { store, SettingsType, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoType } from './store';
+import { store, SettingsType, JournalsType, EntriesType, StoreState, CredentialsData, UserInfoData } from './store';
 import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';
 
 export interface SyncInfoJournal {
@@ -42,7 +42,7 @@ type PropsTypeInner = RouteComponentProps<{}> & PropsType & {
   settings: SettingsType;
   journals: JournalsType;
   entries: EntriesType;
-  userInfo: UserInfoType;
+  userInfo: UserInfoData;
   fetchCount: number;
 };
 
@@ -50,7 +50,7 @@ const syncInfoSelector = createSelector(
   (props: PropsTypeInner) => props.etesync,
   (props: PropsTypeInner) => props.journals.value!,
   (props: PropsTypeInner) => props.entries,
-  (props: PropsTypeInner) => props.userInfo.value!,
+  (props: PropsTypeInner) => props.userInfo,
   (etesync, journals, entries, userInfo) => {
     const derived = etesync.encryptionKey;
     const userInfoCryptoManager = userInfo.getCryptoManager(etesync.encryptionKey);
@@ -132,10 +132,14 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
       });
     };
 
-    const sync = () => {
-      if (this.props.userInfo.value) {
+    if (this.props.userInfo) {
+      syncAll();
+    } else {
+      const fetching = fetchUserInfo(this.props.etesync, me);
+      fetching.payload?.then(() => {
+        store.dispatch(fetching);
         syncAll();
-      } else {
+      }).catch(() => {
         const userInfo = new EteSync.UserInfo(me, CURRENT_VERSION);
         const keyPair = EteSync.AsymmetricCryptoManager.generateKeyPair();
         const cryptoManager = userInfo.getCryptoManager(this.props.etesync.encryptionKey);
@@ -143,14 +147,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
         userInfo.setKeyPair(cryptoManager, keyPair);
 
         store.dispatch<any>(createUserInfo(this.props.etesync, userInfo)).then(syncAll);
-      }
-    };
-
-    if (this.props.userInfo.value) {
-      syncAll();
-    } else {
-      const fetching = store.dispatch(fetchUserInfo(this.props.etesync, me)) as any;
-      fetching.then(sync).catch(() => sync());
+      });
     }
   }
 
@@ -158,9 +155,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
     const entryArrays = this.props.entries;
     const journals = this.props.journals.value;
 
-    if (this.props.userInfo.error) {
-      return <PrettyError error={this.props.userInfo.error} />;
-    } else if (this.props.journals.error) {
+    if (this.props.journals.error) {
       return <PrettyError error={this.props.journals.error} />;
     } else {
       const errors: Array<{journal: string, error: Error}> = [];
@@ -179,7 +174,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
       }
     }
 
-    if ((this.props.userInfo.value === null) || (journals === null) ||
+    if ((this.props.userInfo === null) || (journals === null) ||
       ((this.props.fetchCount > 0) &&
         ((entryArrays.size === 0) || !entryArrays.every((x: any) => (x.value !== null))))
     ) {
@@ -208,7 +203,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
               <AppBarOverride title="EteSync" />
               <PimRouter
                 etesync={this.props.etesync}
-                userInfo={this.props.userInfo.value!}
+                userInfo={this.props.userInfo}
                 syncInfo={journalMap}
                 history={history}
               />
@@ -220,7 +215,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
           render={({ location, history }) => (
             <Journals
               etesync={this.props.etesync}
-              userInfo={this.props.userInfo.value!}
+              userInfo={this.props.userInfo}
               syncInfo={journalMap}
               journals={journals}
               location={location}
@@ -243,7 +238,7 @@ class SyncGate extends React.PureComponent<PropsTypeInner> {
           render={() => (
             <Debug
               etesync={this.props.etesync}
-              userInfo={this.props.userInfo.value!}
+              userInfo={this.props.userInfo}
             />
           )}
         />

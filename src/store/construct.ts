@@ -7,8 +7,8 @@ import { List, Map as ImmutableMap } from 'immutable';
 
 import * as EteSync from 'etesync';
 import {
-  JournalsData, FetchType, EntriesData, EntriesFetchRecord, UserInfoData, JournalsFetchRecord, UserInfoFetchRecord,
-  CredentialsDataRemote, JournalsType, EntriesType, UserInfoType, SettingsType,
+  JournalsData, FetchType, EntriesData, EntriesFetchRecord, UserInfoData, JournalsFetchRecord,
+  CredentialsDataRemote, JournalsType, EntriesType, SettingsType,
   fetchCount, journals, entries, credentials, userInfo, settingsReducer, encryptionKeyReducer, errorsReducer,
 } from './reducers';
 
@@ -20,7 +20,7 @@ export interface StoreState {
   cache: {
     journals: JournalsType;
     entries: EntriesType;
-    userInfo: UserInfoType;
+    userInfo: UserInfoData;
   };
   errors: List<Error>;
 }
@@ -84,12 +84,12 @@ const entriesDeserialize = (state: EteSync.EntryJson[]): FetchType<EntriesData> 
   })) });
 };
 
-const userInfoSerialize = (state: FetchType<UserInfoData>) => {
-  if ((state === null) || (state.value == null)) {
+const userInfoSerialize = (state: UserInfoData) => {
+  if (state === null) {
     return null;
   }
 
-  return state.value.serialize();
+  return state.serialize();
 };
 
 const userInfoDeserialize = (state: EteSync.UserInfoJson) => {
@@ -128,7 +128,7 @@ const cacheDeserialize = (state: any, key: string) => {
   } else if (key === 'journals') {
     return new JournalsFetchRecord({ value: journalsDeserialize(state) });
   } else if (key === 'userInfo') {
-    return new UserInfoFetchRecord({ value: userInfoDeserialize(state) });
+    return userInfoDeserialize(state);
   }
 
   return state;
