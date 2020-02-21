@@ -81,68 +81,59 @@ function EncryptionPart(props: { credentials: CredentialsType }) {
   );
 }
 
+interface PropsType {
+  credentials: CredentialsType;
+}
 
-class LoginGate extends React.Component {
-  public props: {
-    credentials: CredentialsType;
-  };
+export default function LoginGate(props: PropsType) {
 
-  constructor(props: any) {
-    super(props);
-    this.onFormSubmit = this.onFormSubmit.bind(this);
-  }
-
-  public onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
+  function onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
     serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
     store.dispatch<any>(fetchCredentials(username, password, serviceApiUrl));
   }
 
-  public render() {
-    if (this.props.credentials.value === null) {
-      const style = {
-        isSafe: {
-          textDecoration: 'none',
-          display: 'block',
-        },
-        divider: {
-          margin: '30px 0',
-          color: '#00000025',
-        },
-      };
-
-      return (
-        <Container style={{ maxWidth: '30rem' }}>
-          <h2>Please Log In</h2>
-          <LoginForm
-            onSubmit={this.onFormSubmit}
-            error={this.props.credentials.error}
-            loading={this.props.credentials.fetching}
-          />
-          <hr style={style.divider} />
-          <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
-            <img alt="SignedPgaes badge" src={SignedPagesBadge} />
-          </ExternalLink>
-          <ul>
-            <li><ExternalLink style={style.isSafe} href={C.homePage}>
-                The EteSync Website
-            </ExternalLink></li>
-            <li><ExternalLink style={style.isSafe} href={C.faq + '#web-client'}>
-                Is the web client safe to use?
-            </ExternalLink></li>
-            <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>
-          </ul>
-        </Container>
-      );
-    } else if (this.props.credentials.value.encryptionKey === null) {
-      return (
-        <EncryptionPart credentials={this.props.credentials} />
-      );
-    }
+  if (props.credentials.value === null) {
+    const style = {
+      isSafe: {
+        textDecoration: 'none',
+        display: 'block',
+      },
+      divider: {
+        margin: '30px 0',
+        color: '#00000025',
+      },
+    };
 
     return (
-      <SyncGate etesync={this.props.credentials.value} />
+      <Container style={{ maxWidth: '30rem' }}>
+        <h2>Please Log In</h2>
+        <LoginForm
+          onSubmit={onFormSubmit}
+          error={props.credentials.error}
+          loading={props.credentials.fetching}
+        />
+        <hr style={style.divider} />
+        <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
+          <img alt="SignedPgaes badge" src={SignedPagesBadge} />
+        </ExternalLink>
+        <ul>
+          <li><ExternalLink style={style.isSafe} href={C.homePage}>
+              The EteSync Website
+          </ExternalLink></li>
+          <li><ExternalLink style={style.isSafe} href={C.faq + '#web-client'}>
+              Is the web client safe to use?
+          </ExternalLink></li>
+          <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>
+        </ul>
+      </Container>
+    );
+  } else if (props.credentials.value.encryptionKey === null) {
+    return (
+      <EncryptionPart credentials={props.credentials} />
     );
   }
-}
 
-export default LoginGate;
+  return (
+    <SyncGate etesync={props.credentials.value} />
+  );
+}
