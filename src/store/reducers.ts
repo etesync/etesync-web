@@ -34,9 +34,6 @@ interface BaseModel {
   uid: string;
 }
 
-export type CredentialsType = FetchType<CredentialsData>;
-export type CredentialsTypeRemote = FetchType<CredentialsDataRemote>;
-
 export type JournalsData = ImmutableMap<string, EteSync.Journal>;
 export const JournalsFetchRecord = fetchTypeRecord<JournalsData>();
 export type JournalsType = FetchType<JournalsData>;
@@ -97,32 +94,24 @@ export const encryptionKeyReducer = handleActions(
 export const credentials = handleActions(
   {
     [actions.fetchCredentials.toString()]: (
-      _state: CredentialsTypeRemote, action: any) => {
+      state: CredentialsDataRemote, action: any) => {
       if (action.error) {
-        return {
-          value: null,
-          error: action.payload,
-        };
+        return state;
       } else if (action.payload === undefined) {
-        return {
-          fetching: true,
-          value: null,
-        };
+        return state;
       } else {
         const {
           encryptionKey, // We don't want to set encryption key here.
           ...payload
         } = action.payload;
-        return {
-          value: payload,
-        };
+        return payload;
       }
     },
-    [actions.logout.toString()]: (_state: CredentialsTypeRemote, _action: any) => {
-      return { out: true, value: null };
+    [actions.logout.toString()]: (_state: CredentialsDataRemote, _action: any) => {
+      return {};
     },
   },
-  { value: null }
+  {} as CredentialsDataRemote
 );
 
 const setMapModelReducer = <T extends Record<any>, V extends BaseModel>(state: T, action: any) => {

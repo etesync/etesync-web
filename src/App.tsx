@@ -3,7 +3,6 @@ import { List as ImmutableList } from 'immutable';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
-import { createSelector } from 'reselect';
 import { MuiThemeProvider as ThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
 import amber from '@material-ui/core/colors/amber';
 import lightBlue from '@material-ui/core/colors/lightBlue';
@@ -31,6 +30,8 @@ import { RouteResolver } from './routes';
 
 import * as store from './store';
 import * as actions from './store/actions';
+
+import { credentialsSelector } from './login';
 
 import { History } from 'history';
 
@@ -170,7 +171,7 @@ class App extends React.PureComponent {
   };
 
   public props: {
-    credentials: store.CredentialsType;
+    credentials: store.CredentialsData;
     entries: store.EntriesType;
     fetchCount: number;
     errors: ImmutableList<Error>;
@@ -186,7 +187,7 @@ class App extends React.PureComponent {
   }
 
   public render() {
-    const credentials = (this.props.credentials) ? this.props.credentials.value : null;
+    const credentials = this.props.credentials ?? null;
 
     const errors = this.props.errors;
     const fetching = this.props.fetchCount > 0;
@@ -251,7 +252,7 @@ class App extends React.PureComponent {
             </Drawer>
 
             <ErrorBoundary>
-              <LoginGate credentials={this.props.credentials} />
+              <LoginGate />
             </ErrorBoundary>
           </div>
         </BrowserRouter>
@@ -268,30 +269,9 @@ class App extends React.PureComponent {
   }
 
   private refresh() {
-    store.store.dispatch<any>(actions.fetchAll(this.props.credentials.value!, this.props.entries));
+    store.store.dispatch<any>(actions.fetchAll(this.props.credentials, this.props.entries));
   }
 }
-
-const credentialsSelector = createSelector(
-  (state: store.StoreState) => state.credentials.value,
-  (state: store.StoreState) => state.credentials.error,
-  (state: store.StoreState) => state.credentials.fetching,
-  (state: store.StoreState) => state.encryptionKey.key,
-  (value, error, fetching, encryptionKey) => {
-    if (value === null) {
-      return { value, error, fetching };
-    }
-
-    return {
-      error,
-      fetching,
-      value: {
-        ...value,
-        encryptionKey,
-      },
-    };
-  }
-);
 
 const mapStateToProps = (state: store.StoreState) => {
   return {

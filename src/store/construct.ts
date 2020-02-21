@@ -8,13 +8,13 @@ import { List, Map as ImmutableMap } from 'immutable';
 import * as EteSync from 'etesync';
 import {
   JournalsData, FetchType, EntriesData, EntriesFetchRecord, UserInfoData, JournalsFetchRecord, UserInfoFetchRecord,
-  CredentialsTypeRemote, JournalsType, EntriesType, UserInfoType, SettingsType,
+  CredentialsDataRemote, JournalsType, EntriesType, UserInfoType, SettingsType,
   fetchCount, journals, entries, credentials, userInfo, settingsReducer, encryptionKeyReducer, errorsReducer,
 } from './reducers';
 
 export interface StoreState {
   fetchCount: number;
-  credentials: CredentialsTypeRemote;
+  credentials: CredentialsDataRemote;
   settings: SettingsType;
   encryptionKey: {key: string};
   cache: {

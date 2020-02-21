@@ -8,7 +8,7 @@ import SyncGate from './SyncGate';
 import LoginForm from './components/LoginForm';
 import EncryptionLoginForm from './components/EncryptionLoginForm';
 
-import { store, CredentialsType } from './store';
+import { store, StoreState, CredentialsDataRemote } from './store';
 import { deriveKey, fetchCredentials, fetchUserInfo } from './store/actions';
 
 import * as EteSync from 'etesync';
@@ -16,14 +16,16 @@ import * as C from './constants';
 
 import SignedPagesBadge from './images/signed-pages-badge.svg';
 import LoadingIndicator from './widgets/LoadingIndicator';
+import { useCredentials, useRemoteCredentials } from './login';
+import { useSelector } from 'react-redux';
 
 
-function EncryptionPart(props: { credentials: CredentialsType }) {
+function EncryptionPart(props: { credentials: CredentialsDataRemote }) {
   const [fetched, setFetched] = React.useState(false);
   const [userInfo, setUserInfo] = React.useState<EteSync.UserInfo>();
   const [error, setError] = React.useState<Error>();
 
-  const credentials = props.credentials.value!;
+  const credentials = props.credentials;
 
   React.useEffect(() => {
     // FIXME: verify the error is a 404
@@ -41,7 +43,7 @@ function EncryptionPart(props: { credentials: CredentialsType }) {
   }
 
   function onEncryptionFormSubmit(encryptionPassword: string) {
-    const derivedAction = deriveKey(props.credentials.value!.credentials.email, encryptionPassword);
+    const derivedAction = deriveKey(credentials.credentials.email, encryptionPassword);
     if (userInfo) {
       const userInfoCryptoManager = userInfo.getCryptoManager(derivedAction.payload!);
       try {
@@ -81,18 +83,25 @@ function EncryptionPart(props: { credentials: CredentialsType }) {
   );
 }
 
-interface PropsType {
-  credentials: CredentialsType;
-}
+export default function LoginGate() {
+  const remoteCredentials = useRemoteCredentials();
+  const credentials = useCredentials();
+  const fetchCount = useSelector((state: StoreState) => state.fetchCount);
+  const [fetchError, setFetchError] = React.useState<Error>();
 
-export default function LoginGate(props: PropsType) {
-
-  function onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
+  async function onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
     serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
-    store.dispatch<any>(fetchCredentials(username, password, serviceApiUrl));
+    try {
+      setFetchError(undefined);
+      const ret = fetchCredentials(username, password, serviceApiUrl);
+      await ret.payload;
+      store.dispatch(ret);
+    } catch (e) {
+      setFetchError(e);
+    }
   }
 
-  if (props.credentials.value === null) {
+  if (remoteCredentials === null) {
     const style = {
       isSafe: {
         textDecoration: 'none',
@@ -109,8 +118,8 @@ export default function LoginGate(props: PropsType) {
         <h2>Please Log In</h2>
         <LoginForm
           onSubmit={onFormSubmit}
-          error={props.credentials.error}
-          loading={props.credentials.fetching}
+          error={fetchError}
+          loading={fetchCount > 0}
         />
         <hr style={style.divider} />
         <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
@@ -127,13 +136,13 @@ export default function LoginGate(props: PropsType) {
         </ul>
       </Container>
     );
-  } else if (props.credentials.value.encryptionKey === null) {
+  } else if (credentials === null) {
     return (
-      <EncryptionPart credentials={props.credentials} />
+      <EncryptionPart credentials={remoteCredentials} />
     );
   }
 
   return (
-    <SyncGate etesync={props.credentials.value} />
+    <SyncGate etesync={credentials} />
   );
 }
