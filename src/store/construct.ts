@@ -30,10 +30,18 @@ const settingsPersistConfig = {
   storage: localforage,
 };
 
+const credentialsMigrations = {
+  0: (state: any) => {
+    return state.value;
+  },
+};
+
 const credentialsPersistConfig = {
   key: 'credentials',
+  version: 0,
   storage: localforage,
   whitelist: ['value'],
+  migrate: createMigrate(credentialsMigrations, { debug: false }),
 };
 
 const encryptionKeyPersistConfig = {
@@ -141,11 +149,19 @@ const cacheMigrations = {
       journals: undefined,
     };
   },
+  2: (state: any) => {
+    return {
+      ...state,
+      userInfo: state.userInfo?.value,
+      journals: state.journals?.value,
+      entries: undefined, // For now we just reset the entries
+    };
+  },
 };
 
 const cachePersistConfig = {
   key: 'cache',
-  version: 1,
+  version: 2,
   storage: localforage,
   transforms: [createTransform(cacheSerialize, cacheDeserialize)],
   migrate: createMigrate(cacheMigrations, { debug: false }),
