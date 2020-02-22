@@ -80,6 +80,10 @@ export class EventType extends ICAL.Event implements PimType {
     return this.summary;
   }
 
+  set title(_title: string) {
+    this.summary = _title;
+  }
+
   get start() {
     return this.startDate.toJSDate();
   }
@@ -120,6 +124,15 @@ export enum TaskStatusType {
   Cancelled = 'CANCELLED',
 }
 
+export enum TaskPriorityType {
+  None = 0,
+  High = 1,
+  Med = 2,
+  Low = 3,
+}
+
+export const TaskTags = ['work', 'home'];
+
 export class TaskType extends EventType {
   public static fromVCalendar(comp: ICAL.Component) {
     const task = new TaskType(comp.getFirstSubcomponent('vtodo'));
@@ -137,6 +150,7 @@ export class TaskType extends EventType {
   constructor(comp?: ICAL.Component | null) {
     super(comp ? comp : new ICAL.Component('vtodo'));
     this.component.addProperty(new ICAL.Property('categories'));
+    this.component.addProperty(new ICAL.Property('priority'));
   }
 
   get finished() {
@@ -191,6 +205,22 @@ export class TaskType extends EventType {
 
   get categories() {
     return this.component.getFirstProperty('categories').getValues();
+  }
+
+  set priority(priority: TaskPriorityType) {
+    this.component.updatePropertyWithValue('priority', priority);
+  }
+
+  get priority() {
+    return this.component.getFirstPropertyValue('priority');
+  }
+
+  get lastModified() {
+    return this.component.getFirstPropertyValue('last-modified');
+  }
+
+  set lastModified(time: ICAL.Time) {
+    this.component.updatePropertyWithValue('last-modified', time);
   }
 
   public clone() {

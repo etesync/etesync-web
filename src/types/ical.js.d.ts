@@ -57,7 +57,6 @@ declare module 'ical.js' {
 
     public getFirstValue<T = any>(): T;
     public getValues<T = any>(): T[];
-    public setValues(values: any[]): void;
 
     public setParameter(name: string, value: string | string[]): void;
     public setValue(value: string | object): void;

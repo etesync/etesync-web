@@ -10,6 +10,7 @@
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.6.0",
     "etesync": "^0.3.1",
+    "fuse.js": "^3.4.6",
     "ical.js": "^1.2.2",
     "immutable": "^4.0.0-rc.12",
     "localforage": "^1.7.3",

@@ -24,8 +24,8 @@ import ContactEdit from '../components/ContactEdit';
 import Contact from '../components/Contact';
 import EventEdit from '../components/EventEdit';
 import Event from '../components/Event';
-import TaskEdit from '../components/TaskEdit';
-import Task from '../components/Task';
+import TaskEdit from '../components/Tasks/TaskEdit';
+import Task from '../components/Tasks/Task';
 import PimMain from './PimMain';
 
 import { routeResolver } from '../App';
@@ -115,10 +115,10 @@ type CollectionRoutesPropsType = RouteComponentProps<{}> & {
 
 const styles = (theme: any) => ({
   button: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
   },
   leftIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
 });
 
@@ -220,6 +220,11 @@ const CollectionRoutes = withStyles(styles)(withRouter(
   }
 ));
 
+export const PimContext = React.createContext({
+  onItemSave: (_item: PimType, _journalUid: string, _originalEvent?: PimType, _goBack = true) => { return },
+  collectionsTaskList: [] as EteSync.CollectionInfo[],
+});
+
 class Pim extends React.PureComponent {
   public props: {
     etesync: CredentialsData;
@@ -313,6 +318,7 @@ class Pim extends React.PureComponent {
     const { collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems } = itemsSelector(this.props);
 
     return (
+      <PimContext.Provider value={{ onItemSave: this.onItemSave, collectionsTaskList }}>
       <Switch>
         <Route
           path={routeResolver.getRoute('pim')}
@@ -323,8 +329,6 @@ class Pim extends React.PureComponent {
               events={objValues(calendarItems)}
               tasks={objValues(taskListItems)}
               history={history}
-              onItemSave={this.onItemSave}
-              collectionsTaskList={collectionsTaskList}
             />
           )}
         />
@@ -377,6 +381,7 @@ class Pim extends React.PureComponent {
           )}
         />
       </Switch>
+      </PimContext.Provider>
     );
   }
 }

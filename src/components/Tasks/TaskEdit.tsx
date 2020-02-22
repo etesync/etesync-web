@@ -1,4 +1,10 @@
-import * as React from 'react';
+import React from 'react';
+
+import { Location } from 'history';
+import { withRouter } from 'react-router';
+import uuid from 'uuid';
+import ICAL from 'ical.js';
+import EteSync from 'etesync';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -7,27 +13,20 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
-import * as colors from '@material-ui/core/colors';
+import { red } from '@material-ui/core/colors';
+import FormLabel from '@material-ui/core/FormLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import IconDelete from '@material-ui/icons/Delete';
 import IconCancel from '@material-ui/icons/Clear';
 import IconSave from '@material-ui/icons/Save';
 
-import DateTimePicker from '../widgets/DateTimePicker';
-
-import ConfirmationDialog from '../widgets/ConfirmationDialog';
-
-import { Location } from 'history';
-import { withRouter } from 'react-router';
-
-import * as uuid from 'uuid';
-import * as ICAL from 'ical.js';
-
-import * as EteSync from 'etesync';
-
-import { getCurrentTimezone } from '../helpers';
-
-import { TaskType, TaskStatusType, timezoneLoadFromName } from '../pim-types';
+import ColoredRadio from './ColoredRadio';
+import DateTimePicker from '../../widgets/DateTimePicker';
+import ConfirmationDialog from '../../widgets/ConfirmationDialog';
+import { getCurrentTimezone } from '../../helpers';
+import { TaskType, TaskStatusType, TaskPriorityType, TaskTags, timezoneLoadFromName } from '../../pim-types';
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
@@ -51,7 +50,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
     location: string;
     description: string;
     journalUid: string;
-    tags: string;
+    tags: string[];
+    priority: TaskPriorityType;
 
     error?: string;
     showDeleteDialog: boolean;
@@ -67,8 +67,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
       location: '',
       description: '',
       timezone: null,
-      tags: '',
-
+      tags: [],
+      priority: TaskPriorityType.None,
       journalUid: '',
       showDeleteDialog: false,
     };
@@ -89,8 +89,10 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.state.location = event.location ? event.location : '';
       this.state.description = event.description ? event.description : '';
       this.state.timezone = event.timezone;
-      console.log(event);
-      this.state.tags = event.categories ? event.categories.join(' ') : '';
+      this.state.priority = event.priority ? event.priority : TaskPriorityType.None;
+
+      // checks if event categories is just the empty string
+      this.state.tags = event.categories && event.categories[0] ? event.categories : [];
     } else {
       this.state.uid = uuid.v4();
     }
@@ -102,12 +104,6 @@ class TaskEdit extends React.PureComponent<PropsType> {
     } else if (props.collections[0]) {
       this.state.journalUid = props.collections[0].uid;
     }
-
-    this.onSubmit = this.onSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.toggleAllDay = this.toggleAllDay.bind(this);
-    this.onDeleteRequest = this.onDeleteRequest.bind(this);
   }
 
   public UNSAFE_componentWillReceiveProps(nextProps: any) {
@@ -125,17 +121,12 @@ class TaskEdit extends React.PureComponent<PropsType> {
     }
   }
 
-  public handleChange(name: string, value: string) {
-    this.setState({
-      [name]: value,
-    });
-
-  }
-
   public handleInputChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
-    this.handleChange(name, value);
+    this.setState({
+      [name]: value,
+    });
   }
 
   public toggleAllDay() {
@@ -159,8 +150,10 @@ class TaskEdit extends React.PureComponent<PropsType> {
       }
     }
 
-    const startDate = fromDate(this.state.start, this.state.allDay);
-    const dueDate = fromDate(this.state.due, this.state.allDay);
+    const { start, due, allDay, uid, title, status, priority, location, description, timezone, tags, journalUid } = this.state;
+
+    const startDate = fromDate(start, allDay);
+    const dueDate = fromDate(due, allDay);
 
     if (startDate && dueDate) {
       if (startDate.compare(dueDate) >= 0) {
@@ -169,41 +162,43 @@ class TaskEdit extends React.PureComponent<PropsType> {
       }
     }
 
-    const event = (this.props.item) ?
+    const task = (this.props.item) ?
       this.props.item.clone()
       :
       new TaskType(null)
       ;
 
-    event.uid = this.state.uid;
-    event.summary = this.state.title;
-    event.status = this.state.status;
+    task.uid = uid;
+    task.title = title;
+    task.status = status;
+    task.priority = priority;
+    task.dueDate = dueDate;
+    task.location = location;
+    task.description = description;
+    task.categories = tags;
+
     if (startDate) {
-      event.startDate = startDate;
+      task.startDate = startDate;
     }
-    event.dueDate = dueDate;
-    event.location = this.state.location;
-    event.description = this.state.description;
-    if (this.state.timezone) {
-      const timezone = timezoneLoadFromName(this.state.timezone);
-      if (timezone) {
-        if (event.startDate) {
-          event.startDate = event.startDate.convertToZone(timezone);
+
+    if (timezone) {
+      const icalTimezone = timezoneLoadFromName(timezone);
+      if (icalTimezone) {
+        if (task.startDate) {
+          task.startDate = task.startDate.convertToZone(icalTimezone);
         }
-        if (event.dueDate) {
-          event.dueDate = event.dueDate.convertToZone(timezone);
+        if (task.dueDate) {
+          task.dueDate = task.dueDate.convertToZone(icalTimezone);
         }
-        if (event.completionDate) {
-          event.completionDate = event.completionDate.convertToZone(timezone);
+        if (task.completionDate) {
+          task.completionDate = task.completionDate.convertToZone(icalTimezone);
         }
       }
     }
 
-    event.categories = this.state.tags.split(' ');
+    task.lastModified = ICAL.Time.now();
 
-    event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
-
-    this.props.onSave(event, this.state.journalUid, this.props.item);
+    this.props.onSave(task, journalUid, this.props.item);
   }
 
   public onDeleteRequest() {
@@ -214,8 +209,6 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
   public render() {
     const styles = {
-      form: {
-      },
       fullWidth: {
         width: '100%',
         boxSizing: 'border-box' as any,
@@ -246,14 +239,14 @@ class TaskEdit extends React.PureComponent<PropsType> {
         {this.state.error && (
           <div>ERROR! {this.state.error}</div>
         )}
-        <form style={styles.form} onSubmit={this.onSubmit}>
+        <form onSubmit={(e) => this.onSubmit(e)}>
           <TextField
             name="title"
             label="Title"
             placeholder="Enter title"
             style={styles.fullWidth}
             value={this.state.title}
-            onChange={this.handleInputChange}
+            onChange={(e) => this.handleInputChange(e)}
           />
 
           <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
@@ -264,7 +257,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
               name="journalUid"
               value={this.state.journalUid}
               disabled={this.props.item !== undefined}
-              onChange={this.handleInputChange}
+              onChange={(e) => this.handleInputChange(e)}
             >
               {this.props.collections.map((x) => (
                 <MenuItem key={x.uid} value={x.uid}>{x.displayName}</MenuItem>
@@ -279,7 +272,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             <Select
               name="status"
               value={this.state.status}
-              onChange={this.handleInputChange}
+              onChange={(e) => this.handleInputChange(e)}
             >
               <MenuItem value={TaskStatusType.NeedsAction}>Needs action</MenuItem>
               <MenuItem value={TaskStatusType.InProcess}>In progress</MenuItem>
@@ -288,14 +281,34 @@ class TaskEdit extends React.PureComponent<PropsType> {
             </Select>
           </FormControl>
 
-          <TextField
-            name="tags"
-            label="Tags"
-            placeholder="Enter title"
-            style={styles.fullWidth}
+          <FormControl style={styles.fullWidth}>
+            <FormLabel>Priority</FormLabel>
+            <RadioGroup
+              row
+              value={this.state.priority}
+              onChange={(e) => this.setState({ priority: Number(e.target.value) })}
+            >
+              <ColoredRadio color="grey" value={TaskPriorityType.None} label="None" />
+              <ColoredRadio color="blue" value={TaskPriorityType.Low} label="Low" />
+              <ColoredRadio color="orange" value={TaskPriorityType.Med} label="Medium" />
+              <ColoredRadio color="red" value={TaskPriorityType.High} label="High" />
+            </RadioGroup>
+          </FormControl>
+
+          <Autocomplete
+            multiple
+            options={TaskTags}
             value={this.state.tags}
-            onChange={this.handleInputChange}
-          />
+            onChange={(_e, value) => this.setState({ tags: value })}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                label="Tags"
+                placeholder="Start typing tags"
+                fullWidth
+              />
+            )} />
 
           <FormControl style={styles.fullWidth}>
             <FormHelperText>Due</FormHelperText>
@@ -322,8 +335,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
             {this.props.item &&
               <Button
                 variant="contained"
-                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
-                onClick={this.onDeleteRequest}
+                style={{ marginLeft: 15, backgroundColor: red[500], color: 'white' }}
+                onClick={() => this.onDeleteRequest()}
               >
                 <IconDelete style={{ marginRight: 8 }} />
                 Delete
@@ -339,11 +352,6 @@ class TaskEdit extends React.PureComponent<PropsType> {
               <IconSave style={{ marginRight: 8 }} />
               Save
             </Button>
-          </div>
-
-          <div>
-            Not all types are supported at the moment. If you are editing a contact,
-            the unsupported types will be copied as is.
           </div>
         </form>
 
