@@ -5,6 +5,7 @@ import { List, ListItem } from '../widgets/List';
 
 import { Theme, withTheme } from '@material-ui/core/styles';
 import IconMemberAdd from '@material-ui/icons/PersonAdd';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import AppBarOverride from '../widgets/AppBarOverride';
 import Container from '../widgets/Container';
@@ -61,7 +62,11 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
               </ListItem>
               {(members.length > 0 ?
                 members.map((member) => (
-                  <ListItem key={member.user} onClick={() => this.onRevokeRequest(member.user)}>
+                  <ListItem
+                    key={member.user}
+                    onClick={() => this.onRevokeRequest(member.user)}
+                    rightIcon={(member.readOnly) ? (<VisibilityIcon />) : undefined}
+                  >
                     {member.user}
                   </ListItem>
                 ))
