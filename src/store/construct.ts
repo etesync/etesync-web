@@ -40,7 +40,6 @@ const credentialsPersistConfig = {
   key: 'credentials',
   version: 0,
   storage: localforage,
-  whitelist: ['value'],
   migrate: createMigrate(credentialsMigrations, { debug: false }),
 };
 
