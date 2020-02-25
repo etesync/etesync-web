@@ -150,7 +150,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     });
   }
 
-  private onMemberAdd(user: string, publicKey: string) {
+  private onMemberAdd(user: string, publicKey: string, readOnly: boolean) {
     const { etesync, syncJournal, userInfo } = this.props;
     const journal = syncJournal.journal;
     const derived = this.props.etesync.encryptionKey;
@@ -164,7 +164,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
     const journalMembersManager = new EteSync.JournalMembersManager(creds, apiBase, journal.uid);
-    journalMembersManager.create({ user, key: encryptedKey }).then(() => {
+    journalMembersManager.create({ user, key: encryptedKey, readOnly }).then(() => {
       this.fetchMembers();
     });
     this.setState({

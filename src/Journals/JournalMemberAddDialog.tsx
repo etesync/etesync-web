@@ -1,6 +1,8 @@
 import * as React from 'react';
 
 import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import LoadingIndicator from '../widgets/LoadingIndicator';
 import ConfirmationDialog from '../widgets/ConfirmationDialog';
@@ -14,7 +16,7 @@ import { handleInputChange } from '../helpers';
 interface PropsType {
   etesync: CredentialsData;
   info: EteSync.CollectionInfo;
-  onOk: (user: string, publicKey: string) => void;
+  onOk: (user: string, publicKey: string, readOnly: boolean) => void;
   onClose: () => void;
 }
 
@@ -22,6 +24,7 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
   public state = {
     addUser: '',
     publicKey: '',
+    readOnly: false,
     userChosen: false,
     error: undefined as Error | undefined,
   };
@@ -88,14 +91,25 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
             {userChosen ?
               <LoadingIndicator />
               :
-              <TextField
-                name="addUser"
-                type="email"
-                placeholder="User email"
-                style={{ width: '100%' }}
-                value={addUser}
-                onChange={this.handleInputChange}
-              />
+              <>
+                <TextField
+                  name="addUser"
+                  type="email"
+                  placeholder="User email"
+                  style={{ width: '100%' }}
+                  value={addUser}
+                  onChange={this.handleInputChange}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.readOnly}
+                      onChange={(event) => this.setState({ readOnly: event.target.checked })}
+                    />
+                  }
+                  label="Read only?"
+                />
+              </>
             }
           </ConfirmationDialog>
         </>
@@ -124,8 +138,8 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
   }
 
   private onOk() {
-    const { addUser, publicKey } = this.state;
-    this.props.onOk(addUser, publicKey);
+    const { addUser, publicKey, readOnly } = this.state;
+    this.props.onOk(addUser, publicKey, readOnly);
   }
 }
 
