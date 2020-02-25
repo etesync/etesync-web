@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { History } from 'history';
 
 import Select from '@material-ui/core/Select';
@@ -12,6 +12,26 @@ import { setSettings } from '../store/actions';
 
 import Container from '../widgets/Container';
 import AppBarOverride from '../widgets/AppBarOverride';
+import PrettyFingerprint from '../widgets/PrettyFingerprint';
+
+function SecurityFingerprint() {
+  const userInfo = useSelector((state: StoreState) => state.cache.userInfo);
+
+  if (!userInfo) {
+    return <p>Security fingerprint error.</p>;
+  }
+
+  const publicKey = userInfo.publicKey;
+
+  return (
+    <>
+      <p>
+        Your security fingerprint is:
+      </p>
+      <PrettyFingerprint publicKey={publicKey} />
+    </>
+  );
+}
 
 interface PropsType {
   history: History;
@@ -34,6 +54,8 @@ class Settings extends React.PureComponent<PropsTypeInner> {
       <>
         <AppBarOverride title="Settings" />
         <Container>
+          <h1>Security Fingerprint</h1>
+          <SecurityFingerprint />
           <h1>Date & Time</h1>
           <FormControl style={{ width: '15em' }}>
             <InputLabel>
