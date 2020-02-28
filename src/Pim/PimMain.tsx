@@ -64,7 +64,7 @@ class PimMain extends React.PureComponent<PropsType> {
     const itemUid = `${(event as any).journalUid}|${event.uid}`;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.tasks._id', { itemUid }));
+      routeResolver.getRoute('pim.tasks._id.edit', { itemUid }));
   }
 
   public contactClicked(contact: ContactType) {
