@@ -115,10 +115,10 @@ type CollectionRoutesPropsType = RouteComponentProps<{}> & {
 
 const styles = (theme: any) => ({
   button: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
   },
   leftIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
 });
 
