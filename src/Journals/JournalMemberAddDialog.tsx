@@ -53,7 +53,7 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
             onOk={onClose}
             onCancel={onClose}
           >
-            User ({addUser}) not found, or has journal sharing disabled.
+            User ({addUser}) not found. Have they setup their encryption password from one of the apps?
           </ConfirmationDialog>
         </>
       );
