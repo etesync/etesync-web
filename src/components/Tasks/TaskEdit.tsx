@@ -20,10 +20,10 @@ import IconDelete from '@material-ui/icons/Delete';
 import IconCancel from '@material-ui/icons/Clear';
 import IconSave from '@material-ui/icons/Save';
 
-import DateTimePicker from '../widgets/DateTimePicker';
+import DateTimePicker from '../../widgets/DateTimePicker';
 
-import ConfirmationDialog from '../widgets/ConfirmationDialog';
-import TimezonePicker from '../widgets/TimezonePicker';
+import ConfirmationDialog from '../../widgets/ConfirmationDialog';
+import TimezonePicker from '../../widgets/TimezonePicker';
 
 import { Location } from 'history';
 import { withRouter } from 'react-router';
@@ -33,9 +33,9 @@ import * as ICAL from 'ical.js';
 
 import * as EteSync from 'etesync';
 
-import { getCurrentTimezone } from '../helpers';
+import { getCurrentTimezone } from '../../helpers';
 
-import { TaskType, TaskStatusType, timezoneLoadFromName } from '../pim-types';
+import { TaskType, TaskStatusType, timezoneLoadFromName } from '../../pim-types';
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
@@ -177,7 +177,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.props.item.clone()
       :
       new TaskType(null)
-    ;
+      ;
 
     event.uid = this.state.uid;
     event.summary = this.state.title;
@@ -394,7 +394,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
           onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
-        Are you sure you would like to delete this event?
+          Are you sure you would like to delete this event?
         </ConfirmationDialog>
       </React.Fragment>
     );

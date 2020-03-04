@@ -27,8 +27,8 @@ import ContactEdit from '../components/ContactEdit';
 import Contact from '../components/Contact';
 import EventEdit from '../components/EventEdit';
 import Event from '../components/Event';
-import TaskEdit from '../components/TaskEdit';
-import Task from '../components/Task';
+import TaskEdit from '../components/Tasks/TaskEdit';
+import Task from '../components/Tasks/Task';
 import PimMain from './PimMain';
 
 import { routeResolver } from '../App';

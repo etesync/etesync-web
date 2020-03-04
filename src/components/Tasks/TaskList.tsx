@@ -5,27 +5,14 @@ import * as React from 'react';
 
 import { createSelector } from 'reselect';
 
-import { List, ListItem } from '../widgets/List';
+import { List } from '../../widgets/List';
 
-import { TaskType } from '../pim-types';
+import { TaskType } from '../../pim-types';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 
-const TaskListItem = React.memo((props: { entry: TaskType, onClick: (entry: TaskType) => void }) => {
-  const {
-    entry,
-    onClick,
-  } = props;
-  const title = entry.title;
-
-  return (
-    <ListItem
-      primaryText={title}
-      onClick={() => onClick(entry)}
-    />
-  );
-});
+import TaskListItem from './TaskListItem';
 
 const sortSelector = createSelector(
   (entries: TaskType[]) => entries,

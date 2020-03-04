@@ -16,7 +16,7 @@ import Container from '../widgets/Container';
 
 import SearchableAddressBook from '../components/SearchableAddressBook';
 import Calendar from '../components/Calendar';
-import TaskList from '../components/TaskList';
+import TaskList from '../components/Tasks/TaskList';
 
 import { EventType, ContactType, TaskType } from '../pim-types';
 

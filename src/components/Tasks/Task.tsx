@@ -3,11 +3,11 @@
 
 import * as React from 'react';
 
-import PimItemHeader from './PimItemHeader';
+import PimItemHeader from '../PimItemHeader';
 
-import { formatDate, formatOurTimezoneOffset } from '../helpers';
+import { formatDate, formatOurTimezoneOffset } from '../../helpers';
 
-import { TaskType } from '../pim-types';
+import { TaskType } from '../../pim-types';
 
 class Task extends React.PureComponent {
   public props: {

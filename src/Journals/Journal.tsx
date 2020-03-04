@@ -14,8 +14,8 @@ import SearchableAddressBook from '../components/SearchableAddressBook';
 import Contact from '../components/Contact';
 import Calendar from '../components/Calendar';
 import Event from '../components/Event';
-import Task from '../components/Task';
-import TaskList from '../components/TaskList';
+import Task from '../components/Tasks/Task';
+import TaskList from '../components/Tasks/TaskList';
 
 import AppBarOverride from '../widgets/AppBarOverride';
 import Container from '../widgets/Container';
