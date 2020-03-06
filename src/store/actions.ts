@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2017 EteSync Authors
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { Action, createAction, createActions } from 'redux-actions';
 
 import * as EteSync from 'etesync';

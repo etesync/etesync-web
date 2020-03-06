@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2017 EteSync Authors
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import * as localforage from 'localforage';
 import { combineReducers } from 'redux';
 import { createMigrate, persistReducer, createTransform } from 'redux-persist';

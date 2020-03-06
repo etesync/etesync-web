@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2017 EteSync Authors
+// SPDX-License-Identifier: AGPL-3.0-only
+
 export const appName = 'EteSync';
 export const homePage = 'https://www.etesync.com/';
 export const faq = homePage + 'faq/';

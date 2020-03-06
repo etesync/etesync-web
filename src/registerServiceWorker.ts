@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2017 EteSync Authors
+// SPDX-License-Identifier: AGPL-3.0-only
+
 // tslint:disable:no-console
 // In production, we register a service worker to serve assets from local cache.
 

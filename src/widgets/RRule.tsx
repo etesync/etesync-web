@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2017 EteSync Authors
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import * as React from 'react';
 import { TextField, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import DateTimePicker from '../widgets/DateTimePicker';
