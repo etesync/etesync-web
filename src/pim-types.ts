@@ -83,6 +83,10 @@ export class EventType extends ICAL.Event implements PimType {
     return this.summary;
   }
 
+  set title(title: string) {
+    this.summary = title;
+  }
+
   get start() {
     return this.startDate.toJSDate();
   }
@@ -97,6 +101,14 @@ export class EventType extends ICAL.Event implements PimType {
 
   get desc() {
     return this.description;
+  }
+
+  get lastModified() {
+    return this.component.getFirstPropertyValue('last-modified');
+  }
+
+  set lastModified(time: ICAL.Time) {
+    this.component.updatePropertyWithValue('last-modified', time);
   }
 
   public toIcal() {

@@ -5,14 +5,17 @@ import * as React from 'react';
 
 import { createSelector } from 'reselect';
 
+import * as EteSync from 'etesync';
+
 import { List } from '../../widgets/List';
 
-import { TaskType } from '../../pim-types';
+import { TaskType, PimType } from '../../pim-types';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 
 import TaskListItem from './TaskListItem';
+import QuickAdd from './QuickAdd';
 
 const sortSelector = createSelector(
   (entries: TaskType[]) => entries,
@@ -21,7 +24,9 @@ const sortSelector = createSelector(
 
 interface PropsType {
   entries: TaskType[];
+  collections: EteSync.CollectionInfo[];
   onItemClick: (entry: TaskType) => void;
+  onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
 }
 
 export default React.memo(function TaskList(props: PropsType) {
@@ -55,6 +60,8 @@ export default React.memo(function TaskList(props: PropsType) {
       <Divider style={{ marginTop: '1em' }} />
       <List>
         {itemList}
+
+        <QuickAdd onSubmit={props.onItemSave} defaultCollection={props.collections[0]} />
       </List>
     </>
   );

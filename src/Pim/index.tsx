@@ -326,6 +326,8 @@ class Pim extends React.PureComponent {
               events={objValues(calendarItems)}
               tasks={objValues(taskListItems)}
               history={history}
+              onItemSave={this.onItemSave}
+              collectionsTaskList={collectionsTaskList}
             />
           )}
         />
