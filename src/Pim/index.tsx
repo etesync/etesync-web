@@ -110,7 +110,7 @@ type CollectionRoutesPropsType = RouteComponentProps<{}> & {
   componentEdit: any;
   componentView: any;
   items: {[key: string]: PimType};
-  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => void;
+  onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
   onItemDelete: (item: PimType, journalUid: string) => void;
   onItemCancel: () => void;
   classes: any;

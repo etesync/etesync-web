@@ -10,8 +10,6 @@ import { Theme, withTheme } from '@material-ui/core/styles';
 
 import * as ICAL from 'ical.js';
 
-import * as EteSync from 'etesync';
-
 import { Location, History } from 'history';
 
 import Container from '../widgets/Container';
@@ -20,7 +18,7 @@ import SearchableAddressBook from '../components/SearchableAddressBook';
 import Calendar from '../components/Calendar';
 import TaskList from '../components/Tasks/TaskList';
 
-import { EventType, ContactType, TaskType, PimType } from '../pim-types';
+import { EventType, ContactType, TaskType } from '../pim-types';
 
 import { routeResolver } from '../App';
 
@@ -39,8 +37,6 @@ interface PropsType {
   location?: Location;
   history?: History;
   theme: Theme;
-  collectionsTaskList: EteSync.CollectionInfo[];
-  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => void;
 }
 
 class PimMain extends React.PureComponent<PropsType> {
@@ -150,9 +146,7 @@ class PimMain extends React.PureComponent<PropsType> {
           {tab === 2 &&
             <TaskList
               entries={this.props.tasks}
-              collections={this.props.collectionsTaskList}
               onItemClick={this.taskClicked}
-              onItemSave={this.props.onItemSave}
             />
           }
         </Container>
