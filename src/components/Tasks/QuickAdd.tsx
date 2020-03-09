@@ -9,11 +9,9 @@ import ICAL from 'ical.js';
 
 import uuid from 'uuid';
 
-import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 
 import { TaskType, PimType } from '../../pim-types';
-import { ListItem } from '../../widgets/List';
 
 interface PropsType {
   onSubmit: (item: PimType, journalUid: string, originalItem?: PimType) => void;
@@ -46,7 +44,9 @@ function QuickAdd(props: PropsType) {
   return (
     <form onSubmit={handleSubmit} style={{ flexGrow: 1, marginRight: '25px' }}>
       <TextField
-        label="New task"
+        label="Add a new task"
+        variant="outlined"
+        fullWidth
         value={title}
         onChange={handleChange}
       />

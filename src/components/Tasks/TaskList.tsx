@@ -48,7 +48,10 @@ export default React.memo(function TaskList(props: PropsType) {
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'right' }}>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <QuickAdd onSubmit={props.onItemSave} defaultCollection={props.collections[0]} />
+
         <FormControlLabel
           control={
             <Checkbox checked={showCompleted} onChange={() => setShowCompleted(!showCompleted)} />
@@ -60,8 +63,6 @@ export default React.memo(function TaskList(props: PropsType) {
       <Divider style={{ marginTop: '1em' }} />
       <List>
         {itemList}
-
-        <QuickAdd onSubmit={props.onItemSave} defaultCollection={props.collections[0]} />
       </List>
     </>
   );
