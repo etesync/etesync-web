@@ -40,7 +40,7 @@ interface PropsType {
   history?: History;
   theme: Theme;
   collectionsTaskList: EteSync.CollectionInfo[];
-  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => void;
+  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
 }
 
 class PimMain extends React.PureComponent<PropsType> {

@@ -37,14 +37,17 @@ import { getCurrentTimezone } from '../../helpers';
 
 import { TaskType, TaskStatusType, timezoneLoadFromName } from '../../pim-types';
 
+import { History } from 'history';
+
 interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: TaskType;
-  onSave: (item: TaskType, journalUid: string, originalItem?: TaskType) => void;
+  onSave: (item: TaskType, journalUid: string, originalItem?: TaskType) => Promise<void>;
   onDelete: (item: TaskType, journalUid: string) => void;
   onCancel: () => void;
   location: Location;
+  history: History<any>;
 }
 
 class TaskEdit extends React.PureComponent<PropsType> {
@@ -205,7 +208,10 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
-    this.props.onSave(event, this.state.journalUid, this.props.item);
+    this.props.onSave(event, this.state.journalUid, this.props.item)
+      .then(() => {
+        this.props.history.goBack();
+      });
   }
 
   public onDeleteRequest() {
