@@ -38,12 +38,13 @@ import { getCurrentTimezone } from '../helpers';
 import { EventType, timezoneLoadFromName } from '../pim-types';
 import RRule, { RRuleOptions } from '../widgets/RRule';
 
+import { History } from 'history';
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: EventType;
-  onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => void;
+  onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => Promise<History<any>>;
   onDelete: (event: EventType, journalUid: string) => void;
   onCancel: () => void;
   location: Location;
@@ -213,7 +214,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       this.props.item.clone()
       :
       new EventType()
-    ;
+      ;
 
     event.uid = this.state.uid;
     event.summary = this.state.title;
@@ -234,7 +235,10 @@ class EventEdit extends React.PureComponent<PropsType> {
 
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
-    this.props.onSave(event, this.state.journalUid, this.props.item);
+    this.props.onSave(event, this.state.journalUid, this.props.item)
+      .then((history) => {
+        history.goBack();
+      });
   }
 
   public onDeleteRequest() {

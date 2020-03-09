@@ -26,6 +26,8 @@ import * as EteSync from 'etesync';
 
 import { ContactType } from '../pim-types';
 
+import { History } from 'history';
+
 const telTypes = [
   { type: 'Home' },
   { type: 'Work' },
@@ -48,7 +50,7 @@ const imppTypes = [
 ];
 
 const TypeSelector = (props: any) => {
-  const types = props.types as Array<{type: string}>;
+  const types = props.types as Array<{ type: string }>;
 
   return (
     <Select
@@ -77,7 +79,7 @@ interface ValueTypeComponentProps {
   type?: string;
   style?: object;
 
-  types: Array<{type: string}>;
+  types: Array<{ type: string }>;
   name: string;
   placeholder: string;
   value: ValueType;
@@ -116,7 +118,7 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: ContactType;
-  onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => void;
+  onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => Promise<History<any>>;
   onDelete: (contact: ContactType, journalUid: string) => void;
   onCancel: () => void;
 }
@@ -271,7 +273,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
       this.props.item.clone()
       :
       new ContactType(new ICAL.Component(['vcard', [], []]))
-    ;
+      ;
 
     const comp = contact.comp;
     comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
@@ -312,7 +314,10 @@ class ContactEdit extends React.PureComponent<PropsType> {
     setProperty('title', this.state.title);
     setProperty('note', this.state.note);
 
-    this.props.onSave(contact, this.state.journalUid, this.props.item);
+    this.props.onSave(contact, this.state.journalUid, this.props.item)
+      .then((history) => {
+        history.goBack();
+      });
   }
 
   public onDeleteRequest() {
@@ -526,7 +531,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
-        Are you sure you would like to delete this contact?
+          Are you sure you would like to delete this contact?
         </ConfirmationDialog>
       </React.Fragment>
     );

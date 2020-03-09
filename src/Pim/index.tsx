@@ -110,7 +110,7 @@ type CollectionRoutesPropsType = RouteComponentProps<{}> & {
   componentEdit: any;
   componentView: any;
   items: {[key: string]: PimType};
-  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => void;
+  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<History<any>>;
   onItemDelete: (item: PimType, journalUid: string) => void;
   onItemCancel: () => void;
   classes: any;
@@ -238,11 +238,11 @@ class Pim extends React.PureComponent {
     this.onItemSave = this.onItemSave.bind(this);
   }
 
-  public onItemSave(item: PimType, journalUid: string, originalEvent?: PimType) {
+  public onItemSave(item: PimType, journalUid: string, originalEvent?: PimType): Promise<History<any>> {
     const syncJournal = this.props.syncInfo.get(journalUid);
 
     if (syncJournal === undefined) {
-      return;
+      return Promise.reject();
     }
 
     const journal = syncJournal.journal;
@@ -254,7 +254,7 @@ class Pim extends React.PureComponent {
     if (last) {
       prevUid = last.uid;
     }
-    store.dispatch<any>(fetchEntries(this.props.etesync, journal.uid, prevUid))
+    return store.dispatch<any>(fetchEntries(this.props.etesync, journal.uid, prevUid))
       .then((entriesAction: Action<EteSync.Entry[]>) => {
 
         last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
@@ -263,14 +263,12 @@ class Pim extends React.PureComponent {
           prevUid = last.uid;
         }
 
-        const saveEvent = store.dispatch(
+        return store.dispatch(
           addJournalEntry(
             this.props.etesync, this.props.userInfo, journal,
             prevUid, action, item.toIcal()));
-        (saveEvent as any).then(() => {
-          this.props.history.goBack();
-        });
-      });
+      })
+      .then(() => this.props.history);
   }
 
   public onItemDelete(item: PimType, journalUid: string) {
