@@ -11,7 +11,7 @@ import uuid from 'uuid';
 
 import TextField from '@material-ui/core/TextField';
 
-import { TaskType, PimType } from '../../pim-types';
+import { TaskType, PimType, TaskStatusType } from '../../pim-types';
 
 interface PropsType {
   onSubmit: (item: PimType, journalUid: string, originalItem?: PimType) => void;
@@ -33,6 +33,7 @@ function QuickAdd(props: PropsType) {
     const task = new TaskType(null);
     task.uid = uuid.v4();
     task.title = title;
+    task.status = TaskStatusType.NeedsAction;
     task.lastModified = ICAL.Time.now();
 
     save(task, defaultCollection.uid, undefined);
