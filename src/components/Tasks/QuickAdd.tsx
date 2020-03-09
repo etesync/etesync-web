@@ -20,41 +20,38 @@ interface PropsType {
   defaultCollection: EteSync.CollectionInfo;
 }
 
-const QuickAdd = (props: PropsType) => {
+function QuickAdd(props: PropsType) {
   const [title, setTitle] = React.useState('');
   const { onSubmit: save, defaultCollection } = props;
 
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value);
-  };
+  }
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-      const task = new TaskType(null);
-      task.uid = uuid.v4();
-      task.title = title;
-      task.lastModified = ICAL.Time.now();
+    const task = new TaskType(null);
+    task.uid = uuid.v4();
+    task.title = title;
+    task.lastModified = ICAL.Time.now();
 
-      save(task, defaultCollection.uid, undefined);
+    save(task, defaultCollection.uid, undefined);
 
-      setTitle('');
-    }
-  };
+    setTitle('');
+  }
 
 
   return (
-    <ListItem leftIcon={<Checkbox disabled />}>
+    <form onSubmit={handleSubmit} style={{ flexGrow: 1, marginRight: '25px' }}>
       <TextField
         label="New task"
         value={title}
         onChange={handleChange}
-        onKeyPress={handleKeyPress}
       />
-    </ListItem>
+    </form>
   );
-};
+}
 
 export default QuickAdd;
