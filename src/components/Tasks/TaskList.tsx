@@ -26,7 +26,7 @@ interface PropsType {
   entries: TaskType[];
   collections: EteSync.CollectionInfo[];
   onItemClick: (entry: TaskType) => void;
-  onItemSave: (item: PimType, journalUid: string, originalContact?: PimType) => void;
+  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => void;
 }
 
 export default React.memo(function TaskList(props: PropsType) {

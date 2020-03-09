@@ -9,11 +9,11 @@ import uuid from 'uuid';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 
-import { TaskType, TaskStatusType, PimType } from '../../pim-types';
+import { TaskType, PimType } from '../../pim-types';
 import { ListItem } from '../../widgets/List';
 
 interface PropsType {
-  onSubmit: (item: PimType, journalUid: string, originalContact?: PimType) => void;
+  onSubmit: (item: PimType, journalUid: string, originalItem?: PimType) => void;
   defaultCollection: EteSync.CollectionInfo;
 }
 
