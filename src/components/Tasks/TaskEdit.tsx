@@ -43,10 +43,11 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: TaskType;
-  onSave: (item: TaskType, journalUid: string, originalItem?: TaskType) => Promise<History<any>>;
+  onSave: (item: TaskType, journalUid: string, originalItem?: TaskType) => Promise<any>;
   onDelete: (item: TaskType, journalUid: string) => void;
   onCancel: () => void;
   location: Location;
+  history: History<any>;
 }
 
 class TaskEdit extends React.PureComponent<PropsType> {
@@ -208,8 +209,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
     this.props.onSave(event, this.state.journalUid, this.props.item)
-      .then((history) => {
-        history.goBack();
+      .then(() => {
+        this.props.history.goBack();
       });
   }
 

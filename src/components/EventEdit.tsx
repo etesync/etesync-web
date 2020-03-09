@@ -44,10 +44,11 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: EventType;
-  onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => Promise<History<any>>;
+  onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => Promise<any>;
   onDelete: (event: EventType, journalUid: string) => void;
   onCancel: () => void;
   location: Location;
+  history: History;
 }
 
 class EventEdit extends React.PureComponent<PropsType> {
@@ -236,8 +237,8 @@ class EventEdit extends React.PureComponent<PropsType> {
     event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
     this.props.onSave(event, this.state.journalUid, this.props.item)
-      .then((history) => {
-        history.goBack();
+      .then(() => {
+        this.props.history.goBack();
       });
   }
 

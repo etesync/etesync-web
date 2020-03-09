@@ -110,7 +110,7 @@ type CollectionRoutesPropsType = RouteComponentProps<{}> & {
   componentEdit: any;
   componentView: any;
   items: {[key: string]: PimType};
-  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<History<any>>;
+  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<any>;
   onItemDelete: (item: PimType, journalUid: string) => void;
   onItemCancel: () => void;
   classes: any;
@@ -144,6 +144,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                   collections={props.collections}
                   onSave={props.onItemSave}
                   onCancel={props.onItemCancel}
+                  history={props.history}
                 />
               </Container>
             )}
@@ -161,6 +162,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                     onSave={props.onItemSave}
                     onDelete={props.onItemDelete}
                     onCancel={props.onItemCancel}
+                    history={props.history}
                   />
                 }
               </Container>
@@ -267,8 +269,7 @@ class Pim extends React.PureComponent {
           addJournalEntry(
             this.props.etesync, this.props.userInfo, journal,
             prevUid, action, item.toIcal()));
-      })
-      .then(() => this.props.history);
+      });
   }
 
   public onItemDelete(item: PimType, journalUid: string) {

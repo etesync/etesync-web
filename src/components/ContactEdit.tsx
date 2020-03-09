@@ -118,9 +118,10 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: ContactType;
-  onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => Promise<History<any>>;
+  onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => Promise<any>;
   onDelete: (contact: ContactType, journalUid: string) => void;
   onCancel: () => void;
+  history: History<any>;
 }
 
 class ContactEdit extends React.PureComponent<PropsType> {
@@ -315,8 +316,8 @@ class ContactEdit extends React.PureComponent<PropsType> {
     setProperty('note', this.state.note);
 
     this.props.onSave(contact, this.state.journalUid, this.props.item)
-      .then((history) => {
-        history.goBack();
+      .then(() => {
+        this.props.history.goBack();
       });
   }
 
