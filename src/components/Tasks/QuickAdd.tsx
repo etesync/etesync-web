@@ -33,7 +33,6 @@ const QuickAdd = (props: PropsType) => {
       const task = new TaskType(null);
       task.uid = uuid.v4();
       task.title = title;
-      task.status = TaskStatusType.NeedsAction;
       task.lastModified = ICAL.Time.now();
 
       save(task, defaultCollection.uid, undefined);
