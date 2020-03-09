@@ -50,7 +50,7 @@ export default React.memo(function TaskList(props: PropsType) {
     <>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <QuickAdd onSubmit={props.onItemSave} defaultCollection={props.collections[0]} />
+        {props.collections && <QuickAdd onSubmit={props.onItemSave} defaultCollection={props.collections[0]} />}
 
         <FormControlLabel
           control={
