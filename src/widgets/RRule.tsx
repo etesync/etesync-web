@@ -83,6 +83,30 @@ const menuItemsWeekDays = weekdays.map((day) => {
   );
 });
 
+function makeArray<T>(item: T) {
+  if (item === undefined) {
+    return item;
+  } else if (Array.isArray(item)) {
+    return item;
+  } else {
+    return [item];
+  }
+}
+
+function sanitizeByDay(item: string | string[] | undefined) {
+  const ret = makeArray(item);
+  if (Array.isArray(ret)) {
+    return (ret as string[]).map((value) => {
+      if (parseInt(value) === 1) {
+        return value.substr(1);
+      }
+      return value;
+    });
+  } else {
+    return ret;
+  }
+}
+
 const styles = {
   multiSelect: { minWidth: 120, maxWidth: '100%' },
   width: { width: 120 },
@@ -152,7 +176,7 @@ export default function RRule(props: PropsType) {
           <FormControl>
             <InputLabel>Weekdays</InputLabel>
             <Select
-              value={options.byday ? options.byday : []}
+              value={sanitizeByDay(options.byday)}
               multiple
               style={styles.multiSelect}
               onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
@@ -221,7 +245,7 @@ export default function RRule(props: PropsType) {
               <InputLabel>Months</InputLabel>
               <Select
                 style={styles.multiSelect}
-                value={options.bymonth ? options.bymonth : []}
+                value={makeArray(options.bymonth)}
                 multiple
                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
                   const value = event.target.value as string[];
