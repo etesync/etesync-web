@@ -43,7 +43,7 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: TaskType;
-  onSave: (item: TaskType, journalUid: string, originalItem?: TaskType) => Promise<any>;
+  onSave: (item: TaskType, journalUid: string, originalItem?: TaskType) => Promise<void>;
   onDelete: (item: TaskType, journalUid: string) => void;
   onCancel: () => void;
   location: Location;

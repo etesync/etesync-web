@@ -44,7 +44,7 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: EventType;
-  onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => Promise<any>;
+  onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => Promise<void>;
   onDelete: (event: EventType, journalUid: string) => void;
   onCancel: () => void;
   location: Location;

@@ -110,7 +110,7 @@ type CollectionRoutesPropsType = RouteComponentProps<{}> & {
   componentEdit: any;
   componentView: any;
   items: {[key: string]: PimType};
-  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<any>;
+  onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
   onItemDelete: (item: PimType, journalUid: string) => void;
   onItemCancel: () => void;
   classes: any;
@@ -240,7 +240,7 @@ class Pim extends React.PureComponent {
     this.onItemSave = this.onItemSave.bind(this);
   }
 
-  public onItemSave(item: PimType, journalUid: string, originalEvent?: PimType): Promise<History<any>> {
+  public onItemSave(item: PimType, journalUid: string, originalEvent?: PimType): Promise<void> {
     const syncJournal = this.props.syncInfo.get(journalUid);
 
     if (syncJournal === undefined) {

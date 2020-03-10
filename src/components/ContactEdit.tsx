@@ -118,7 +118,7 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   initialCollection?: string;
   item?: ContactType;
-  onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => Promise<any>;
+  onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => Promise<void>;
   onDelete: (contact: ContactType, journalUid: string) => void;
   onCancel: () => void;
   history: History<any>;
