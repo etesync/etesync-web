@@ -38,6 +38,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "@types/color": "^3.0.1",
     "@types/jest": "^24.0.4",
     "@types/node": "^11.9.3",
     "@types/node-rsa": "^1.0.0",

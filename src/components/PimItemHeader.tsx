@@ -2,15 +2,17 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import * as React from 'react';
+import Color from 'color';
 
 import { Theme, withTheme } from '@material-ui/core/styles';
 
 export default withTheme((props: {text: string, backgroundColor?: string, children?: any, theme: Theme}) => {
+  const backgroundColor = props.backgroundColor ?? props.theme.palette.secondary.main;
+  const foregroundColor = props.theme.palette.getContrastText(Color(backgroundColor).rgb().string());
   const style = {
     header: {
-      backgroundColor: (props.backgroundColor !== undefined) ?
-        props.backgroundColor : props.theme.palette.secondary.main,
-      color: props.theme.palette.secondary.contrastText,
+      backgroundColor,
+      color: foregroundColor,
       padding: 15,
     },
     headerText: {
