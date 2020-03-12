@@ -14,7 +14,7 @@ interface PropsType {
   onSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
 }
 
-const TaskListItem = React.memo((props: PropsType) => {
+export default React.memo(function TaskListItem(props: PropsType) {
   const {
     entry: task,
     onClick,
@@ -42,5 +42,3 @@ const TaskListItem = React.memo((props: PropsType) => {
     />
   );
 });
-
-export default TaskListItem;
