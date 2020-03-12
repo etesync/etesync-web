@@ -8,6 +8,8 @@ import { ListItem } from '../../widgets/List';
 
 import Checkbox from '@material-ui/core/Checkbox';
 
+import moment from 'moment';
+
 interface PropsType {
   entry: TaskType;
   onClick: (task: TaskType) => void;
@@ -31,6 +33,7 @@ export default React.memo(function TaskListItem(props: PropsType) {
   return (
     <ListItem
       primaryText={title}
+      secondaryText={task.dueDate && `Due ${moment().to(task.dueDate.toJSDate())}`}
       onClick={() => onClick(task)}
       leftIcon={
         <Checkbox
