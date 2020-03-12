@@ -3,20 +3,42 @@
 
 import * as React from 'react';
 
-import { TaskType } from '../../pim-types';
+import { TaskType, TaskStatusType, PimType } from '../../pim-types';
 import { ListItem } from '../../widgets/List';
 
-const TaskListItem = React.memo((props: { entry: TaskType, onClick: (entry: TaskType) => void }) => {
+import Checkbox from '@material-ui/core/Checkbox';
+
+interface PropsType {
+  entry: TaskType;
+  onClick: (task: TaskType) => void;
+  onSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
+}
+
+const TaskListItem = React.memo((props: PropsType) => {
   const {
-    entry,
+    entry: task,
     onClick,
+    onSave: save,
   } = props;
-  const title = entry.title;
+  const title = task.title;
+
+  function toggleComplete(_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) {
+    const clonedTask = task.clone();
+    clonedTask.status = checked ? TaskStatusType.Completed : TaskStatusType.NeedsAction;
+    save(clonedTask, (task as any).journalUid, task);
+  }
 
   return (
     <ListItem
       primaryText={title}
-      onClick={() => onClick(entry)}
+      onClick={() => onClick(task)}
+      leftIcon={
+        <Checkbox
+          onClick={(e) => e.stopPropagation()}
+          onChange={toggleComplete}
+          checked={task.finished}
+        />
+      }
     />
   );
 });
