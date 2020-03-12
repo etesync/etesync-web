@@ -17,7 +17,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import * as colors from '@material-ui/core/colors';
 import FormLabel from '@material-ui/core/FormLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
 
 import IconDelete from '@material-ui/icons/Delete';
 import IconCancel from '@material-ui/icons/Clear';
@@ -41,6 +40,8 @@ import { getCurrentTimezone } from '../../helpers';
 import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType } from '../../pim-types';
 
 import { History } from 'history';
+
+import ColoredRadio from '../../widgets/ColoredRadio';
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
@@ -310,10 +311,10 @@ class TaskEdit extends React.PureComponent<PropsType> {
               value={this.state.priority}
               onChange={(e) => this.handleChange('priority', Number(e.target.value))}
             >
-              <FormControlLabel value={TaskPriorityType.Undefined} control={<Radio />} label="None" />
-              <FormControlLabel value={TaskPriorityType.Low} control={<Radio />} label="Low" />
-              <FormControlLabel value={TaskPriorityType.Medium} control={<Radio />} label="Medium" />
-              <FormControlLabel value={TaskPriorityType.High} control={<Radio />} label="High" />
+              <ColoredRadio value={TaskPriorityType.Undefined} label="None" color={colors.grey[600]} />
+              <ColoredRadio value={TaskPriorityType.Low} label="Low" color={colors.blue[600]} />
+              <ColoredRadio value={TaskPriorityType.Medium} label="Medium" color={colors.orange[600]} />
+              <ColoredRadio value={TaskPriorityType.High} label="High" color={colors.red[600]} />
             </RadioGroup>
           </FormControl>
 
