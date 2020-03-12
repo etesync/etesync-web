@@ -42,6 +42,7 @@ export default React.memo(function TaskList(props: PropsType) {
         key={uid}
         entry={entry}
         onClick={props.onItemClick}
+        onSave={props.onItemSave}
       />
     );
   });
