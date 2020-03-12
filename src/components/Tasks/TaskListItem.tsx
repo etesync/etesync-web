@@ -3,10 +3,19 @@
 
 import * as React from 'react';
 
-import { TaskType, TaskStatusType, PimType } from '../../pim-types';
+import { TaskType, TaskStatusType, PimType, TaskPriorityType } from '../../pim-types';
 import { ListItem } from '../../widgets/List';
 
 import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import * as colors from '@material-ui/core/colors';
+
+const checkboxColor = {
+  [TaskPriorityType.Undefined]: colors.grey[600],
+  [TaskPriorityType.Low]: colors.blue[600],
+  [TaskPriorityType.Medium]: colors.orange[600],
+  [TaskPriorityType.High]: colors.red[600],
+};
 
 import moment from 'moment';
 
@@ -40,6 +49,7 @@ export default React.memo(function TaskListItem(props: PropsType) {
           onClick={(e) => e.stopPropagation()}
           onChange={toggleComplete}
           checked={task.finished}
+          icon={<CheckBoxOutlineBlankIcon style={{ color: checkboxColor[task.priority] }} />}
         />
       }
     />
