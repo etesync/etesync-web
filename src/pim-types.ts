@@ -135,6 +135,13 @@ export enum TaskStatusType {
   Cancelled = 'CANCELLED',
 }
 
+export enum TaskPriorityType {
+  Undefined = 0,
+  High = 1,
+  Medium = 5,
+  Low = 9
+}
+
 export class TaskType extends EventType {
   public static fromVCalendar(comp: ICAL.Component) {
     const task = new TaskType(comp.getFirstSubcomponent('vtodo'));
@@ -164,6 +171,14 @@ export class TaskType extends EventType {
 
   get status(): TaskStatusType {
     return this.component.getFirstPropertyValue('status');
+  }
+
+  set priority(priority: TaskPriorityType) {
+    this.component.updatePropertyWithValue('priority', priority);
+  }
+
+  get priority() {
+    return this.component.getFirstPropertyValue('priority');
   }
 
   set dueDate(date: ICAL.Time | undefined) {

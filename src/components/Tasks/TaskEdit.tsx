@@ -15,6 +15,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import * as colors from '@material-ui/core/colors';
+import FormLabel from '@material-ui/core/FormLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Radio from '@material-ui/core/Radio';
 
 import IconDelete from '@material-ui/icons/Delete';
 import IconCancel from '@material-ui/icons/Clear';
@@ -35,7 +38,7 @@ import * as EteSync from 'etesync';
 
 import { getCurrentTimezone } from '../../helpers';
 
-import { TaskType, TaskStatusType, timezoneLoadFromName } from '../../pim-types';
+import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType } from '../../pim-types';
 
 import { History } from 'history';
 
@@ -55,6 +58,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     uid: string;
     title: string;
     status: TaskStatusType;
+    priority: TaskPriorityType;
     allDay: boolean;
     start?: Date;
     due?: Date;
@@ -73,6 +77,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       uid: '',
       title: '',
       status: TaskStatusType.NeedsAction,
+      priority: TaskPriorityType.Undefined,
       allDay: false,
       location: '',
       description: '',
@@ -88,6 +93,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.state.uid = event.uid;
       this.state.title = event.title ? event.title : '';
       this.state.status = event.status;
+      this.state.priority = event.priority || TaskPriorityType.Undefined;
       if (event.startDate) {
         this.state.allDay = event.startDate.isDate;
         this.state.start = event.startDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
@@ -132,7 +138,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     }
   }
 
-  public handleChange(name: string, value: string) {
+  public handleChange(name: string, value: string | number) {
     this.setState({
       [name]: value,
     });
@@ -185,6 +191,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     event.uid = this.state.uid;
     event.summary = this.state.title;
     event.status = this.state.status;
+    event.priority = this.state.priority;
     if (startDate) {
       event.startDate = startDate;
     }
@@ -293,6 +300,21 @@ class TaskEdit extends React.PureComponent<PropsType> {
               <MenuItem value={TaskStatusType.Completed}>Completed</MenuItem>
               <MenuItem value={TaskStatusType.Cancelled}>Cancelled</MenuItem>
             </Select>
+          </FormControl>
+
+          <FormControl style={styles.fullWidth}>
+            <FormLabel>Priority</FormLabel>
+
+            <RadioGroup
+              row
+              value={this.state.priority}
+              onChange={(e) => this.handleChange('priority', Number(e.target.value))}
+            >
+              <FormControlLabel value={TaskPriorityType.Undefined} control={<Radio />} label="None" />
+              <FormControlLabel value={TaskPriorityType.Low} control={<Radio />} label="Low" />
+              <FormControlLabel value={TaskPriorityType.Medium} control={<Radio />} label="Medium" />
+              <FormControlLabel value={TaskPriorityType.High} control={<Radio />} label="High" />
+            </RadioGroup>
           </FormControl>
 
           <FormControl>
