@@ -35,7 +35,7 @@ import * as ICAL from 'ical.js';
 
 import * as EteSync from 'etesync';
 
-import { getCurrentTimezone } from '../../helpers';
+import { getCurrentTimezone, mapPriority } from '../../helpers';
 
 import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType } from '../../pim-types';
 
@@ -308,7 +308,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
             <RadioGroup
               row
-              value={this.state.priority}
+              value={mapPriority(this.state.priority)}
               onChange={(e) => this.handleChange('priority', Number(e.target.value))}
             >
               <ColoredRadio value={TaskPriorityType.Undefined} label="None" color={colors.grey[600]} />

@@ -19,6 +19,8 @@ const checkboxColor = {
 
 import moment from 'moment';
 
+import { mapPriority } from '../../helpers';
+
 interface PropsType {
   entry: TaskType;
   onClick: (task: TaskType) => void;
@@ -49,7 +51,7 @@ export default React.memo(function TaskListItem(props: PropsType) {
           onClick={(e) => e.stopPropagation()}
           onChange={toggleComplete}
           checked={task.finished}
-          icon={<CheckBoxOutlineBlankIcon style={{ color: checkboxColor[task.priority] }} />}
+          icon={<CheckBoxOutlineBlankIcon style={{ color: checkboxColor[mapPriority(task.priority)] }} />}
         />
       }
     />
