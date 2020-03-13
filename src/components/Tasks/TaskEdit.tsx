@@ -93,7 +93,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
       this.state.uid = event.uid;
       this.state.title = event.title ? event.title : '';
-      this.state.status = event.status;
+      this.state.status = event.status ?? TaskStatusType.NeedsAction;
       this.state.priority = event.priority ?? TaskPriorityType.Undefined;
       if (event.startDate) {
         this.state.allDay = event.startDate.isDate;
