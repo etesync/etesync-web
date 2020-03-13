@@ -3,6 +3,10 @@
 
 import * as React from 'react';
 
+import ContactsIcon from '@material-ui/icons/Contacts';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+
 import { List, ListItem } from '../widgets/List';
 
 import AppBarOverride from '../widgets/AppBarOverride';
@@ -42,7 +46,7 @@ export default function JournalsList(props: PropsType) {
       }
       ret[info.type] = ret[info.type] || [];
       ret[info.type].push(
-        <ListItem key={journal.uid} rightIcon={colorBox}
+        <ListItem key={journal.uid} rightIcon={colorBox} insetChildren
           onClick={() => setSelectedJournal(props.syncInfo.get(journal.uid))}>
           {info.displayName} ({journal.uid.slice(0, 5)})
         </ListItem>
@@ -62,16 +66,19 @@ export default function JournalsList(props: PropsType) {
       <List>
         <ListItem
           primaryText="Address Books"
+          leftIcon={<ContactsIcon />}
           nestedItems={journalMap.ADDRESS_BOOK}
         />
 
         <ListItem
           primaryText="Calendars"
+          leftIcon={<CalendarTodayIcon />}
           nestedItems={journalMap.CALENDAR}
         />
 
         <ListItem
           primaryText="Tasks"
+          leftIcon={<FormatListBulletedIcon />}
           nestedItems={journalMap.TASKS}
         />
       </List>

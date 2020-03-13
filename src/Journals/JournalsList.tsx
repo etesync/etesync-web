@@ -54,7 +54,7 @@ export default function JournalsList(props: PropsType) {
       }
       ret[info.type] = ret[info.type] || [];
       ret[info.type].push(
-        <ListItem key={journal.uid} rightIcon={colorBox}
+        <ListItem key={journal.uid} rightIcon={colorBox} insetChildren
           onClick={() => journalClicked(journal.uid)}>
           {info.displayName} ({journal.uid.slice(0, 5)})
         </ListItem>
@@ -82,19 +82,19 @@ export default function JournalsList(props: PropsType) {
       <List>
         <ListItem
           primaryText="Address Books"
-          rightIcon={<ContactsIcon />}
+          leftIcon={<ContactsIcon />}
           nestedItems={journalMap.ADDRESS_BOOK}
         />
 
         <ListItem
           primaryText="Calendars"
-          rightIcon={<CalendarTodayIcon />}
+          leftIcon={<CalendarTodayIcon />}
           nestedItems={journalMap.CALENDAR}
         />
 
         <ListItem
           primaryText="Tasks"
-          rightIcon={<FormatListBulletedIcon />}
+          leftIcon={<FormatListBulletedIcon />}
           nestedItems={journalMap.TASKS}
         />
       </List>
