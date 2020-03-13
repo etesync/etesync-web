@@ -94,7 +94,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.state.uid = event.uid;
       this.state.title = event.title ? event.title : '';
       this.state.status = event.status;
-      this.state.priority = event.priority || TaskPriorityType.Undefined;
+      this.state.priority = event.priority ?? TaskPriorityType.Undefined;
       if (event.startDate) {
         this.state.allDay = event.startDate.isDate;
         this.state.start = event.startDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
