@@ -20,6 +20,8 @@ import NavigationBack from '@material-ui/icons/ArrowBack';
 import NavigationRefresh from '@material-ui/icons/Refresh';
 import ErrorsIcon from '@material-ui/icons/Error';
 
+import 'react-virtualized/styles.css'; // only needs to be imported once
+
 import './App.css';
 
 import ConfirmationDialog from './widgets/ConfirmationDialog';

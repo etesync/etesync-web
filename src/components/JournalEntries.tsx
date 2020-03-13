@@ -3,6 +3,8 @@
 
 import * as Immutable from 'immutable';
 
+import { AutoSizer, List as VirtualizedList } from 'react-virtualized';
+
 import * as React from 'react';
 import { List, ListItem } from '../widgets/List';
 import Dialog from '@material-ui/core/Dialog';
@@ -44,7 +46,9 @@ class JournalEntries extends React.PureComponent {
       return (<div>Loading</div>);
     }
 
-    const entries = this.props.entries.map((syncEntry, idx) => {
+    const rowRenderer = (params: { index: number, key: string, style: React.CSSProperties }) => {
+      const { key, index, style } = params;
+      const syncEntry = this.props.entries.get(this.props.entries.size - index - 1)!;
       let comp;
       try {
         comp = parseString(syncEntry.content);
@@ -52,7 +56,8 @@ class JournalEntries extends React.PureComponent {
         const icon = (<IconError style={{ color: 'red' }} />);
         return (
           <ListItem
-            key={idx}
+            key={key}
+            style={style}
             leftIcon={icon}
             primaryText="Failed parsing item"
             secondaryText="Unknown"
@@ -101,7 +106,8 @@ class JournalEntries extends React.PureComponent {
 
       return (
         <ListItem
-          key={idx}
+          key={key}
+          style={style}
           leftIcon={icon}
           primaryText={name}
           secondaryText={uid}
@@ -112,7 +118,7 @@ class JournalEntries extends React.PureComponent {
           }}
         />
       );
-    }).reverse();
+    };
 
     return (
       <div>
@@ -139,8 +145,18 @@ class JournalEntries extends React.PureComponent {
             </Button>
           </DialogActions>
         </Dialog>
-        <List>
-          {entries}
+        <List style={{ height: 'calc(100vh - 300px)' }}>
+          <AutoSizer>
+            {({ height, width }) => (
+              <VirtualizedList
+                width={width}
+                height={height}
+                rowCount={this.props.entries.size}
+                rowHeight={56}
+                rowRenderer={rowRenderer}
+              />
+            )}
+          </AutoSizer>
         </List>
       </div>
     );

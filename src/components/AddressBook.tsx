@@ -7,7 +7,6 @@ import { createSelector } from 'reselect';
 
 import * as colors from '@material-ui/core/colors';
 import { AutoSizer, List as VirtualizedList } from 'react-virtualized';
-import 'react-virtualized/styles.css'; // only needs to be imported once
 
 import { Avatar } from '../widgets/Avatar';
 import { List, ListItem } from '../widgets/List';
