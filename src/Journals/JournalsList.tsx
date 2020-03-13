@@ -8,6 +8,9 @@ import { Link } from 'react-router-dom';
 
 import IconButton from '@material-ui/core/IconButton';
 import IconAdd from '@material-ui/icons/Add';
+import ContactsIcon from '@material-ui/icons/Contacts';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
 import { List, ListItem } from '../widgets/List';
 
@@ -79,16 +82,19 @@ export default function JournalsList(props: PropsType) {
       <List>
         <ListItem
           primaryText="Address Books"
+          rightIcon={<ContactsIcon />}
           nestedItems={journalMap.ADDRESS_BOOK}
         />
 
         <ListItem
           primaryText="Calendars"
+          rightIcon={<CalendarTodayIcon />}
           nestedItems={journalMap.CALENDAR}
         />
 
         <ListItem
           primaryText="Tasks"
+          rightIcon={<FormatListBulletedIcon />}
           nestedItems={journalMap.TASKS}
         />
       </List>
