@@ -89,22 +89,22 @@ class TaskEdit extends React.PureComponent<PropsType> {
     };
 
     if (this.props.item !== undefined) {
-      const event = this.props.item;
+      const task = this.props.item;
 
-      this.state.uid = event.uid;
-      this.state.title = event.title ? event.title : '';
-      this.state.status = event.status ?? TaskStatusType.NeedsAction;
-      this.state.priority = event.priority ?? TaskPriorityType.Undefined;
-      if (event.startDate) {
-        this.state.allDay = event.startDate.isDate;
-        this.state.start = event.startDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
+      this.state.uid = task.uid;
+      this.state.title = task.title ? task.title : '';
+      this.state.status = task.status ?? TaskStatusType.NeedsAction;
+      this.state.priority = task.priority ?? TaskPriorityType.Undefined;
+      if (task.startDate) {
+        this.state.allDay = task.startDate.isDate;
+        this.state.start = task.startDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
       }
-      if (event.dueDate) {
-        this.state.due = event.dueDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
+      if (task.dueDate) {
+        this.state.due = task.dueDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
       }
-      this.state.location = event.location ? event.location : '';
-      this.state.description = event.description ? event.description : '';
-      this.state.timezone = event.timezone;
+      this.state.location = task.location ? task.location : '';
+      this.state.description = task.description ? task.description : '';
+      this.state.timezone = task.timezone;
     } else {
       this.state.uid = uuid.v4();
     }
@@ -183,40 +183,40 @@ class TaskEdit extends React.PureComponent<PropsType> {
       }
     }
 
-    const event = (this.props.item) ?
+    const task = (this.props.item) ?
       this.props.item.clone()
       :
       new TaskType(null)
       ;
 
-    event.uid = this.state.uid;
-    event.summary = this.state.title;
-    event.status = this.state.status;
-    event.priority = this.state.priority;
+    task.uid = this.state.uid;
+    task.summary = this.state.title;
+    task.status = this.state.status;
+    task.priority = this.state.priority;
     if (startDate) {
-      event.startDate = startDate;
+      task.startDate = startDate;
     }
-    event.dueDate = dueDate;
-    event.location = this.state.location;
-    event.description = this.state.description;
+    task.dueDate = dueDate;
+    task.location = this.state.location;
+    task.description = this.state.description;
     if (this.state.timezone) {
       const timezone = timezoneLoadFromName(this.state.timezone);
       if (timezone) {
-        if (event.startDate) {
-          event.startDate = event.startDate.convertToZone(timezone);
+        if (task.startDate) {
+          task.startDate = task.startDate.convertToZone(timezone);
         }
-        if (event.dueDate) {
-          event.dueDate = event.dueDate.convertToZone(timezone);
+        if (task.dueDate) {
+          task.dueDate = task.dueDate.convertToZone(timezone);
         }
-        if (event.completionDate) {
-          event.completionDate = event.completionDate.convertToZone(timezone);
+        if (task.completionDate) {
+          task.completionDate = task.completionDate.convertToZone(timezone);
         }
       }
     }
 
-    event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
+    task.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
 
-    this.props.onSave(event, this.state.journalUid, this.props.item)
+    this.props.onSave(task, this.state.journalUid, this.props.item)
       .then(() => {
         this.props.history.goBack();
       });
@@ -255,7 +255,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
         {recurring && (
           <div>
             <span style={{ color: 'red' }}>IMPORTANT: </span>
-            This is a recurring event, for now, only editing the whole series
+            This is a recurring task, for now, only editing the whole series
             (by editing the first instance) is supported.
           </div>
         )}
@@ -423,7 +423,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
           onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
-          Are you sure you would like to delete this event?
+          Are you sure you would like to delete this task?
         </ConfirmationDialog>
       </React.Fragment>
     );
