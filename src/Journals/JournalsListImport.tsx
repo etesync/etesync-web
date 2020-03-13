@@ -31,7 +31,7 @@ export default function JournalsList(props: PropsType) {
       const keyPair = userInfo.getKeyPair(userInfo.getCryptoManager(derived));
       const cryptoManager = journal.getCryptoManager(derived, keyPair);
       const info = journal.getInfo(cryptoManager);
-      let colorBox: React.ReactNode;
+      let colorBox: React.ReactElement | undefined;
       switch (info.type) {
         case 'CALENDAR':
         case 'TASKS':

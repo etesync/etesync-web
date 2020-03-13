@@ -3,119 +3,98 @@
 
 import * as React from 'react';
 
+import { createStyles, makeStyles } from '@material-ui/core/styles';
+import MuiList from '@material-ui/core/List';
+import MuiListItem from '@material-ui/core/ListItem';
+import MuiListSubheader from '@material-ui/core/ListSubheader';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+
 import ExternalLink from './ExternalLink';
 
-import './List.css';
+const useStyles = makeStyles((theme) => (createStyles({
+  inset: {
+    marginLeft: 64,
+  },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
+})));
 
-export const List = React.memo((props: { children: React.ReactNode[] | React.ReactNode }) => (
-  <ul className="List">
-    {props.children}
-  </ul>
-));
+export const List = MuiList;
 
-export const ListItemRaw = React.memo((_props: any) => {
-  const {
-    href,
-    children,
-    nestedItems,
-    insetChildren,
-    ...props
-  } = _props;
+export const ListSubheader = MuiListSubheader;
 
-  const inner = href ?
-    (
-      <ExternalLink href={href} className="ListItem-href">
-        {children}
-      </ExternalLink>
-    ) :
-    children
-  ;
-
-  const nestedContent = nestedItems ?
-    (
-      <List>
-        {nestedItems}
-      </List>
-    ) :
-    undefined
-  ;
-
+export const ListDivider = React.memo(function ListDivider(props: { inset?: boolean }) {
+  const classes = useStyles();
+  const insetClass = (props.inset) ? classes.inset : undefined;
   return (
-    <React.Fragment>
-      <li
-        {...props}
-        className={'ListItem ListItem-Item ' + ((insetChildren) ? 'ListItem-inset' : '')}
-      >
-        {inner}
-      </li>
-      <li className="ListItem-nested-holder">
-        {nestedContent}
-      </li>
-    </React.Fragment>
+    <Divider className={insetClass} />
   );
 });
 
-export const ListSubheader = React.memo((props: any) => (
-  <li
-    {...props}
-    className="ListItem ListSubheader"
-  >
-    {props.children}
-  </li>
-));
+interface ListItemPropsType {
+  leftIcon?: React.ReactElement;
+  rightIcon?: React.ReactElement;
+  style?: React.CSSProperties;
+  primaryText?: string;
+  secondaryText?: string;
+  children?: React.ReactNode | React.ReactNode[];
+  onClick?: () => void;
+  href?: string;
+  insetChildren?: boolean;
+  nestedItems?: React.ReactNode[];
+}
 
-export const ListDivider = React.memo((_props: any) => {
-  const {
-    inset,
-    ...props
-  } = _props;
-  return (
-    <li>
-      <hr className={'ListDivider ' + (inset ? 'ListDivider-inset' : '')} {...props} />
-    </li>
-  );
-});
-
-export const ListItem = React.memo((_props: any) => {
+export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) {
+  const classes = useStyles();
   const {
     leftIcon,
     rightIcon,
     primaryText,
     secondaryText,
     children,
+    onClick,
+    href,
     style,
-    ...props
+    insetChildren,
+    nestedItems,
   } = _props;
 
-  const leftIconHolder = (leftIcon) ? (
-    <div className="ListIconLeft">{leftIcon}</div>
-  ) : undefined;
-
-  const rightIconHolder = (rightIcon) ? (
-    <div className="ListIconRight">{rightIcon}</div>
-  ) : undefined;
-
-  let textHolder = primaryText;
-  if (secondaryText) {
-    textHolder = (
-      <div className="ListItem-text-holder">
-        <span className="ListItem-primary-text">{primaryText}</span>
-        <span className="ListItem-secondary-text">{secondaryText}</span>
-      </div>
-    );
-  }
-
-  const pressedStyle = (_props.onClick) ? { cursor: 'pointer' } : undefined;
+  const extraProps = (onClick || href) ? {
+    button: true,
+    href,
+    onClick,
+    component: (href) ? ExternalLink : 'div',
+  } : undefined;
 
   return (
-    <ListItemRaw
-      style={{ ...pressedStyle, ...style }}
-      {...props}
-    >
-      {leftIconHolder}
-      {textHolder}
-      {children}
-      {rightIconHolder}
-    </ListItemRaw>
+    <>
+      <MuiListItem
+        style={style}
+        onClick={onClick}
+        {...(extraProps as any)}
+      >
+        {leftIcon && (
+          <ListItemIcon>
+            {leftIcon}
+          </ListItemIcon>
+        )}
+        <ListItemText inset={insetChildren} primary={primaryText} secondary={secondaryText}>
+          {children}
+        </ListItemText>
+        {rightIcon && (
+          <ListItemIcon>
+            {rightIcon}
+          </ListItemIcon>
+        )}
+      </MuiListItem>
+      {nestedItems && (
+        <List className={classes.nested} disablePadding>
+          {nestedItems}
+        </List>
+      )}
+    </>
   );
 });
