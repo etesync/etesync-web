@@ -6,6 +6,8 @@ import * as React from 'react';
 import { createSelector } from 'reselect';
 
 import * as colors from '@material-ui/core/colors';
+import { AutoSizer, List as VirtualizedList } from 'react-virtualized';
+import 'react-virtualized/styles.css'; // only needs to be imported once
 
 import { Avatar } from '../widgets/Avatar';
 import { List, ListItem } from '../widgets/List';
@@ -92,21 +94,29 @@ class AddressBook extends React.PureComponent<PropsType> {
       sortedEntries.filter(this.props.filter)
       : sortedEntries;
 
-    const itemList = entries.map((entry) => {
-      const uid = entry.uid;
-
-      return (
-        <AddressBookItem
-          key={uid}
-          entry={entry}
-          onClick={this.props.onItemClick}
-        />
-      );
-    });
-
     return (
-      <List>
-        {itemList}
+      <List style={{ height: 'calc(100vh - 300px)' }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <VirtualizedList
+              width={width}
+              height={height}
+              rowCount={entries.length}
+              rowHeight={56}
+              rowRenderer={({ index, key, style }) => {
+                return (
+                  <div style={style}>
+                    <AddressBookItem
+                      key={key}
+                      entry={entries[index]}
+                      onClick={this.props.onItemClick}
+                    />
+                  </div>
+                );
+              }}
+            />
+          )}
+        </AutoSizer>
       </List>
     );
   }
