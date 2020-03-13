@@ -4,6 +4,7 @@
 import * as React from 'react';
 import * as ICAL from 'ical.js';
 import moment from 'moment';
+import { TaskPriorityType } from './pim-types';
 
 // Generic handling of input changes
 export function handleInputChange(self: React.Component, part?: string) {
@@ -106,4 +107,16 @@ export function formatOurTimezoneOffset() {
 
 export function getCurrentTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+export function mapPriority(priority: number): TaskPriorityType {
+  if (priority > 0 && priority < 5) {
+    return TaskPriorityType.High;
+  } else if (priority === 5) {
+    return TaskPriorityType.Medium;
+  } else if (priority > 5 && priority < 10) {
+    return TaskPriorityType.Low;
+  } else {
+    return TaskPriorityType.Undefined;
+  }
 }
