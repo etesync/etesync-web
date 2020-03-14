@@ -29,7 +29,7 @@ const TagsList = React.memo((props: { tags: string[] }) => (
       color="secondary"
       size="small"
       label={tag}
-      style={{ marginRight: '10px' }}
+      style={{ marginRight: '0.75em' }}
       component="li"
     />)}
   </ul>));
