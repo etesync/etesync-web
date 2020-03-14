@@ -18,6 +18,8 @@ import * as colors from '@material-ui/core/colors';
 import FormLabel from '@material-ui/core/FormLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
 import IconDelete from '@material-ui/icons/Delete';
 import IconCancel from '@material-ui/icons/Clear';
 import IconSave from '@material-ui/icons/Save';
@@ -37,7 +39,7 @@ import * as EteSync from 'etesync';
 
 import { getCurrentTimezone, mapPriority } from '../../helpers';
 
-import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType } from '../../pim-types';
+import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType, TaskTags } from '../../pim-types';
 
 import { History } from 'history';
 
@@ -66,6 +68,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     timezone: string | null;
     location: string;
     description: string;
+    tags: string[];
     journalUid: string;
 
     error?: string;
@@ -82,6 +85,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       allDay: false,
       location: '',
       description: '',
+      tags: [],
       timezone: null,
 
       journalUid: '',
@@ -105,6 +109,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.state.location = task.location ? task.location : '';
       this.state.description = task.description ? task.description : '';
       this.state.timezone = task.timezone;
+      this.state.tags = task.tags;
     } else {
       this.state.uid = uuid.v4();
     }
@@ -139,7 +144,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     }
   }
 
-  public handleChange(name: string, value: string | number) {
+  public handleChange(name: string, value: string | number | string[]) {
     this.setState({
       [name]: value,
     });
@@ -193,6 +198,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     task.summary = this.state.title;
     task.status = this.state.status;
     task.priority = this.state.priority;
+    task.tags = this.state.tags;
     if (startDate) {
       task.startDate = startDate;
     }
@@ -377,6 +383,22 @@ class TaskEdit extends React.PureComponent<PropsType> {
             style={styles.fullWidth}
             value={this.state.description}
             onChange={this.handleInputChange}
+          />
+
+          <Autocomplete
+            style={styles.fullWidth}
+            multiple
+            options={TaskTags}
+            value={this.state.tags}
+            onChange={(_e, value) => this.handleChange('tags', value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                label="Tags"
+                fullWidth
+              />
+            )}
           />
 
           <div style={styles.submit}>
