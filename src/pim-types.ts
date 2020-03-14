@@ -142,6 +142,8 @@ export enum TaskPriorityType {
   Low = 9
 }
 
+export const TaskTags = ['Work', 'Home'];
+
 export class TaskType extends EventType {
   public static fromVCalendar(comp: ICAL.Component) {
     const task = new TaskType(comp.getFirstSubcomponent('vtodo'));
@@ -179,6 +181,15 @@ export class TaskType extends EventType {
 
   get priority() {
     return this.component.getFirstPropertyValue('priority');
+  }
+
+  set tags(tags: string[]) {
+    this.component.updatePropertyWithValue('categories', tags.join(','));
+  }
+
+  get tags() {
+    const tags = this.component.getFirstPropertyValue('categories');
+    return tags ? tags.split(',') : [];
   }
 
   set dueDate(date: ICAL.Time | undefined) {
