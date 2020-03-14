@@ -9,6 +9,7 @@ import { ListItem } from '../../widgets/List';
 import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as colors from '@material-ui/core/colors';
+import Chip from '@material-ui/core/Chip';
 
 import moment from 'moment';
 
@@ -20,6 +21,18 @@ const checkboxColor = {
   [TaskPriorityType.Medium]: colors.orange[600],
   [TaskPriorityType.High]: colors.red[600],
 };
+
+const TagsList = React.memo((props: { tags: string[] }) => (
+  <ul>
+    {props.tags.map((tag, i) => tag && <Chip
+      key={i}
+      color="secondary"
+      size="small"
+      label={tag}
+      style={{ marginRight: '10px' }}
+      component="li"
+    />)}
+  </ul>));
 
 interface PropsType {
   entry: TaskType;
@@ -54,6 +67,7 @@ export default React.memo(function TaskListItem(props: PropsType) {
           icon={<CheckBoxOutlineBlankIcon style={{ color: checkboxColor[mapPriority(task.priority)] }} />}
         />
       }
+      rightIcon={<TagsList tags={task.tags} />}
     />
   );
 });
