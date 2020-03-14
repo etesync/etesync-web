@@ -10,16 +10,16 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as colors from '@material-ui/core/colors';
 
+import moment from 'moment';
+
+import { mapPriority } from '../../helpers';
+
 const checkboxColor = {
   [TaskPriorityType.Undefined]: colors.grey[600],
   [TaskPriorityType.Low]: colors.blue[600],
   [TaskPriorityType.Medium]: colors.orange[600],
   [TaskPriorityType.High]: colors.red[600],
 };
-
-import moment from 'moment';
-
-import { mapPriority } from '../../helpers';
 
 interface PropsType {
   entry: TaskType;
