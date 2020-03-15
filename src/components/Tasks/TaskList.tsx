@@ -14,7 +14,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
-import { Theme, withTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 
 import { useSelector } from 'react-redux';
 
@@ -46,13 +46,13 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   onItemClick: (entry: TaskType) => void;
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
-  theme: Theme;
 }
 
-export default React.memo(withTheme(function TaskList(props: PropsType) {
+export default React.memo(function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy } = settings;
+  const theme = useTheme();
 
   const entries = props.entries.filter((x) => showCompleted || !x.finished).filter(filters[filterBy]);
   const sortedEntries = sortSelector(entries);
@@ -80,7 +80,7 @@ export default React.memo(withTheme(function TaskList(props: PropsType) {
   return (
     <Grid container spacing={4}>
 
-      <Grid item xs={2} style={{ borderRight: `1px solid ${props.theme.palette.divider}` }}>
+      <Grid item xs={2} style={{ borderRight: `1px solid ${theme.palette.divider}` }}>
         <Sidebar tags={tags} />
       </Grid>
 
@@ -103,4 +103,4 @@ export default React.memo(withTheme(function TaskList(props: PropsType) {
       </Grid>
     </Grid>
   );
-}));
+});
