@@ -213,7 +213,7 @@ export const clearErros = createAction(
 // FIXME: Move the rest to their own file
 export const setSettings = createAction(
   'SET_SETTINGS',
-  (settings: SettingsType) => {
+  (settings: Partial<SettingsType>) => {
     return { ...settings };
   }
 );

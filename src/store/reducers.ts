@@ -272,13 +272,21 @@ export const errorsReducer = handleActions(
 // FIXME Move all the below (potentially the fetchCount ones too) to their own file
 export interface SettingsType {
   locale: string;
+  taskSettings: {
+    filterBy: string;
+  };
 }
 
 export const settingsReducer = handleActions(
   {
-    [actions.setSettings.toString()]: (_state: {key: string | null}, action: any) => (
-      { ...action.payload }
+    [actions.setSettings.toString()]: (state: { key: string | null }, action: any) => (
+      { ...state, ...action.payload }
     ),
   },
-  { locale: 'en-gb' }
+  {
+    locale: 'en-gb',
+    taskSettings: {
+      filterBy: 'all',
+    },
+  }
 );
