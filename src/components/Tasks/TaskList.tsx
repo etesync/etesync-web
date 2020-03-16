@@ -76,7 +76,7 @@ export default React.memo(function TaskList(props: PropsType) {
   return (
     <Grid container spacing={4}>
 
-      <Grid item xs={2} style={{ borderRight: `1px solid ${theme.palette.divider}` }}>
+      <Grid item xs={3} style={{ borderRight: `1px solid ${theme.palette.divider}` }}>
         <Sidebar tags={tags} />
       </Grid>
 

@@ -2,26 +2,35 @@ import * as React from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 
-import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import { IconProps } from '@material-ui/core/Icon';
+import InboxIcon from '@material-ui/icons/Inbox';
 import LabelIcon from '@material-ui/icons/LabelOutlined';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { setSettings } from '../../store/actions';
 import { StoreState } from '../../store';
 
+import { List, ListItem, ListSubheader } from '../../widgets/List';
+
+const useStyles = makeStyles({
+  root: {
+    '& .MuiListItemIcon-root': {
+      minWidth: '2.5em',
+    },
+    '& .MuiListItemIcon-root:last-of-type': {
+      justifyContent: 'flex-end',
+    },
+  },
+});
+
 interface ListItemPropsType {
   name: string | null;
-  Icon?: React.ComponentType<IconProps>;
+  icon?: React.ReactElement;
   primaryText: string;
-  secondaryText?: string;
 }
 
 function SidebarListItem(props: ListItemPropsType) {
-  const { name, Icon, primaryText, secondaryText } = props;
+  const classes = useStyles();
+  const { name, icon, primaryText } = props;
   const dispatch = useDispatch();
   const taskSettings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy } = taskSettings;
@@ -32,35 +41,30 @@ function SidebarListItem(props: ListItemPropsType) {
 
   return (
     <ListItem
-      button
       onClick={handleClick}
       selected={name === filterBy}
-    >
-      {Icon && (
-        <ListItemIcon>
-          <Icon fontSize="small" />
-        </ListItemIcon>
-      )}
-      <ListItemText primary={primaryText} secondary={secondaryText ?? ''} />
-    </ListItem>
+      leftIcon={icon}
+      rightIcon={<span>4</span>}
+      primaryText={primaryText}
+      customClass={classes.root}
+    />
   );
 }
 
 export default function Sidebar(props: { tags: Map<string, number> }) {
   const { tags } = props;
 
-  const tagsList = Array.from(tags, ([tag, amount]) => (
+  const tagsList = Array.from(tags, ([tag]) => (
     <SidebarListItem
       key={tag}
       name={`tag:${tag}`}
       primaryText={tag}
-      secondaryText={String(amount)}
-      Icon={LabelIcon} />
+      icon={<LabelIcon />} />
   ));
 
   return (
     <List dense>
-      <SidebarListItem name={null} primaryText="All" />
+      <SidebarListItem name={null} primaryText="All" icon={<InboxIcon />} />
 
       <ListSubheader>Tags</ListSubheader>
       {tagsList}
