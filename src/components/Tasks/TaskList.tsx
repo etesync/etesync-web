@@ -49,15 +49,16 @@ export default React.memo(function TaskList(props: PropsType) {
     const tag = filterBy.slice(tagPrefix.length);
     entries = potentialEntries.filter((x) => x.tags.includes(tag));
   } else {
-    entries = [...potentialEntries];
+    entries = potentialEntries;
   }
-  const sortedEntries = sortSelector(entries);
 
   // TODO: memoize
   const tags = new Map<string, number>();
   potentialEntries.forEach((entry) => entry.tags.forEach((tag) => {
     tags.set(tag, (tags.get(tag) ?? 0) + 1);
   }));
+
+  const sortedEntries = sortSelector(entries);
 
   const itemList = sortedEntries.map((entry) => {
     const uid = entry.uid;
