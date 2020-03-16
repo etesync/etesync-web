@@ -14,7 +14,7 @@ import { setSettings } from '../../store/actions';
 import { StoreState } from '../../store';
 
 interface ListItemPropsType {
-  name: string;
+  name: string | null;
   Icon?: React.ComponentType<IconProps>;
   primaryText: string;
   secondaryText?: string;
@@ -61,7 +61,7 @@ export default function Sidebar(props: { tags: Map<string, number> }) {
 
   return (
     <List dense>
-      <SidebarListItem name="all" primaryText="View all tasks" />
+      <SidebarListItem name={null} primaryText="View all tasks" />
 
       <ListSubheader>Tags</ListSubheader>
       {tagsList}
