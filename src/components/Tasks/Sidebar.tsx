@@ -52,7 +52,7 @@ export default function Sidebar(props: { tags: Map<string, number> }) {
   const tagsList = Array.from(tags, ([tag, amount]) => (
     <SidebarListItem
       key={tag}
-      name={`tag ${tag}`}
+      name={`tag:${tag}`}
       primaryText={tag}
       secondaryText={String(amount)}
       Icon={LabelIcon} />

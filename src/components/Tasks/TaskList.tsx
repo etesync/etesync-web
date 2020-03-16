@@ -44,8 +44,9 @@ export default React.memo(function TaskList(props: PropsType) {
 
   const potentialEntries = props.entries.filter((x) => showCompleted || !x.finished);
   let entries;
-  if (filterBy?.startsWith('tag')) {
-    const tag = filterBy.slice(4);
+  const tagPrefix = 'tag:';
+  if (filterBy?.startsWith(tagPrefix)) {
+    const tag = filterBy.slice(tagPrefix.length);
     entries = potentialEntries.filter((x) => x.tags.includes(tag));
   } else {
     entries = [...potentialEntries];
