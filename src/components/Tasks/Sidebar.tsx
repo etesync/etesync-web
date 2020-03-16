@@ -60,7 +60,7 @@ export default function Sidebar(props: { tags: Map<string, number> }) {
 
   return (
     <List dense>
-      <SidebarListItem name={null} primaryText="View all tasks" />
+      <SidebarListItem name={null} primaryText="All" />
 
       <ListSubheader>Tags</ListSubheader>
       {tagsList}
