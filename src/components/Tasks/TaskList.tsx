@@ -9,7 +9,7 @@ import * as EteSync from 'etesync';
 
 import { List } from '../../widgets/List';
 
-import { TaskType, PimType, TaskTags } from '../../pim-types';
+import { TaskType, PimType } from '../../pim-types';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
@@ -29,18 +29,6 @@ const sortSelector = createSelector(
   (entries) => entries.sort((a, b) => a.title.localeCompare(b.title))
 );
 
-const tagFilters = Object.assign(
-  {},
-  ...TaskTags.map((tag) => ({
-    [tag]: (x: TaskType) => x.tags.includes(tag),
-  }))
-);
-
-const filters = {
-  all: () => true,
-  ...tagFilters,
-};
-
 interface PropsType {
   entries: TaskType[];
   collections: EteSync.CollectionInfo[];
@@ -55,7 +43,13 @@ export default React.memo(function TaskList(props: PropsType) {
   const theme = useTheme();
 
   const potentialEntries = props.entries.filter((x) => showCompleted || !x.finished);
-  const entries = potentialEntries.filter(filters[filterBy]);
+  let entries;
+  if (filterBy.startsWith('tag')) {
+    const tag = filterBy.slice(4);
+    entries = potentialEntries.filter((x) => x.tags.includes(tag));
+  } else {
+    entries = [...potentialEntries];
+  }
   const sortedEntries = sortSelector(entries);
 
   // TODO: memoize
