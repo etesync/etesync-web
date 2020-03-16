@@ -54,14 +54,14 @@ export default React.memo(function TaskList(props: PropsType) {
   const { filterBy } = settings;
   const theme = useTheme();
 
-  const entries = props.entries.filter((x) => showCompleted || !x.finished).filter(filters[filterBy]);
+  const potentialEntries = props.entries.filter((x) => showCompleted || !x.finished);
+  const entries = potentialEntries.filter(filters[filterBy]);
   const sortedEntries = sortSelector(entries);
 
-  // counts tags and creates an object with shape { tag: amount }
   // TODO: memoize
-  const tags = TaskTags.reduce((obj, tag) => ({ ...obj, [tag]: 0 }), {});
-  props.entries.filter((x) => (showCompleted || !x.finished)).forEach((entry) => entry.tags.forEach((tag) => {
-    if (Object.prototype.hasOwnProperty.call(tags, tag)) { tags[tag]++ }
+  const tags = new Map<string, number>();
+  potentialEntries.forEach((entry) => entry.tags.forEach((tag) => {
+    tags.set(tag, (tags.get(tag) ?? 0) + 1);
   }));
 
   const itemList = sortedEntries.map((entry) => {

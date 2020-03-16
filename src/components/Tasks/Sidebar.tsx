@@ -47,10 +47,10 @@ function SidebarListItem(props: ListItemPropsType) {
   );
 }
 
-export default function Sidebar(props: { tags: any }) {
+export default function Sidebar(props: { tags: Map<string, number> }) {
   const { tags } = props;
 
-  const tagsList = Object.entries(tags).map(([tag, amount]) => (
+  const tagsList = Array.from(tags, ([tag, amount]) => (
     <SidebarListItem
       key={tag}
       name={tag}
