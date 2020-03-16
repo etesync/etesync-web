@@ -36,13 +36,12 @@ function SidebarListItem(props: ListItemPropsType) {
       onClick={handleClick}
       selected={name === filterBy}
     >
-      {Icon ?
+      {Icon && (
         <ListItemIcon>
           <Icon fontSize="small" />
-        </ListItemIcon> :
-        ''
-      }
-      <ListItemText primary={primaryText} secondary={secondaryText || ''} />
+        </ListItemIcon>
+      )}
+      <ListItemText primary={primaryText} secondary={secondaryText ?? ''} />
     </ListItem>
   );
 }
