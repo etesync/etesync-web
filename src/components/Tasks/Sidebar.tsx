@@ -26,11 +26,12 @@ interface ListItemPropsType {
   name: string | null;
   icon?: React.ReactElement;
   primaryText: string;
+  amount?: number;
 }
 
 function SidebarListItem(props: ListItemPropsType) {
   const classes = useStyles();
-  const { name, icon, primaryText } = props;
+  const { name, icon, primaryText, amount } = props;
   const dispatch = useDispatch();
   const taskSettings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy } = taskSettings;
@@ -44,7 +45,7 @@ function SidebarListItem(props: ListItemPropsType) {
       onClick={handleClick}
       selected={name === filterBy}
       leftIcon={icon}
-      rightIcon={<span>4</span>}
+      rightIcon={<span>{amount}</span>}
       primaryText={primaryText}
       customClass={classes.root}
     />
@@ -54,12 +55,14 @@ function SidebarListItem(props: ListItemPropsType) {
 export default function Sidebar(props: { tags: Map<string, number> }) {
   const { tags } = props;
 
-  const tagsList = Array.from(tags, ([tag]) => (
+  const tagsList = Array.from(tags, ([tag, amount]) => (
     <SidebarListItem
       key={tag}
       name={`tag:${tag}`}
       primaryText={tag}
-      icon={<LabelIcon />} />
+      icon={<LabelIcon />}
+      amount={amount}
+    />
   ));
 
   return (
