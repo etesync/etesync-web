@@ -41,7 +41,7 @@ function SidebarListItem(props: ListItemPropsType) {
 export default function Sidebar(props: { tags: Map<string, number>, totalTasks: number }) {
   const { tags, totalTasks } = props;
 
-  const tagsList = [...tags].sort(([a], [b]) => a < b ? -1 : 1).map(([tag, amount]) => (
+  const tagsList = [...tags].sort(([a], [b]) => a.localeCompare(b)).map(([tag, amount]) => (
     <SidebarListItem
       key={tag}
       name={`tag:${tag}`}
