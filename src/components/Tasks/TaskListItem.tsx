@@ -15,6 +15,10 @@ import moment from 'moment';
 
 import { mapPriority } from '../../helpers';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { StoreState } from '../../store';
+import { setSettings } from '../../store/actions';
+
 const checkboxColor = {
   [TaskPriorityType.Undefined]: colors.grey[600],
   [TaskPriorityType.Low]: colors.blue[600],
@@ -22,17 +26,33 @@ const checkboxColor = {
   [TaskPriorityType.High]: colors.red[600],
 };
 
-const TagsList = React.memo((props: { tags: string[] }) => (
-  <ul>
-    {props.tags.map((tag, i) => tag && <Chip
-      key={i}
+function TagsListItem(props: { tag: string }) {
+  const { tag } = props;
+  const dispatch = useDispatch();
+  const taskSettings = useSelector((state: StoreState) => state.settings.taskSettings);
+
+  function handleClick(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
+    e.stopPropagation();
+    dispatch(setSettings({ taskSettings: { ...taskSettings, filterBy: `tag:${tag}` } }));
+  }
+
+  return (
+    <Chip
       color="secondary"
       size="small"
       label={tag}
       style={{ marginRight: '0.75em' }}
       component="li"
-    />)}
-  </ul>));
+      onClick={handleClick}
+    />
+  );
+}
+
+const TagsList = React.memo((props: { tags: string[] }) => (
+  <ul>
+    {props.tags.map((tag, i) => <TagsListItem key={i} tag={tag} />)}
+  </ul>
+));
 
 interface PropsType {
   entry: TaskType;
