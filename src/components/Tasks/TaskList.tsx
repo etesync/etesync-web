@@ -58,12 +58,6 @@ export default React.memo(function TaskList(props: PropsType) {
     entries = potentialEntries;
   }
 
-  // TODO: memoize
-  const tags = new Map<string, number>();
-  potentialEntries.forEach((entry) => entry.tags.forEach((tag) => {
-    tags.set(tag, (tags.get(tag) ?? 0) + 1);
-  }));
-
   // sort
   const sortedEntries = sortSelector(entries);
 
@@ -84,7 +78,7 @@ export default React.memo(function TaskList(props: PropsType) {
     <Grid container spacing={4}>
 
       <Grid item xs={3} style={{ borderRight: `1px solid ${theme.palette.divider}` }}>
-        <Sidebar totalTasks={potentialEntries.length} tags={tags} />
+        <Sidebar tasks={potentialEntries} />
       </Grid>
 
       <Grid item xs>
