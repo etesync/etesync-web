@@ -28,13 +28,13 @@ export type UserInfoData = EteSync.UserInfo;
 
 export const encryptionKeyReducer = handleActions(
   {
-    [actions.deriveKey.toString()]: (_state: {key: string | null}, action: any) => (
+    [actions.deriveKey.toString()]: (_state: { key: string | null }, action: any) => (
       { key: action.payload }
     ),
-    [actions.resetKey.toString()]: (_state: {key: string | null}, _action: any) => (
+    [actions.resetKey.toString()]: (_state: { key: string | null }, _action: any) => (
       { key: null }
     ),
-    [actions.logout.toString()]: (_state: {key: string | null}, _action: any) => {
+    [actions.logout.toString()]: (_state: { key: string | null }, _action: any) => {
       return { out: true, key: null };
     },
   },
@@ -272,6 +272,9 @@ export const errorsReducer = handleActions(
 // FIXME Move all the below (potentially the fetchCount ones too) to their own file
 export interface SettingsType {
   locale: string;
+  taskSettings: {
+    filterBy: string | null;
+  };
 }
 
 export const settingsReducer = handleActions(
@@ -280,5 +283,10 @@ export const settingsReducer = handleActions(
       { ...state, ...action.payload }
     ),
   },
-  { locale: 'en-gb' }
+  {
+    locale: 'en-gb',
+    taskSettings: {
+      filterBy: null,
+    },
+  }
 );
