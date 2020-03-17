@@ -10,6 +10,9 @@ import { setSettings } from '../../store/actions';
 import { StoreState } from '../../store';
 
 import { List, ListItem, ListSubheader } from '../../widgets/List';
+import { TaskType } from '../../pim-types';
+
+import moment from 'moment';
 
 interface ListItemPropsType {
   name: string | null;
@@ -39,8 +42,17 @@ function SidebarListItem(props: ListItemPropsType) {
   );
 }
 
-export default function Sidebar(props: { tags: Map<string, number>, totalTasks: number }) {
-  const { tags, totalTasks } = props;
+export default function Sidebar(props: { tasks: TaskType[] }) {
+  const { tasks } = props;
+
+  // TODO: memoize
+  const amountDueToday = tasks.filter((x) => x.dueDate && moment(x.dueDate.toJSDate()).isSame(moment(), 'day')).length;
+
+  // TODO: memoize
+  const tags = new Map<string, number>();
+  tasks.forEach((task) => task.tags.forEach((tag) => {
+    tags.set(tag, (tags.get(tag) ?? 0) + 1);
+  }));
 
   const tagsList = [...tags].sort(([a], [b]) => a.localeCompare(b)).map(([tag, amount]) => (
     <SidebarListItem
@@ -54,8 +66,8 @@ export default function Sidebar(props: { tags: Map<string, number>, totalTasks: 
 
   return (
     <List dense>
-      <SidebarListItem name={null} primaryText="All" icon={<InboxIcon />} amount={totalTasks} />
-      <SidebarListItem name="today" primaryText="Due today" icon={<TodayIcon />} />
+      <SidebarListItem name={null} primaryText="All" icon={<InboxIcon />} amount={tasks.length} />
+      <SidebarListItem name="today" primaryText="Due today" icon={<TodayIcon />} amount={amountDueToday} />
 
       <ListSubheader>Tags</ListSubheader>
       {tagsList}
