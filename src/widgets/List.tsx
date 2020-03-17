@@ -45,7 +45,6 @@ interface ListItemPropsType {
   href?: string;
   insetChildren?: boolean;
   nestedItems?: React.ReactNode[];
-  selected?: boolean;
 }
 
 export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) {
@@ -61,7 +60,6 @@ export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) 
     style,
     insetChildren,
     nestedItems,
-    selected,
   } = _props;
 
   const extraProps = (onClick || href) ? {
@@ -76,7 +74,6 @@ export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) 
       <MuiListItem
         style={style}
         onClick={onClick}
-        selected={selected}
         {...(extraProps as any)}
       >
         {leftIcon && (
