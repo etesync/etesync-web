@@ -24,6 +24,8 @@ import Sidebar from './Sidebar';
 
 import { StoreState } from '../../store';
 
+import moment from 'moment';
+
 const sortSelector = createSelector(
   (entries: TaskType[]) => entries,
   (entries) => entries.sort((a, b) => a.title.localeCompare(b.title))
@@ -44,10 +46,14 @@ export default React.memo(function TaskList(props: PropsType) {
 
   const potentialEntries = props.entries.filter((x) => showCompleted || !x.finished);
   let entries;
+
+  // filter
   const tagPrefix = 'tag:';
   if (filterBy?.startsWith(tagPrefix)) {
     const tag = filterBy.slice(tagPrefix.length);
     entries = potentialEntries.filter((x) => x.tags.includes(tag));
+  } else if (filterBy === 'today') {
+    entries = potentialEntries.filter((x) => x.dueDate && moment(x.dueDate.toJSDate()).isSame(moment(), 'day'));
   } else {
     entries = potentialEntries;
   }
@@ -58,6 +64,7 @@ export default React.memo(function TaskList(props: PropsType) {
     tags.set(tag, (tags.get(tag) ?? 0) + 1);
   }));
 
+  // sort
   const sortedEntries = sortSelector(entries);
 
   const itemList = sortedEntries.map((entry) => {

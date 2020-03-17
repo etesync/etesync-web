@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import InboxIcon from '@material-ui/icons/Inbox';
 import LabelIcon from '@material-ui/icons/LabelOutlined';
+import TodayIcon from '@material-ui/icons/Today';
 
 import { setSettings } from '../../store/actions';
 import { StoreState } from '../../store';
@@ -54,6 +55,7 @@ export default function Sidebar(props: { tags: Map<string, number>, totalTasks: 
   return (
     <List dense>
       <SidebarListItem name={null} primaryText="All" icon={<InboxIcon />} amount={totalTasks} />
+      <SidebarListItem name="today" primaryText="Due today" icon={<TodayIcon />} />
 
       <ListSubheader>Tags</ListSubheader>
       {tagsList}
