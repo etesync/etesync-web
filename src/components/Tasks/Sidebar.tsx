@@ -38,8 +38,8 @@ function SidebarListItem(props: ListItemPropsType) {
   );
 }
 
-export default function Sidebar(props: { tags: Map<string, number> }) {
-  const { tags } = props;
+export default function Sidebar(props: { tags: Map<string, number>, totalTasks: number }) {
+  const { tags, totalTasks } = props;
 
   const tagsList = [...tags].sort(([a], [b]) => a < b ? -1 : 1).map(([tag, amount]) => (
     <SidebarListItem
@@ -53,7 +53,7 @@ export default function Sidebar(props: { tags: Map<string, number> }) {
 
   return (
     <List dense>
-      <SidebarListItem name={null} primaryText="All" icon={<InboxIcon />} />
+      <SidebarListItem name={null} primaryText="All" icon={<InboxIcon />} amount={totalTasks} />
 
       <ListSubheader>Tags</ListSubheader>
       {tagsList}

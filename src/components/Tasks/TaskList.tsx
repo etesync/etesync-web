@@ -77,7 +77,7 @@ export default React.memo(function TaskList(props: PropsType) {
     <Grid container spacing={4}>
 
       <Grid item xs={3} style={{ borderRight: `1px solid ${theme.palette.divider}` }}>
-        <Sidebar tags={tags} />
+        <Sidebar totalTasks={potentialEntries.length} tags={tags} />
       </Grid>
 
       <Grid item xs>
