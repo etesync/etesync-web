@@ -276,8 +276,8 @@ export interface SettingsType {
 
 export const settingsReducer = handleActions(
   {
-    [actions.setSettings.toString()]: (_state: {key: string | null}, action: any) => (
-      { ...action.payload }
+    [actions.setSettings.toString()]: (state: { key: string | null }, action: any) => (
+      { ...state, ...action.payload }
     ),
   },
   { locale: 'en-gb' }
