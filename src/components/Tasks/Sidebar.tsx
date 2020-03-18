@@ -12,8 +12,6 @@ import { StoreState } from '../../store';
 import { List, ListItem, ListSubheader } from '../../widgets/List';
 import { TaskType } from '../../pim-types';
 
-import moment from 'moment';
-
 interface ListItemPropsType {
   name: string | null;
   icon?: React.ReactElement;
@@ -45,7 +43,7 @@ function SidebarListItem(props: ListItemPropsType) {
 export default React.memo(function Sidebar(props: { tasks: TaskType[] }) {
   const { tasks } = props;
 
-  const amountDueToday = tasks.filter((x) => x.dueDate && moment(x.dueDate.toJSDate()).isSame(moment(), 'day')).length;
+  const amountDueToday = tasks.filter((x) => x.dueToday).length;
 
   const tags = new Map<string, number>();
   tasks.forEach((task) => task.tags.forEach((tag) => {
