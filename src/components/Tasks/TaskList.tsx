@@ -38,13 +38,17 @@ interface PropsType {
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
 }
 
-export default React.memo(function TaskList(props: PropsType) {
+export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy } = settings;
   const theme = useTheme();
 
-  const potentialEntries = props.entries.filter((x) => showCompleted || !x.finished);
+  const potentialEntries = React.useMemo(
+    () => props.entries.filter((x) => showCompleted || !x.finished),
+    [showCompleted, props.entries]
+  );
+
   let entries;
 
   const tagPrefix = 'tag:';
@@ -98,4 +102,4 @@ export default React.memo(function TaskList(props: PropsType) {
       </Grid>
     </Grid>
   );
-});
+}
