@@ -42,7 +42,7 @@ function SidebarListItem(props: ListItemPropsType) {
   );
 }
 
-export default function Sidebar(props: { tasks: TaskType[] }) {
+export default React.memo(function Sidebar(props: { tasks: TaskType[] }) {
   const { tasks } = props;
 
   const amountDueToday = tasks.filter((x) => x.dueDate && moment(x.dueDate.toJSDate()).isSame(moment(), 'day')).length;
@@ -71,4 +71,4 @@ export default function Sidebar(props: { tasks: TaskType[] }) {
       {tagsList}
     </List>
   );
-}
+});

@@ -42,10 +42,6 @@ import { addJournalEntry } from '../etesync-helpers';
 
 import { syncEntriesToItemMap, syncEntriesToEventItemMap, syncEntriesToTaskItemMap } from '../journal-processors';
 
-function objValues(obj: any) {
-  return Object.keys(obj).map((x) => obj[x]);
-}
-
 const itemsSelector = createSelector(
   (props: {syncInfo: SyncInfo}) => props.syncInfo,
   (syncInfo) => {
@@ -78,6 +74,11 @@ const itemsSelector = createSelector(
       collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems,
     };
   }
+);
+
+const itemValuesSelector = createSelector(
+  itemsSelector,
+  ({ addressBookItems, calendarItems, taskListItems }) => [addressBookItems, calendarItems, taskListItems].map(Object.values)
 );
 
 const ItemChangeLog = React.memo((props: any) => {
@@ -313,6 +314,7 @@ class Pim extends React.PureComponent {
 
   public render() {
     const { collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems } = itemsSelector(this.props);
+    const [contacts, events, tasks] = itemValuesSelector(this.props);
 
     return (
       <Switch>
@@ -321,9 +323,9 @@ class Pim extends React.PureComponent {
           exact
           render={({ history }) => (
             <PimMain
-              contacts={objValues(addressBookItems)}
-              events={objValues(calendarItems)}
-              tasks={objValues(taskListItems)}
+              contacts={contacts}
+              events={events}
+              tasks={tasks}
               history={history}
               onItemSave={this.onItemSave}
               collectionsTaskList={collectionsTaskList}
