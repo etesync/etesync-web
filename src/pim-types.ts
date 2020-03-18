@@ -227,7 +227,7 @@ export class TaskType extends EventType {
   }
 
   get dueToday() {
-    return this.dueDate && moment(this.dueDate.toJSDate()).isSame(moment(), 'day');
+    return this.dueDate && moment(this.dueDate.toJSDate()).isSameOrBefore(moment(), 'day');
   }
 
   public clone() {
