@@ -50,6 +50,7 @@ function getContactColor(contact: ContactType) {
 
 const AddressBookItem = React.memo((_props: any) => {
   const {
+    style,
     entry,
     onClick,
   } = _props;
@@ -57,6 +58,7 @@ const AddressBookItem = React.memo((_props: any) => {
 
   return (
     <ListItem
+      style={style}
       leftIcon={
         <Avatar style={{ backgroundColor: getContactColor(entry) }}>
           {name && name[0] && name[0].toUpperCase()}
@@ -104,13 +106,12 @@ class AddressBook extends React.PureComponent<PropsType> {
               rowHeight={56}
               rowRenderer={({ index, key, style }) => {
                 return (
-                  <div style={style}>
-                    <AddressBookItem
-                      key={key}
-                      entry={entries[index]}
-                      onClick={this.props.onItemClick}
-                    />
-                  </div>
+                  <AddressBookItem
+                    key={key}
+                    style={style}
+                    entry={entries[index]}
+                    onClick={this.props.onItemClick}
+                  />
                 );
               }}
             />
