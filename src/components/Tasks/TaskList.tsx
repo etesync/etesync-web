@@ -47,7 +47,6 @@ export default React.memo(function TaskList(props: PropsType) {
   const potentialEntries = props.entries.filter((x) => showCompleted || !x.finished);
   let entries;
 
-  // filter
   const tagPrefix = 'tag:';
   if (filterBy?.startsWith(tagPrefix)) {
     const tag = filterBy.slice(tagPrefix.length);
@@ -58,7 +57,6 @@ export default React.memo(function TaskList(props: PropsType) {
     entries = potentialEntries;
   }
 
-  // sort
   const sortedEntries = sortSelector(entries);
 
   const itemList = sortedEntries.map((entry) => {

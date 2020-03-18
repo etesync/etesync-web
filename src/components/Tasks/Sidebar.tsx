@@ -45,10 +45,8 @@ function SidebarListItem(props: ListItemPropsType) {
 export default function Sidebar(props: { tasks: TaskType[] }) {
   const { tasks } = props;
 
-  // TODO: memoize
   const amountDueToday = tasks.filter((x) => x.dueDate && moment(x.dueDate.toJSDate()).isSame(moment(), 'day')).length;
 
-  // TODO: memoize
   const tags = new Map<string, number>();
   tasks.forEach((task) => task.tags.forEach((tag) => {
     tags.set(tag, (tags.get(tag) ?? 0) + 1);
