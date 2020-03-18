@@ -10,8 +10,6 @@ import * as EteSync from 'etesync';
 import { List } from '../../widgets/List';
 
 import { TaskType, PimType } from '../../pim-types';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import { useTheme } from '@material-ui/core/styles';
@@ -37,9 +35,8 @@ interface PropsType {
 }
 
 export default function TaskList(props: PropsType) {
-  const [showCompleted, setShowCompleted] = React.useState(false);
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
-  const { filterBy } = settings;
+  const { filterBy, showCompleted } = settings;
   const theme = useTheme();
 
   const potentialEntries = React.useMemo(
@@ -84,13 +81,6 @@ export default function TaskList(props: PropsType) {
       <Grid item xs>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {props.collections && <QuickAdd onSubmit={props.onItemSave} defaultCollection={props.collections[0]} />}
-
-          <FormControlLabel
-            control={
-              <Checkbox checked={showCompleted} onChange={() => setShowCompleted(!showCompleted)} />
-            }
-            label="Show Completed"
-          />
         </div>
 
         <Divider style={{ marginTop: '1em' }} />
