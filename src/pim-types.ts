@@ -3,6 +3,7 @@
 
 import * as ICAL from 'ical.js';
 import * as zones from './data/zones.json';
+import moment from 'moment';
 
 export const PRODID = '-//iCal.js EteSync iOS';
 
@@ -223,6 +224,10 @@ export class TaskType extends EventType {
 
   get allDay() {
     return !!((this.startDate?.isDate) || (this.dueDate?.isDate));
+  }
+
+  get dueToday() {
+    return this.dueDate && moment(this.dueDate.toJSDate()).isSame(moment(), 'day');
   }
 
   public clone() {

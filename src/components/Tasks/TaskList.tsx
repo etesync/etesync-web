@@ -24,8 +24,6 @@ import Sidebar from './Sidebar';
 
 import { StoreState } from '../../store';
 
-import moment from 'moment';
-
 const sortSelector = createSelector(
   (entries: TaskType[]) => entries,
   (entries) => entries.sort((a, b) => a.title.localeCompare(b.title))
@@ -56,7 +54,7 @@ export default function TaskList(props: PropsType) {
     const tag = filterBy.slice(tagPrefix.length);
     entries = potentialEntries.filter((x) => x.tags.includes(tag));
   } else if (filterBy === 'today') {
-    entries = potentialEntries.filter((x) => x.dueDate && moment(x.dueDate.toJSDate()).isSame(moment(), 'day'));
+    entries = potentialEntries.filter((x) => x.dueToday);
   } else {
     entries = potentialEntries;
   }
