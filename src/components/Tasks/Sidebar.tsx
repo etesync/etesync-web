@@ -16,7 +16,7 @@ interface ListItemPropsType {
   name: string | null;
   icon?: React.ReactElement;
   primaryText: string;
-  amount?: number;
+  amount: number;
 }
 
 function SidebarListItem(props: ListItemPropsType) {
@@ -34,7 +34,7 @@ function SidebarListItem(props: ListItemPropsType) {
       onClick={handleClick}
       selected={name === filterBy}
       leftIcon={icon}
-      rightIcon={<span style={{ width: '100%', textAlign: 'right' }}>{amount}</span>}
+      rightIcon={<span style={{ width: '100%', textAlign: 'right' }}>{(amount > 0) && amount}</span>}
       primaryText={primaryText}
     />
   );
