@@ -274,7 +274,6 @@ export interface SettingsType {
   locale: string;
   taskSettings: {
     filterBy: string | null;
-    showCompleted: boolean;
   };
 }
 
@@ -288,7 +287,6 @@ export const settingsReducer = handleActions(
     locale: 'en-gb',
     taskSettings: {
       filterBy: null,
-      showCompleted: false,
     },
   }
 );

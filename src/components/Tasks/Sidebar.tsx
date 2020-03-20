@@ -5,8 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import InboxIcon from '@material-ui/icons/Inbox';
 import LabelIcon from '@material-ui/icons/LabelOutlined';
 import TodayIcon from '@material-ui/icons/Today';
-import Switch from '@material-ui/core/Switch';
-import Divider from '@material-ui/core/Divider';
 
 import { setSettings } from '../../store/actions';
 import { StoreState } from '../../store';
@@ -42,23 +40,6 @@ function SidebarListItem(props: ListItemPropsType) {
   );
 }
 
-function ToggleCompleted() {
-  const dispatch = useDispatch();
-  const taskSettings = useSelector((state: StoreState) => state.settings.taskSettings);
-  const { showCompleted } = taskSettings;
-
-  const handleChange = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    dispatch(setSettings({ taskSettings: { ...taskSettings, showCompleted: checked } }));
-  };
-
-  return (
-    <ListItem
-      primaryText="Completed"
-      leftIcon={<Switch edge="start" checked={showCompleted} onChange={handleChange} />}
-    />
-  );
-}
-
 export default React.memo(function Sidebar(props: { tasks: TaskType[] }) {
   const { tasks } = props;
 
@@ -80,16 +61,12 @@ export default React.memo(function Sidebar(props: { tasks: TaskType[] }) {
   ));
 
   return (
-    <List>
+    <List dense>
       <SidebarListItem name={null} primaryText="All" icon={<InboxIcon />} amount={tasks.length} />
       <SidebarListItem name="today" primaryText="Due today" icon={<TodayIcon />} amount={amountDueToday} />
 
       <ListSubheader>Tags</ListSubheader>
       {tagsList}
-
-      <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
-
-      <ToggleCompleted />
     </List>
   );
 });

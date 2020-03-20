@@ -17,8 +17,8 @@ import { useTheme } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 
 import TaskListItem from './TaskListItem';
-import QuickAdd from './QuickAdd';
 import Sidebar from './Sidebar';
+import Toolbar from './Toolbar';
 
 import { StoreState } from '../../store';
 
@@ -35,8 +35,9 @@ interface PropsType {
 }
 
 export default function TaskList(props: PropsType) {
+  const [showCompleted, setShowCompleted] = React.useState(false);
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
-  const { filterBy, showCompleted } = settings;
+  const { filterBy } = settings;
   const theme = useTheme();
 
   const potentialEntries = React.useMemo(
@@ -79,9 +80,12 @@ export default function TaskList(props: PropsType) {
       </Grid>
 
       <Grid item xs>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {props.collections && <QuickAdd onSubmit={props.onItemSave} defaultCollection={props.collections[0]} />}
-        </div>
+        <Toolbar
+          defaultCollection={props.collections?.[0]}
+          onItemSave={props.onItemSave}
+          showCompleted={showCompleted}
+          setShowCompleted={setShowCompleted}
+        />
 
         <Divider style={{ marginTop: '1em' }} />
         <List>

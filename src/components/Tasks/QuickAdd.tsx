@@ -14,13 +14,14 @@ import TextField from '@material-ui/core/TextField';
 import { TaskType, PimType, TaskStatusType } from '../../pim-types';
 
 interface PropsType {
+  style: React.CSSProperties;
   onSubmit: (item: PimType, journalUid: string, originalItem?: PimType) => void;
   defaultCollection: EteSync.CollectionInfo;
 }
 
 function QuickAdd(props: PropsType) {
   const [title, setTitle] = React.useState('');
-  const { onSubmit: save, defaultCollection } = props;
+  const { style, onSubmit: save, defaultCollection } = props;
 
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -43,7 +44,7 @@ function QuickAdd(props: PropsType) {
 
 
   return (
-    <form onSubmit={handleSubmit} style={{ flexGrow: 1, marginRight: '25px' }}>
+    <form onSubmit={handleSubmit} style={style}>
       <TextField
         label="Add a new task"
         variant="outlined"
