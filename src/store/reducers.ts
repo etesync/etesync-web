@@ -274,6 +274,7 @@ export interface SettingsType {
   locale: string;
   taskSettings: {
     filterBy: string | null;
+    sortBy: string;
   };
 }
 

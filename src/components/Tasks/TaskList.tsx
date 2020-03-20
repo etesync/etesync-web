@@ -3,8 +3,6 @@
 
 import * as React from 'react';
 
-import { createSelector } from 'reselect';
-
 import * as EteSync from 'etesync';
 
 import { List } from '../../widgets/List';
@@ -22,10 +20,70 @@ import Toolbar from './Toolbar';
 
 import { StoreState } from '../../store';
 
-const sortSelector = createSelector(
-  (entries: TaskType[]) => entries,
-  (entries) => entries.sort((a, b) => a.title.localeCompare(b.title))
-);
+function sortCompleted(a: TaskType, b: TaskType) {
+  return (!!a.finished === !!b.finished) ? 0 : (a.finished) ? 1 : -1;
+}
+
+function sortLastModifiedDate(aIn: TaskType, bIn: TaskType) {
+  const a = aIn.lastModified?.toJSDate() ?? new Date(0);
+  const b = bIn.lastModified?.toJSDate() ?? new Date(0);
+  return (a > b) ? -1 : (a < b) ? 1 : 0;
+}
+
+function sortDueDate(aIn: TaskType, bIn: TaskType) {
+  const a = aIn.dueDate?.toJSDate() ?? new Date(0);
+  const b = bIn.dueDate?.toJSDate() ?? new Date(0);
+  return (a > b) ? -1 : (a < b) ? 1 : 0;
+}
+
+function sortPriority(aIn: TaskType, bIn: TaskType) {
+  const a = aIn.priority || Infinity;
+  const b = bIn.priority || Infinity;
+  return a - b;
+}
+
+function sortTitle(aIn: TaskType, bIn: TaskType) {
+  const a = aIn.title ?? '';
+  const b = bIn.title ?? '';
+  return a.localeCompare(b);
+}
+
+function getSortFunction(sortOrder: string) {
+  const sortFunctions: (typeof sortTitle)[] = [sortCompleted];
+
+  switch (sortOrder) {
+    case 'smart':
+      sortFunctions.push(sortPriority);
+      sortFunctions.push(sortDueDate);
+      sortFunctions.push(sortTitle);
+      break;
+    case 'dueDate':
+      sortFunctions.push(sortDueDate);
+      break;
+    case 'priority':
+      sortFunctions.push(sortPriority);
+      break;
+    case 'title':
+      sortFunctions.push(sortTitle);
+      break;
+    case 'lastModifiedDate':
+      // Do nothing because it's the last sort function anyway
+      break;
+  }
+
+  sortFunctions.push(sortLastModifiedDate);
+
+  return (a: TaskType, b: TaskType) => {
+    for (const sortFunction of sortFunctions) {
+      const ret = sortFunction(a, b);
+      if (ret !== 0) {
+        return ret;
+      }
+    }
+
+    return 0;
+  };
+}
 
 interface PropsType {
   entries: TaskType[];
@@ -37,7 +95,7 @@ interface PropsType {
 export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
-  const { filterBy } = settings;
+  const { filterBy, sortBy } = settings;
   const theme = useTheme();
 
   const potentialEntries = React.useMemo(
@@ -57,7 +115,7 @@ export default function TaskList(props: PropsType) {
     entries = potentialEntries;
   }
 
-  const sortedEntries = sortSelector(entries);
+  const sortedEntries = entries.sort(getSortFunction(sortBy ?? 'smart'));
 
   const itemList = sortedEntries.map((entry) => {
     const uid = entry.uid;
