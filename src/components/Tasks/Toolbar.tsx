@@ -41,9 +41,11 @@ export default function Toolbar(props: PropsType) {
     setSortAnchorEl(null);
   };
 
-  const SortMenuItem = (props: { name: string, label: string }) => (
-    <MenuItem selected={sortBy === props.name} onClick={() => handleSortChange(props.name)}>{props.label}</MenuItem>
-  );
+  const SortMenuItem = React.forwardRef(function SortMenuItem(props: { name: string, label: string }, _ref) {
+    return (
+      <MenuItem selected={sortBy === props.name} onClick={() => handleSortChange(props.name)}>{props.label}</MenuItem>
+    );
+  });
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
