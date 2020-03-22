@@ -28,9 +28,23 @@ export interface StoreState {
   errors: List<Error>;
 }
 
+const settingsMigrations = {
+  0: (state: any) => {
+    return {
+      ...state,
+      taskSettings: {
+        filterBy: null,
+        sortBy: 'smart',
+      },
+    };
+  },
+};
+
 const settingsPersistConfig = {
   key: 'settings',
+  version: 0,
   storage: localforage,
+  migrate: createMigrate(settingsMigrations, { debug: false }),
 };
 
 const credentialsMigrations = {

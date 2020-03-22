@@ -288,6 +288,7 @@ export const settingsReducer = handleActions(
     locale: 'en-gb',
     taskSettings: {
       filterBy: null,
+      sortBy: 'smart',
     },
   }
 );
