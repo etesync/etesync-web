@@ -31,9 +31,10 @@ function sortLastModifiedDate(aIn: TaskType, bIn: TaskType) {
 }
 
 function sortDueDate(aIn: TaskType, bIn: TaskType) {
-  const a = aIn.dueDate?.toJSDate() ?? new Date(0);
-  const b = bIn.dueDate?.toJSDate() ?? new Date(0);
-  return (a > b) ? -1 : (a < b) ? 1 : 0;
+  const impossiblyLargeDate = 8640000000000000;
+  const a = aIn.dueDate?.toJSDate() ?? new Date(impossiblyLargeDate);
+  const b = bIn.dueDate?.toJSDate() ?? new Date(impossiblyLargeDate);
+  return (a < b) ? -1 : (a > b) ? 1 : 0;
 }
 
 function sortPriority(aIn: TaskType, bIn: TaskType) {
