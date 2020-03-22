@@ -115,7 +115,7 @@ export default function TaskList(props: PropsType) {
     entries = potentialEntries;
   }
 
-  const sortedEntries = entries.sort(getSortFunction(sortBy ?? 'smart'));
+  const sortedEntries = entries.sort(getSortFunction(sortBy));
 
   const itemList = sortedEntries.map((entry) => {
     const uid = entry.uid;
