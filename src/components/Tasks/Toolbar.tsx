@@ -38,6 +38,7 @@ export default function Toolbar(props: PropsType) {
 
   const handleSortChange = (sort: string) => {
     dispatch(setSettings({ taskSettings: { ...taskSettings, sortBy: sort } }));
+    setSortAnchorEl(null);
   };
 
   const SortMenuItem = (props: { name: string, label: string }) => (
