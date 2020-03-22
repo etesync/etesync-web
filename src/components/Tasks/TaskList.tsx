@@ -37,6 +37,7 @@ function sortDueDate(aIn: TaskType, bIn: TaskType) {
 }
 
 function sortPriority(aIn: TaskType, bIn: TaskType) {
+  // Intentionally converts 0/undefined to Infinity to sort to back of the list
   const a = aIn.priority || Infinity;
   const b = bIn.priority || Infinity;
   return a - b;
