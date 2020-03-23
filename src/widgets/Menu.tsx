@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import MuiMenu from '@material-ui/core/Menu';
+import MuiMenu, { MenuProps } from '@material-ui/core/Menu';
 import { PopoverOrigin } from '@material-ui/core/Popover';
 
 const anchorOrigin: PopoverOrigin = {
@@ -16,28 +16,13 @@ const transferOrigin: PopoverOrigin = {
   horizontal: 'right',
 };
 
-interface PropsType {
-  anchorEl?: Element | ((element: Element) => Element) | null | undefined;
-  keepMounted?: boolean;
-  open: boolean;
-  onClose: ((event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void);
-  children?: React.ReactNode | React.ReactNode[];
-}
-
-export default function Menu(props: PropsType) {
-  const { anchorEl, keepMounted, open, onClose, children } = props;
-
+export default function Menu(props: MenuProps) {
   return (
     <MuiMenu
-      anchorEl={anchorEl}
-      keepMounted={keepMounted}
-      open={open}
-      onClose={onClose}
+      {...props}
       getContentAnchorEl={null}
       anchorOrigin={anchorOrigin}
       transformOrigin={transferOrigin}
-    >
-      {children}
-    </MuiMenu>
+    />
   );
 }
