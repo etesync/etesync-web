@@ -19,10 +19,10 @@ const transferOrigin: PopoverOrigin = {
 export default function Menu(props: MenuProps) {
   return (
     <MuiMenu
-      {...props}
       getContentAnchorEl={null}
       anchorOrigin={anchorOrigin}
       transformOrigin={transferOrigin}
+      {...props}
     />
   );
 }
