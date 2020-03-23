@@ -6,7 +6,6 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import SortIcon from '@material-ui/icons/Sort';
 
@@ -18,6 +17,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { setSettings } from '../../store/actions';
 import { StoreState } from '../../store';
+
+import Menu from '../../widgets/Menu';
 
 interface PropsType {
   defaultCollection: EteSync.CollectionInfo;
@@ -85,7 +86,6 @@ export default function Toolbar(props: PropsType) {
           <MoreVertIcon />
         </IconButton>
         <Menu
-          id="simple-menu"
           anchorEl={optionsAnchorEl}
           keepMounted
           open={!!optionsAnchorEl}
