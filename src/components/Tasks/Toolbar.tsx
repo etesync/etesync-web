@@ -108,7 +108,7 @@ export default function Toolbar(props: PropsType) {
       </Transition>
 
       <div className={classes.button}>
-        <IconButton size="small" onClick={toggleSearchField}>
+        <IconButton size="small" onClick={toggleSearchField} title={showSearchField ? 'Close' : 'Search'}>
           {showSearchField ? <CloseIcon /> : <SearchIcon />}
         </IconButton>
       </div>
@@ -116,14 +116,16 @@ export default function Toolbar(props: PropsType) {
       <div className={classes.button}>
         <IconButton
           size="small"
-          aria-label="more"
-          aria-controls="long-menu"
+          title="Sort"
+          aria-label="Sort"
+          aria-controls="sort-menu"
           aria-haspopup="true"
           onClick={(e) => setSortAnchorEl(e.currentTarget)}
         >
           <SortIcon />
         </IconButton>
         <Menu
+          id="sort-menu"
           anchorEl={sortAnchorEl}
           keepMounted
           open={!!sortAnchorEl}
@@ -140,14 +142,16 @@ export default function Toolbar(props: PropsType) {
       <div className={classes.button}>
         <IconButton
           size="small"
-          aria-label="more"
-          aria-controls="long-menu"
+          title="Options"
+          aria-label="Options"
+          aria-controls="options-menu"
           aria-haspopup="true"
           onClick={(e) => setOptionsAnchorEl(e.currentTarget)}
         >
           <MoreVertIcon />
         </IconButton>
         <Menu
+          id="options-menu"
           anchorEl={optionsAnchorEl}
           keepMounted
           open={!!optionsAnchorEl}
