@@ -10,13 +10,16 @@ import { List } from '../../widgets/List';
 import { TaskType, PimType } from '../../pim-types';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme, makeStyles } from '@material-ui/core/styles';
 
 import { useSelector } from 'react-redux';
+
+import Fuse from 'fuse.js';
 
 import TaskListItem from './TaskListItem';
 import Sidebar from './Sidebar';
 import Toolbar from './Toolbar';
+import QuickAdd from './QuickAdd';
 
 import { StoreState } from '../../store';
 
@@ -87,6 +90,12 @@ function getSortFunction(sortOrder: string) {
   };
 }
 
+const useStyles = makeStyles((theme) => ({
+  topBar: {
+    backgroundColor: theme.palette.primary[500],
+  },
+}));
+
 interface PropsType {
   entries: TaskType[];
   collections: EteSync.CollectionInfo[];
@@ -96,13 +105,31 @@ interface PropsType {
 
 export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState('');
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
   const theme = useTheme();
+  const classes = useStyles();
 
   const potentialEntries = React.useMemo(
-    () => props.entries.filter((x) => showCompleted || !x.finished),
-    [showCompleted, props.entries]
+    () => {
+      if (searchTerm) {
+        const result = new Fuse(props.entries, {
+          shouldSort: true,
+          threshold: 0.6,
+          maxPatternLength: 32,
+          minMatchCharLength: 2,
+          keys: [
+            'title',
+            'desc',
+          ],
+        }).search(searchTerm);
+        return result.map((x) => x.item);
+      } else {
+        return props.entries.filter((x) => showCompleted || !x.finished);
+      }
+    },
+    [showCompleted, props.entries, searchTerm]
   );
 
   let entries;
@@ -134,20 +161,31 @@ export default function TaskList(props: PropsType) {
 
   return (
     <Grid container spacing={4}>
+      <Grid item xs={3} className={classes.topBar}>
+        {/* spacer */}
+      </Grid>
+
+      <Grid item xs={9} className={classes.topBar}>
+        <Toolbar
+          defaultCollection={props.collections?.[0]}
+          onItemSave={props.onItemSave}
+          showCompleted={showCompleted}
+          setShowCompleted={setShowCompleted}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+        />
+      </Grid>
 
       <Grid item xs={3} style={{ borderRight: `1px solid ${theme.palette.divider}` }}>
         <Sidebar tasks={potentialEntries} />
       </Grid>
 
       <Grid item xs>
-        <Toolbar
-          defaultCollection={props.collections?.[0]}
-          onItemSave={props.onItemSave}
-          showCompleted={showCompleted}
-          setShowCompleted={setShowCompleted}
-        />
+
+        {props.collections?.[0] && <QuickAdd style={{ flexGrow: 1, marginRight: '0.75em' }} onSubmit={props.onItemSave} defaultCollection={props.collections?.[0]} />}
 
         <Divider style={{ marginTop: '1em' }} />
+
         <List>
           {itemList}
         </List>

@@ -8,8 +8,12 @@ import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';
 import SortIcon from '@material-ui/icons/Sort';
-
-import QuickAdd from './QuickAdd';
+import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
+import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
+import { Transition } from 'react-transition-group';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 import { PimType } from '../../pim-types';
 
@@ -20,22 +24,53 @@ import { StoreState } from '../../store';
 
 import Menu from '../../widgets/Menu';
 
+const transitionTimeout = 300;
+
+const transitionStyles = {
+  entering: { visibility: 'visible', width: '100%', overflow: 'hidden' },
+  entered: { visibility: 'visible', width: '100%' },
+  exiting: { visibility: 'visible', width: '0%', overflow: 'hidden' },
+  exited: { visibility: 'hidden', width: '0%' },
+};
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    marginRight: theme.spacing(1),
+  },
+  textField: {
+    transition: `width ${transitionTimeout}ms`,
+    marginRight: theme.spacing(1),
+  },
+}));
+
 interface PropsType {
   defaultCollection: EteSync.CollectionInfo;
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
   showCompleted: boolean;
   setShowCompleted: (completed: boolean) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 }
 
 export default function Toolbar(props: PropsType) {
-  const { defaultCollection, onItemSave, showCompleted, setShowCompleted } = props;
+  const { showCompleted, setShowCompleted, searchTerm, setSearchTerm } = props;
 
+  const [showSearchField, setShowSearchField] = React.useState(false);
   const [sortAnchorEl, setSortAnchorEl] = React.useState<null | HTMLElement>(null);
   const [optionsAnchorEl, setOptionsAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const classes = useStyles();
 
   const dispatch = useDispatch();
   const taskSettings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { sortBy } = taskSettings;
+
+  const toggleSearchField = () => {
+    if (showSearchField) {
+      setSearchTerm('');
+    }
+    setShowSearchField(!showSearchField);
+  };
 
   const handleSortChange = (sort: string) => {
     dispatch(setSettings({ taskSettings: { ...taskSettings, sortBy: sort } }));
@@ -49,11 +84,38 @@ export default function Toolbar(props: PropsType) {
   });
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      {defaultCollection && <QuickAdd style={{ flexGrow: 1, marginRight: '0.75em' }} onSubmit={onItemSave} defaultCollection={defaultCollection} />}
+    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+      <Transition in={showSearchField} timeout={transitionTimeout}>
+        {(state) => (
+          <TextField
+            fullWidth
+            placeholder="Search"
+            value={searchTerm}
+            color="secondary"
+            variant="standard"
+            className={classes.textField}
+            style={transitionStyles[state]}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
+      </Transition>
 
-      <div>
+      <div className={classes.button}>
+        <IconButton size="small" onClick={toggleSearchField}>
+          {showSearchField ? <CloseIcon /> : <SearchIcon />}
+        </IconButton>
+      </div>
+
+      <div className={classes.button}>
         <IconButton
+          size="small"
           aria-label="more"
           aria-controls="long-menu"
           aria-haspopup="true"
@@ -75,9 +137,9 @@ export default function Toolbar(props: PropsType) {
         </Menu>
       </div>
 
-
-      <div>
+      <div className={classes.button}>
         <IconButton
+          size="small"
           aria-label="more"
           aria-controls="long-menu"
           aria-haspopup="true"
