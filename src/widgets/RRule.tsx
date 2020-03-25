@@ -103,7 +103,7 @@ function sanitizeByDay(item: string | string[] | undefined) {
       return value;
     });
   } else {
-    return ret;
+    return [];
   }
 }
 
@@ -176,7 +176,7 @@ export default function RRule(props: PropsType) {
           <FormControl>
             <InputLabel>Weekdays</InputLabel>
             <Select
-              value={sanitizeByDay(options.byday) ?? []}
+              value={sanitizeByDay(options.byday)}
               multiple
               style={styles.multiSelect}
               onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
