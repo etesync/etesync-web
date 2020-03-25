@@ -103,7 +103,7 @@ function sanitizeByDay(item: string | string[] | undefined) {
       return value;
     });
   } else {
-    return ret;
+    return [];
   }
 }
 
