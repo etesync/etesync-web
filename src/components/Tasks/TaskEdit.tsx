@@ -324,7 +324,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             </RadioGroup>
           </FormControl>
 
-          <FormControl>
+          <FormControl style={styles.fullWidth}>
             <FormHelperText>Start</FormHelperText>
             <DateTimePicker
               dateOnly={this.state.allDay}
@@ -337,7 +337,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             )}
           </FormControl>
 
-          <FormControl>
+          <FormControl style={styles.fullWidth}>
             <FormHelperText>Due</FormHelperText>
             <DateTimePicker
               dateOnly={this.state.allDay}
@@ -350,7 +350,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             )}
           </FormControl>
 
-          <FormGroup>
+          <FormGroup style={styles.fullWidth}>
             <FormControlLabel
               control={
                 <Switch
@@ -365,7 +365,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
           </FormGroup>
 
           {(!this.state.allDay) && (
-            <TimezonePicker value={this.state.timezone} onChange={(zone) => this.setState({ timezone: zone })} />
+            <TimezonePicker style={styles.fullWidth} value={this.state.timezone} onChange={(zone) => this.setState({ timezone: zone })} />
           )}
 
           <TextField
