@@ -325,10 +325,10 @@ class TaskEdit extends React.PureComponent<PropsType> {
           </FormControl>
 
           <FormControl style={styles.fullWidth}>
-            <FormHelperText>Start</FormHelperText>
+            <FormHelperText>Hide until</FormHelperText>
             <DateTimePicker
               dateOnly={this.state.allDay}
-              placeholder="Start"
+              placeholder="Hide until"
               value={this.state.start}
               onChange={(date?: Date) => this.setState({ start: date })}
             />
