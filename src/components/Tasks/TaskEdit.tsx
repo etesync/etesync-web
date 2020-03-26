@@ -62,7 +62,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     title: string;
     status: TaskStatusType;
     priority: TaskPriorityType;
-    allDay: boolean;
+    includeTime: boolean;
     start?: Date;
     due?: Date;
     timezone: string | null;
@@ -82,7 +82,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       title: '',
       status: TaskStatusType.NeedsAction,
       priority: TaskPriorityType.Undefined,
-      allDay: false,
+      includeTime: false,
       location: '',
       description: '',
       tags: [],
@@ -100,7 +100,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       this.state.status = task.status ?? TaskStatusType.NeedsAction;
       this.state.priority = task.priority ?? TaskPriorityType.Undefined;
       if (task.startDate) {
-        this.state.allDay = task.startDate.isDate;
+        this.state.includeTime = !task.startDate.isDate;
         this.state.start = task.startDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
       }
       if (task.dueDate) {
@@ -125,7 +125,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.onSubmit = this.onSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.toggleAllDay = this.toggleAllDay.bind(this);
+    this.toggleTime = this.toggleTime.bind(this);
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
   }
 
@@ -157,29 +157,29 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.handleChange(name, value);
   }
 
-  public toggleAllDay() {
-    this.setState({ allDay: !this.state.allDay });
+  public toggleTime() {
+    this.setState({ includeTime: !this.state.includeTime });
   }
 
   public onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
-    function fromDate(date: Date | undefined, allDay: boolean) {
+    function fromDate(date: Date | undefined, includeTime: boolean) {
       if (!date) {
         return undefined;
       }
       const ret = ICAL.Time.fromJSDate(date, false);
-      if (!allDay) {
+      if (includeTime) {
         return ret;
       } else {
         const data = ret.toJSON();
-        data.isDate = allDay;
+        data.isDate = false;
         return ICAL.Time.fromData(data);
       }
     }
 
-    const startDate = fromDate(this.state.start, this.state.allDay);
-    const dueDate = fromDate(this.state.due, this.state.allDay);
+    const startDate = fromDate(this.state.start, this.state.includeTime);
+    const dueDate = fromDate(this.state.due, this.state.includeTime);
 
     if (startDate && dueDate) {
       if (startDate.compare(dueDate) >= 0) {
@@ -327,7 +327,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
           <FormControl style={styles.fullWidth}>
             <FormHelperText>Hide until</FormHelperText>
             <DateTimePicker
-              dateOnly={this.state.allDay}
+              dateOnly={!this.state.includeTime}
               placeholder="Hide until"
               value={this.state.start}
               onChange={(date?: Date) => this.setState({ start: date })}
@@ -340,7 +340,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
           <FormControl style={styles.fullWidth}>
             <FormHelperText>Due</FormHelperText>
             <DateTimePicker
-              dateOnly={this.state.allDay}
+              dateOnly={!this.state.includeTime}
               placeholder="Due"
               value={this.state.due}
               onChange={(date?: Date) => this.setState({ due: date })}
@@ -354,17 +354,17 @@ class TaskEdit extends React.PureComponent<PropsType> {
             <FormControlLabel
               control={
                 <Switch
-                  name="allDay"
-                  checked={this.state.allDay}
-                  onChange={this.toggleAllDay}
+                  name="includeTime"
+                  checked={this.state.includeTime}
+                  onChange={this.toggleTime}
                   color="primary"
                 />
               }
-              label="All Day"
+              label="Include time"
             />
           </FormGroup>
 
-          {(!this.state.allDay) && (
+          {(this.state.includeTime) && (
             <TimezonePicker style={styles.fullWidth} value={this.state.timezone} onChange={(zone) => this.setState({ timezone: zone })} />
           )}
 
