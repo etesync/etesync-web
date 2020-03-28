@@ -173,7 +173,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
         return ret;
       } else {
         const data = ret.toJSON();
-        data.isDate = false;
+        data.isDate = true;
         return ICAL.Time.fromData(data);
       }
     }
