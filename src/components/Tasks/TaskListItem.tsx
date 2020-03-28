@@ -11,9 +11,7 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as colors from '@material-ui/core/colors';
 import Chip from '@material-ui/core/Chip';
 
-import moment from 'moment';
-
-import { mapPriority } from '../../helpers';
+import { mapPriority, formatDate } from '../../helpers';
 
 const checkboxColor = {
   [TaskPriorityType.Undefined]: colors.grey[600],
@@ -57,7 +55,7 @@ export default React.memo(function TaskListItem(props: PropsType) {
   return (
     <ListItem
       primaryText={title}
-      secondaryText={task.dueDate && `Due ${moment().to(task.dueDate.toJSDate())}`}
+      secondaryText={task.dueDate && `Due ${formatDate(task.dueDate)}`}
       secondaryTextColor={task.overdue ? 'error' : 'textSecondary'}
       onClick={() => onClick(task)}
       leftIcon={
