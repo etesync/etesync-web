@@ -46,6 +46,7 @@ interface ListItemPropsType {
   insetChildren?: boolean;
   nestedItems?: React.ReactNode[];
   selected?: boolean;
+  secondaryTextColor?: 'initial' | 'inherit' | 'primary' | 'secondary' | 'textPrimary' | 'textSecondary' | 'error';
 }
 
 export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) {
@@ -62,6 +63,7 @@ export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) 
     insetChildren,
     nestedItems,
     selected,
+    secondaryTextColor,
   } = _props;
 
   const extraProps = (onClick || href) ? {
@@ -84,7 +86,7 @@ export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) 
             {leftIcon}
           </ListItemIcon>
         )}
-        <ListItemText inset={insetChildren} primary={primaryText} secondary={secondaryText}>
+        <ListItemText inset={insetChildren} primary={primaryText} secondary={secondaryText} secondaryTypographyProps={{ color: secondaryTextColor }}>
           {children}
         </ListItemText>
         {rightIcon && (

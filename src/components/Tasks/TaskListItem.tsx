@@ -58,6 +58,7 @@ export default React.memo(function TaskListItem(props: PropsType) {
     <ListItem
       primaryText={title}
       secondaryText={task.dueDate && `Due ${moment().to(task.dueDate.toJSDate())}`}
+      secondaryTextColor={task.overdue ? 'error' : 'textSecondary'}
       onClick={() => onClick(task)}
       leftIcon={
         <Checkbox
