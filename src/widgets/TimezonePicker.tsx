@@ -20,7 +20,7 @@ export default React.memo(function TimezonePicker(props: PropsType) {
     <Autocomplete
       options={zonelist}
       value={props.value}
-      onChange={(_e, value) => props.onChange(value)}
+      onChange={(_e: any, value: string) => props.onChange(value)}
       getOptionLabel={(option) => option.replace('_', ' ')}
       style={props.style}
       renderInput={(params) => (
