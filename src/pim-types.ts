@@ -112,6 +112,14 @@ export class EventType extends ICAL.Event implements PimType {
     this.component.updatePropertyWithValue('last-modified', time);
   }
 
+  get rrule() {
+    return this.component.getFirstPropertyValue('rrule');
+  }
+
+  set rrule(rule: ICAL.Recur) {
+    this.component.updatePropertyWithValue('rrule', rule);
+  }
+
   public toIcal() {
     const comp = new ICAL.Component(['vcalendar', [], []]);
     comp.updatePropertyWithValue('prodid', PRODID);

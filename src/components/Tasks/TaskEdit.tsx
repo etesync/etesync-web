@@ -45,6 +45,7 @@ import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType, TaskT
 import { History } from 'history';
 
 import ColoredRadio from '../../widgets/ColoredRadio';
+import RRule, { RRuleOptions } from '../../widgets/RRule';
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
@@ -67,6 +68,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     start?: Date;
     due?: Date;
     timezone: string | null;
+    rrule?: RRuleOptions;
     location: string;
     description: string;
     tags: string[];
@@ -84,6 +86,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       status: TaskStatusType.NeedsAction,
       priority: TaskPriorityType.Undefined,
       includeTime: false,
+      // rrule: ,
       location: '',
       description: '',
       tags: [],
@@ -107,6 +110,13 @@ class TaskEdit extends React.PureComponent<PropsType> {
       if (task.dueDate) {
         this.state.due = task.dueDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
       }
+      const rrule = task.rrule;
+      if (rrule) {
+        this.state.rrule = rrule.toJSON();
+        if (rrule.until) {
+          this.state.rrule.until = rrule.until;
+        }
+      }
       this.state.location = task.location ? task.location : '';
       this.state.description = task.description ? task.description : '';
       this.state.timezone = task.timezone;
@@ -127,6 +137,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.handleChange = this.handleChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.toggleTime = this.toggleTime.bind(this);
+    this.toggleRecurring = this.toggleRecurring.bind(this);
+    this.handleRRuleChange = this.handleRRuleChange.bind(this);
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
     this.handleCloseToast = this.handleCloseToast.bind(this);
   }
@@ -171,8 +183,22 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.setState({ error: '' });
   }
 
+  public toggleRecurring() {
+    const value = this.state.rrule ? undefined : { freq: 'WEEKLY', interval: 1 };
+    this.setState({ rrule: value });
+  }
+
+  public handleRRuleChange(rrule: RRuleOptions): void {
+    this.setState({ rrule: rrule });
+  }
+
   public onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
+
+    if (this.state.rrule && !(this.state.start || this.state.due)) {
+      this.setState({ error: 'A recurring task must have a hide until or due date set!' });
+      return;
+    }
 
     function fromDate(date: Date | undefined, includeTime: boolean) {
       if (!date) {
@@ -213,6 +239,9 @@ class TaskEdit extends React.PureComponent<PropsType> {
       task.startDate = startDate;
     }
     task.dueDate = dueDate;
+    if (this.state.rrule) {
+      task.rrule = new ICAL.Recur(this.state.rrule);
+    }
     task.location = this.state.location;
     task.description = this.state.description;
     if (this.state.timezone) {
@@ -377,6 +406,26 @@ class TaskEdit extends React.PureComponent<PropsType> {
           {(this.state.includeTime) && (
             <TimezonePicker style={styles.fullWidth} value={this.state.timezone} onChange={(zone) => this.setState({ timezone: zone })} />
           )}
+
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="recurring"
+                  checked={!!this.state.rrule}
+                  onChange={this.toggleRecurring}
+                  color="primary"
+                />
+              }
+              label="Recurring"
+            />
+          </FormGroup>
+          {this.state.rrule &&
+            <RRule
+              onChange={this.handleRRuleChange}
+              rrule={this.state.rrule ? this.state.rrule : { freq: 'DAILY', interval: 1 }}
+            />
+          }
 
           <TextField
             name="location"
