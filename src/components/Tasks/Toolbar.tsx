@@ -47,13 +47,15 @@ interface PropsType {
   defaultCollection: EteSync.CollectionInfo;
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
   showCompleted: boolean;
+  showHidden: boolean;
   setShowCompleted: (completed: boolean) => void;
+  setShowHidden: (hidden: boolean) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
 }
 
 export default function Toolbar(props: PropsType) {
-  const { showCompleted, setShowCompleted, searchTerm, setSearchTerm } = props;
+  const { showCompleted, setShowCompleted, searchTerm, setSearchTerm, showHidden, setShowHidden } = props;
 
   const [showSearchField, setShowSearchField] = React.useState(false);
   const [sortAnchorEl, setSortAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -162,6 +164,13 @@ export default function Toolbar(props: PropsType) {
               label="Show completed"
               labelPlacement="start"
               control={<Switch checked={showCompleted} onChange={(_e, checked) => setShowCompleted(checked)} />}
+            />
+          </MenuItem>
+          <MenuItem>
+            <FormControlLabel
+              label="Show hidden"
+              labelPlacement="start"
+              control={<Switch checked={showHidden} onChange={(_e, checked) => setShowHidden(checked)} />}
             />
           </MenuItem>
         </Menu>
