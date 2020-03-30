@@ -105,6 +105,7 @@ interface PropsType {
 
 export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
+  const [showHidden, setShowHidden] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
@@ -126,10 +127,10 @@ export default function TaskList(props: PropsType) {
         }).search(searchTerm);
         return result.map((x) => x.item);
       } else {
-        return props.entries.filter((x) => showCompleted || !x.finished);
+        return props.entries.filter((x) => (showCompleted || !x.finished) && (showHidden || !x.hidden));
       }
     },
-    [showCompleted, props.entries, searchTerm]
+    [showCompleted, props.entries, searchTerm, showHidden]
   );
 
   let entries;
@@ -173,6 +174,8 @@ export default function TaskList(props: PropsType) {
           setShowCompleted={setShowCompleted}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          showHidden={showHidden}
+          setShowHidden={setShowHidden}
         />
       </Grid>
 

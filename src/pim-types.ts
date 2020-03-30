@@ -240,6 +240,16 @@ export class TaskType extends EventType {
     return (this.dueDate.isDate) ? dueDate.isBefore(now, 'day') : dueDate.isBefore(now);
   }
 
+  get hidden() {
+    if (!this.startDate) {
+      return false;
+    }
+
+    const startDate = moment(this.startDate.toJSDate());
+    const now = moment();
+    return startDate.isAfter(now);
+  }
+
   public clone() {
     const ret = new TaskType(new ICAL.Component(this.component.toJSON()));
     ret.color = this.color;
