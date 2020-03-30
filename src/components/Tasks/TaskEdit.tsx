@@ -28,6 +28,7 @@ import DateTimePicker from '../../widgets/DateTimePicker';
 
 import ConfirmationDialog from '../../widgets/ConfirmationDialog';
 import TimezonePicker from '../../widgets/TimezonePicker';
+import Toast from '../../widgets/Toast';
 
 import { Location } from 'history';
 import { withRouter } from 'react-router';
@@ -265,9 +266,9 @@ class TaskEdit extends React.PureComponent<PropsType> {
             (by editing the first instance) is supported.
           </div>
         )}
-        {this.state.error && (
-          <div>ERROR! {this.state.error}</div>
-        )}
+        <Toast open={!!this.state.error}>
+          ERROR! {this.state.error}
+        </Toast>
         <form style={styles.form} onSubmit={this.onSubmit}>
           <TextField
             name="title"
