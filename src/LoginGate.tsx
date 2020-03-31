@@ -31,11 +31,13 @@ function EncryptionPart(props: { credentials: CredentialsDataRemote }) {
   const credentials = props.credentials;
 
   React.useEffect(() => {
-    // FIXME: verify the error is a 404
     store.dispatch<any>(fetchUserInfo(credentials, credentials.credentials.email)).then((fetchedUserInfo: Action<EteSync.UserInfo>) => {
       setUserInfo(fetchedUserInfo.payload);
-    }).catch(() => {
+    }).catch((e: Error) => {
       // Do nothing.
+      if ((e instanceof EteSync.HTTPError) && (e.status !== 404)) {
+        setError(e);
+      }
     }).finally(() => {
       setFetched(true);
     });
