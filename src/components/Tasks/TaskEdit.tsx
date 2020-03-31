@@ -128,6 +128,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.toggleTime = this.toggleTime.bind(this);
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
+    this.handleCloseToast = this.handleCloseToast.bind(this);
   }
 
   public UNSAFE_componentWillReceiveProps(nextProps: any) {
@@ -160,6 +161,14 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
   public toggleTime() {
     this.setState({ includeTime: !this.state.includeTime });
+  }
+
+  public handleCloseToast(_event?: React.SyntheticEvent, reason?: string) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ error: '' });
   }
 
   public onSubmit(e: React.FormEvent<any>) {
@@ -266,7 +275,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             (by editing the first instance) is supported.
           </div>
         )}
-        <Toast open={!!this.state.error}>
+        <Toast open={!!this.state.error} onClose={this.handleCloseToast}>
           ERROR! {this.state.error}
         </Toast>
         <form style={styles.form} onSubmit={this.onSubmit}>

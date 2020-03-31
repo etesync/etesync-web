@@ -139,6 +139,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
     this.toggleRecurring = this.toggleRecurring.bind(this);
     this.handleRRuleChange = this.handleRRuleChange.bind(this);
+    this.handleCloseToast = this.handleCloseToast.bind(this);
   }
 
   public UNSAFE_componentWillReceiveProps(nextProps: any) {
@@ -181,6 +182,15 @@ class EventEdit extends React.PureComponent<PropsType> {
   public handleRRuleChange(rrule: RRuleOptions): void {
     this.setState({ rrule: rrule });
   }
+
+  public handleCloseToast(_event?: React.SyntheticEvent, reason?: string) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ error: '' });
+  }
+
   public onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
@@ -280,7 +290,7 @@ class EventEdit extends React.PureComponent<PropsType> {
             (by editing the first instance) is supported.
           </div>
         )}
-        <Toast open={!!this.state.error}>
+        <Toast open={!!this.state.error} onClose={this.handleCloseToast}>
           ERROR! {this.state.error}
         </Toast>
         <form style={styles.form} onSubmit={this.onSubmit}>
