@@ -3,7 +3,6 @@ import * as React from 'react';
 import * as EteSync from 'etesync';
 
 import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -23,6 +22,7 @@ import { setSettings } from '../../store/actions';
 import { StoreState } from '../../store';
 
 import Menu from '../../widgets/Menu';
+import { ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 
 const transitionTimeout = 300;
 
@@ -160,18 +160,16 @@ export default function Toolbar(props: PropsType) {
           onClose={() => setOptionsAnchorEl(null)}
         >
           <MenuItem>
-            <FormControlLabel
-              label="Show completed"
-              labelPlacement="start"
-              control={<Switch checked={showCompleted} onChange={(_e, checked) => setShowCompleted(checked)} />}
-            />
+            <ListItemText style={{ marginRight: '1.5em' }}>Show completed</ListItemText>
+            <ListItemSecondaryAction>
+              <Switch checked={showCompleted} onChange={(_e, checked) => setShowCompleted(checked)} edge="end" />
+            </ListItemSecondaryAction>
           </MenuItem>
           <MenuItem>
-            <FormControlLabel
-              label="Show hidden"
-              labelPlacement="start"
-              control={<Switch checked={showHidden} onChange={(_e, checked) => setShowHidden(checked)} />}
-            />
+            <ListItemText style={{ marginRight: '1.5em' }}>Show hidden</ListItemText>
+            <ListItemSecondaryAction>
+              <Switch checked={showHidden} onChange={(_e, checked) => setShowHidden(checked)} edge="end" />
+            </ListItemSecondaryAction>
           </MenuItem>
         </Menu>
 
