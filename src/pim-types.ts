@@ -123,7 +123,7 @@ export class EventType extends ICAL.Event implements PimType {
   }
 
   public clone() {
-    const ret = new EventType(new ICAL.Component(this.component.toJSON()));
+    const ret = new EventType(ICAL.Component.fromString(this.component.toString()));
     ret.color = this.color;
     return ret;
   }
@@ -251,7 +251,7 @@ export class TaskType extends EventType {
   }
 
   public clone() {
-    const ret = new TaskType(new ICAL.Component(this.component.toJSON()));
+    const ret = new TaskType(ICAL.Component.fromString(this.component.toString()));
     ret.color = this.color;
     return ret;
   }
@@ -273,7 +273,7 @@ export class ContactType implements PimType {
   }
 
   public clone() {
-    return new ContactType(new ICAL.Component(this.comp.toJSON()));
+    return new ContactType(ICAL.Component.fromString(this.comp.toString()));
   }
 
   get uid() {
