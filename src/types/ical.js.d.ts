@@ -165,15 +165,15 @@ declare module 'ical.js' {
     public wkst?: WeekDay;
     public until?: Time;
     public count?: number;
-    public bysecond?: number[];
-    public byminute?: number[];
-    public byhour?: number[];
-    public byday?: string[];
-    public bymonthday?: number[];
-    public byyearday?: number[];
-    public byweekno?: number[];
-    public bymonth?: number[];
-    public bysetpos?: number[];
+    public bysecond?: number[] | number;
+    public byminute?: number[] | number;
+    public byhour?: number[] | number;
+    public byday?: string[] | string;
+    public bymonthday?: number[] | number;
+    public byyearday?: number[] | number;
+    public byweekno?: number[] | number;
+    public bymonth?: number[] | number;
+    public bysetpos?: number[] | number;
   }
 
   export class Recur {
