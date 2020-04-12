@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import { TaskType, TaskStatusType, PimType, TaskPriorityType } from '../../pim-types';
+import { TaskType, TaskPriorityType } from '../../pim-types';
 import { ListItem } from '../../widgets/List';
 
 import Checkbox from '@material-ui/core/Checkbox';
@@ -35,33 +35,31 @@ const TagsList = React.memo((props: { tags: string[] }) => (
 interface PropsType {
   entry: TaskType;
   onClick: (task: TaskType) => void;
-  onSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
+  onToggleComplete: (completed: boolean) => void;
 }
 
 export default React.memo(function TaskListItem(props: PropsType) {
   const {
     entry: task,
     onClick,
-    onSave: save,
+    onToggleComplete,
   } = props;
   const title = task.title;
 
-  function toggleComplete(_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) {
-    const clonedTask = task.clone();
-    clonedTask.status = checked ? TaskStatusType.Completed : TaskStatusType.NeedsAction;
-    save(clonedTask, (task as any).journalUid, task);
-  }
+  const dueDateText = task.dueDate ? `Due ${formatDate(task.dueDate)}` : '';
+  const freqText = task.rrule ? `(repeats ${task.rrule.freq.toLowerCase()})` : '';
+  const secondaryText = `${dueDateText} ${freqText}`;
 
   return (
     <ListItem
       primaryText={title}
-      secondaryText={task.dueDate && `Due ${formatDate(task.dueDate)}`}
+      secondaryText={secondaryText}
       secondaryTextColor={task.overdue ? 'error' : 'textSecondary'}
       onClick={() => onClick(task)}
       leftIcon={
         <Checkbox
           onClick={(e) => e.stopPropagation()}
-          onChange={toggleComplete}
+          onChange={(_e, checked) => onToggleComplete(checked)}
           checked={task.finished}
           icon={<CheckBoxOutlineBlankIcon style={{ color: checkboxColor[mapPriority(task.priority)] }} />}
         />

@@ -86,7 +86,6 @@ class TaskEdit extends React.PureComponent<PropsType> {
       status: TaskStatusType.NeedsAction,
       priority: TaskPriorityType.Undefined,
       includeTime: false,
-      // rrule: ,
       location: '',
       description: '',
       tags: [],
@@ -196,7 +195,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     e.preventDefault();
 
     if (this.state.rrule && !(this.state.start || this.state.due)) {
-      this.setState({ error: 'A recurring task must have a hide until or due date set!' });
+      this.setState({ error: 'A recurring task must have either Hide Until or Due Date set!' });
       return;
     }
 
@@ -263,7 +262,18 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
     this.props.onSave(task, this.state.journalUid, this.props.item)
       .then(() => {
+        const nextTask = task.finished && task.getNextOccurence();
+        if (nextTask) {
+          return this.props.onSave(nextTask, this.state.journalUid);
+        } else {
+          return Promise.resolve();
+        }
+      })
+      .then(() => {
         this.props.history.goBack();
+      })
+      .catch(() => {
+        this.setState({ error: 'Could not save task' });
       });
   }
 

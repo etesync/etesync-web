@@ -4,6 +4,7 @@
 import * as ICAL from 'ical.js';
 import * as zones from './data/zones.json';
 import moment from 'moment';
+import * as uuid from 'uuid';
 
 export const PRODID = '-//iCal.js EteSync iOS';
 
@@ -262,6 +263,57 @@ export class TaskType extends EventType {
     const ret = new TaskType(ICAL.Component.fromString(this.component.toString()));
     ret.color = this.color;
     return ret;
+  }
+
+  public getNextOccurence(): TaskType | null {
+    if (!this.isRecurring()) {
+      return null;
+    }
+
+    const rrule = this.rrule.clone();
+
+    if (rrule.count && rrule.count <= 1) {
+      return null; // end of reccurence
+    }
+
+    rrule.count = null; // clear count so we can iterate as many times as needed
+    const recur = rrule.iterator(this.startDate ?? this.dueDate);
+    let nextRecurrence = recur.next();
+    while ((nextRecurrence = recur.next())) {
+      if (nextRecurrence.compare(ICAL.Time.now()) > 0) {
+        break;
+      }
+    }
+
+    if (!nextRecurrence) {
+      return null; // end of reccurence
+    }
+
+    const nextStartDate = this.startDate ? nextRecurrence : undefined;
+    const nextDueDate = this.dueDate ? nextRecurrence : undefined;
+    if (nextStartDate && nextDueDate) {
+      const offset = this.dueDate!.subtractDateTz(this.startDate);
+      nextDueDate.addDuration(offset);
+    }
+
+    const nextTask = this.clone();
+    nextTask.uid = uuid.v4();
+    if (nextStartDate) {
+      nextTask.startDate = nextStartDate;
+    }
+    if (nextDueDate) {
+      nextTask.dueDate = nextDueDate;
+    }
+
+    if (this.rrule.count) {
+      rrule.count = this.rrule.count - 1;
+      nextTask.rrule = rrule;
+    }
+
+    nextTask.status = TaskStatusType.NeedsAction;
+    nextTask.lastModified = ICAL.Time.now();
+
+    return nextTask;
   }
 }
 
