@@ -6,8 +6,9 @@ import * as React from 'react';
 import * as EteSync from 'etesync';
 
 import { List } from '../../widgets/List';
+import Toast from '../../widgets/Toast';
 
-import { TaskType, PimType } from '../../pim-types';
+import { TaskType, PimType, TaskStatusType } from '../../pim-types';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
@@ -22,6 +23,7 @@ import Toolbar from './Toolbar';
 import QuickAdd from './QuickAdd';
 
 import { StoreState } from '../../store';
+import { formatDate } from '../../helpers';
 
 function sortCompleted(a: TaskType, b: TaskType) {
   return (!!a.finished === !!b.finished) ? 0 : (a.finished) ? 1 : -1;
@@ -108,10 +110,25 @@ export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
   const [showHidden, setShowHidden] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [info, setInfo] = React.useState('');
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
   const theme = useTheme();
   const classes = useStyles();
+
+  const handleToggleComplete = async (task: TaskType, completed: boolean) => {
+    const clonedTask = task.clone();
+    clonedTask.status = completed ? TaskStatusType.Completed : TaskStatusType.NeedsAction;
+
+    const nextTask = completed ? task.getNextOccurence() : null;
+
+    await props.onItemSave(clonedTask, (task as any).journalUid, task);
+
+    if (nextTask) {
+      await props.onItemSave(nextTask, (task as any).journalUid);
+      setInfo(`${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`);
+    }
+  };
 
   const potentialEntries = React.useMemo(
     () => {
@@ -156,7 +173,7 @@ export default function TaskList(props: PropsType) {
         key={uid}
         entry={entry}
         onClick={props.onItemClick}
-        onSave={props.onItemSave}
+        onToggleComplete={(completed: boolean) => handleToggleComplete(entry, completed)}
       />
     );
   });
@@ -194,6 +211,10 @@ export default function TaskList(props: PropsType) {
           {itemList}
         </List>
       </Grid>
+
+      <Toast open={!!info} severity="info" onClose={() => setInfo('')} autoHideDuration={3000}>
+        {info}
+      </Toast>
     </Grid>
   );
 }

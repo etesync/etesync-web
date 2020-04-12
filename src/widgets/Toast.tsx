@@ -10,14 +10,16 @@ interface PropsType {
   open: boolean;
   children: React.ReactNode;
   onClose?: (event?: React.SyntheticEvent, reason?: string) => void;
+  severity?: 'error' | 'info' | 'success' | 'warning';
+  autoHideDuration?: number;
 }
 
 export default function Toast(props: PropsType) {
-  const { open, children, onClose } = props;
+  const { open, children, onClose, severity, autoHideDuration } = props;
 
   return (
-    <Snackbar open={open} onClose={onClose}>
-      <Alert severity="error" variant="filled" elevation={6} onClose={onClose}>
+    <Snackbar open={open} onClose={onClose} autoHideDuration={autoHideDuration}>
+      <Alert severity={severity ?? 'error'} variant="filled" elevation={6} onClose={onClose}>
         {children}
       </Alert>
     </Snackbar>

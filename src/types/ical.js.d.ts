@@ -176,10 +176,19 @@ declare module 'ical.js' {
     public bysetpos?: number[] | number;
   }
 
+  export class RecurIterator {
+    public next(): Time;
+  }
+
   export class Recur {
     constructor(data?: RecurData);
     public until: Time | null;
+    public freq: FrequencyValues;
+    public count: number | null;
 
+    public clone(): Recur;
     public toJSON(): Omit<RecurData, 'until'> & { until?: string };
+    public iterator(startTime?: Time): RecurIterator;
+    public isByCount(): boolean;
   }
 }
