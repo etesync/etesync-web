@@ -25,6 +25,8 @@ import { EventType, ContactType, TaskType, PimType } from '../pim-types';
 import { routeResolver } from '../App';
 
 import { historyPersistor } from '../persist-state-history';
+import { SyncInfo } from '../SyncGate';
+import { UserInfoData, CredentialsData } from '../store';
 
 const addressBookTitle = 'Address Book';
 const calendarTitle = 'Calendar';
@@ -41,6 +43,9 @@ interface PropsType {
   theme: Theme;
   collectionsTaskList: EteSync.CollectionInfo[];
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
+  syncInfo: SyncInfo;
+  userInfo: UserInfoData;
+  etesync: CredentialsData;
 }
 
 class PimMain extends React.PureComponent<PropsType> {
@@ -153,6 +158,9 @@ class PimMain extends React.PureComponent<PropsType> {
               collections={this.props.collectionsTaskList}
               onItemClick={this.taskClicked}
               onItemSave={this.props.onItemSave}
+              syncInfo={this.props.syncInfo}
+              userInfo={this.props.userInfo}
+              etesync={this.props.etesync}
             />
           }
         </Container>

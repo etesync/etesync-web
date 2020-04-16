@@ -6,7 +6,7 @@ import * as React from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 
-interface PropsType {
+export interface PropsType {
   open: boolean;
   children: React.ReactNode;
   onClose?: (event?: React.SyntheticEvent, reason?: string) => void;
@@ -19,7 +19,7 @@ export default function Toast(props: PropsType) {
 
   return (
     <Snackbar open={open} onClose={onClose} autoHideDuration={autoHideDuration}>
-      <Alert severity={severity ?? 'error'} variant="filled" elevation={6} onClose={onClose}>
+      <Alert severity={severity} variant="filled" elevation={6} onClose={onClose}>
         {children}
       </Alert>
     </Snackbar>
