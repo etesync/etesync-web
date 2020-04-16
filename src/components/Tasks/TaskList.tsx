@@ -6,14 +6,14 @@ import * as React from 'react';
 import * as EteSync from 'etesync';
 
 import { List } from '../../widgets/List';
-import Toast from '../../widgets/Toast';
+import Toast, { PropsType as ToastProps } from '../../widgets/Toast';
 
 import { TaskType, PimType, TaskStatusType } from '../../pim-types';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Fuse from 'fuse.js';
 
@@ -22,8 +22,12 @@ import Sidebar from './Sidebar';
 import Toolbar from './Toolbar';
 import QuickAdd from './QuickAdd';
 
-import { StoreState } from '../../store';
+import { StoreState, UserInfoData, CredentialsData } from '../../store';
 import { formatDate } from '../../helpers';
+import { SyncInfo } from '../../SyncGate';
+import { fetchEntries } from '../../store/actions';
+import { Action } from 'redux-actions';
+import { addJournalEntries } from '../../etesync-helpers';
 
 function sortCompleted(a: TaskType, b: TaskType) {
   return (!!a.finished === !!b.finished) ? 0 : (a.finished) ? 1 : -1;
@@ -104,30 +108,71 @@ interface PropsType {
   collections: EteSync.CollectionInfo[];
   onItemClick: (entry: TaskType) => void;
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
+  syncInfo: SyncInfo;
+  userInfo: UserInfoData;
+  etesync: CredentialsData;
 }
 
 export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
   const [showHidden, setShowHidden] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [info, setInfo] = React.useState('');
+  const [toast, setToast] = React.useState<{ message: string, severity: ToastProps['severity'] }>({ message: '', severity: undefined });
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
   const theme = useTheme();
   const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const handleToggleComplete = async (task: TaskType, completed: boolean) => {
+  const handleToggleComplete = (task: TaskType, completed: boolean) => {
     const clonedTask = task.clone();
     clonedTask.status = completed ? TaskStatusType.Completed : TaskStatusType.NeedsAction;
 
     const nextTask = completed ? task.getNextOccurence() : null;
 
-    await props.onItemSave(clonedTask, (task as any).journalUid, task);
+    const syncJournal = props.syncInfo.get((task as any).journalUid);
 
-    if (nextTask) {
-      await props.onItemSave(nextTask, (task as any).journalUid);
-      setInfo(`${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`);
+    if (syncJournal === undefined) {
+      setToast({ message: 'Could not sync.', severity: 'error' });
+      return;
     }
+
+    const journal = syncJournal.journal;
+
+    let prevUid: string | null = null;
+    let last = syncJournal.journalEntries.last() as EteSync.Entry;
+    if (last) {
+      prevUid = last.uid;
+    }
+
+    dispatch<any>(fetchEntries(props.etesync, journal.uid, prevUid))
+      .then((entriesAction: Action<EteSync.Entry[]>) => {
+        last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
+
+        if (last) {
+          prevUid = last.uid;
+        }
+
+        const changeTask = [EteSync.SyncEntryAction.Change, clonedTask.toIcal()];
+
+        const updates = [];
+        updates.push(changeTask as [EteSync.SyncEntryAction, string]);
+
+        if (nextTask) {
+          const addNextTask = [EteSync.SyncEntryAction.Add, nextTask.toIcal()];
+          updates.push(addNextTask as [EteSync.SyncEntryAction, string]);
+        }
+
+        return dispatch(addJournalEntries(props.etesync, props.userInfo, journal, prevUid, updates));
+      })
+      .then(() => {
+        if (nextTask) {
+          setToast({ message: `${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`, severity: 'success' });
+        }
+      })
+      .catch(() => {
+        setToast({ message: 'Failed to save changes. This may be due to a network error.', severity: 'error' });
+      });
   };
 
   const potentialEntries = React.useMemo(
@@ -212,8 +257,8 @@ export default function TaskList(props: PropsType) {
         </List>
       </Grid>
 
-      <Toast open={!!info} severity="info" onClose={() => setInfo('')} autoHideDuration={3000}>
-        {info}
+      <Toast open={!!toast.message} severity={toast.severity} onClose={() => setToast({ message: '', severity: undefined })} autoHideDuration={3000}>
+        {toast.message}
       </Toast>
     </Grid>
   );

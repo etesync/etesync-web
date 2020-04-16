@@ -329,6 +329,9 @@ class Pim extends React.PureComponent {
               history={history}
               onItemSave={this.onItemSave}
               collectionsTaskList={collectionsTaskList}
+              syncInfo={this.props.syncInfo}
+              userInfo={this.props.userInfo}
+              etesync={this.props.etesync}
             />
           )}
         />

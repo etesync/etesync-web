@@ -49,3 +49,25 @@ export function addJournalEntry(
   const entry = createJournalEntry(etesync, userInfo, journal, prevUid, action, content);
   return addEntries(etesync, journal.uid, [entry], prevUid);
 }
+
+/**
+ * Adds multiple journal entries and uploads them all at once
+ * @param updates list of tuples with shape (action, content)
+ */
+export function addJournalEntries(
+  etesync: CredentialsData,
+  userInfo: UserInfoData,
+  journal: EteSync.Journal,
+  lastUid: string | null,
+  updates: [EteSync.SyncEntryAction, string][]) {
+
+  let prevUid = lastUid;
+
+  const entries = updates.map(([action, content]) => {
+    const entry = createJournalEntry(etesync, userInfo, journal, prevUid, action, content);
+    prevUid = entry.uid;
+    return entry;
+  });
+
+  return addEntries(etesync, journal.uid, entries, lastUid);
+}
