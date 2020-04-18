@@ -6,7 +6,7 @@ import { Action, createAction, createActions } from 'redux-actions';
 import * as EteSync from 'etesync';
 import { UserInfo } from 'etesync';
 
-import { CredentialsData, EntriesData, SettingsType } from './';
+import { CredentialsData, CredentialsDataRemote, EntriesData, SettingsType } from './';
 
 export const { fetchCredentials } = createActions({
   FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
@@ -34,7 +34,7 @@ export const { fetchCredentials } = createActions({
 
 export const logout = createAction(
   'LOGOUT',
-  (etesync: CredentialsData) => {
+  (etesync: CredentialsDataRemote) => {
     (async () => {
       const authenticator = new EteSync.Authenticator(etesync.serviceApiUrl);
       try {

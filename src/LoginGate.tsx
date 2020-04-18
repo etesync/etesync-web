@@ -12,7 +12,7 @@ import LoginForm from './components/LoginForm';
 import EncryptionLoginForm from './components/EncryptionLoginForm';
 
 import { store, StoreState, CredentialsDataRemote } from './store';
-import { deriveKey, fetchCredentials, fetchUserInfo } from './store/actions';
+import { deriveKey, fetchCredentials, fetchUserInfo, logout } from './store/actions';
 
 import * as EteSync from 'etesync';
 import * as C from './constants';
@@ -35,8 +35,14 @@ function EncryptionPart(props: { credentials: CredentialsDataRemote }) {
       setUserInfo(fetchedUserInfo.payload);
     }).catch((e: Error) => {
       // Do nothing.
-      if ((e instanceof EteSync.HTTPError) && (e.status !== 404)) {
-        setError(e);
+      if (e instanceof EteSync.HTTPError) {
+        if (e.status === 404) {
+          // Do nothing
+        } else if (e.status === 401) {
+          store.dispatch(logout(credentials));
+        } else {
+          setError(e);
+        }
       }
     }).finally(() => {
       setFetched(true);
