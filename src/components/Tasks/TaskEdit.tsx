@@ -314,7 +314,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             (by editing the first instance) is supported.
           </div>
         )}
-        <Toast open={!!this.state.error} onClose={this.handleCloseToast}>
+        <Toast open={!!this.state.error} severity="error" onClose={this.handleCloseToast}>
           ERROR! {this.state.error}
         </Toast>
         <form style={styles.form} onSubmit={this.onSubmit}>
