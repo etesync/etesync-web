@@ -197,7 +197,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                     }
                   >
                     <IconChangeHistory className={classes.leftIcon} />
-                   Change History
+                    Change History
                   </Button>
 
                   <Button

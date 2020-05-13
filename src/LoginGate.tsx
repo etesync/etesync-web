@@ -138,10 +138,10 @@ export default function LoginGate() {
         </ExternalLink>
         <ul>
           <li><ExternalLink style={style.isSafe} href={C.homePage}>
-              The EteSync Website
+            The EteSync Website
           </ExternalLink></li>
           <li><ExternalLink style={style.isSafe} href={C.faq + '#web-client'}>
-              Is the web client safe to use?
+            Is the web client safe to use?
           </ExternalLink></li>
           <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>
         </ul>

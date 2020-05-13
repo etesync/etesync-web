@@ -61,7 +61,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
           {members ?
             <List>
               <ListItem rightIcon={<IconMemberAdd />} onClick={() => this.setState({ addMemberOpen: true })}>
-                  Add member
+                Add member
               </ListItem>
               {(members.length > 0 ?
                 members.map((member) => (
@@ -75,7 +75,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
                 ))
                 :
                 <ListItem>
-                    No members
+                  No members
                 </ListItem>
               )}
             </List>
