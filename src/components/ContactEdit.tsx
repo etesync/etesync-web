@@ -78,6 +78,7 @@ class ValueType {
 interface ValueTypeComponentProps {
   type?: string;
   style?: object;
+  multiline?: boolean;
 
   types: Array<{ type: string }>;
   name: string;
@@ -93,6 +94,7 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
       <TextField
         type={props.type}
         placeholder={props.placeholder}
+        multiline={props.multiline}
         style={props.style}
         value={props.value.value}
         onChange={(event: React.ChangeEvent<any>) => props.onChange(props.name, props.value.type, event.target.value)}
@@ -455,6 +457,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               name="address"
               placeholder="Address"
               types={addressTypes}
+              multiline
               value={x}
               onClearRequest={(name: string) => this.removeValueType(name, idx)}
               onChange={(name: string, type: string, value: string) => (
