@@ -2,14 +2,17 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import Switch from '@material-ui/core/Switch';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { store, StoreState } from '../store';
+import { StoreState } from '../store';
 import { setSettings } from '../store/actions';
 
 import Container from '../widgets/Container';
@@ -36,13 +39,16 @@ function SecurityFingerprint() {
 }
 
 export default React.memo(function Settings() {
+  const dispatch = useDispatch();
   const settings = useSelector((state: StoreState) => state.settings);
+
+  const darkMode = !!settings.darkMode;
 
   function handleChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
 
-    store.dispatch(setSettings({ ...settings, [name]: value }));
+    dispatch(setSettings({ ...settings, [name]: value }));
   }
 
   return (
@@ -65,6 +71,20 @@ export default React.memo(function Settings() {
             <MenuItem value="en-us">English (United States)</MenuItem>
           </Select>
         </FormControl>
+        <h1>Experimental</h1>
+        <h2>Dark mode</h2>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                color="primary"
+                checked={darkMode}
+                onChange={() => dispatch(setSettings({ ...settings, darkMode: !darkMode }))}
+              />
+            }
+            label="Dark mode"
+          />
+        </FormGroup>
       </Container>
     </>
   );

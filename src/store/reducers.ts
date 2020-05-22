@@ -272,6 +272,7 @@ export const errorsReducer = handleActions(
 // FIXME Move all the below (potentially the fetchCount ones too) to their own file
 export interface SettingsType {
   locale: string;
+  darkMode?: boolean;
   taskSettings: {
     filterBy: string | null;
     sortBy: string;
@@ -286,6 +287,7 @@ export const settingsReducer = handleActions(
   },
   {
     locale: 'en-gb',
+    darkMode: false,
     taskSettings: {
       filterBy: null,
       sortBy: 'smart',

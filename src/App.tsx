@@ -40,18 +40,6 @@ import { credentialsSelector } from './login';
 
 import { History } from 'history';
 
-const muiTheme = createMuiTheme({
-  palette: {
-    primary: amber,
-    secondary: {
-      light: lightBlue.A200,
-      main: lightBlue.A400,
-      dark: lightBlue.A700,
-      contrastText: '#fff',
-    },
-  },
-});
-
 export const routeResolver = new RouteResolver({
   home: '',
   pim: {
@@ -179,6 +167,7 @@ class App extends React.PureComponent {
     credentials: store.CredentialsData;
     entries: store.EntriesData;
     fetchCount: number;
+    darkMode: boolean;
     errors: ImmutableList<Error>;
   };
 
@@ -196,6 +185,19 @@ class App extends React.PureComponent {
 
     const errors = this.props.errors;
     const fetching = this.props.fetchCount > 0;
+
+    const muiTheme = createMuiTheme({
+      palette: {
+        type: this.props.darkMode ? 'dark' : undefined,
+        primary: amber,
+        secondary: {
+          light: lightBlue.A200,
+          main: lightBlue.A400,
+          dark: lightBlue.A700,
+          contrastText: '#fff',
+        },
+      },
+    });
 
     const styles = {
       main: {
@@ -283,6 +285,7 @@ const mapStateToProps = (state: store.StoreState) => {
     credentials: credentialsSelector(state),
     entries: state.cache.entries,
     fetchCount: state.fetchCount,
+    darkMode: !!state.settings.darkMode,
     errors: state.errors,
   };
 };
