@@ -214,10 +214,8 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
       <Route
         path={routeResolver.getRoute('settings')}
         exact
-        render={({ history }) => (
-          <Settings
-            history={history}
-          />
+        render={() => (
+          <Settings />
         )}
       />
       <Route
