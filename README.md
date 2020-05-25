@@ -28,17 +28,24 @@ More info is available on the [FAQ](https://www.etesync.com/faq/#web-client).
 You can either self-host your own client to be served from your own server, or
 better yet, just run an instance locally.
 
-First make sure you have `yarn` install.
+You can get the latest version of the web client from https://client.etesync.com/etesync-web.tgz. This
+file is automatically generated on each deploy and is exactly the same as the delpoyed version.
+After fetching thise file you need to extract it by e.g. running `tar -xzf etesync-web.tgz`, and then
+you can serve the files using your favourite web server. Please keep in mind that opening the HTML files
+directly in the browser is not supported.
+
+If you are just serving the app locally, you could, for example, use the python built-in web server by
+running `python3 -m http.server` from inside the extracted `etesync-web` directory. If you plan on
+serving it from a server, please use a proper web server such as nginx.
+
+## Building it yourself
+
+Before you can build the web app from source, you need to make sure you have `yarn` install.
 
 Then clone this repository `yarn`, run `yarn` and wait until all of the deps are installed.
 
 Then it's recommended you run `yarn build` to build a production ready client you should serve
 (even if run locally!) and then just serve the `build` directory from a web server.
-You could, for example, use the python built-in web server by running `python3 -m http.server` from
-the build directory.
-
-Alternatively, you can run the debug server just to verify everything works,
-though be aware that the app will probably be quite slow. To do that, run `yarn start`.
 
 ### Serving from a subdirectory
 
