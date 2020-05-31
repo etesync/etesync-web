@@ -47,6 +47,11 @@ Then clone this repository `yarn`, run `yarn` and wait until all of the deps are
 Then it's recommended you run `yarn build` to build a production ready client you should serve
 (even if run locally!) and then just serve the `build` directory from a web server.
 
+The URL of the EteSync API the web app connects to defaults to `etesync.com`, but can be changed on
+the login page. You can change this default by setting the environment variable `REACT_APP_DEFAULT_API_PATH`
+during the build. This can be useful for self-hosting. You can set the default URL to the address
+of your self-hosted EteSync server so you don't have to change the address for every login.
+
 ### Serving from a subdirectory
 
 In order to run your own version and serve it from a subdirectory rather than the top level of the domain, add `"homepage": "/subdir-name"` to the `package.json` file.
