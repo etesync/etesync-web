@@ -31,7 +31,7 @@ export function journalView(JournalList: any, JournalItem: any) {
       const uid = contact.uid;
 
       this.props.history!.push(
-        routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: uid }));
+        routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: encodeURIComponent(uid) }));
     }
 
     public render() {
@@ -53,7 +53,7 @@ export function journalView(JournalList: any, JournalItem: any) {
             render={({ match }) => {
 
               return (
-                <JournalItem item={items[`${match.params.journalUid}|${match.params.itemUid}`]} />
+                <JournalItem item={items[`${match.params.journalUid}|${decodeURIComponent(match.params.itemUid)}`]} />
               );
             }}
           />

@@ -153,21 +153,24 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id.edit')}
             exact
-            render={({ match }) => (
-              <Container style={{ maxWidth: '30rem' }}>
-                {(match.params.itemUid in props.items) &&
-                  <ComponentEdit
-                    initialCollection={(props.items[match.params.itemUid] as any).journalUid}
-                    item={props.items[match.params.itemUid]}
-                    collections={props.collections}
-                    onSave={props.onItemSave}
-                    onDelete={props.onItemDelete}
-                    onCancel={props.onItemCancel}
-                    history={props.history}
-                  />
-                }
-              </Container>
-            )}
+            render={({ match }) => {
+              const itemUid = decodeURIComponent(match.params.itemUid);
+              return (
+                <Container style={{ maxWidth: '30rem' }}>
+                  {(itemUid in props.items) &&
+                    <ComponentEdit
+                      initialCollection={(props.items[itemUid] as any).journalUid}
+                      item={props.items[itemUid]}
+                      collections={props.collections}
+                      onSave={props.onItemSave}
+                      onDelete={props.onItemDelete}
+                      onCancel={props.onItemCancel}
+                      history={props.history}
+                    />
+                  }
+                </Container>
+              );
+            }}
           />
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id.log')}
@@ -176,7 +179,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
               <Container>
                 <ItemChangeLog
                   syncInfo={props.syncInfo}
-                  paramItemUid={match.params.itemUid}
+                  paramItemUid={decodeURIComponent(match.params.itemUid)}
                 />
               </Container>
             )}
@@ -216,7 +219,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                     Edit
                   </Button>
                 </div>
-                <ComponentView item={props.items[match.params.itemUid]} />
+                <ComponentView item={props.items[decodeURIComponent(match.params.itemUid)]} />
               </Container>
             )}
           />
