@@ -4,7 +4,7 @@
 import * as React from 'react';
 
 export const ExternalLink = React.memo(({ children, ...props }: any) => (
-  <a target="_blank" rel="noopener" {...props}>
+  <a target="_blank" rel="noopener noreferrer" {...props}>
     {children}
   </a>
 ));
