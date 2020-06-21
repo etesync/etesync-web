@@ -456,6 +456,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
           <Autocomplete
             style={styles.fullWidth}
+            freeSolo
             multiple
             options={TaskTags}
             value={this.state.tags}
