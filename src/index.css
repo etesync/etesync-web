@@ -30,3 +30,7 @@ body:before {
   display: flex;
   flex-direction: column;
 }
+
+a {
+  color: #00b0ff;
+}
