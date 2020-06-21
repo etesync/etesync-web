@@ -182,13 +182,14 @@ class App extends React.PureComponent {
 
   public render() {
     const credentials = this.props.credentials ?? null;
+    const { darkMode } = this.props;
 
     const errors = this.props.errors;
     const fetching = this.props.fetchCount > 0;
 
     const muiTheme = createMuiTheme({
       palette: {
-        type: this.props.darkMode ? 'dark' : undefined,
+        type: darkMode ? 'dark' : undefined,
         primary: amber,
         secondary: {
           light: lightBlue.A200,
@@ -210,7 +211,7 @@ class App extends React.PureComponent {
     return (
       <ThemeProvider theme={muiTheme}>
         <BrowserRouter>
-          <div style={styles.main}>
+          <div style={styles.main} className={darkMode ? 'theme-dark' : 'theme-light'}>
             <AppBarWitHistory
               toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
               iconElementRight={
