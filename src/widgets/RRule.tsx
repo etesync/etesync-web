@@ -120,12 +120,7 @@ interface PropsType {
 export default function RRule(props: PropsType) {
   const options = props.rrule;
   function updateRule(newOptions: Partial<RRuleOptions>): void {
-    let updatedOptions: RRuleOptions;
-    if (!!options.freq && !!newOptions.freq && options.freq !== newOptions.freq) {
-      updatedOptions = { freq: newOptions.freq };
-    } else {
-      updatedOptions = { ...options, ...newOptions } ;
-    }
+    const updatedOptions: RRuleOptions = { ...options, ...newOptions };
 
     for (const key of Object.keys(updatedOptions)) {
       const value = updatedOptions[key];
