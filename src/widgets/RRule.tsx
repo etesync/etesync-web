@@ -122,7 +122,7 @@ export default function RRule(props: PropsType) {
   function updateRule(newOptions: Partial<RRuleOptions>): void {
     let updatedOptions: RRuleOptions;
     if (!!options.freq && !!newOptions.freq && options.freq !== newOptions.freq) {
-      updatedOptions = { freq: newOptions.freq, byday: ['SU'], bymonth: [1] };
+      updatedOptions = { freq: newOptions.freq };
     } else {
       updatedOptions = { ...options, ...newOptions } ;
     }
