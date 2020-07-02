@@ -117,11 +117,24 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
           return;
         }
 
-        ['ADDRESS_BOOK', 'CALENDAR', 'TASKS'].forEach((collectionType) => {
+        [
+          {
+            type: 'ADDRESS_BOOK',
+            name: 'My Contacts',
+          },
+          {
+            type: 'CALENDAR',
+            name: 'My Calendar',
+          },
+          {
+            type: 'TASKS',
+            name: 'My Tasks',
+          },
+        ].forEach((collectionDesc) => {
           const collection = new EteSync.CollectionInfo();
           collection.uid = EteSync.genUid();
-          collection.type = collectionType;
-          collection.displayName = 'Default';
+          collection.type = collectionDesc.type;
+          collection.displayName = collectionDesc.name;
 
           const journal = new EteSync.Journal({ uid: collection.uid });
           const cryptoManager = new EteSync.CryptoManager(etesync.encryptionKey, collection.uid);
