@@ -119,8 +119,13 @@ interface PropsType {
 
 export default function RRule(props: PropsType) {
   const options = props.rrule;
-  function updateRule(newOptions: Partial<RRuleOptions>): void {
+  function updateRule(newOptions: Partial<RRuleOptions>, reset = false): void {
     const updatedOptions: RRuleOptions = { ...options, ...newOptions };
+
+    if (reset) {
+      props.onChange(updatedOptions);
+      return;
+    }
 
     for (const key of Object.keys(updatedOptions)) {
       const value = updatedOptions[key];
@@ -149,7 +154,7 @@ export default function RRule(props: PropsType) {
           style={{ marginLeft: '0.5em' }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             const freq = (event.target as HTMLSelectElement).value as ICAL.FrequencyValues;
-            updateRule({ freq: freq });
+            updateRule({ freq: freq }, true);
           }}
         >
           {menuItemsFrequency}
