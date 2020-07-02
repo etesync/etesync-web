@@ -1,10 +1,13 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+// Disable some style eslint rules for things we can't control
+/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/class-name-casing */
+
 declare module 'ical.js' {
   function parse(input: string): any[];
 
-  class helpers { // tslint:disable-line:class-name
+  export class helpers {
     static public updateTimezones(vcal: Component): Component;
   }
 
@@ -35,7 +38,7 @@ declare module 'ical.js' {
     public addSubcomponent(component: Component): Component;
   }
 
-  class Event {
+  export class Event {
     public uid: string;
     public summary: string;
     public startDate: Time;
@@ -52,7 +55,7 @@ declare module 'ical.js' {
     public iterator(startTime?: Time): RecurExpansion;
   }
 
-  class Property {
+  export class Property {
     public name: string;
     public type: string;
 
@@ -77,7 +80,7 @@ declare module 'ical.js' {
     isDate?: boolean;
   }
 
-  class Time {
+  export class Time {
     static public fromString(str: string): Time;
     static public fromJSDate(aDate: Date | null, useUTC: boolean): Time;
     static public fromData(aData: TimeJsonData): Time;
@@ -112,35 +115,36 @@ declare module 'ical.js' {
     public toJSON(): TimeJsonData;
   }
 
-  class Duration {
+  export class Duration {
     public days: number;
   }
 
-  class RecurExpansion {
+  export class RecurExpansion {
     public complete: boolean;
 
     public next(): Time;
   }
 
-  class Timezone {
+  export class Timezone {
     static public utcTimezone: Timezone;
     static public localTimezone: Timezone;
     static public convert_time(tt: Time, fromZone: Timezone, toZone: Timezone): Time;
+
 
     public tzid: string;
     public component: Component;
 
     constructor(data: Component | {
-      component: string | Component,
-      tzid?: string,
-      location?: string,
-      tznames?: string,
-      latitude?: number,
-      longitude?: number,
+      component: string | Component;
+      tzid?: string;
+      location?: string;
+      tznames?: string;
+      latitude?: number;
+      longitude?: number;
     });
   }
 
-  class TimezoneService {
+  export class TimezoneService {
     static public get(tzid: string): Timezone | null;
     static public has(tzid: string): boolean;
     static public register(tzid: string, zone: Timezone | Component);

@@ -37,7 +37,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx --ignore-pattern '*.d.ts' src",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
