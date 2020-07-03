@@ -20,6 +20,106 @@ import IconError from '@material-ui/icons/Error';
 import { TaskType, EventType, ContactType, parseString } from '../pim-types';
 
 import * as EteSync from 'etesync';
+import LoadingIndicator from '../widgets/LoadingIndicator';
+import { useCredentials } from '../login';
+import { createJournalEntry } from '../etesync-helpers';
+import { useSelector, useDispatch } from 'react-redux';
+import { StoreState } from '../store';
+import { addEntries } from '../store/actions';
+
+interface RollbackToHereDialogPropsType {
+  journal: EteSync.Journal;
+  entries: Immutable.List<EteSync.SyncEntry>;
+  entryUid: string;
+  open: boolean;
+  onClose: () => void;
+}
+
+function RollbackToHereDialog(props: RollbackToHereDialogPropsType) {
+  const [loading, setLoading] = React.useState(false);
+  const etesync = useCredentials();
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state: StoreState) => state.cache.userInfo);
+
+  async function go() {
+    setLoading(true);
+
+    const changes = new Map<string, EteSync.SyncEntry>();
+
+    for (const entry of props.entries.reverse()) {
+      const comp = parseString(entry.content);
+      const itemComp = comp.getFirstSubcomponent('vevent') ?? comp.getFirstSubcomponent('vtodo') ?? comp;
+      const itemUid = itemComp.getFirstPropertyValue('uid');
+
+      if (itemUid && !changes.has(itemUid)) {
+        changes.set(itemUid, entry);
+      }
+
+      if (entry.uid === props.entryUid) {
+        break;
+      }
+    }
+
+    const last = props.entries.last(null);
+    const lastUid = last?.uid ? last.uid : null;
+
+    // XXX implement chunked push most likely...
+    let prevUid = lastUid;
+    const journalItems = [];
+    for (const syncEntry of changes.values()) {
+      if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
+        const ret = createJournalEntry(etesync, userInfo, props.journal, prevUid, EteSync.SyncEntryAction.Add, syncEntry.content);
+        journalItems.push(ret);
+
+        prevUid = ret.uid;
+      }
+    }
+
+    if (journalItems.length > 0) {
+      await dispatch<any>(
+        addEntries(etesync, props.journal.uid, journalItems, lastUid)
+      );
+    }
+
+    props.onClose();
+  }
+
+  return (
+    <Dialog
+      open={props.open}
+      onClose={props.onClose}
+    >
+      <DialogTitle>
+        Recover items
+      </DialogTitle>
+      <DialogContent>
+        {loading ? (
+          <LoadingIndicator style={{ display: 'block', margin: 'auto' }} />
+        ) : (
+          <p>
+            This function restores all of the deleted items that happened after this change entry. It will not modify any items that haven't been changed since the item was deleted.
+          </p>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button
+          color="primary"
+          disabled={loading}
+          onClick={props.onClose}
+        >
+          Cancel
+        </Button>
+        <Button
+          color="primary"
+          disabled={loading}
+          onClick={go}
+        >
+          Go
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
 class JournalEntries extends React.PureComponent {
   public static defaultProps = {
@@ -27,7 +127,8 @@ class JournalEntries extends React.PureComponent {
   };
 
   public state: {
-    dialog?: string;
+    dialog?: EteSync.SyncEntry;
+    rollbackDialogId?: string;
   };
 
   public props: {
@@ -63,7 +164,7 @@ class JournalEntries extends React.PureComponent {
             secondaryText="Unknown"
             onClick={() => {
               this.setState({
-                dialog: syncEntry.content,
+                dialog: syncEntry,
               });
             }}
           />
@@ -113,7 +214,7 @@ class JournalEntries extends React.PureComponent {
           secondaryText={uid}
           onClick={() => {
             this.setState({
-              dialog: syncEntry.content,
+              dialog: syncEntry,
             });
           }}
         />
@@ -122,6 +223,13 @@ class JournalEntries extends React.PureComponent {
 
     return (
       <div>
+        <RollbackToHereDialog
+          journal={this.props.journal}
+          entries={this.props.entries}
+          entryUid={this.state.rollbackDialogId!}
+          open={!!this.state.rollbackDialogId}
+          onClose={() => this.setState({ rollbackDialogId: undefined })}
+        />
         <Dialog
           open={this.state.dialog !== undefined}
           onClose={() => {
@@ -132,9 +240,18 @@ class JournalEntries extends React.PureComponent {
             Raw Content
           </DialogTitle>
           <DialogContent>
-            <pre>{this.state.dialog}</pre>
+            <pre>{this.state.dialog?.content}</pre>
           </DialogContent>
           <DialogActions>
+            <Button
+              color="primary"
+              onClick={() => this.setState({
+                dialog: undefined,
+                rollbackDialogId: this.state.dialog?.uid,
+              })}
+            >
+              Recover items until here
+            </Button>
             <Button
               color="primary"
               onClick={() => {
