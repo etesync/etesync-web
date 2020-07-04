@@ -178,6 +178,7 @@ class App extends React.PureComponent {
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
     this.refresh = this.refresh.bind(this);
+    this.autoRefresh = this.autoRefresh.bind(this);
   }
 
   public render() {
@@ -278,6 +279,15 @@ class App extends React.PureComponent {
 
   private refresh() {
     store.store.dispatch<any>(actions.fetchAll(this.props.credentials, this.props.entries));
+  }
+
+  private autoRefresh() {
+    if (navigator.onLine && this.props.credentials) { this.refresh() }
+  }
+
+  componentDidMount() {
+    const interval = 60 * 1000;
+    setInterval(this.autoRefresh, interval);
   }
 }
 
