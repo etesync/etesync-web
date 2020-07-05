@@ -5,7 +5,7 @@ import { List } from 'immutable';
 
 import { EventType, ContactType, TaskType } from './pim-types';
 import { store } from './store';
-import { addError } from './store/actions';
+import { appendError } from './store/actions';
 
 import * as EteSync from 'etesync';
 
@@ -20,7 +20,7 @@ export function syncEntriesToItemMap(
       comp = ContactType.parse(syncEntry.content);
     } catch (e) {
       e.message = `${e.message}\nWhile processing: ${syncEntry.content}`;
-      store.dispatch(addError(undefined as any, e));
+      store.dispatch(appendError(undefined as any, e));
       return;
     }
 
@@ -94,7 +94,7 @@ function syncEntriesToCalendarItemMap<T extends EventType>(
       comp = ItemType.parse(syncEntry.content);
     } catch (e) {
       e.message = `${e.message}\nWhile processing: ${syncEntry.content}`;
-      store.dispatch(addError(undefined as any, e));
+      store.dispatch(appendError(undefined as any, e));
       return;
     }
 

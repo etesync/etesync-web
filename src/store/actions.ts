@@ -196,8 +196,8 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesData) 
 }
 
 
-export const addError = createAction(
-  'ADD_ERRORS',
+export const appendError = createAction(
+  'APPEND_ERROR',
   (_etesync: CredentialsData, error: Error) => {
     return error;
   }

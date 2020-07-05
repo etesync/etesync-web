@@ -258,7 +258,7 @@ export const errorsReducer = handleActions(
 
       return state;
     },
-    [actions.addError.toString()]: (state: List<Error>, action: Action<any>) => {
+    [actions.appendError.toString()]: (state: List<Error>, action: Action<any>) => {
       return state.push(action.payload);
     },
     [actions.clearErros.toString()]: (state: List<Error>, _action: Action<any>) => {
