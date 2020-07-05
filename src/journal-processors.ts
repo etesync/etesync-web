@@ -13,6 +13,7 @@ export function syncEntriesToItemMap(
   collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: ContactType} = {}) {
   const items = base;
 
+  const errors: Error[] = [];
   entries.forEach((syncEntry) => {
     // FIXME: this is a terrible hack to handle parsing errors
     let comp;
@@ -20,7 +21,7 @@ export function syncEntriesToItemMap(
       comp = ContactType.parse(syncEntry.content);
     } catch (e) {
       e.message = `${e.message}\nWhile processing: ${syncEntry.content}`;
-      store.dispatch(appendError(undefined as any, e));
+      errors.push(e);
       return;
     }
 
@@ -35,6 +36,10 @@ export function syncEntriesToItemMap(
       delete items[uid];
     }
   });
+
+  if (errors.length > 0) {
+    store.dispatch(appendError(undefined as any, errors));
+  }
 
   return items;
 }
@@ -87,6 +92,7 @@ function syncEntriesToCalendarItemMap<T extends EventType>(
 
   const color = colorIntToHtml(collection.color);
 
+  const errors: Error[] = [];
   entries.forEach((syncEntry) => {
     // FIXME: this is a terrible hack to handle parsing errors
     let comp;
@@ -94,7 +100,7 @@ function syncEntriesToCalendarItemMap<T extends EventType>(
       comp = ItemType.parse(syncEntry.content);
     } catch (e) {
       e.message = `${e.message}\nWhile processing: ${syncEntry.content}`;
-      store.dispatch(appendError(undefined as any, e));
+      errors.push(e);
       return;
     }
 
@@ -115,6 +121,10 @@ function syncEntriesToCalendarItemMap<T extends EventType>(
       delete items[uid];
     }
   });
+
+  if (errors.length > 0) {
+    store.dispatch(appendError(undefined as any, errors));
+  }
 
   return items;
 }

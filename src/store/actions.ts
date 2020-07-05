@@ -198,8 +198,8 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesData) 
 
 export const appendError = createAction(
   'APPEND_ERROR',
-  (_etesync: CredentialsData, error: Error) => {
-    return error;
+  (_etesync: CredentialsData, error: Error | Error[]) => {
+    return Array.isArray(error) ? error : [error];
   }
 );
 
