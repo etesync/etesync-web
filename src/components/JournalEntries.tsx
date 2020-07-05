@@ -240,7 +240,10 @@ class JournalEntries extends React.PureComponent {
             Raw Content
           </DialogTitle>
           <DialogContent>
-            <pre>{this.state.dialog?.content}</pre>
+            <div>Entry UID: <pre className="d-inline-block">{this.state.dialog?.uid}</pre></div>
+            <div>Content:
+              <pre>{this.state.dialog?.content}</pre>
+            </div>
           </DialogContent>
           <DialogActions>
             <Button
