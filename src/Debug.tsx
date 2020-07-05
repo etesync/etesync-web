@@ -65,6 +65,7 @@ export default function Debug(props: PropsType) {
           }
 
           const wantedEntries = {};
+          const wantAll = (entriesUids.trim() === 'all');
           entriesUids.split('\n').forEach((ent) => wantedEntries[ent.trim()] = true);
 
           const cryptoManager = journal.getCryptoManager(derived, keyPair);
@@ -75,7 +76,7 @@ export default function Debug(props: PropsType) {
             const syncEntry = entry.getSyncEntry(cryptoManager, prevUid);
             prevUid = entry.uid;
 
-            return (wantedEntries[entry.uid]) ? syncEntry : undefined;
+            return (wantAll || wantedEntries[entry.uid]) ? syncEntry : undefined;
           }).filter((x) => x !== undefined);
 
           setResult(syncEntries.map((ent) => ent?.content).join('\n\n'));
