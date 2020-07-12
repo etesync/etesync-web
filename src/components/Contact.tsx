@@ -15,7 +15,7 @@ import CopyIcon from '../icons/Copy';
 import PimItemHeader from './PimItemHeader';
 
 import { ContactType } from '../pim-types';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Avatar } from '@material-ui/core';
 
 class Contact extends React.PureComponent {
   public props: {
@@ -162,9 +162,11 @@ class Contact extends React.PureComponent {
       }
     }
 
+    const contactImageSrc = contact.comp.getFirstProperty('photo')?.getFirstValue();
+
     return (
       <div>
-        <PimItemHeader text={name}>
+        <PimItemHeader text={name} rightItem={contactImageSrc && (<Avatar style={{ width: '3em', height: '3em' }} src={contactImageSrc} />)}>
           {lastModified && (
             <span style={{ fontSize: '90%' }}>{lastModified}</span>
           )}
