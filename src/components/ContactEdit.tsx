@@ -130,6 +130,11 @@ class ContactEdit extends React.PureComponent<PropsType> {
   public state: {
     uid: string;
     fn: string;
+    namePrefix: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    nameSuffix: string;
     phone: ValueType[];
     email: ValueType[];
     address: ValueType[];
@@ -147,6 +152,11 @@ class ContactEdit extends React.PureComponent<PropsType> {
     this.state = {
       uid: '',
       fn: '',
+      namePrefix: '',
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      nameSuffix: '',
       phone: [new ValueType()],
       email: [new ValueType()],
       address: [new ValueType()],
@@ -164,6 +174,13 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
       this.state.uid = contact.uid;
       this.state.fn = contact.fn ? contact.fn : '';
+      if (contact.n) {
+        this.state.namePrefix = contact.n[3];
+        this.state.firstName = contact.n[1];
+        this.state.middleName = contact.n[2];
+        this.state.lastName = contact.n[0];
+        this.state.nameSuffix = contact.n[4];
+      }
 
       // FIXME: Am I really getting all the values this way?
       const propToValueType = (comp: ICAL.Component, propName: string) => (
@@ -282,8 +299,32 @@ class ContactEdit extends React.PureComponent<PropsType> {
     comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
     comp.updatePropertyWithValue('version', '4.0');
     comp.updatePropertyWithValue('uid', this.state.uid);
-    comp.updatePropertyWithValue('fn', this.state.fn);
     comp.updatePropertyWithValue('rev', ICAL.Time.now());
+
+    const lastName = this.state.lastName.trim();
+    const firstName = this.state.firstName.trim();
+    const middleName = this.state.middleName.trim();
+    const namePrefix = this.state.namePrefix.trim();
+    const nameSuffix = this.state.nameSuffix.trim();
+    
+    let fn = `${namePrefix} ${firstName} ${middleName} ${lastName}`.trim();
+
+    if (fn === '') { 
+      fn = nameSuffix;
+    } else if (nameSuffix !== '') { 
+      fn = `${fn}, ${nameSuffix}`;
+    }
+
+    comp.updatePropertyWithValue('fn', fn);
+
+    const name = [lastName,
+      firstName,
+      middleName,
+      namePrefix,
+      nameSuffix,
+    ];
+
+    comp.updatePropertyWithValue('n', name);
 
     function setProperties(name: string, source: ValueType[]) {
       comp.removeAllProperties(name);
@@ -316,6 +357,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     setProperty('org', this.state.org);
     setProperty('title', this.state.title);
     setProperty('note', this.state.note);
+
 
     this.props.onSave(contact, this.state.journalUid, this.props.item)
       .then(() => {
@@ -366,10 +408,42 @@ class ContactEdit extends React.PureComponent<PropsType> {
           </FormControl>
 
           <TextField
-            name="fn"
-            placeholder="Name"
+            name="namePrefix"
+            placeholder="Prefix"
             style={{ marginTop: '2rem', ...styles.fullWidth }}
-            value={this.state.fn}
+            value={this.state.namePrefix}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="firstName"
+            placeholder="First name"
+            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            value={this.state.firstName}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="middleName"
+            placeholder="Middle name"
+            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            value={this.state.middleName}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="lastName"
+            placeholder="Last name"
+            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            value={this.state.lastName}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="nameSuffix"
+            placeholder="Suffix"
+            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            value={this.state.nameSuffix}
             onChange={this.handleInputChange}
           />
 
