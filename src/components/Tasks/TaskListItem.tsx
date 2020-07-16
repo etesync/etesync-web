@@ -34,7 +34,7 @@ const TagsList = React.memo((props: { tags: string[] }) => (
 
 interface PropsType {
   entry: TaskType;
-  subEntries?: TaskType[];
+  nestedItems?: React.ReactNode[];
   onClick: (task: TaskType) => void;
   onToggleComplete: (task: TaskType, completed: boolean) => void;
 }
@@ -42,7 +42,7 @@ interface PropsType {
 export default React.memo(function TaskListItem(props: PropsType) {
   const {
     entry: task,
-    subEntries,
+    nestedItems,
     onClick,
     onToggleComplete,
   } = props;
@@ -57,9 +57,7 @@ export default React.memo(function TaskListItem(props: PropsType) {
       primaryText={title}
       secondaryText={secondaryText}
       secondaryTextColor={task.overdue ? 'error' : 'textSecondary'}
-      nestedItems={subEntries?.map((x) => (
-        <TaskListItem key={x.uid} entry={x} onClick={onClick} onToggleComplete={onToggleComplete} />
-      ))}
+      nestedItems={nestedItems}
       onClick={() => onClick(task)}
       leftIcon={
         <Checkbox

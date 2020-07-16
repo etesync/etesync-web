@@ -125,6 +125,8 @@ export default function TaskList(props: PropsType) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const { onItemClick } = props;
+
   const handleToggleComplete = (task: TaskType, completed: boolean) => {
     const clonedTask = task.clone();
     clonedTask.status = completed ? TaskStatusType.Completed : TaskStatusType.NeedsAction;
@@ -222,21 +224,23 @@ export default function TaskList(props: PropsType) {
     return true;
   });
 
-  const sortedEntries = entries.sort(getSortFunction(sortBy));
-
-  const itemList = sortedEntries.map((entry) => {
+  function taskListItemFromTask(entry: TaskType) {
     const uid = entry.uid;
 
     return (
       <TaskListItem
         key={uid}
         entry={entry}
-        subEntries={subEntriesMap.get(uid)}
-        onClick={props.onItemClick}
-        onToggleComplete={(entry: TaskType, completed: boolean) => handleToggleComplete(entry, completed)}
+        nestedItems={subEntriesMap.get(uid)?.map(taskListItemFromTask)}
+        onClick={onItemClick}
+        onToggleComplete={handleToggleComplete}
       />
     );
-  });
+  }
+
+  const sortedEntries = entries.sort(getSortFunction(sortBy));
+
+  const itemList = sortedEntries.map(taskListItemFromTask);
 
   return (
     <Grid container spacing={4}>
