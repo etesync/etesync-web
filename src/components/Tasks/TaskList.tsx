@@ -208,6 +208,19 @@ export default function TaskList(props: PropsType) {
     entries = potentialEntries;
   }
 
+  const subEntriesMap = new Map<string, TaskType[]>();
+
+  entries = entries.filter((x) => {
+    const relatedTo = x.relatedTo;
+    if (relatedTo) {
+      const cur = subEntriesMap.get(relatedTo) ?? [];
+      cur.push(x);
+      subEntriesMap.set(relatedTo, cur);
+      return false;
+    }
+    return true;
+  });
+
   const sortedEntries = entries.sort(getSortFunction(sortBy));
 
   const itemList = sortedEntries.map((entry) => {
@@ -217,8 +230,9 @@ export default function TaskList(props: PropsType) {
       <TaskListItem
         key={uid}
         entry={entry}
+        subEntries={subEntriesMap.get(uid)}
         onClick={props.onItemClick}
-        onToggleComplete={(completed: boolean) => handleToggleComplete(entry, completed)}
+        onToggleComplete={(entry: TaskType, completed: boolean) => handleToggleComplete(entry, completed)}
       />
     );
   });

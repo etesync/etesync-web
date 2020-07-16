@@ -226,6 +226,18 @@ export class TaskType extends EventType {
     return this.component.getFirstPropertyValue('completed');
   }
 
+  set relatedTo(parentUid: string | undefined) {
+    if (parentUid !== undefined) {
+      this.component.updatePropertyWithValue('related-to', parentUid);
+    } else {
+      this.component.removeAllProperties('related-to');
+    }
+  }
+
+  get relatedTo(): string | undefined {
+    return this.component.getFirstPropertyValue('related-to');
+  }
+
   get endDate() {
     // XXX: A hack to override this as it shouldn't be used
     return undefined as any;
