@@ -130,10 +130,10 @@ class ContactEdit extends React.PureComponent<PropsType> {
   public state: {
     uid: string;
     fn: string;
-    namePrefix: string;
+    lastName: string;
     firstName: string;
     middleName: string;
-    lastName: string;
+    namePrefix: string;
     nameSuffix: string;
     phone: ValueType[];
     email: ValueType[];
@@ -152,10 +152,10 @@ class ContactEdit extends React.PureComponent<PropsType> {
     this.state = {
       uid: '',
       fn: '',
-      namePrefix: '',
+      lastName: '',
       firstName: '',
       middleName: '',
-      lastName: '',
+      namePrefix: '',
       nameSuffix: '',
       phone: [new ValueType()],
       email: [new ValueType()],
@@ -175,11 +175,27 @@ class ContactEdit extends React.PureComponent<PropsType> {
       this.state.uid = contact.uid;
       this.state.fn = contact.fn ? contact.fn : '';
       if (contact.n) {
-        this.state.namePrefix = contact.n[3];
+        this.state.lastName = contact.n[0];
         this.state.firstName = contact.n[1];
         this.state.middleName = contact.n[2];
-        this.state.lastName = contact.n[0];
+        this.state.namePrefix = contact.n[3];
         this.state.nameSuffix = contact.n[4];
+      } else {
+        let name = this.state.fn.trim().split(',');
+        if (name.length > 2 && name[0] !== '' && name[name.length - 1] !== '') {
+          this.state.nameSuffix = name.pop() || '';
+        }
+        name = name.join(',').split(' ');
+        if (name.length === 1) {
+          this.state.firstName = name[0];
+        } else if (name.length === 2) {
+          this.state.firstName = name[0];
+          this.state.lastName = name[1];
+        } else if (name.length > 2) {
+          this.state.firstName = name.slice(0, name.length - 2).join(' ');
+          this.state.middleName = name[name.length - 2];
+          this.state.lastName = name[name.length - 1];
+        }
       }
 
       // FIXME: Am I really getting all the values this way?
