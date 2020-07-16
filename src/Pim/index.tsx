@@ -169,7 +169,9 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             exact
             render={({ match }) => {
               const itemUid = decodeURIComponent(match.params.itemUid);
-              if (this.itemUndefined(itemUid)) {return PageNotFound()}
+              if (this.itemUndefined(itemUid)) {
+                return PageNotFound();
+              }
               return (
                 <Container style={{ maxWidth: '30rem' }}>
                   {(itemUid in props.items) &&
@@ -192,7 +194,9 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             exact
             render={({ match }) => {
               const paramItemUid = decodeURIComponent(match.params.itemUid);
-              if (this.itemUndefined(paramItemUid)) {return PageNotFound()}
+              if (this.itemUndefined(paramItemUid)) {
+                return PageNotFound();
+              }
               return (
                 <Container>
                   <ItemChangeLog
@@ -208,7 +212,9 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             exact
             render={({ match, history }) => {
               const itemUid = decodeURIComponent(match.params.itemUid);
-              if (this.itemUndefined(itemUid)) {return PageNotFound()}
+              if (this.itemUndefined(itemUid)) {
+                return PageNotFound();
+              }
               return (
                 <Container>
                   <div style={{ textAlign: 'right', marginBottom: 15 }}>
