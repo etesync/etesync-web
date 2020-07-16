@@ -160,7 +160,6 @@ class PimMain extends React.PureComponent<PropsType> {
               onItemSave={this.props.onItemSave}
               syncInfo={this.props.syncInfo}
               userInfo={this.props.userInfo}
-              etesync={this.props.etesync}
             />
           }
         </Container>

@@ -9,6 +9,7 @@ import * as EteSync from 'etesync';
 import { routeResolver } from '../App';
 
 import { History } from 'history';
+import { SyncInfo } from '../SyncGate';
 
 function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
@@ -19,6 +20,7 @@ export function journalView(JournalList: any, JournalItem: any) {
     public props: {
       journal: EteSync.Journal;
       entries: {[key: string]: any};
+      syncInfo?: SyncInfo;
       history?: History;
     };
 
@@ -43,7 +45,7 @@ export function journalView(JournalList: any, JournalItem: any) {
             path={routeResolver.getRoute('journals._id')}
             exact
             render={() => (
-              <JournalList entries={objValues(items)} onItemClick={this.itemClicked} />
+              <JournalList syncInfo={this.props.syncInfo} entries={objValues(items)} onItemClick={this.itemClicked} />
             )
             }
           />

@@ -22,12 +22,13 @@ import Sidebar from './Sidebar';
 import Toolbar from './Toolbar';
 import QuickAdd from './QuickAdd';
 
-import { StoreState, UserInfoData, CredentialsData } from '../../store';
+import { StoreState, UserInfoData } from '../../store';
 import { formatDate } from '../../helpers';
 import { SyncInfo } from '../../SyncGate';
 import { fetchEntries } from '../../store/actions';
 import { Action } from 'redux-actions';
 import { addJournalEntries } from '../../etesync-helpers';
+import { useCredentials } from '../../login';
 
 function sortCompleted(a: TaskType, b: TaskType) {
   return (!!a.finished === !!b.finished) ? 0 : (a.finished) ? 1 : -1;
@@ -110,7 +111,6 @@ interface PropsType {
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
   syncInfo: SyncInfo;
   userInfo: UserInfoData;
-  etesync: CredentialsData;
 }
 
 export default function TaskList(props: PropsType) {
@@ -120,6 +120,7 @@ export default function TaskList(props: PropsType) {
   const [toast, setToast] = React.useState<{ message: string, severity: ToastProps['severity'] }>({ message: '', severity: undefined });
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
+  const etesync = useCredentials();
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -145,7 +146,7 @@ export default function TaskList(props: PropsType) {
       prevUid = last.uid;
     }
 
-    dispatch<any>(fetchEntries(props.etesync, journal.uid, prevUid))
+    dispatch<any>(fetchEntries(etesync, journal.uid, prevUid))
       .then((entriesAction: Action<EteSync.Entry[]>) => {
         last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
 
@@ -163,7 +164,7 @@ export default function TaskList(props: PropsType) {
           updates.push(addNextTask as [EteSync.SyncEntryAction, string]);
         }
 
-        return dispatch(addJournalEntries(props.etesync, props.userInfo, journal, prevUid, updates));
+        return dispatch(addJournalEntries(etesync, props.userInfo, journal, prevUid, updates));
       })
       .then(() => {
         if (nextTask) {

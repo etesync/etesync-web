@@ -94,6 +94,7 @@ class Journal extends React.Component<PropsTypeInner> {
       itemsView = (
         <JournalTaskList
           journal={journal}
+          syncInfo={this.props.syncInfo}
           entries={syncEntriesToTaskItemMap(collectionInfo, syncEntries)}
         />);
       itemsTitle = 'Tasks';
