@@ -282,7 +282,11 @@ class App extends React.PureComponent {
   }
 
   private autoRefresh() {
-    if (navigator.onLine && this.props.credentials) { this.refresh() }
+    if (navigator.onLine && this.props.credentials &&
+      !(window.location.pathname.match(/.*\/(new|edit|copy)$/))) { 
+      this.refresh();
+    }
+
   }
 
   componentDidMount() {
