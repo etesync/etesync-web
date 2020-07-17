@@ -55,6 +55,7 @@ export const routeResolver = new RouteResolver({
       _id: {
         _base: ':itemUid',
         edit: 'edit',
+        copy: 'copy',
         log: 'log',
       },
       new: 'new',

@@ -50,6 +50,7 @@ interface PropsType {
   onCancel: () => void;
   location: Location;
   history: History;
+  copy: boolean;
 }
 
 class EventEdit extends React.PureComponent<PropsType> {
@@ -105,8 +106,12 @@ class EventEdit extends React.PureComponent<PropsType> {
         endDate.adjust(-1, 0, 0, 0);
       }
 
-      this.state.uid = event.uid;
-      this.state.title = event.title ? event.title : '';
+      if (this.props.copy) {
+        this.state.title = event.title ? `Copy of ${event.title}` : '';
+      } else {
+        this.state.uid = event.uid;
+        this.state.title = event.title ? event.title : '';
+      }
       this.state.allDay = allDay;
       this.state.start = event.startDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
       this.state.end = endDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
@@ -120,7 +125,8 @@ class EventEdit extends React.PureComponent<PropsType> {
           this.state.rrule.until = rruleProp.until;
         }
       }
-    } else {
+    }
+    if (this.props.copy || this.props.item === undefined) {
       this.state.uid = uuid.v4();
     }
 
@@ -222,7 +228,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       return;
     }
 
-    const event = (this.props.item) ?
+    const event = (this.props.item && !this.props.copy) ?
       this.props.item.clone()
       :
       new EventType()
@@ -281,7 +287,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     return (
       <>
         <h2>
-          {this.props.item ? 'Edit Event' : 'New Event'}
+          {(this.props.item && !this.props.copy) ? 'Edit Event' : 'New Event'}
         </h2>
         {recurring && (
           <div>
