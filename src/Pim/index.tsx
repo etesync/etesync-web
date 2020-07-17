@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import Button from '@material-ui/core/Button';
 import IconEdit from '@material-ui/icons/Edit';
+import IconCopy from '@material-ui/icons/FileCopy';
 import IconChangeHistory from '@material-ui/icons/ChangeHistory';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -189,6 +190,34 @@ const CollectionRoutes = withStyles(styles)(withRouter(
               );
             }}
           />
+          {props.routePrefix === 'pim.events' &&
+            <Route
+              path={routeResolver.getRoute(props.routePrefix + '._id.copy')}
+              exact
+              render={({ match }) => {
+                const itemUid = decodeURIComponent(match.params.itemUid);
+                if (this.itemUndefined(itemUid)) {
+                  return PageNotFound();
+                }
+                return (
+                  <Container style={{ maxWidth: '30rem' }}>
+                    {(itemUid in props.items) &&
+                      <ComponentEdit
+                        initialCollection={(props.items[itemUid] as any).journalUid}
+                        item={props.items[itemUid]}
+                        collections={props.collections}
+                        onSave={props.onItemSave}
+                        onDelete={props.onItemDelete}
+                        onCancel={props.onItemCancel}
+                        history={props.history}
+                        copy
+                      />
+                    }
+                  </Container>
+                );
+              }}
+            />
+          }
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id.log')}
             exact
@@ -246,6 +275,24 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                       <IconEdit className={classes.leftIcon} />
                       Edit
                     </Button>
+
+                    {props.routePrefix === 'pim.events' &&
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        disabled={!props.componentEdit}
+                        className={classes.button}
+                        style={{ marginLeft: 15 }}
+                        onClick={() =>
+                          history.push(routeResolver.getRoute(
+                            props.routePrefix + '._id.copy',
+                            { itemUid: match.params.itemUid }))
+                        }
+                      >
+                        <IconCopy className={classes.leftIcon} />
+                        Copy
+                      </Button>
+                    }
                   </div>
                   <ComponentView item={props.items[decodeURIComponent(match.params.itemUid)]} />
                 </Container>
