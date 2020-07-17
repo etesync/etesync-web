@@ -126,8 +126,22 @@ const styles = (theme: any) => ({
   },
 });
 
+function PageNotFound() {
+  return (
+    <Container>
+      <h1>404 Page Not Found</h1>
+    </Container>
+  );
+}
+
+
 const CollectionRoutes = withStyles(styles)(withRouter(
   class CollectionRoutesInner extends React.PureComponent<CollectionRoutesPropsType> {
+
+    private itemUndefined(itemUid: string) {
+      return this.props.items[itemUid] === undefined;
+    }
+
     public render() {
       const props = this.props;
       const { classes } = this.props;
@@ -155,6 +169,9 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             exact
             render={({ match }) => {
               const itemUid = decodeURIComponent(match.params.itemUid);
+              if (this.itemUndefined(itemUid)) {
+                return PageNotFound();
+              }
               return (
                 <Container style={{ maxWidth: '30rem' }}>
                   {(itemUid in props.items) &&
@@ -175,53 +192,65 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id.log')}
             exact
-            render={({ match }) => (
-              <Container>
-                <ItemChangeLog
-                  syncInfo={props.syncInfo}
-                  paramItemUid={decodeURIComponent(match.params.itemUid)}
-                />
-              </Container>
-            )}
+            render={({ match }) => {
+              const paramItemUid = decodeURIComponent(match.params.itemUid);
+              if (this.itemUndefined(paramItemUid)) {
+                return PageNotFound();
+              }
+              return (
+                <Container>
+                  <ItemChangeLog
+                    syncInfo={props.syncInfo}
+                    paramItemUid={paramItemUid}
+                  />
+                </Container>
+              );
+            }}
           />
           <Route
             path={routeResolver.getRoute(props.routePrefix + '._id')}
             exact
-            render={({ match, history }) => (
-              <Container>
-                <div style={{ textAlign: 'right', marginBottom: 15 }}>
-                  <Button
-                    variant="contained"
-                    className={classes.button}
-                    onClick={() =>
-                      history.push(routeResolver.getRoute(
-                        props.routePrefix + '._id.log',
-                        { itemUid: match.params.itemUid }))
-                    }
-                  >
-                    <IconChangeHistory className={classes.leftIcon} />
-                    Change History
-                  </Button>
+            render={({ match, history }) => {
+              const itemUid = decodeURIComponent(match.params.itemUid);
+              if (this.itemUndefined(itemUid)) {
+                return PageNotFound();
+              }
+              return (
+                <Container>
+                  <div style={{ textAlign: 'right', marginBottom: 15 }}>
+                    <Button
+                      variant="contained"
+                      className={classes.button}
+                      onClick={() =>
+                        history.push(routeResolver.getRoute(
+                          props.routePrefix + '._id.log',
+                          { itemUid: match.params.itemUid }))
+                      }
+                    >
+                      <IconChangeHistory className={classes.leftIcon} />
+                      Change History
+                    </Button>
 
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    disabled={!props.componentEdit}
-                    className={classes.button}
-                    style={{ marginLeft: 15 }}
-                    onClick={() =>
-                      history.push(routeResolver.getRoute(
-                        props.routePrefix + '._id.edit',
-                        { itemUid: match.params.itemUid }))
-                    }
-                  >
-                    <IconEdit className={classes.leftIcon} />
-                    Edit
-                  </Button>
-                </div>
-                <ComponentView item={props.items[decodeURIComponent(match.params.itemUid)]} />
-              </Container>
-            )}
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      disabled={!props.componentEdit}
+                      className={classes.button}
+                      style={{ marginLeft: 15 }}
+                      onClick={() =>
+                        history.push(routeResolver.getRoute(
+                          props.routePrefix + '._id.edit',
+                          { itemUid: match.params.itemUid }))
+                      }
+                    >
+                      <IconEdit className={classes.leftIcon} />
+                      Edit
+                    </Button>
+                  </div>
+                  <ComponentView item={props.items[decodeURIComponent(match.params.itemUid)]} />
+                </Container>
+              );
+            }}
           />
         </Switch>
       );
