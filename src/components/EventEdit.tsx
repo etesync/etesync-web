@@ -50,7 +50,7 @@ interface PropsType {
   onCancel: () => void;
   location: Location;
   history: History;
-  copy: boolean;
+  duplicate: boolean;
 }
 
 class EventEdit extends React.PureComponent<PropsType> {
@@ -106,7 +106,7 @@ class EventEdit extends React.PureComponent<PropsType> {
         endDate.adjust(-1, 0, 0, 0);
       }
 
-      if (this.props.copy) {
+      if (this.props.duplicate) {
         this.state.title = event.title ? `Copy of ${event.title}` : '';
       } else {
         this.state.uid = event.uid;
@@ -126,7 +126,7 @@ class EventEdit extends React.PureComponent<PropsType> {
         }
       }
     }
-    if (this.props.copy || this.props.item === undefined) {
+    if (this.props.duplicate || this.props.item === undefined) {
       this.state.uid = uuid.v4();
     }
 
@@ -228,7 +228,7 @@ class EventEdit extends React.PureComponent<PropsType> {
       return;
     }
 
-    const event = (this.props.item && !this.props.copy) ?
+    const event = (this.props.item && !this.props.duplicate) ?
       this.props.item.clone()
       :
       new EventType()
@@ -287,7 +287,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     return (
       <>
         <h2>
-          {(this.props.item && !this.props.copy) ? 'Edit Event' : 'New Event'}
+          {(this.props.item && !this.props.duplicate) ? 'Edit Event' : 'New Event'}
         </h2>
         {recurring && (
           <div>
