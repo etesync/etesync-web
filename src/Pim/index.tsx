@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import Button from '@material-ui/core/Button';
 import IconEdit from '@material-ui/icons/Edit';
-import IconCopy from '@material-ui/icons/FileCopy';
+import IconDuplicate from '@material-ui/icons/FileCopy';
 import IconChangeHistory from '@material-ui/icons/ChangeHistory';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -192,7 +192,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
           />
           {props.routePrefix === 'pim.events' &&
             <Route
-              path={routeResolver.getRoute(props.routePrefix + '._id.copy')}
+              path={routeResolver.getRoute(props.routePrefix + '._id.duplicate')}
               exact
               render={({ match }) => {
                 const itemUid = decodeURIComponent(match.params.itemUid);
@@ -210,7 +210,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                         onDelete={props.onItemDelete}
                         onCancel={props.onItemCancel}
                         history={props.history}
-                        copy
+                        duplicate
                       />
                     }
                   </Container>
@@ -285,12 +285,12 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                         style={{ marginLeft: 15 }}
                         onClick={() =>
                           history.push(routeResolver.getRoute(
-                            props.routePrefix + '._id.copy',
+                            props.routePrefix + '._id.duplicate',
                             { itemUid: match.params.itemUid }))
                         }
                       >
-                        <IconCopy className={classes.leftIcon} />
-                        Copy
+                        <IconDuplicate className={classes.leftIcon} />
+                        Duplicate
                       </Button>
                     }
                   </div>

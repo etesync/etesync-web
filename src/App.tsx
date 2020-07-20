@@ -55,7 +55,7 @@ export const routeResolver = new RouteResolver({
       _id: {
         _base: ':itemUid',
         edit: 'edit',
-        copy: 'copy',
+        duplicate: 'duplicate',
         log: 'log',
       },
       new: 'new',
@@ -284,7 +284,7 @@ class App extends React.PureComponent {
 
   private autoRefresh() {
     if (navigator.onLine && this.props.credentials &&
-      !(window.location.pathname.match(/.*\/(new|edit|copy)$/))) { 
+      !(window.location.pathname.match(/.*\/(new|edit|duplicate)$/))) { 
       this.refresh();
     }
 
