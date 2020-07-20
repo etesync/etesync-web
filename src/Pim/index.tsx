@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import Button from '@material-ui/core/Button';
 import IconEdit from '@material-ui/icons/Edit';
-import IconDuplicate from '@material-ui/icons/InsertInvitation';
+import IconDuplicate from '@material-ui/icons/FileCopy';
 import IconChangeHistory from '@material-ui/icons/ChangeHistory';
 import { withStyles } from '@material-ui/core/styles';
 
