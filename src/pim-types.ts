@@ -364,6 +364,10 @@ export class ContactType implements PimType {
     return this.comp.getFirstPropertyValue('n');
   }
 
+  get bday() {
+    return this.comp.getFirstPropertyValue('bday');
+  }
+
   get group() {
     const kind = this.comp.getFirstPropertyValue('kind');
     return kind in ['group', 'organization'];

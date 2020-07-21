@@ -19,7 +19,7 @@ import { createSelector } from 'reselect';
 
 import { History } from 'history';
 
-import { PimType, ContactType, EventType, TaskType } from '../pim-types';
+import { PimType, ContactType, EventType, TaskType, parseString } from '../pim-types';
 
 import Container from '../widgets/Container';
 
@@ -395,6 +395,25 @@ class Pim extends React.PureComponent {
     const { collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems } = itemsSelector(this.props);
     const [contacts, events, tasks] = itemValuesSelector(this.props);
 
+    const birthdays = contacts.filter((c) => c.bday).map((c) => {
+      let { year, month, day } = c.bday._time;
+      year = year || '2020';
+      if (month < 10) {
+        month = '0' + month;
+      }
+      if (day < 10) {
+        day = '0' + day;
+      }
+
+      const event = 
+        'BEGIN:VEVENT\n' +
+        `SUMMARY:${c.fn}'s Birthday\n` +
+        `DTSTART;VALUE=DATE:${year}${month}${day}\n` +
+        'RRULE:FREQ=YEARLY\n' +
+        'END:VEVENT';
+      return new EventType(parseString(event));
+    });
+
     return (
       <Switch>
         <Route
@@ -403,7 +422,7 @@ class Pim extends React.PureComponent {
           render={({ history }) => (
             <PimMain
               contacts={contacts}
-              events={events}
+              events={events.concat(birthdays)}
               tasks={tasks}
               history={history}
               onItemSave={this.onItemSave}
