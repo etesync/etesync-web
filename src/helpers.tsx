@@ -120,3 +120,45 @@ export function mapPriority(priority: number): TaskPriorityType {
     return TaskPriorityType.Undefined;
   }
 }
+
+export function parseDate(prop: ICAL.Property) {
+  const value = prop.getFirstValue();
+  if ((value.day !== null) && (value.day !== undefined)) {
+    return {
+      day: value.day,
+      month: value.month - 1,
+      year: value.year ?? undefined,
+    };
+  } else {
+    const time = prop.toJSON()[3];
+    if (time.length === 6 && time.startsWith('--')) {
+      return {
+        day: parseInt(time.slice(4, 6)),
+        month: parseInt(time.slice(2, 4)) - 1,
+      };
+    } else if (time.length === 8) {
+      return {
+        day: parseInt(time.slice(6, 8)),
+        month: parseInt(time.slice(4, 6)) - 1,
+        year: parseInt(time.slice(0, 4)),
+      };
+    }
+  }
+
+  return {};
+}
+
+export function timeNativeToVobject(date: Date, allDay: boolean) {
+  const ret = ICAL.Time.fromJSDate(date, true);
+  if (!allDay) {
+    return ret;
+  } else {
+    const data: ICAL.TimeJsonData = {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+      isDate: allDay,
+    };
+    return ICAL.Time.fromData(data);
+  }
+}
