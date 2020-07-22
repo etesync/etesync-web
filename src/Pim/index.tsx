@@ -15,11 +15,13 @@ import { Action } from 'redux-actions';
 
 import * as EteSync from 'etesync';
 
+import * as ICAL from 'ical.js';
+
 import { createSelector } from 'reselect';
 
 import { History } from 'history';
 
-import { PimType, ContactType, EventType, TaskType, parseString } from '../pim-types';
+import { PimType, ContactType, EventType, TaskType } from '../pim-types';
 
 import Container from '../widgets/Container';
 
@@ -40,6 +42,7 @@ import { fetchEntries } from '../store/actions';
 import { SyncInfo } from '../SyncGate';
 
 import { addJournalEntry } from '../etesync-helpers';
+import { parseDate, timeNativeToVobject } from '../helpers';
 
 import { syncEntriesToItemMap, syncEntriesToEventItemMap, syncEntriesToTaskItemMap } from '../journal-processors';
 
@@ -395,25 +398,30 @@ class Pim extends React.PureComponent {
     const { collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems } = itemsSelector(this.props);
     const [contacts, events, tasks] = itemValuesSelector(this.props);
 
-    const birthdays = contacts.filter((c) => c.bday).map((c) => {
-      let { year, month, day } = c.bday._time;
-      year = year || '2020';
-      if (month < 10) {
-        month = '0' + month;
-      }
-      if (day < 10) {
-        day = '0' + day;
-      }
+    let birthdays: EventType[] = [];
 
-      const event = 
-        'BEGIN:VEVENT\n' +
-        `SUMMARY:${c.fn}'s Birthday\n` +
-        `DTSTART;VALUE=DATE:${year}${month}${day}\n` +
-        'RRULE:FREQ=YEARLY\n' +
-        'END:VEVENT';
-      return new EventType(parseString(event));
-    });
+    if (store.getState().settings.showBirthdayCalendar) {
+      birthdays = contacts.filter((c) => c.bday).map((c) => {
+        const event = new EventType();
+        const bdayTime = parseDate(c.comp.getFirstProperty('bday'));
+        if (bdayTime !== {} && bdayTime.month !== undefined) {
+          const year = bdayTime.year ?? 1900;
+          const month = bdayTime.month;
+          const day = bdayTime.day;
+          const date = new Date(year, month, day);
 
+          event.summary = `${c.fn}'s Birthday`;
+          event.startDate = timeNativeToVobject(date, true);
+          const rrule: ICAL.RecurData = {
+            freq: 'YEARLY',
+            interval: 1,
+          };
+          event.rrule = new ICAL.Recur(rrule);
+        }
+        return event;
+      }).filter((ev) => ev.uid !== undefined);
+    }
+    
     return (
       <Switch>
         <Route

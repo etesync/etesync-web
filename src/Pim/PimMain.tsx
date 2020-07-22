@@ -64,10 +64,10 @@ class PimMain extends React.PureComponent<PropsType> {
   }
 
   public eventClicked(event: ICAL.Event) {
-    // FIXME:Hack
-    const itemUid = `${(event as any).journalUid}|${encodeURIComponent(event.uid)}`;
-
     if (event.uid) {
+      // FIXME:Hack
+      const itemUid = `${(event as any).journalUid}|${encodeURIComponent(event.uid)}`;
+
       this.props.history!.push(
         routeResolver.getRoute('pim.events._id', { itemUid }));
     }
