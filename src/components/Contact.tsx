@@ -127,7 +127,7 @@ class Contact extends React.PureComponent {
     ));
 
     const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'anniversary', 'rev',
-      'prodid', 'uid', 'fn', 'n', 'version', 'photo'];
+      'prodid', 'uid', 'fn', 'n', 'version', 'photo', 'note'];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
     )).map((prop, idx) => {
@@ -144,6 +144,20 @@ class Contact extends React.PureComponent {
       });
       return values;
     });
+
+    {
+      const note = contact.comp.getFirstPropertyValue('note');
+      const item = (
+        <ListItem
+          key="note"
+          insetChildren
+          secondaryText="note"
+        >
+          <pre style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap', overflowX: 'auto' }}>{note}</pre>
+        </ListItem>
+      );
+      theRest.push([item]);
+    }
 
     function listIfNotEmpty(items: JSX.Element[][]) {
       if (items.length > 0) {
