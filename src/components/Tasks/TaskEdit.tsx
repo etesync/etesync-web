@@ -142,21 +142,6 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.handleCloseToast = this.handleCloseToast.bind(this);
   }
 
-  public UNSAFE_componentWillReceiveProps(nextProps: any) {
-    if ((this.props.collections !== nextProps.collections) ||
-      (this.props.initialCollection !== nextProps.initialCollection)) {
-      if (nextProps.initialCollection) {
-        this.setState({
-          journalUid: nextProps.initialCollection,
-        });
-      } else if (nextProps.collections[0]) {
-        this.setState({
-          journalUid: nextProps.collections[0].uid,
-        });
-      }
-    }
-  }
-
   public handleChange(name: string, value: string | number | string[]) {
     this.setState({
       [name]: value,

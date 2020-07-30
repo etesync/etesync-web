@@ -240,21 +240,6 @@ class ContactEdit extends React.PureComponent<PropsType> {
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
   }
 
-  public UNSAFE_componentWillReceiveProps(nextProps: any) {
-    if ((this.props.collections !== nextProps.collections) ||
-      (this.props.initialCollection !== nextProps.initialCollection)) {
-      if (nextProps.initialCollection) {
-        this.setState({
-          journalUid: nextProps.initialCollection,
-        });
-      } else if (nextProps.collections[0]) {
-        this.setState({
-          journalUid: nextProps.collections[0].uid,
-        });
-      }
-    }
-  }
-
   public addValueType(name: string, _type?: string) {
     const type = _type ? _type : 'home';
     this.setState((prevState) => {

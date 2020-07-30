@@ -157,6 +157,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             render={() => (
               <Container style={{ maxWidth: '30rem' }}>
                 <ComponentEdit
+                  key={props.routePrefix}
                   collections={props.collections}
                   onSave={props.onItemSave}
                   onCancel={props.onItemCancel}
@@ -177,6 +178,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                 <Container style={{ maxWidth: '30rem' }}>
                   {(itemUid in props.items) &&
                     <ComponentEdit
+                      key={(props.items[itemUid] as any).journalUid}
                       initialCollection={(props.items[itemUid] as any).journalUid}
                       item={props.items[itemUid]}
                       collections={props.collections}
@@ -203,6 +205,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                   <Container style={{ maxWidth: '30rem' }}>
                     {(itemUid in props.items) &&
                       <ComponentEdit
+                        key={(props.items[itemUid] as any).journalUid}
                         initialCollection={(props.items[itemUid] as any).journalUid}
                         item={props.items[itemUid]}
                         collections={props.collections}
