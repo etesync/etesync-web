@@ -15,6 +15,7 @@ import { routeResolver } from "./App";
 import AppBarOverride from "./widgets/AppBarOverride";
 import LoadingIndicator from "./widgets/LoadingIndicator";
 import ContactsMain from "./Contacts/Main";
+import CalendarsMain from "./Calendars/Main";
 
 import Journals from "./Journals";
 import Settings from "./Settings";
@@ -96,7 +97,7 @@ export default function SyncGate() {
           <Route
             path={routeResolver.getRoute("pim.events")}
           >
-            events
+            <CalendarsMain />
           </Route>
           <Route
             path={routeResolver.getRoute("pim.tasks")}

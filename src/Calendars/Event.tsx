@@ -3,7 +3,7 @@
 
 import * as React from "react";
 
-import PimItemHeader from "./PimItemHeader";
+import PimItemHeader from "../components/PimItemHeader";
 
 import { formatDateRange, formatOurTimezoneOffset } from "../helpers";
 
