@@ -13,57 +13,37 @@ import { ContactType } from "../pim-types";
 
 import AddressBook from "../components/AddressBook";
 
-class SearchableAddressBook extends React.PureComponent {
-  public props: {
-    entries: ContactType[];
-    onItemClick: (contact: ContactType) => void;
-  };
-
-  public state: {
-    searchQuery: string;
-  };
-
-  constructor(props: any) {
-    super(props);
-    this.state = { searchQuery: "" };
-    this.handleInputChange = this.handleInputChange.bind(this);
-  }
-
-  public handleInputChange(event: React.ChangeEvent<any>) {
-    const name = event.target.name;
-    const value = event.target.value;
-    this.setState({
-      [name]: value,
-    });
-  }
-
-  public render() {
-    const {
-      entries,
-      ...rest
-    } = this.props;
-
-    const reg = new RegExp(this.state.searchQuery, "i");
-
-    return (
-      <React.Fragment>
-        <TextField
-          name="searchQuery"
-          value={this.state.searchQuery}
-          style={{ fontSize: "120%", marginLeft: 20 }}
-          placeholder="Find Contacts"
-          onChange={this.handleInputChange}
-        />
-        {this.state.searchQuery &&
-          <IconButton onClick={() => this.setState({ searchQuery: "" })}>
-            <IconClear />
-          </IconButton>
-        }
-        <IconSearch />
-        <AddressBook entries={entries} filter={(ent: ContactType) => ent.fn?.match(reg)} {...rest} />
-      </React.Fragment>
-    );
-  }
+interface PropsType {
+  entries: ContactType[];
+  onItemClick: (contact: ContactType) => void;
 }
 
-export default SearchableAddressBook;
+export default function SearchableAddressBook(props: PropsType) {
+  const [searchQuery, setSearchQuery] = React.useState("");
+
+  const {
+    entries,
+    ...rest
+  } = props;
+
+  const reg = new RegExp(searchQuery, "i");
+
+  return (
+    <React.Fragment>
+      <TextField
+        name="searchQuery"
+        value={searchQuery}
+        style={{ fontSize: "120%", marginLeft: 20 }}
+        placeholder="Find Contacts"
+        onChange={(event) => setSearchQuery(event.target.value)}
+      />
+      {searchQuery &&
+        <IconButton onClick={() => setSearchQuery("")}>
+          <IconClear />
+        </IconButton>
+      }
+      <IconSearch />
+      <AddressBook entries={entries} filter={(ent: ContactType) => ent.fn?.match(reg)} {...rest} />
+    </React.Fragment>
+  );
+}
