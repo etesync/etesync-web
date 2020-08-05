@@ -13,6 +13,7 @@ import LoadingIndicator from "../widgets/LoadingIndicator";
 
 import { CachedCollection, getDecryptCollectionsFunction, PimFab } from "../Pim/helpers";
 import CollectionList from "./CollectionList";
+import CollectionImport from "./CollectionImport";
 import PageNotFound from "../PageNotFound";
 import CollectionEdit from "./CollectionEdit";
 import Collection from "./Collection";
@@ -64,7 +65,9 @@ export default function CollectionsMain() {
         path={routeResolver.getRoute("collections")}
         exact
       >
-        <CollectionList collections={cachedCollections} />
+        <CollectionList
+          collections={cachedCollections}
+        />
         <PimFab
           onClick={() => history.push(
             routeResolver.getRoute("collections.new")
@@ -75,7 +78,9 @@ export default function CollectionsMain() {
         path={routeResolver.getRoute("collections.import")}
         exact
       >
-        Import
+        <CollectionImport
+          collections={cachedCollections}
+        />
       </Route>
       <Route
         path={routeResolver.getRoute("collections.new")}
