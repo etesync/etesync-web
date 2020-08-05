@@ -16,6 +16,7 @@ import * as C from "./constants";
 
 import SignedPagesBadge from "./images/signed-pages-badge.svg";
 import { useCredentials } from "./credentials";
+import LoadingIndicator from "./widgets/LoadingIndicator";
 
 
 export default function LoginGate() {
@@ -35,9 +36,11 @@ export default function LoginGate() {
     }
   }
 
-  const loading = credentials === undefined;
-
-  if (!credentials) {
+  if (credentials === undefined) {
+    return (
+      <LoadingIndicator />
+    );
+  } else if (credentials === null) {
     const style = {
       isSafe: {
         textDecoration: "none",
@@ -55,7 +58,6 @@ export default function LoginGate() {
         <LoginForm
           onSubmit={onFormSubmit}
           error={fetchError}
-          loading={loading}
         />
         <hr style={style.divider} />
         <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
@@ -75,6 +77,6 @@ export default function LoginGate() {
   }
 
   return (
-    <SyncGate etesync={credentials as any} />
+    <SyncGate />
   );
 }
