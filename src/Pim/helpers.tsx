@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: © 2020 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import * as React from "react";
+import { Fab } from "@material-ui/core";
+import ContentAdd from "@material-ui/icons/Add";
+
 import memoize from "memoizee";
 
 import * as Etebase from "etebase";
@@ -56,5 +60,32 @@ export function getDecryptItemsFunction<T extends PimType>(_colType: string, par
       return entries;
     },
     { max: 1 }
+  );
+}
+
+interface PimFabPropsType {
+  onClick: () => void;
+}
+
+export function PimFab(props: PimFabPropsType) {
+  const style = {
+    floatingButton: {
+      margin: 0,
+      top: "auto",
+      right: 20,
+      bottom: 20,
+      left: "auto",
+      position: "fixed",
+    },
+  };
+
+  return (
+    <Fab
+      color="primary"
+      style={style.floatingButton as any}
+      onClick={props.onClick}
+    >
+      <ContentAdd />
+    </Fab>
   );
 }

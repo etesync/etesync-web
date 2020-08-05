@@ -20,7 +20,7 @@ import LoadingIndicator from "../widgets/LoadingIndicator";
 import ContactEdit from "./ContactEdit";
 import PageNotFound from "../PageNotFound";
 
-import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction } from "../Pim/helpers";
+import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab } from "../Pim/helpers";
 
 const colType = "etebase.vcard";
 
@@ -131,6 +131,11 @@ export default function ContactsMain() {
           entries={flatEntries}
           onItemClick={(item) => history.push(
             routeResolver.getRoute("pim.contacts._id", { itemUid: getItemNavigationUid(item) })
+          )}
+        />
+        <PimFab
+          onClick={() => history.push(
+            routeResolver.getRoute("pim.contacts.new")
           )}
         />
       </Route>
