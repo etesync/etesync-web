@@ -120,8 +120,8 @@ interface PropsType {
   collections: CachedCollection[];
   initialCollection?: string;
   item?: ContactType;
-  onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => Promise<void>;
-  onDelete: (contact: ContactType, journalUid: string) => void;
+  onSave: (contact: ContactType, collectionUid: string, originalContact?: ContactType) => Promise<void>;
+  onDelete: (contact: ContactType, collectionUid: string) => void;
   onCancel: () => void;
   history: History<any>;
 }
@@ -143,11 +143,11 @@ class ContactEdit extends React.PureComponent<PropsType> {
     note: string;
     title: string;
 
-    journalUid: string;
+    collectionUid: string;
     showDeleteDialog: boolean;
   };
 
-  constructor(props: any) {
+  constructor(props: PropsType) {
     super(props);
     this.state = {
       uid: "",
@@ -165,7 +165,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
       note: "",
       title: "",
 
-      journalUid: "",
+      collectionUid: "",
       showDeleteDialog: false,
     };
 
@@ -227,9 +227,9 @@ class ContactEdit extends React.PureComponent<PropsType> {
     }
 
     if (props.initialCollection) {
-      this.state.journalUid = props.initialCollection;
+      this.state.collectionUid = props.initialCollection;
     } else if (props.collections[0]) {
-      this.state.journalUid = props.collections[0].collection.uid;
+      this.state.collectionUid = props.collections[0].collection.uid;
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -360,7 +360,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     setProperty("note", this.state.note);
 
 
-    this.props.onSave(contact, this.state.journalUid, this.props.item)
+    this.props.onSave(contact, this.state.collectionUid, this.props.item)
       .then(() => {
         this.props.history.goBack();
       });
@@ -398,8 +398,8 @@ class ContactEdit extends React.PureComponent<PropsType> {
               Saving to
             </InputLabel>
             <Select
-              name="journalUid"
-              value={this.state.journalUid}
+              name="collectionUid"
+              value={this.state.collectionUid}
               onChange={this.handleInputChange}
             >
               {this.props.collections.map((x) => (
