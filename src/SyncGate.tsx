@@ -135,10 +135,7 @@ export default function SyncGate() {
         path={routeResolver.getRoute("debug")}
         exact
         render={() => (
-          <Debug
-            etesync={etesync}
-            userInfo={userInfo}
-          />
+          <Debug />
         )}
       />
     </Switch>
