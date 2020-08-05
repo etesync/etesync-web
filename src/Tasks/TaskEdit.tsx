@@ -24,11 +24,11 @@ import IconDelete from "@material-ui/icons/Delete";
 import IconCancel from "@material-ui/icons/Clear";
 import IconSave from "@material-ui/icons/Save";
 
-import DateTimePicker from "../../widgets/DateTimePicker";
+import DateTimePicker from "../widgets/DateTimePicker";
 
-import ConfirmationDialog from "../../widgets/ConfirmationDialog";
-import TimezonePicker from "../../widgets/TimezonePicker";
-import Toast from "../../widgets/Toast";
+import ConfirmationDialog from "../widgets/ConfirmationDialog";
+import TimezonePicker from "../widgets/TimezonePicker";
+import Toast from "../widgets/Toast";
 
 import { Location } from "history";
 import { withRouter } from "react-router";
@@ -38,14 +38,14 @@ import * as ICAL from "ical.js";
 
 import * as EteSync from "etesync";
 
-import { getCurrentTimezone, mapPriority } from "../../helpers";
+import { getCurrentTimezone, mapPriority } from "../helpers";
 
-import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType, TaskTags } from "../../pim-types";
+import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType, TaskTags } from "../pim-types";
 
 import { History } from "history";
 
-import ColoredRadio from "../../widgets/ColoredRadio";
-import RRule, { RRuleOptions } from "../../widgets/RRule";
+import ColoredRadio from "../widgets/ColoredRadio";
+import RRule, { RRuleOptions } from "../widgets/RRule";
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];

@@ -3,15 +3,15 @@
 
 import * as React from "react";
 
-import { TaskType, TaskPriorityType } from "../../pim-types";
-import { ListItem } from "../../widgets/List";
+import { TaskType, TaskPriorityType } from "../pim-types";
+import { ListItem } from "../widgets/List";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import * as colors from "@material-ui/core/colors";
 import Chip from "@material-ui/core/Chip";
 
-import { mapPriority, formatDate } from "../../helpers";
+import { mapPriority, formatDate } from "../helpers";
 
 const checkboxColor = {
   [TaskPriorityType.Undefined]: colors.grey[600],

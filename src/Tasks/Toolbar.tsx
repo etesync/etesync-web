@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import * as EteSync from "etesync";
-
 import Switch from "@material-ui/core/Switch";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -14,15 +12,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Transition } from "react-transition-group";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
-import { PimType } from "../../pim-types";
+import { PimType } from "../pim-types";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { setSettings } from "../../store/actions";
-import { StoreState } from "../../store";
+import { setSettings } from "../store/actions";
+import { StoreState } from "../store";
 
-import Menu from "../../widgets/Menu";
+import Menu from "../widgets/Menu";
 import { ListItemText, ListItemSecondaryAction } from "@material-ui/core";
+import { CachedCollection } from "../Pim/helpers";
 
 const transitionTimeout = 300;
 
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface PropsType {
-  defaultCollection: EteSync.CollectionInfo;
+  defaultCollection: CachedCollection;
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
   showCompleted: boolean;
   showHidden: boolean;

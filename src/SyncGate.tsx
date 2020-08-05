@@ -16,6 +16,7 @@ import AppBarOverride from "./widgets/AppBarOverride";
 import LoadingIndicator from "./widgets/LoadingIndicator";
 import ContactsMain from "./Contacts/Main";
 import CalendarsMain from "./Calendars/Main";
+import TasksMain from "./Tasks/Main";
 
 import Journals from "./Journals";
 import Settings from "./Settings";
@@ -102,7 +103,7 @@ export default function SyncGate() {
           <Route
             path={routeResolver.getRoute("pim.tasks")}
           >
-            tasks
+            <TasksMain />
           </Route>
         </Switch>
       </Route>

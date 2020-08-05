@@ -3,20 +3,19 @@
 
 import * as React from "react";
 
-import * as EteSync from "etesync";
-
 import ICAL from "ical.js";
 
 import uuid from "uuid";
 
 import TextField from "@material-ui/core/TextField";
 
-import { TaskType, PimType, TaskStatusType } from "../../pim-types";
+import { TaskType, PimType, TaskStatusType } from "../pim-types";
+import { CachedCollection } from "../Pim/helpers";
 
 interface PropsType {
   style: React.CSSProperties;
   onSubmit: (item: PimType, journalUid: string, originalItem?: PimType) => void;
-  defaultCollection: EteSync.CollectionInfo;
+  defaultCollection: CachedCollection;
 }
 
 function QuickAdd(props: PropsType) {
@@ -37,7 +36,7 @@ function QuickAdd(props: PropsType) {
     task.status = TaskStatusType.NeedsAction;
     task.lastModified = ICAL.Time.now();
 
-    save(task, defaultCollection.uid, undefined);
+    save(task, defaultCollection.collection.uid, undefined);
 
     setTitle("");
   }

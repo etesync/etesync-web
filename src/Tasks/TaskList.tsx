@@ -3,17 +3,15 @@
 
 import * as React from "react";
 
-import * as EteSync from "etesync";
+import { List } from "../widgets/List";
+import Toast, { PropsType as ToastProps } from "../widgets/Toast";
 
-import { List } from "../../widgets/List";
-import Toast, { PropsType as ToastProps } from "../../widgets/Toast";
-
-import { TaskType, PimType, TaskStatusType } from "../../pim-types";
+import { TaskType, PimType, TaskStatusType } from "../pim-types";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import { useTheme, makeStyles } from "@material-ui/core/styles";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Fuse from "fuse.js";
 
@@ -22,13 +20,9 @@ import Sidebar from "./Sidebar";
 import Toolbar from "./Toolbar";
 import QuickAdd from "./QuickAdd";
 
-import { StoreState, UserInfoData } from "../../store";
-import { formatDate } from "../../helpers";
-import { SyncInfo } from "../../SyncGate";
-import { fetchEntries } from "../../store/actions";
-import { Action } from "redux-actions";
-import { addJournalEntries } from "../../etesync-helpers";
-import { useCredentials } from "../../login";
+import { StoreState } from "../store";
+import { formatDate } from "../helpers";
+import { CachedCollection } from "../Pim/helpers";
 
 function sortCompleted(a: TaskType, b: TaskType) {
   return (!!a.finished === !!b.finished) ? 0 : (a.finished) ? 1 : -1;
@@ -106,11 +100,9 @@ const useStyles = makeStyles((theme) => ({
 
 interface PropsType {
   entries: TaskType[];
-  collections: EteSync.CollectionInfo[];
+  collections: CachedCollection[];
   onItemClick: (entry: TaskType) => void;
   onItemSave: (item: PimType, journalUid: string, originalItem?: PimType) => Promise<void>;
-  syncInfo: SyncInfo;
-  userInfo: UserInfoData;
 }
 
 export default function TaskList(props: PropsType) {
@@ -120,62 +112,25 @@ export default function TaskList(props: PropsType) {
   const [toast, setToast] = React.useState<{ message: string, severity: ToastProps["severity"] }>({ message: "", severity: undefined });
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
-  const etesync = useCredentials()!;
   const theme = useTheme();
   const classes = useStyles();
-  const dispatch = useDispatch();
 
   const { onItemClick } = props;
 
-  const handleToggleComplete = (task: TaskType, completed: boolean) => {
+  const handleToggleComplete = async (task: TaskType, completed: boolean) => {
     const clonedTask = task.clone();
     clonedTask.status = completed ? TaskStatusType.Completed : TaskStatusType.NeedsAction;
 
     const nextTask = completed ? task.getNextOccurence() : null;
 
-    const syncJournal = props.syncInfo.get((task as any).journalUid);
-
-    if (syncJournal === undefined) {
-      setToast({ message: "Could not sync.", severity: "error" });
-      return;
+    try {
+      await props.onItemSave(clonedTask, task.collectionUid!, task);
+      if (nextTask) {
+        setToast({ message: `${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`, severity: "success" });
+      }
+    } catch (_e) {
+      setToast({ message: "Failed to save changes. This may be due to a network error.", severity: "error" });
     }
-
-    const journal = syncJournal.journal;
-
-    let prevUid: string | null = null;
-    let last = syncJournal.journalEntries.last() as EteSync.Entry;
-    if (last) {
-      prevUid = last.uid;
-    }
-
-    dispatch<any>(fetchEntries(etesync, journal.uid, prevUid))
-      .then((entriesAction: Action<EteSync.Entry[]>) => {
-        last = entriesAction.payload!.slice(-1).pop() as EteSync.Entry;
-
-        if (last) {
-          prevUid = last.uid;
-        }
-
-        const changeTask = [EteSync.SyncEntryAction.Change, clonedTask.toIcal()];
-
-        const updates = [];
-        updates.push(changeTask as [EteSync.SyncEntryAction, string]);
-
-        if (nextTask) {
-          const addNextTask = [EteSync.SyncEntryAction.Add, nextTask.toIcal()];
-          updates.push(addNextTask as [EteSync.SyncEntryAction, string]);
-        }
-
-        return dispatch(addJournalEntries(etesync, props.userInfo, journal, prevUid, updates));
-      })
-      .then(() => {
-        if (nextTask) {
-          setToast({ message: `${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`, severity: "success" });
-        }
-      })
-      .catch(() => {
-        setToast({ message: "Failed to save changes. This may be due to a network error.", severity: "error" });
-      });
   };
 
   const potentialEntries = React.useMemo(
