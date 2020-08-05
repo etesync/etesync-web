@@ -14,6 +14,7 @@ import { routeResolver } from "./App";
 
 import AppBarOverride from "./widgets/AppBarOverride";
 import LoadingIndicator from "./widgets/LoadingIndicator";
+import Container from "./widgets/Container";
 import ContactsMain from "./Contacts/Main";
 import CalendarsMain from "./Calendars/Main";
 import TasksMain from "./Tasks/Main";
@@ -29,6 +30,7 @@ import { SyncManager } from "./sync/SyncManager";
 import { StoreState } from "./store";
 import { performSync } from "./store/actions";
 import { useCredentials } from "./credentials";
+import PimNavigationTabs from "./Pim/NavigationTabs";
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -93,17 +95,26 @@ export default function SyncGate() {
           <Route
             path={routeResolver.getRoute("pim.contacts")}
           >
-            <ContactsMain />
+            <PimNavigationTabs value="contacts" />
+            <Container>
+              <ContactsMain />
+            </Container>
           </Route>
           <Route
             path={routeResolver.getRoute("pim.events")}
           >
-            <CalendarsMain />
+            <PimNavigationTabs value="events" />
+            <Container>
+              <CalendarsMain />
+            </Container>
           </Route>
           <Route
             path={routeResolver.getRoute("pim.tasks")}
           >
-            <TasksMain />
+            <PimNavigationTabs value="tasks" />
+            <Container>
+              <TasksMain />
+            </Container>
           </Route>
         </Switch>
       </Route>
