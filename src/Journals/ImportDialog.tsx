@@ -33,89 +33,20 @@ interface PropsType {
   onClose?: () => void;
 }
 
-class ImportDialog extends React.Component<PropsType> {
-  public state = {
-    loading: false,
-  };
+export default function ImportDialog(props: PropsType) {
+  const [loading, setLoading] = React.useState(false);
 
-  constructor(props: PropsType) {
-    super(props);
-
-    this.onFileDropCommon = this.onFileDropCommon.bind(this);
-    this.onFileDropEvent = this.onFileDropEvent.bind(this);
-    this.onFileDropTask = this.onFileDropTask.bind(this);
-    this.onFileDropContact = this.onFileDropContact.bind(this);
-    this.onClose = this.onClose.bind(this);
-  }
-
-  public render() {
-    const { syncJournal } = this.props;
-    const { loading } = this.state;
-    const collectionInfo = syncJournal.collection;
-    let acceptTypes;
-    let dropFunction;
-
-    if (collectionInfo.type === "ADDRESS_BOOK") {
-      acceptTypes = ["text/vcard", "text/directory", "text/x-vcard", ".vcf"];
-      dropFunction = this.onFileDropContact;
-    } else if (collectionInfo.type === "CALENDAR") {
-      acceptTypes = ["text/calendar", ".ics", ".ical"];
-      dropFunction = this.onFileDropEvent;
-    } else if (collectionInfo.type === "TASKS") {
-      acceptTypes = ["text/calendar", ".ics", ".ical"];
-      dropFunction = this.onFileDropTask;
-    }
-
-    return (
-      <React.Fragment>
-        <Dialog
-          open={this.props.open}
-          onClose={this.onClose}
-        >
-          <DialogTitle>Import entries from file?</DialogTitle>
-          <DialogContent>
-            {loading ?
-              <LoadingIndicator style={{ display: "block", margin: "auto" }} />
-              :
-              <Dropzone
-                onDrop={dropFunction}
-                multiple={false}
-                accept={acceptTypes}
-              >
-                {({ getRootProps, getInputProps }) => (
-                  <section>
-                    <div {...getRootProps()}>
-                      <input {...getInputProps()} />
-                      <DialogContentText id="alert-dialog-description">
-                        To import entries from a file, drag 'n' drop it here, or click to open the file selector.
-                      </DialogContentText>
-                    </div>
-                  </section>
-                )}
-              </Dropzone>
-            }
-          </DialogContent>
-          <DialogActions>
-            <Button disabled={loading} onClick={this.onClose} color="primary">
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </React.Fragment>
-    );
-  }
-
-  private onFileDropCommon(itemsCreator: (fileText: string) => PimType[], acceptedFiles: File[], rejectedFiles: File[]) {
+  function onFileDropCommon(itemsCreator: (fileText: string) => PimType[], acceptedFiles: File[], rejectedFiles: File[]) {
     // XXX: implement handling of rejectedFiles
     const reader = new FileReader();
 
     reader.onabort = () => {
-      this.setState({ loading: false });
+      setLoading(false);
       console.error("Import Aborted");
       alert("file reading was aborted");
     };
     reader.onerror = (e) => {
-      this.setState({ loading: false });
+      setLoading(false);
       console.error(e);
       alert("file reading has failed");
     };
@@ -124,7 +55,7 @@ class ImportDialog extends React.Component<PropsType> {
         const fileText = reader.result as string;
         const items = itemsCreator(fileText);
 
-        const { syncJournal } = this.props;
+        const { syncJournal } = props;
         const last = syncJournal.journalEntries.last() as EteSync.Entry;
         const lastUid = last ? last.uid : null;
 
@@ -132,7 +63,7 @@ class ImportDialog extends React.Component<PropsType> {
         let prevUid = lastUid;
         const journalItems = items.map((item) => {
           const ret = createJournalEntry(
-            this.props.etesync, this.props.userInfo, syncJournal.journal,
+            props.etesync, props.userInfo, syncJournal.journal,
             prevUid, EteSync.SyncEntryAction.Add, item.toIcal());
 
           prevUid = ret.uid;
@@ -140,22 +71,22 @@ class ImportDialog extends React.Component<PropsType> {
         });
 
         await store.dispatch<any>(
-          addEntries(this.props.etesync, syncJournal.journal.uid, journalItems, lastUid)
+          addEntries(props.etesync, syncJournal.journal.uid, journalItems, lastUid)
         );
       } catch (e) {
         console.error(e);
         alert("An error has occurred, please contact developers.");
         throw e;
       } finally {
-        if (this.props.onClose) {
-          this.setState({ loading: false });
-          this.props.onClose();
+        if (props.onClose) {
+          setLoading(false);
+          props.onClose();
         }
       }
     };
 
     if (acceptedFiles.length > 0) {
-      this.setState({ loading: true });
+      setLoading(true);
       acceptedFiles.forEach((file) => {
         reader.readAsText(file);
       });
@@ -165,7 +96,7 @@ class ImportDialog extends React.Component<PropsType> {
     }
   }
 
-  private onFileDropContact(acceptedFiles: File[], rejectedFiles: File[]) {
+  function onFileDropContact(acceptedFiles: File[], rejectedFiles: File[]) {
     const itemsCreator = (fileText: string) => {
       const mainComp = ICAL.parse(fileText);
       return mainComp.map((comp) => {
@@ -177,10 +108,10 @@ class ImportDialog extends React.Component<PropsType> {
       });
     };
 
-    this.onFileDropCommon(itemsCreator, acceptedFiles, rejectedFiles);
+    onFileDropCommon(itemsCreator, acceptedFiles, rejectedFiles);
   }
 
-  private onFileDropEvent(acceptedFiles: File[], rejectedFiles: File[]) {
+  function onFileDropEvent(acceptedFiles: File[], rejectedFiles: File[]) {
     const itemsCreator = (fileText: string) => {
       const calendarComp = new ICAL.Component(ICAL.parse(fileText));
       return calendarComp.getAllSubcomponents("vevent").map((comp) => {
@@ -192,10 +123,10 @@ class ImportDialog extends React.Component<PropsType> {
       });
     };
 
-    this.onFileDropCommon(itemsCreator, acceptedFiles, rejectedFiles);
+    onFileDropCommon(itemsCreator, acceptedFiles, rejectedFiles);
   }
 
-  private onFileDropTask(acceptedFiles: File[], rejectedFiles: File[]) {
+  function onFileDropTask(acceptedFiles: File[], rejectedFiles: File[]) {
     const itemsCreator = (fileText: string) => {
       const calendarComp = new ICAL.Component(ICAL.parse(fileText));
       return calendarComp.getAllSubcomponents("vtodo").map((comp) => {
@@ -207,19 +138,70 @@ class ImportDialog extends React.Component<PropsType> {
       });
     };
 
-    this.onFileDropCommon(itemsCreator, acceptedFiles, rejectedFiles);
+    onFileDropCommon(itemsCreator, acceptedFiles, rejectedFiles);
   }
 
-  private onClose() {
-    if (this.state.loading) {
+  function onClose() {
+    if (loading) {
       return;
     }
 
-    if (this.props.onClose) {
-      this.props.onClose();
+    if (props.onClose) {
+      props.onClose();
     }
   }
+
+  const { syncJournal } = props;
+  const collectionInfo = syncJournal.collection;
+  let acceptTypes;
+  let dropFunction;
+
+  if (collectionInfo.type === "ADDRESS_BOOK") {
+    acceptTypes = ["text/vcard", "text/directory", "text/x-vcard", ".vcf"];
+    dropFunction = onFileDropContact;
+  } else if (collectionInfo.type === "CALENDAR") {
+    acceptTypes = ["text/calendar", ".ics", ".ical"];
+    dropFunction = onFileDropEvent;
+  } else if (collectionInfo.type === "TASKS") {
+    acceptTypes = ["text/calendar", ".ics", ".ical"];
+    dropFunction = onFileDropTask;
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog
+        open={props.open}
+        onClose={onClose}
+      >
+        <DialogTitle>Import entries from file?</DialogTitle>
+        <DialogContent>
+          {loading ?
+            <LoadingIndicator style={{ display: "block", margin: "auto" }} />
+            :
+            <Dropzone
+              onDrop={dropFunction}
+              multiple={false}
+              accept={acceptTypes}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <section>
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <DialogContentText id="alert-dialog-description">
+                      To import entries from a file, drag 'n' drop it here, or click to open the file selector.
+                    </DialogContentText>
+                  </div>
+                </section>
+              )}
+            </Dropzone>
+          }
+        </DialogContent>
+        <DialogActions>
+          <Button disabled={loading} onClick={onClose} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  );
 }
-
-export default ImportDialog;
-
