@@ -121,6 +121,12 @@ export function mapPriority(priority: number): TaskPriorityType {
   }
 }
 
+export function* arrayToChunkIterator<T>(arr: T[], size: number) {
+  for (let i = 0 ; i < arr.length ; i += size) {
+    yield arr.slice(i, i + size);
+  }
+}
+
 export function usePromiseMemo<T>(promise: Promise<T> | undefined | null, deps: React.DependencyList, initial: T | undefined = undefined): T | undefined {
   const [val, setVal] = React.useState<T>((promise as any)._returnedValue ?? initial);
   React.useEffect(() => {

@@ -13,8 +13,8 @@ import Container from "../widgets/Container";
 
 /* FIXME:
 import CollectionEntries from "../components/CollectionEntries";
-import ImportDialog from "./ImportDialog";
  */
+import ImportDialog from "./ImportDialog";
 
 import { Link } from "react-router-dom";
 
@@ -81,15 +81,14 @@ class Collection extends React.Component<PropsType> {
         <Container>
           <CollectionEntries collection={collection} entries={syncEntries} />
         </Container>
+        */}
 
         <ImportDialog
-          etesync={this.props.etesync}
-          userInfo={this.props.userInfo}
-          syncCollection={this.props.syncCollection}
+          key={this.state.importDialogOpen.toString()}
+          collection={this.props.collection}
           open={this.state.importDialogOpen}
           onClose={this.importDialogToggle}
         />
-        */}
       </React.Fragment>
     );
   }
