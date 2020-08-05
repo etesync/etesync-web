@@ -255,7 +255,7 @@ function App(props: PropsType) {
             open={drawerOpen}
             onClose={toggleDrawer}
           >
-            <SideMenu etesync={credentials} onCloseDrawerRequest={closeDrawer} />
+            <SideMenu onCloseDrawerRequest={closeDrawer} />
           </Drawer>
 
           <ErrorBoundary>
