@@ -26,13 +26,8 @@ import ConfirmationDialog from "../widgets/ConfirmationDialog";
 import TimezonePicker from "../widgets/TimezonePicker";
 import Toast from "../widgets/Toast";
 
-import { Location } from "history";
-import { withRouter } from "react-router";
-
 import * as uuid from "uuid";
 import * as ICAL from "ical.js";
-
-import * as EteSync from "etesync";
 
 import { getCurrentTimezone } from "../helpers";
 
@@ -40,37 +35,37 @@ import { EventType, timezoneLoadFromName } from "../pim-types";
 import RRule, { RRuleOptions } from "../widgets/RRule";
 
 import { History } from "history";
+import { CachedCollection } from "../Pim/helpers";
 
 interface PropsType {
-  collections: EteSync.CollectionInfo[];
+  collections: CachedCollection[];
   initialCollection?: string;
   item?: EventType;
-  onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => Promise<void>;
-  onDelete: (event: EventType, journalUid: string) => void;
+  onSave: (event: EventType, collectionUid: string, originalEvent?: EventType) => Promise<void>;
+  onDelete: (event: EventType, collectionUid: string) => void;
   onCancel: () => void;
-  location: Location<EventType>;
   history: History;
-  duplicate: boolean;
+  duplicate?: boolean;
 }
 
-class EventEdit extends React.PureComponent<PropsType> {
+export default class EventEdit extends React.PureComponent<PropsType> {
   public state: {
     uid: string;
     title: string;
+    description: string;
     allDay: boolean;
     start?: Date;
     end?: Date;
     timezone: string | null;
     rrule?: RRuleOptions;
     location: string;
-    description: string;
-    journalUid: string;
+    collectionUid: string;
 
     error?: string;
     showDeleteDialog: boolean;
   };
 
-  constructor(props: any) {
+  constructor(props: PropsType) {
     super(props);
     this.state = {
       uid: "",
@@ -80,11 +75,11 @@ class EventEdit extends React.PureComponent<PropsType> {
       description: "",
       timezone: null,
 
-      journalUid: "",
+      collectionUid: "",
       showDeleteDialog: false,
     };
 
-    const locState = this.props.location.state;
+    const locState = this.props.history.location.state as EventType;
     if (locState) {
       // FIXME: Hack to determine if all day. Should be passed as a proper state.
       this.state.allDay = (locState.start &&
@@ -133,9 +128,9 @@ class EventEdit extends React.PureComponent<PropsType> {
     this.state.timezone = this.state.timezone || getCurrentTimezone();
 
     if (props.initialCollection) {
-      this.state.journalUid = props.initialCollection;
+      this.state.collectionUid = props.initialCollection;
     } else if (props.collections[0]) {
-      this.state.journalUid = props.collections[0].uid;
+      this.state.collectionUid = props.collections[0].collection.uid;
     }
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -238,7 +233,7 @@ class EventEdit extends React.PureComponent<PropsType> {
 
     event.component.updatePropertyWithValue("last-modified", ICAL.Time.now());
 
-    this.props.onSave(event, this.state.journalUid, this.props.item)
+    this.props.onSave(event, this.state.collectionUid, this.props.item)
       .then(() => {
         this.props.history.goBack();
       });
@@ -298,13 +293,13 @@ class EventEdit extends React.PureComponent<PropsType> {
               Saving to
             </InputLabel>
             <Select
-              name="journalUid"
-              value={this.state.journalUid}
+              name="collectionUid"
+              value={this.state.collectionUid}
               disabled={this.props.item !== undefined}
               onChange={this.handleInputChange}
             >
               {this.props.collections.map((x) => (
-                <MenuItem key={x.uid} value={x.uid}>{x.displayName}</MenuItem>
+                <MenuItem key={x.collection.uid} value={x.collection.uid}>{x.metadata.name}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -438,5 +433,3 @@ class EventEdit extends React.PureComponent<PropsType> {
     );
   }
 }
-
-export default withRouter(EventEdit);
