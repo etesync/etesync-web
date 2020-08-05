@@ -30,7 +30,6 @@ import EventEdit from "../components/EventEdit";
 import Event from "../components/Event";
 import TaskEdit from "../components/Tasks/TaskEdit";
 import Task from "../components/Tasks/Task";
-import PimMain from "./PimMain";
 
 import { routeResolver } from "../App";
 
@@ -75,11 +74,6 @@ const itemsSelector = createSelector(
       collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems,
     };
   }
-);
-
-const itemValuesSelector = createSelector(
-  itemsSelector,
-  ({ addressBookItems, calendarItems, taskListItems }) => [addressBookItems, calendarItems, taskListItems].map(Object.values)
 );
 
 const ItemChangeLog = React.memo((props: any) => {
@@ -396,27 +390,9 @@ class Pim extends React.PureComponent {
 
   public render() {
     const { collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems } = itemsSelector(this.props);
-    const [contacts, events, tasks] = itemValuesSelector(this.props);
 
     return (
       <Switch>
-        <Route
-          path={routeResolver.getRoute("pim")}
-          exact
-          render={({ history }) => (
-            <PimMain
-              contacts={contacts}
-              events={events}
-              tasks={tasks}
-              history={history}
-              onItemSave={this.onItemSave}
-              collectionsTaskList={collectionsTaskList}
-              syncInfo={this.props.syncInfo}
-              userInfo={this.props.userInfo}
-              etesync={this.props.etesync}
-            />
-          )}
-        />
         <Route
           path={routeResolver.getRoute("pim.contacts")}
           render={() => (
