@@ -3,8 +3,8 @@
 
 import * as React from "react";
 import { List as ImmutableList } from "immutable";
-import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import { connect, useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { MuiThemeProvider as ThemeProvider, createMuiTheme } from "@material-ui/core/styles"; // v1.x
 import amber from "@material-ui/core/colors/amber";
@@ -37,8 +37,6 @@ import * as store from "./store";
 import * as actions from "./store/actions";
 
 import { credentialsSelector } from "./login";
-
-import { History } from "history";
 
 export const routeResolver = new RouteResolver({
   home: "",
@@ -95,205 +93,178 @@ export const routeResolver = new RouteResolver({
   },
 });
 
-const AppBarWitHistory = withRouter(
-  class extends React.PureComponent {
-    public props: {
-      title: string;
-      toggleDrawerIcon: any;
-      history?: History;
-      staticContext?: any;
-      iconElementRight: any;
-    };
+interface AppBarPropsType {
+  toggleDrawerIcon: any;
+  iconElementRight: any;
+}
 
-    constructor(props: any) {
-      super(props);
-      this.goBack = this.goBack.bind(this);
-      this.canGoBack = this.canGoBack.bind(this);
-    }
+function AppBarWitHistory(props: AppBarPropsType) {
+  const history = useHistory();
 
-    public render() {
-      const {
-        staticContext,
-        toggleDrawerIcon,
-        history,
-        iconElementRight,
-        ...props
-      } = this.props;
-      return (
-        <AppBar
-          position="static"
-          {...props}
-        >
-          <Toolbar>
-            <div style={{ marginLeft: -12, marginRight: 20 }}>
-              {!this.canGoBack() ?
-                toggleDrawerIcon :
-                <IconButton onClick={this.goBack}><NavigationBack /></IconButton>
-              }
-            </div>
-
-            <div style={{ flexGrow: 1, fontSize: "1.25em" }} id="appbar-title" />
-
-            <div style={{ marginRight: -12 }} id="appbar-buttons">
-              {iconElementRight}
-            </div>
-          </Toolbar>
-        </AppBar>
-      );
-    }
-
-    private canGoBack() {
-      return (
-        (this.props.history!.length > 1) &&
-        (this.props.history!.location.pathname !== routeResolver.getRoute("pim")) &&
-        (this.props.history!.location.pathname !== routeResolver.getRoute("home"))
-      );
-    }
-
-    private goBack() {
-      this.props.history!.goBack();
-    }
-  }
-);
-
-const IconRefreshWithSpin = withSpin(NavigationRefresh);
-
-class App extends React.PureComponent {
-  public state: {
-    drawerOpen: boolean;
-    errorsDialog: boolean;
-  };
-
-  public props: {
-    credentials: store.CredentialsData;
-    entries: store.EntriesData;
-    fetchCount: number;
-    darkMode: boolean;
-    errors: ImmutableList<Error>;
-  };
-
-  constructor(props: any) {
-    super(props);
-    this.state = { drawerOpen: false, errorsDialog: false };
-
-    this.toggleDrawer = this.toggleDrawer.bind(this);
-    this.closeDrawer = this.closeDrawer.bind(this);
-    this.refresh = this.refresh.bind(this);
-    this.autoRefresh = this.autoRefresh.bind(this);
-  }
-
-  public render() {
-    const credentials = this.props.credentials ?? null;
-    const { darkMode } = this.props;
-
-    const errors = this.props.errors;
-    const fetching = this.props.fetchCount > 0;
-
-    const muiTheme = createMuiTheme({
-      palette: {
-        type: darkMode ? "dark" : undefined,
-        primary: amber,
-        secondary: {
-          light: lightBlue.A200,
-          main: lightBlue.A400,
-          dark: lightBlue.A700,
-          contrastText: "#fff",
-        },
-      },
-    });
-
-    const styles = {
-      main: {
-        backgroundColor: muiTheme.palette.background.default,
-        color: muiTheme.palette.text.primary,
-        flexGrow: 1,
-      },
-    };
-
+  function canGoBack() {
     return (
-      <ThemeProvider theme={muiTheme}>
-        <BrowserRouter>
-          <div style={styles.main} className={darkMode ? "theme-dark" : "theme-light"}>
-            <AppBarWitHistory
-              toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
-              iconElementRight={
-                <>
-                  {(errors.size > 0) && (
-                    <IconButton onClick={() => this.setState({ errorsDialog: true })} title="Parse Errors">
-                      <Badge badgeContent={errors.size} color="error">
-                        <ErrorsIcon />
-                      </Badge>
-                    </IconButton>
-                  )}
-                  <IconButton disabled={!credentials || fetching} onClick={this.refresh} title="Refresh">
-                    <IconRefreshWithSpin spin={fetching} />
-                  </IconButton>
-                </>
-              }
-            />
-            <ConfirmationDialog
-              title="Parse Errors"
-              open={this.state.errorsDialog}
-              labelOk="OK"
-              onCancel={() => this.setState({ errorsDialog: false })}
-              onOk={() => this.setState({ errorsDialog: false })}
-            >
-              <h4>
-                This should not happen, please contact developers!
-              </h4>
-              <List>
-                {errors.map((error, index) => (
-                  <ListItem
-                    key={index}
-                    style={{ height: "unset" }}
-                    onClick={() => (window as any).navigator.clipboard.writeText(`${error.message}\n\n${error.stack}`)}
-                  >
-                    <PrettyError error={error} />
-                  </ListItem>
-                ))}
-              </List>
-            </ConfirmationDialog>
-
-            <Drawer
-              open={this.state.drawerOpen}
-              onClose={this.toggleDrawer}
-            >
-              <SideMenu etesync={credentials} onCloseDrawerRequest={this.closeDrawer} />
-            </Drawer>
-
-            <ErrorBoundary>
-              <LoginGate />
-            </ErrorBoundary>
-          </div>
-        </BrowserRouter>
-      </ThemeProvider>
+      (history!.length > 1) &&
+      (history!.location.pathname !== routeResolver.getRoute("pim")) &&
+      (history!.location.pathname !== routeResolver.getRoute("home"))
     );
   }
 
-  private toggleDrawer() {
-    this.setState({ drawerOpen: !this.state.drawerOpen });
+  function goBack() {
+    history!.goBack();
+  }
+  const {
+    toggleDrawerIcon,
+    iconElementRight,
+    ...rest
+  } = props;
+  return (
+    <AppBar
+      position="static"
+      {...rest}
+    >
+      <Toolbar>
+        <div style={{ marginLeft: -12, marginRight: 20 }}>
+          {!canGoBack() ?
+            toggleDrawerIcon :
+            <IconButton onClick={goBack}><NavigationBack /></IconButton>
+          }
+        </div>
+
+        <div style={{ flexGrow: 1, fontSize: "1.25em" }} id="appbar-title" />
+
+        <div style={{ marginRight: -12 }} id="appbar-buttons">
+          {iconElementRight}
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
+}
+
+const IconRefreshWithSpin = withSpin(NavigationRefresh);
+
+interface PropsType {
+  credentials: store.CredentialsData;
+  entries: store.EntriesData;
+  fetchCount: number;
+  darkMode: boolean;
+  errors: ImmutableList<Error>;
+}
+
+function App(props: PropsType) {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [errorsDialog, setErrorsDialog] = React.useState(false);
+  const dispatch = useDispatch();
+
+  function refresh() {
+    dispatch(actions.fetchAll(props.credentials, props.entries));
   }
 
-  private closeDrawer() {
-    this.setState({ drawerOpen: false });
-  }
-
-  private refresh() {
-    store.store.dispatch<any>(actions.fetchAll(this.props.credentials, this.props.entries));
-  }
-
-  private autoRefresh() {
-    if (navigator.onLine && this.props.credentials &&
+  function autoRefresh() {
+    if (navigator.onLine && props.credentials &&
       !(window.location.pathname.match(/.*\/(new|edit|duplicate)$/))) { 
-      this.refresh();
+      refresh();
     }
-
   }
 
-  componentDidMount() {
+  React.useEffect(() => {
     const interval = 60 * 1000;
-    setInterval(this.autoRefresh, interval);
+    const id = setInterval(autoRefresh, interval);
+    return () => clearInterval(id);
+  });
+
+  function toggleDrawer() {
+    setDrawerOpen(!drawerOpen);
   }
+
+  function closeDrawer() {
+    setDrawerOpen(false);
+  }
+
+  const credentials = props.credentials ?? null;
+  const { darkMode } = props;
+
+  const errors = props.errors;
+  const fetching = props.fetchCount > 0;
+
+  const muiTheme = createMuiTheme({
+    palette: {
+      type: darkMode ? "dark" : undefined,
+      primary: amber,
+      secondary: {
+        light: lightBlue.A200,
+        main: lightBlue.A400,
+        dark: lightBlue.A700,
+        contrastText: "#fff",
+      },
+    },
+  });
+
+  const styles = {
+    main: {
+      backgroundColor: muiTheme.palette.background.default,
+      color: muiTheme.palette.text.primary,
+      flexGrow: 1,
+    },
+  };
+
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <BrowserRouter>
+        <div style={styles.main} className={darkMode ? "theme-dark" : "theme-light"}>
+          <AppBarWitHistory
+            toggleDrawerIcon={<IconButton onClick={toggleDrawer}><NavigationMenu /></IconButton>}
+            iconElementRight={
+              <>
+                {(errors.size > 0) && (
+                  <IconButton onClick={() => setErrorsDialog(true)} title="Parse Errors">
+                    <Badge badgeContent={errors.size} color="error">
+                      <ErrorsIcon />
+                    </Badge>
+                  </IconButton>
+                )}
+                <IconButton disabled={!credentials || fetching} onClick={refresh} title="Refresh">
+                  <IconRefreshWithSpin spin={fetching} />
+                </IconButton>
+              </>
+            }
+          />
+          <ConfirmationDialog
+            title="Parse Errors"
+            open={errorsDialog}
+            labelOk="OK"
+            onCancel={() => setErrorsDialog(false)}
+            onOk={() => setErrorsDialog(false)}
+          >
+            <h4>
+              This should not happen, please contact developers!
+            </h4>
+            <List>
+              {errors.map((error, index) => (
+                <ListItem
+                  key={index}
+                  style={{ height: "unset" }}
+                  onClick={() => (window as any).navigator.clipboard.writeText(`${error.message}\n\n${error.stack}`)}
+                >
+                  <PrettyError error={error} />
+                </ListItem>
+              ))}
+            </List>
+          </ConfirmationDialog>
+
+          <Drawer
+            open={drawerOpen}
+            onClose={toggleDrawer}
+          >
+            <SideMenu etesync={credentials} onCloseDrawerRequest={closeDrawer} />
+          </Drawer>
+
+          <ErrorBoundary>
+            <LoginGate />
+          </ErrorBoundary>
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 }
 
 const mapStateToProps = (state: store.StoreState) => {
