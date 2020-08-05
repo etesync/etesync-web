@@ -104,7 +104,9 @@ function AppBarWitHistory(props: AppBarPropsType) {
   function canGoBack() {
     return (
       (history!.length > 1) &&
-      (history!.location.pathname !== routeResolver.getRoute("pim")) &&
+      (history!.location.pathname !== routeResolver.getRoute("pim.contacts")) &&
+      (history!.location.pathname !== routeResolver.getRoute("pim.events")) &&
+      (history!.location.pathname !== routeResolver.getRoute("pim.tasks")) &&
       (history!.location.pathname !== routeResolver.getRoute("home"))
     );
   }

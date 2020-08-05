@@ -21,7 +21,7 @@ import { logout } from "../store/actions";
 
 import * as C from "../constants";
 import { useTheme } from "@material-ui/core";
-import { useCredentials } from "../login";
+import { useCredentials } from "../credentials";
 import { useHistory } from "react-router";
 
 interface PropsType {
@@ -30,17 +30,17 @@ interface PropsType {
 
 export default function SideMenu(props: PropsType) {
   const theme = useTheme();
-  const etesync = useCredentials();
-  const username = etesync?.credentials.email ?? C.appName;
+  const etebase = useCredentials();
+  const username = etebase?.user.username ?? C.appName;
   const history = useHistory();
 
   function logoutDo() {
-    store.dispatch(logout(etesync! as any));
+    store.dispatch(logout(etebase!));
     props.onCloseDrawerRequest();
   }
 
   let loggedInItems;
-  if (etesync) {
+  if (etebase) {
     loggedInItems = (
       <React.Fragment>
         <ListItem
