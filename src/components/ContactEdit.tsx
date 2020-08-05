@@ -19,10 +19,10 @@ import IconSave from "@material-ui/icons/Save";
 
 import ConfirmationDialog from "../widgets/ConfirmationDialog";
 
+import { CachedCollection } from "../Pim/helpers";
+
 import * as uuid from "uuid";
 import * as ICAL from "ical.js";
-
-import * as EteSync from "etesync";
 
 import { ContactType } from "../pim-types";
 
@@ -117,7 +117,7 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
 };
 
 interface PropsType {
-  collections: EteSync.CollectionInfo[];
+  collections: CachedCollection[];
   initialCollection?: string;
   item?: ContactType;
   onSave: (contact: ContactType, journalUid: string, originalContact?: ContactType) => Promise<void>;
@@ -229,7 +229,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     if (props.initialCollection) {
       this.state.journalUid = props.initialCollection;
     } else if (props.collections[0]) {
-      this.state.journalUid = props.collections[0].uid;
+      this.state.journalUid = props.collections[0].collection.uid;
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -403,7 +403,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
               onChange={this.handleInputChange}
             >
               {this.props.collections.map((x) => (
-                <MenuItem key={x.uid} value={x.uid}>{x.displayName}</MenuItem>
+                <MenuItem key={x.collection.uid} value={x.collection.uid}>{x.metadata.name}</MenuItem>
               ))}
             </Select>
           </FormControl>

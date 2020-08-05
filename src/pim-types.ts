@@ -10,6 +10,8 @@ export const PRODID = "-//iCal.js EteSync iOS";
 
 export interface PimType {
   uid: string;
+  collectionUid?: string;
+  itemUid?: string;
   toIcal(): string;
   clone(): PimType;
 }
@@ -54,6 +56,9 @@ export function parseString(content: string) {
 }
 
 export class EventType extends ICAL.Event implements PimType {
+  public collectionUid?: string;
+  public itemUid?: string;
+
   public static isEvent(comp: ICAL.Component) {
     return !!comp.getFirstSubcomponent("vevent");
   }
@@ -155,6 +160,9 @@ export enum TaskPriorityType {
 export const TaskTags = ["Work", "Home"];
 
 export class TaskType extends EventType {
+  public collectionUid?: string;
+  public itemUid?: string;
+
   public static fromVCalendar(comp: ICAL.Component) {
     const task = new TaskType(comp.getFirstSubcomponent("vtodo"));
     // FIXME: we need to clone it so it loads the correct timezone and applies it
@@ -331,6 +339,9 @@ export class TaskType extends EventType {
 
 export class ContactType implements PimType {
   public comp: ICAL.Component;
+  public collectionUid?: string;
+  public itemUid?: string;
+
 
   public static parse(content: string) {
     return new ContactType(parseString(content));

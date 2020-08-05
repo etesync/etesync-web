@@ -21,11 +21,6 @@ interface PropsType {
 export default function SearchableAddressBook(props: PropsType) {
   const [searchQuery, setSearchQuery] = React.useState("");
 
-  const {
-    entries,
-    ...rest
-  } = props;
-
   const reg = new RegExp(searchQuery, "i");
 
   return (
@@ -43,7 +38,7 @@ export default function SearchableAddressBook(props: PropsType) {
         </IconButton>
       }
       <IconSearch />
-      <AddressBook entries={entries} filter={(ent: ContactType) => ent.fn?.match(reg)} {...rest} />
+      <AddressBook filter={(ent: ContactType) => ent.fn?.match(reg)} {...props} />
     </React.Fragment>
   );
 }

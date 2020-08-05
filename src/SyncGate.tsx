@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Route, Switch, Redirect, withRouter, useHistory } from "react-router";
+import { Route, Switch, Redirect, useHistory } from "react-router";
 
 import moment from "moment";
 import "moment/locale/en-gb";
@@ -14,12 +14,11 @@ import { routeResolver } from "./App";
 
 import AppBarOverride from "./widgets/AppBarOverride";
 import LoadingIndicator from "./widgets/LoadingIndicator";
-import SearchableAddressBook from "./components/SearchableAddressBook";
+import ContactsMain from "./Contacts/Main";
 
 import Journals from "./Journals";
 import Settings from "./Settings";
 import Debug from "./Debug";
-import Pim from "./Pim";
 
 import * as EteSync from "etesync";
 
@@ -37,8 +36,6 @@ export interface SyncInfoJournal {
 }
 
 export type SyncInfo = Map<string, SyncInfoJournal>;
-
-const PimRouter = withRouter(Pim);
 
 export default function SyncGate() {
   const etebase = useCredentials();
@@ -68,6 +65,7 @@ export default function SyncGate() {
   // FIXME: Shouldn't be here
   moment.locale(settings.locale);
 
+  // FIXME: remove
   const etesync = etebase as any;
 
   return (
@@ -83,12 +81,6 @@ export default function SyncGate() {
         path={routeResolver.getRoute("pim")}
       >
         <AppBarOverride title="EteSync" />
-        <PimRouter
-          etesync={etesync}
-          userInfo={userInfo}
-          syncInfo={false as any}
-          history={history}
-        />
         <Switch>
           <Route
             path={routeResolver.getRoute("pim")}
@@ -99,7 +91,7 @@ export default function SyncGate() {
           <Route
             path={routeResolver.getRoute("pim.contacts")}
           >
-            <SearchableAddressBook onItemClick={() => 1} />
+            <ContactsMain />
           </Route>
           <Route
             path={routeResolver.getRoute("pim.events")}
