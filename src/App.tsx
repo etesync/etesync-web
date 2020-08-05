@@ -99,15 +99,16 @@ interface AppBarPropsType {
 }
 
 function AppBarWitHistory(props: AppBarPropsType) {
+  const location = useLocation();
   const history = useHistory();
 
   function canGoBack() {
     return (
       (history!.length > 1) &&
-      (history!.location.pathname !== routeResolver.getRoute("pim.contacts")) &&
-      (history!.location.pathname !== routeResolver.getRoute("pim.events")) &&
-      (history!.location.pathname !== routeResolver.getRoute("pim.tasks")) &&
-      (history!.location.pathname !== routeResolver.getRoute("home"))
+      (location.pathname !== routeResolver.getRoute("pim.contacts")) &&
+      (location.pathname !== routeResolver.getRoute("pim.events")) &&
+      (location.pathname !== routeResolver.getRoute("pim.tasks")) &&
+      (location.pathname !== routeResolver.getRoute("home"))
     );
   }
 
