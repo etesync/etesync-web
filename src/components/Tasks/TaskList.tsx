@@ -120,7 +120,7 @@ export default function TaskList(props: PropsType) {
   const [toast, setToast] = React.useState<{ message: string, severity: ToastProps['severity'] }>({ message: '', severity: undefined });
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
-  const etesync = useCredentials();
+  const etesync = useCredentials()!;
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();

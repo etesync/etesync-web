@@ -37,7 +37,7 @@ interface RollbackToHereDialogPropsType {
 
 function RollbackToHereDialog(props: RollbackToHereDialogPropsType) {
   const [loading, setLoading] = React.useState(false);
-  const etesync = useCredentials();
+  const etesync = useCredentials()!;
   const dispatch = useDispatch();
   const userInfo = useSelector((state: StoreState) => state.cache.userInfo);
 

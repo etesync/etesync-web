@@ -308,4 +308,4 @@ const mapStateToProps = (state: store.StoreState) => {
 
 export default connect(
   mapStateToProps
-)(App);
+)(App as any);

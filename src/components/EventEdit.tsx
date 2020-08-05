@@ -48,7 +48,7 @@ interface PropsType {
   onSave: (event: EventType, journalUid: string, originalEvent?: EventType) => Promise<void>;
   onDelete: (event: EventType, journalUid: string) => void;
   onCancel: () => void;
-  location: Location;
+  location: Location<EventType>;
   history: History;
   duplicate: boolean;
 }
@@ -120,8 +120,8 @@ class EventEdit extends React.PureComponent<PropsType> {
       this.state.timezone = event.timezone;
       const rruleProp = this.props.item?.component.getFirstPropertyValue<ICAL.Recur>('rrule');
       if (rruleProp) {
-        this.state.rrule = rruleProp.toJSON();
-        if (rruleProp.until) {
+        this.state.rrule = rruleProp.toJSON() as any;
+        if (this.state.rrule && rruleProp.until) {
           this.state.rrule.until = rruleProp.until;
         }
       }

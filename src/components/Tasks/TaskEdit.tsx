@@ -111,8 +111,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
       }
       const rrule = task.rrule;
       if (rrule) {
-        this.state.rrule = rrule.toJSON();
-        if (rrule.until) {
+        this.state.rrule = rrule.toJSON() as any;
+        if (this.state.rrule && rrule.until) {
           this.state.rrule.until = rrule.until;
         }
       }
