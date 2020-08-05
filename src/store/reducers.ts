@@ -319,6 +319,7 @@ for (const func in actions) {
 // Indicates network activity, not just fetch
 export const fetchCount = handleAction(
   combineActions(
+    actions.performSync.toString(),
     ...fetchActions
   ),
   (state: number, action: any) => {

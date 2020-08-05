@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import * as React from "react";
-import { List as ImmutableList } from "immutable";
-import { connect, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { MuiThemeProvider as ThemeProvider, createMuiTheme } from "@material-ui/core/styles"; // v1.x
@@ -36,7 +35,8 @@ import { RouteResolver } from "./routes";
 import * as store from "./store";
 import * as actions from "./store/actions";
 
-import { credentialsSelector } from "./login";
+import { useCredentials } from "./credentials";
+import { SyncManager } from "./sync/SyncManager";
 
 export const routeResolver = new RouteResolver({
   home: "",
@@ -145,26 +145,25 @@ function AppBarWitHistory(props: AppBarPropsType) {
 
 const IconRefreshWithSpin = withSpin(NavigationRefresh);
 
-interface PropsType {
-  credentials: store.CredentialsData;
-  entries: store.EntriesData;
-  fetchCount: number;
-  darkMode: boolean;
-  errors: ImmutableList<Error>;
-}
-
-function App(props: PropsType) {
+export default function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [errorsDialog, setErrorsDialog] = React.useState(false);
   const dispatch = useDispatch();
+  const etebase = useCredentials();
+  const darkMode = useSelector((state: store.StoreState) => state.settings.darkMode);
+  const fetchCount = useSelector((state: store.StoreState) => state.fetchCount);
+  const errors = useSelector((state: store.StoreState) => state.errors);
 
-  function refresh() {
-    dispatch(actions.fetchAll(props.credentials, props.entries));
+  async function refresh() {
+    const syncManager = SyncManager.getManager(etebase!);
+    const sync = syncManager.sync();
+    dispatch(actions.performSync(sync));
+    await sync;
   }
 
   function autoRefresh() {
-    if (navigator.onLine && props.credentials &&
-      !(window.location.pathname.match(/.*\/(new|edit|duplicate)$/))) { 
+    if (navigator.onLine && etebase &&
+      !(window.location.pathname.match(/.*\/(new|edit|duplicate)$/))) {
       refresh();
     }
   }
@@ -183,11 +182,9 @@ function App(props: PropsType) {
     setDrawerOpen(false);
   }
 
-  const credentials = props.credentials ?? null;
-  const { darkMode } = props;
+  const credentials = etebase ?? null;
 
-  const errors = props.errors;
-  const fetching = props.fetchCount > 0;
+  const fetching = fetchCount > 0;
 
   const muiTheme = createMuiTheme({
     palette: {
@@ -269,17 +266,3 @@ function App(props: PropsType) {
     </ThemeProvider>
   );
 }
-
-const mapStateToProps = (state: store.StoreState) => {
-  return {
-    credentials: credentialsSelector(state),
-    entries: state.cache.entries,
-    fetchCount: state.fetchCount,
-    darkMode: !!state.settings.darkMode,
-    errors: state.errors,
-  };
-};
-
-export default connect(
-  mapStateToProps
-)(App as any);
