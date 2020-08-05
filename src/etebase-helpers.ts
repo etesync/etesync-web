@@ -57,10 +57,12 @@ export const getCollectionManager = memoize(function (etebase: Etebase.Account) 
 });
 
 // React specific stuff
-export function useCollections(etebase: Etebase.Account, colType: string) {
+export function useCollections(etebase: Etebase.Account, colType?: string) {
   const cachedCollections = useSelector((state: StoreState) => state.cache2.collections);
   return usePromiseMemo(
-    getCollectionsByType(cachedCollections, colType, etebase),
+    (colType) ?
+      getCollectionsByType(cachedCollections, colType, etebase) :
+      getCollections(cachedCollections, etebase),
     [etebase, cachedCollections, colType]
   );
 }

@@ -44,11 +44,11 @@ export default function SideMenu(props: PropsType) {
     loggedInItems = (
       <React.Fragment>
         <ListItem
-          primaryText="Journals"
+          primaryText="Collections"
           leftIcon={<ActionJournals />}
           onClick={() => {
             props.onCloseDrawerRequest();
-            history.push(routeResolver.getRoute("journals"));
+            history.push(routeResolver.getRoute("collections"));
           }}
         />
         <ListItem
@@ -56,7 +56,7 @@ export default function SideMenu(props: PropsType) {
           leftIcon={<IconImport />}
           onClick={() => {
             props.onCloseDrawerRequest();
-            history.push(routeResolver.getRoute("journals.import"));
+            history.push(routeResolver.getRoute("collections.import"));
           }}
         />
         <ListItem

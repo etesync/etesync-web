@@ -21,7 +21,7 @@ export function getItemNavigationUid(item: PimType) {
   return `${item.collectionUid}|${item.itemUid}`;
 }
 
-export function getDecryptCollectionsFunction(_colType: string) {
+export function getDecryptCollectionsFunction(_colType?: string) {
   return memoize(
     async function (collections: Etebase.Collection[]) {
       const entries: CachedCollection[] = [];

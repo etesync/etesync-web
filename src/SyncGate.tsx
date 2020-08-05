@@ -8,7 +8,7 @@ import { Route, Switch, Redirect, useHistory } from "react-router";
 import moment from "moment";
 import "moment/locale/en-gb";
 
-import { List, Map } from "immutable";
+import { Map } from "immutable";
 
 import { routeResolver } from "./App";
 
@@ -18,12 +18,10 @@ import Container from "./widgets/Container";
 import ContactsMain from "./Contacts/Main";
 import CalendarsMain from "./Calendars/Main";
 import TasksMain from "./Tasks/Main";
+import CollectionsMain from "./Collections/Main";
 
-import Journals from "./Journals";
 import Settings from "./Settings";
 import Debug from "./Debug";
-
-import * as EteSync from "etesync";
 
 import { SyncManager } from "./sync/SyncManager";
 
@@ -32,20 +30,12 @@ import { performSync } from "./store/actions";
 import { useCredentials } from "./credentials";
 import PimNavigationTabs from "./Pim/NavigationTabs";
 
-export interface SyncInfoJournal {
-  journal: EteSync.Journal;
-  journalEntries: List<EteSync.Entry>;
-  collection: EteSync.CollectionInfo;
-  entries: List<EteSync.SyncEntry>;
-}
-
+export type SyncInfoJournal = any;
 export type SyncInfo = Map<string, SyncInfoJournal>;
 
 export default function SyncGate() {
   const etebase = useCredentials();
   const settings = useSelector((state: StoreState) => state.settings);
-  const userInfo = useSelector((state: StoreState) => state.cache.userInfo);
-  const journals = useSelector((state: StoreState) => state.cache.journals);
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
 
@@ -68,9 +58,6 @@ export default function SyncGate() {
 
   // FIXME: Shouldn't be here
   moment.locale(settings.locale);
-
-  // FIXME: remove
-  const etesync = etebase as any;
 
   return (
     <Switch>
@@ -118,23 +105,11 @@ export default function SyncGate() {
           </Route>
         </Switch>
       </Route>
-      {false && (
-        <>
-          <Route
-            path={routeResolver.getRoute("journals")}
-            render={({ location, history }) => (
-              <Journals
-                etesync={etesync}
-                userInfo={userInfo}
-                syncInfo={false as any}
-                journals={journals}
-                location={location}
-                history={history}
-              />
-            )}
-          />
-        </>
-      )}
+      <Route
+        path={routeResolver.getRoute("collections")}
+      >
+        <CollectionsMain />
+      </Route>
       <Route
         path={routeResolver.getRoute("settings")}
         exact

@@ -4,7 +4,7 @@
 import * as React from "react";
 import { List as ImmutableList } from "immutable";
 import { connect, useDispatch } from "react-redux";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { MuiThemeProvider as ThemeProvider, createMuiTheme } from "@material-ui/core/styles"; // v1.x
 import amber from "@material-ui/core/colors/amber";
@@ -67,9 +67,9 @@ export const routeResolver = new RouteResolver({
       new: "new",
     },
   },
-  journals: {
+  collections: {
     _id: {
-      _base: ":journalUid",
+      _base: ":colUid",
       edit: "edit",
       items: {
         _id: {
