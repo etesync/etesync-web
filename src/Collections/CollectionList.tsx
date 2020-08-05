@@ -18,6 +18,7 @@ import Container from "../widgets/Container";
 
 import { routeResolver } from "../App";
 import { CachedCollection } from "../Pim/helpers";
+import ColorBox from "../widgets/ColorBox";
 
 interface PropsType {
   collections: CachedCollection[];
@@ -38,7 +39,10 @@ export default function CollectionList(props: PropsType) {
 
   for (const col of props.collections) {
     if (collectionMap[col.metadata.type]) {
-      const colorBox = undefined; // FIXME
+      const colorBox = (col.metadata.color) ? (
+        <ColorBox size={24} color={col.metadata.color} />
+      ) : undefined;
+
       collectionMap[col.metadata.type].push((
         <ListItem key={col.collection.uid} rightIcon={colorBox} insetChildren
           onClick={() => colClicked(col.collection.uid)}>
