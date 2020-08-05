@@ -121,166 +121,141 @@ function RollbackToHereDialog(props: RollbackToHereDialogPropsType) {
   );
 }
 
-class JournalEntries extends React.PureComponent {
-  public static defaultProps = {
-    prevUid: null,
-  };
+interface PropsType {
+  journal: EteSync.Journal;
+  entries: Immutable.List<EteSync.SyncEntry>;
+  uid?: string;
+}
 
-  public state: {
-    dialog?: EteSync.SyncEntry;
-    rollbackDialogId?: string;
-  };
+export default function JournalEntries(props: PropsType) {
+  const [dialog, setDialog] = React.useState<EteSync.SyncEntry>();
+  const [rollbackDialogId, setRollbackDialogId] = React.useState<string>();
 
-  public props: {
-    journal: EteSync.Journal;
-    entries: Immutable.List<EteSync.SyncEntry>;
-    uid?: string;
-  };
-
-  constructor(props: any) {
-    super(props);
-    this.state = {};
+  if (props.journal === undefined) {
+    return (<div>Loading</div>);
   }
 
-  public render() {
-    if (this.props.journal === undefined) {
-      return (<div>Loading</div>);
-    }
-
-    const rowRenderer = (params: { index: number, key: string, style: React.CSSProperties }) => {
-      const { key, index, style } = params;
-      const syncEntry = this.props.entries.get(this.props.entries.size - index - 1)!;
-      let comp;
-      try {
-        comp = parseString(syncEntry.content);
-      } catch (e) {
-        const icon = (<IconError style={{ color: "red" }} />);
-        return (
-          <ListItem
-            key={key}
-            style={style}
-            leftIcon={icon}
-            primaryText="Failed parsing item"
-            secondaryText="Unknown"
-            onClick={() => {
-              this.setState({
-                dialog: syncEntry,
-              });
-            }}
-          />
-        );
-      }
-
-      let icon;
-      if (syncEntry.action === EteSync.SyncEntryAction.Add) {
-        icon = (<IconAdd style={{ color: "#16B14B" }} />);
-      } else if (syncEntry.action === EteSync.SyncEntryAction.Change) {
-        icon = (<IconEdit style={{ color: "#FEB115" }} />);
-      } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
-        icon = (<IconDelete style={{ color: "#F20C0C" }} />);
-      }
-
-      let name;
-      let uid;
-      if (comp.name === "vcalendar") {
-        if (EventType.isEvent(comp)) {
-          const vevent = EventType.fromVCalendar(comp);
-          name = vevent.summary;
-          uid = vevent.uid;
-        } else {
-          const vtodo = TaskType.fromVCalendar(comp);
-          name = vtodo.summary;
-          uid = vtodo.uid;
-        }
-      } else if (comp.name === "vcard") {
-        const vcard = new ContactType(comp);
-        name = vcard.fn;
-        uid = vcard.uid;
-      } else {
-        name = "Error processing entry";
-        uid = "";
-      }
-
-      if (this.props.uid && (this.props.uid !== uid)) {
-        return undefined;
-      }
-
+  const rowRenderer = (params: { index: number, key: string, style: React.CSSProperties }) => {
+    const { key, index, style } = params;
+    // eslint-disable-next-line react/prop-types
+    const syncEntry = props.entries.get(props.entries.size - index - 1)!;
+    let comp;
+    try {
+      comp = parseString(syncEntry.content);
+    } catch (e) {
+      const icon = (<IconError style={{ color: "red" }} />);
       return (
         <ListItem
           key={key}
           style={style}
           leftIcon={icon}
-          primaryText={name}
-          secondaryText={uid}
-          onClick={() => {
-            this.setState({
-              dialog: syncEntry,
-            });
-          }}
+          primaryText="Failed parsing item"
+          secondaryText="Unknown"
+          onClick={() => setDialog(syncEntry)}
         />
       );
-    };
+    }
+
+    let icon;
+    if (syncEntry.action === EteSync.SyncEntryAction.Add) {
+      icon = (<IconAdd style={{ color: "#16B14B" }} />);
+    } else if (syncEntry.action === EteSync.SyncEntryAction.Change) {
+      icon = (<IconEdit style={{ color: "#FEB115" }} />);
+    } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
+      icon = (<IconDelete style={{ color: "#F20C0C" }} />);
+    }
+
+    let name;
+    let uid;
+    if (comp.name === "vcalendar") {
+      if (EventType.isEvent(comp)) {
+        const vevent = EventType.fromVCalendar(comp);
+        name = vevent.summary;
+        uid = vevent.uid;
+      } else {
+        const vtodo = TaskType.fromVCalendar(comp);
+        name = vtodo.summary;
+        uid = vtodo.uid;
+      }
+    } else if (comp.name === "vcard") {
+      const vcard = new ContactType(comp);
+      name = vcard.fn;
+      uid = vcard.uid;
+    } else {
+      name = "Error processing entry";
+      uid = "";
+    }
+
+    // eslint-disable-next-line react/prop-types
+    if (props.uid && (props.uid !== uid)) {
+      return undefined;
+    }
 
     return (
-      <div>
-        <RollbackToHereDialog
-          journal={this.props.journal}
-          entries={this.props.entries}
-          entryUid={this.state.rollbackDialogId!}
-          open={!!this.state.rollbackDialogId}
-          onClose={() => this.setState({ rollbackDialogId: undefined })}
-        />
-        <Dialog
-          open={this.state.dialog !== undefined}
-          onClose={() => {
-            this.setState({ dialog: undefined });
-          }}
-        >
-          <DialogTitle>
-            Raw Content
-          </DialogTitle>
-          <DialogContent>
-            <div>Entry UID: <pre className="d-inline-block">{this.state.dialog?.uid}</pre></div>
-            <div>Content:
-              <pre>{this.state.dialog?.content}</pre>
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              color="primary"
-              onClick={() => this.setState({
-                dialog: undefined,
-                rollbackDialogId: this.state.dialog?.uid,
-              })}
-            >
-              Recover items until here
-            </Button>
-            <Button
-              color="primary"
-              onClick={() => {
-                this.setState({ dialog: undefined });
-              }}
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <List style={{ height: "calc(100vh - 300px)" }}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <VirtualizedList
-                width={width}
-                height={height}
-                rowCount={this.props.entries.size}
-                rowHeight={56}
-                rowRenderer={rowRenderer}
-              />
-            )}
-          </AutoSizer>
-        </List>
-      </div>
+      <ListItem
+        key={key}
+        style={style}
+        leftIcon={icon}
+        primaryText={name}
+        secondaryText={uid}
+        onClick={() => setDialog(syncEntry)}
+      />
     );
-  }
-}
+  };
 
-export default JournalEntries;
+  return (
+    <div>
+      <RollbackToHereDialog
+        journal={props.journal}
+        entries={props.entries}
+        entryUid={rollbackDialogId!}
+        open={!!rollbackDialogId}
+        onClose={() => setRollbackDialogId(undefined)}
+      />
+      <Dialog
+        open={dialog !== undefined}
+        onClose={() => setDialog(undefined)}
+      >
+        <DialogTitle>
+          Raw Content
+        </DialogTitle>
+        <DialogContent>
+          <div>Entry UID: <pre className="d-inline-block">{dialog?.uid}</pre></div>
+          <div>Content:
+            <pre>{dialog?.content}</pre>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            onClick={() => {
+              setDialog(undefined);
+              setRollbackDialogId(dialog?.uid);
+            }}
+          >
+            Recover items until here
+          </Button>
+          <Button
+            color="primary"
+            onClick={() => setDialog(undefined)}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <List style={{ height: "calc(100vh - 300px)" }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <VirtualizedList
+              width={width}
+              height={height}
+              rowCount={props.entries.size}
+              rowHeight={56}
+              rowRenderer={rowRenderer}
+            />
+          )}
+        </AutoSizer>
+      </List>
+    </div>
+  );
+}
