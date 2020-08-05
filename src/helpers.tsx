@@ -120,3 +120,23 @@ export function mapPriority(priority: number): TaskPriorityType {
     return TaskPriorityType.Undefined;
   }
 }
+
+export function usePromiseMemo<T>(promise: Promise<T> | undefined | null, deps: React.DependencyList, initial: T | undefined = undefined): T | undefined {
+  const [val, setVal] = React.useState<T>((promise as any)._returnedValue ?? initial);
+  React.useEffect(() => {
+    let cancel = false;
+    if (promise === undefined || promise === null) {
+      return undefined;
+    }
+    promise.then((val) => {
+      (promise as any)._returnedValue = val;
+      if (!cancel) {
+        setVal(val);
+      }
+    });
+    return () => {
+      cancel = true;
+    };
+  }, [...deps, promise]);
+  return val;
+}

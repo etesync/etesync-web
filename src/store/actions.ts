@@ -3,10 +3,12 @@
 
 import { Action, createAction, createActions } from "redux-actions";
 
+import * as Etebase from "etebase";
+
 import * as EteSync from "etesync";
 import { UserInfo } from "etesync";
 
-import { CredentialsData, CredentialsDataRemote, EntriesData, SettingsType } from "./";
+import { CredentialsData, EntriesData, SettingsType } from "./";
 
 export const { fetchCredentials } = createActions({
   FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
@@ -32,21 +34,6 @@ export const { fetchCredentials } = createActions({
   },
 });
 
-export const logout = createAction(
-  "LOGOUT",
-  (etesync: CredentialsDataRemote) => {
-    (async () => {
-      const authenticator = new EteSync.Authenticator(etesync.serviceApiUrl);
-      try {
-        await authenticator.invalidateToken(etesync.credentials.authToken);
-      } catch {
-        // Ignore for now. It usually means the token was a legacy one.
-      }
-    })();
-    return; // We are not waiting on the above on purpose for now, just invalidate the token in the background
-  }
-);
-
 export const { deriveKey } = createActions({
   DERIVE_KEY: (username: string, encryptionPassword: string) => {
     return EteSync.deriveKey(username, encryptionPassword);
@@ -60,13 +47,87 @@ export const resetKey = createAction(
   }
 );
 
-export const login = (username: string, password: string, encryptionPassword: string, server: string) => {
-  return (dispatch: any) => {
-    dispatch(fetchCredentials(username, password, server)).then(() =>
-      dispatch(deriveKey(username, encryptionPassword))
-    );
-  };
-};
+export const logout = createAction(
+  "LOGOUT",
+  async (etebase: Etebase.Account) => {
+    await etebase.logout();
+  }
+);
+
+export const login = createAction(
+  "LOGIN",
+  async (username: string, password: string, server: string) => {
+    const etebase = await Etebase.Account.login(username, password, server);
+    return etebase.save();
+  }
+);
+
+export const setCacheCollection = createAction(
+  "SET_CACHE_COLLECTION",
+  async (colMgr: Etebase.CollectionManager, col: Etebase.Collection) => {
+    return Etebase.toBase64(await colMgr.cacheSave(col));
+  },
+  (_colMgr: Etebase.CollectionManager, col: Etebase.Collection) => {
+    return col.uid;
+  }
+);
+
+export const unsetCacheCollection = createAction(
+  "UNSET_CACHE_COLLECTION",
+  (_colMgr: Etebase.CollectionManager, colUid: string) => {
+    return colUid;
+  }
+);
+
+export const setCacheItem = createAction(
+  "SET_CACHE_ITEM",
+  async (_col: Etebase.Collection, itemMgr: Etebase.CollectionItemManager, item: Etebase.CollectionItem) => {
+    return Etebase.toBase64(await itemMgr.cacheSave(item));
+  },
+  (col: Etebase.Collection, _itemMgr: Etebase.CollectionItemManager, item: Etebase.CollectionItem) => {
+    return {
+      colUid: col.uid,
+      itemUid: item.uid,
+    };
+  }
+);
+
+export const unsetCacheItem = createAction(
+  "UNSET_CACHE_ITEM",
+  (_colUid: string, _itemMgr: Etebase.CollectionItemManager, itemUid: string) => {
+    return itemUid;
+  },
+  (colUid: string, _itemMgr: Etebase.CollectionItemManager, itemUid: string) => {
+    return {
+      colUid,
+      itemUid,
+    };
+  }
+);
+
+export const setSyncCollection = createAction(
+  "SET_SYNC_COLLECTION",
+  (colUid: string, stoken: string) => {
+    return {
+      colUid,
+      stoken,
+    };
+  }
+);
+
+export const setSyncGeneral = createAction(
+  "SET_SYNC_GENERAL",
+  (stoken: string | null) => {
+    return stoken;
+  }
+);
+
+export const performSync = createAction(
+  "PERFORM_SYNC",
+  (syncPromise: Promise<any>) => {
+    return syncPromise;
+  }
+);
 
 export const { fetchListJournal } = createActions({
   FETCH_LIST_JOURNAL: (etesync: CredentialsData) => {

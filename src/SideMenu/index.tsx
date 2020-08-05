@@ -35,7 +35,7 @@ export default function SideMenu(props: PropsType) {
   const history = useHistory();
 
   function logoutDo() {
-    store.dispatch(logout(etesync!));
+    store.dispatch(logout(etesync! as any));
     props.onCloseDrawerRequest();
   }
 

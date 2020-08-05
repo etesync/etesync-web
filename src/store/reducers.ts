@@ -10,6 +10,13 @@ import * as EteSync from "etesync";
 
 import * as actions from "./actions";
 
+export type JournalsData = ImmutableMap<string, EteSync.Journal>;
+
+export type EntriesListData = List<EteSync.Entry>;
+export type EntriesData = ImmutableMap<string, EntriesListData>;
+
+export type UserInfoData = EteSync.UserInfo;
+
 export interface CredentialsDataRemote {
   serviceApiUrl: string;
   credentials: EteSync.Credentials;
@@ -19,49 +26,131 @@ export interface CredentialsData extends CredentialsDataRemote {
   encryptionKey: string;
 }
 
-export type JournalsData = ImmutableMap<string, EteSync.Journal>;
+interface BaseModel {
+  uid: string;
+}
 
-export type EntriesListData = List<EteSync.Entry>;
-export type EntriesData = ImmutableMap<string, EntriesListData>;
+export interface SyncCollectionsEntryData extends BaseModel {
+  stoken: string;
+}
 
-export type UserInfoData = EteSync.UserInfo;
+export type SyncCollectionsData = ImmutableMap<string, SyncCollectionsEntryData>;
 
-export const encryptionKeyReducer = handleActions(
-  {
-    [actions.deriveKey.toString()]: (_state: { key: string | null }, action: any) => (
-      { key: action.payload }
-    ),
-    [actions.resetKey.toString()]: (_state: { key: string | null }, _action: any) => (
-      { key: null }
-    ),
-    [actions.logout.toString()]: (_state: { key: string | null }, _action: any) => {
-      return { out: true, key: null };
-    },
-  },
-  { key: null }
-);
+export type CacheItem = string;
+export type CacheItems = ImmutableMap<string, CacheItem>;
+export type CacheItemsData = ImmutableMap<string, CacheItems>;
+export type CacheCollection = CacheItem;
+export type CacheCollectionsData = ImmutableMap<string, CacheCollection>;
+
+export type SyncGeneralData = {
+  stoken: string | null;
+  lastSyncDate: Date;
+};
+
+export interface CredentialsData2 {
+  storedSession?: string;
+}
 
 export const credentials = handleActions(
   {
-    [actions.fetchCredentials.toString()]: (
-      state: CredentialsDataRemote, action: any) => {
+    [actions.login.toString()]: (
+      state: CredentialsData2, action: Action<string>) => {
       if (action.error) {
         return state;
       } else if (action.payload === undefined) {
         return state;
       } else {
-        const {
-          encryptionKey, // We don't want to set encryption key here.
-          ...payload
-        } = action.payload;
-        return payload;
+        return {
+          storedSession: action.payload,
+        };
       }
     },
-    [actions.logout.toString()]: (_state: CredentialsDataRemote, _action: any) => {
+    [actions.logout.toString()]: (_state: CredentialsData2, _action: any) => {
+      return { storedSession: undefined };
+    },
+  },
+  { storedSession: undefined }
+);
+
+export const encryptionKeyReducer = handleActions(
+  {
+  },
+  { key: null }
+);
+
+export const syncCollections = handleActions(
+  {
+    [actions.setSyncCollection.toString()]: (state: SyncCollectionsData, action: Action<SyncCollectionsEntryData>) => {
+      if (action.payload !== undefined) {
+        return state.set(action.payload.uid, action.payload);
+      }
+      return state;
+    },
+    [actions.logout.toString()]: (state: SyncCollectionsData, _action: any) => {
+      return state.clear();
+    },
+  },
+  ImmutableMap({})
+);
+
+export const syncGeneral = handleActions(
+  {
+    [actions.setSyncGeneral.toString()]: (state: SyncGeneralData, action: Action<string | null | undefined>) => {
+      if (action.payload !== undefined) {
+        return {
+          stoken: action.payload,
+          lastSyncDate: new Date(),
+        };
+      }
+      return state;
+    },
+    [actions.logout.toString()]: (_state: SyncGeneralData, _action: any) => {
       return {};
     },
   },
-  {} as CredentialsDataRemote
+  {}
+);
+
+export const collections = handleActions(
+  {
+    [actions.setCacheCollection.toString()]: (state: CacheCollectionsData, action: ActionMeta<CacheCollection, { colUid: string }>) => {
+      if (action.payload !== undefined) {
+        return state.set(action.meta.colUid, action.payload);
+      }
+      return state;
+    },
+    [actions.unsetCacheCollection.toString()]: (state: CacheCollectionsData, action: ActionMeta<string, { colUid: string }>) => {
+      if (action.payload !== undefined) {
+        return state.remove(action.meta.colUid);
+      }
+      return state;
+    },
+  },
+  ImmutableMap({})
+);
+
+export const items = handleActions(
+  {
+    [actions.setCacheItem.toString()]: (state: CacheItemsData, action: ActionMeta<CacheItem, { colUid: string, itemUid: string }>) => {
+      if (action.payload !== undefined) {
+        return state.setIn([action.meta.colUid, action.meta.itemUid], action.payload);
+      }
+      return state;
+    },
+    [actions.unsetCacheItem.toString()]: (state: CacheItemsData, action: ActionMeta<string, { colUid: string, itemUid: string }>) => {
+      if (action.payload !== undefined) {
+        return state.removeIn([action.meta.colUid, action.meta.itemUid]);
+      }
+      return state;
+    },
+    [actions.unsetCacheCollection.toString()]: (state: CacheItemsData, action: ActionMeta<string, { colUid: string }>) => {
+      if (action.payload !== undefined) {
+        return state.remove(action.meta.colUid);
+      }
+      return state;
+    },
+  },
+  ImmutableMap({})
 );
 
 function entriesListSetExtend(
