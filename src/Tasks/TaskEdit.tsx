@@ -30,13 +30,8 @@ import ConfirmationDialog from "../widgets/ConfirmationDialog";
 import TimezonePicker from "../widgets/TimezonePicker";
 import Toast from "../widgets/Toast";
 
-import { Location } from "history";
-import { withRouter } from "react-router";
-
 import * as uuid from "uuid";
 import * as ICAL from "ical.js";
-
-import * as EteSync from "etesync";
 
 import { getCurrentTimezone, mapPriority } from "../helpers";
 
@@ -46,19 +41,19 @@ import { History } from "history";
 
 import ColoredRadio from "../widgets/ColoredRadio";
 import RRule, { RRuleOptions } from "../widgets/RRule";
+import { CachedCollection } from "../Pim/helpers";
 
 interface PropsType {
-  collections: EteSync.CollectionInfo[];
+  collections: CachedCollection[];
   initialCollection?: string;
   item?: TaskType;
-  onSave: (item: TaskType, journalUid: string, originalItem?: TaskType) => Promise<void>;
-  onDelete: (item: TaskType, journalUid: string) => void;
+  onSave: (item: TaskType, collectionUid: string, originalItem?: TaskType) => Promise<void>;
+  onDelete: (item: TaskType, collectionUid: string) => void;
   onCancel: () => void;
-  location: Location;
   history: History<any>;
 }
 
-class TaskEdit extends React.PureComponent<PropsType> {
+export default class TaskEdit extends React.PureComponent<PropsType> {
   public state: {
     uid: string;
     title: string;
@@ -72,13 +67,13 @@ class TaskEdit extends React.PureComponent<PropsType> {
     location: string;
     description: string;
     tags: string[];
-    journalUid: string;
+    collectionUid: string;
 
     error?: string;
     showDeleteDialog: boolean;
   };
 
-  constructor(props: any) {
+  constructor(props: PropsType) {
     super(props);
     this.state = {
       uid: "",
@@ -91,7 +86,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       tags: [],
       timezone: null,
 
-      journalUid: "",
+      collectionUid: "",
       showDeleteDialog: false,
     };
 
@@ -127,9 +122,9 @@ class TaskEdit extends React.PureComponent<PropsType> {
     this.state.timezone = this.state.timezone || getCurrentTimezone();
 
     if (props.initialCollection) {
-      this.state.journalUid = props.initialCollection;
+      this.state.collectionUid = props.initialCollection;
     } else if (props.collections[0]) {
-      this.state.journalUid = props.collections[0].uid;
+      this.state.collectionUid = props.collections[0].collection.uid;
     }
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -245,11 +240,11 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
     task.component.updatePropertyWithValue("last-modified", ICAL.Time.now());
 
-    this.props.onSave(task, this.state.journalUid, this.props.item)
+    this.props.onSave(task, this.state.collectionUid, this.props.item)
       .then(() => {
         const nextTask = task.finished && task.getNextOccurence();
         if (nextTask) {
-          return this.props.onSave(nextTask, this.state.journalUid);
+          return this.props.onSave(nextTask, this.state.collectionUid);
         } else {
           return Promise.resolve();
         }
@@ -316,13 +311,13 @@ class TaskEdit extends React.PureComponent<PropsType> {
               Saving to
             </InputLabel>
             <Select
-              name="journalUid"
-              value={this.state.journalUid}
+              name="collectionUid"
+              value={this.state.collectionUid}
               disabled={this.props.item !== undefined}
               onChange={this.handleInputChange}
             >
               {this.props.collections.map((x) => (
-                <MenuItem key={x.uid} value={x.uid}>{x.displayName}</MenuItem>
+                <MenuItem key={x.collection.uid} value={x.collection.uid}>{x.metadata.name}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -506,5 +501,3 @@ class TaskEdit extends React.PureComponent<PropsType> {
     );
   }
 }
-
-export default withRouter(TaskEdit);
