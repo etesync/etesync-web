@@ -15,6 +15,7 @@ import { CachedCollection, getDecryptCollectionsFunction, PimFab } from "../Pim/
 import CollectionList from "./CollectionList";
 import PageNotFound from "../PageNotFound";
 import CollectionEdit from "./CollectionEdit";
+import Collection from "./Collection";
 
 const decryptCollections = getDecryptCollectionsFunction();
 
@@ -118,7 +119,7 @@ export default function CollectionsMain() {
                 path={routeResolver.getRoute("collections._id")}
                 exact
               >
-                Journal view
+                <Collection collection={collection} />
               </Route>
             </Switch>
           );
