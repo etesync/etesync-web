@@ -4,13 +4,17 @@
 import * as React from "react";
 import { Switch, Route, useHistory } from "react-router";
 
+import * as Etebase from "etebase";
+
 import { useCredentials } from "../credentials";
-import { useCollections } from "../etebase-helpers";
+import { useCollections, getCollectionManager } from "../etebase-helpers";
 import { routeResolver } from "../App";
 import LoadingIndicator from "../widgets/LoadingIndicator";
 
 import { CachedCollection, getDecryptCollectionsFunction, PimFab } from "../Pim/helpers";
 import CollectionList from "./CollectionList";
+import PageNotFound from "../PageNotFound";
+import CollectionEdit from "./CollectionEdit";
 
 const decryptCollections = getDecryptCollectionsFunction();
 
@@ -34,6 +38,25 @@ export default function CollectionsMain() {
     );
   }
 
+  async function onSave(collection: Etebase.Collection): Promise<void> {
+    const colMgr = getCollectionManager(etebase);
+    await colMgr.upload(collection);
+
+    history.push(routeResolver.getRoute("collections"));
+  }
+
+  async function onDelete(collection: Etebase.Collection) {
+    const colMgr = getCollectionManager(etebase);
+    await collection.delete();
+    await colMgr.upload(collection);
+
+    history.push(routeResolver.getRoute("collections"));
+  }
+
+  function onCancel() {
+    history.goBack();
+  }
+
   return (
     <Switch>
       <Route
@@ -47,6 +70,60 @@ export default function CollectionsMain() {
           )}
         />
       </Route>
+      <Route
+        path={routeResolver.getRoute("collections.import")}
+        exact
+      >
+        Import
+      </Route>
+      <Route
+        path={routeResolver.getRoute("collections.new")}
+        exact
+      >
+        <CollectionEdit
+          onSave={onSave}
+          onDelete={onDelete}
+          onCancel={onCancel}
+        />
+      </Route>
+      <Route
+        path={routeResolver.getRoute("collections._id")}
+        render={({ match }) => {
+          const colUid = match.params.colUid;
+          const collection = cachedCollections.find((x) => x.collection.uid === colUid);
+          if (!collection) {
+            return (<PageNotFound />);
+          }
+
+          return (
+            <Switch>
+              <Route
+                path={routeResolver.getRoute("collections._id.edit")}
+                exact
+              >
+                <CollectionEdit
+                  collection={collection}
+                  onSave={onSave}
+                  onDelete={onDelete}
+                  onCancel={onCancel}
+                />
+              </Route>
+              <Route
+                path={routeResolver.getRoute("collections._id.members")}
+                exact
+              >
+                Members
+              </Route>
+              <Route
+                path={routeResolver.getRoute("collections._id")}
+                exact
+              >
+                Journal view
+              </Route>
+            </Switch>
+          );
+        }}
+      />
     </Switch>
   );
 }
