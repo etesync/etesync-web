@@ -1,26 +1,26 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import sjcl from 'sjcl';
+import * as React from "react";
+import sjcl from "sjcl";
 
-import { List, ListItem } from '../widgets/List';
+import { List, ListItem } from "../widgets/List";
 
-import { Theme, withTheme } from '@material-ui/core/styles';
-import IconMemberAdd from '@material-ui/icons/PersonAdd';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import { Theme, withTheme } from "@material-ui/core/styles";
+import IconMemberAdd from "@material-ui/icons/PersonAdd";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
-import AppBarOverride from '../widgets/AppBarOverride';
-import Container from '../widgets/Container';
-import LoadingIndicator from '../widgets/LoadingIndicator';
-import ConfirmationDialog from '../widgets/ConfirmationDialog';
+import AppBarOverride from "../widgets/AppBarOverride";
+import Container from "../widgets/Container";
+import LoadingIndicator from "../widgets/LoadingIndicator";
+import ConfirmationDialog from "../widgets/ConfirmationDialog";
 
-import JournalMemberAddDialog from './JournalMemberAddDialog';
+import JournalMemberAddDialog from "./JournalMemberAddDialog";
 
-import * as EteSync from 'etesync';
-import { CredentialsData, UserInfoData } from '../store';
+import * as EteSync from "etesync";
+import { CredentialsData, UserInfoData } from "../store";
 
-import { SyncInfoJournal } from '../SyncGate';
+import { SyncInfoJournal } from "../SyncGate";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -57,7 +57,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     return (
       <>
         <AppBarOverride title={`${info.displayName} - Members`} />
-        <Container style={{ maxWidth: '30rem' }}>
+        <Container style={{ maxWidth: "30rem" }}>
           {members ?
             <List>
               <ListItem rightIcon={<IconMemberAdd />} onClick={() => this.setState({ addMemberOpen: true })}>
@@ -150,7 +150,7 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
     const journalMembersManager = new EteSync.JournalMembersManager(creds, apiBase, info.uid);
-    journalMembersManager.delete({ user: revokeUser!, key: '' }).then(() => {
+    journalMembersManager.delete({ user: revokeUser!, key: "" }).then(() => {
       this.fetchMembers();
     });
     this.setState({

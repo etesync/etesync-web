@@ -1,34 +1,34 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import { List } from '../../widgets/List';
-import Toast, { PropsType as ToastProps } from '../../widgets/Toast';
+import { List } from "../../widgets/List";
+import Toast, { PropsType as ToastProps } from "../../widgets/Toast";
 
-import { TaskType, PimType, TaskStatusType } from '../../pim-types';
-import Divider from '@material-ui/core/Divider';
-import Grid from '@material-ui/core/Grid';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
+import { TaskType, PimType, TaskStatusType } from "../../pim-types";
+import Divider from "@material-ui/core/Divider";
+import Grid from "@material-ui/core/Grid";
+import { useTheme, makeStyles } from "@material-ui/core/styles";
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 
-import Fuse from 'fuse.js';
+import Fuse from "fuse.js";
 
-import TaskListItem from './TaskListItem';
-import Sidebar from './Sidebar';
-import Toolbar from './Toolbar';
-import QuickAdd from './QuickAdd';
+import TaskListItem from "./TaskListItem";
+import Sidebar from "./Sidebar";
+import Toolbar from "./Toolbar";
+import QuickAdd from "./QuickAdd";
 
-import { StoreState, UserInfoData } from '../../store';
-import { formatDate } from '../../helpers';
-import { SyncInfo } from '../../SyncGate';
-import { fetchEntries } from '../../store/actions';
-import { Action } from 'redux-actions';
-import { addJournalEntries } from '../../etesync-helpers';
-import { useCredentials } from '../../login';
+import { StoreState, UserInfoData } from "../../store";
+import { formatDate } from "../../helpers";
+import { SyncInfo } from "../../SyncGate";
+import { fetchEntries } from "../../store/actions";
+import { Action } from "redux-actions";
+import { addJournalEntries } from "../../etesync-helpers";
+import { useCredentials } from "../../login";
 
 function sortCompleted(a: TaskType, b: TaskType) {
   return (!!a.finished === !!b.finished) ? 0 : (a.finished) ? 1 : -1;
@@ -55,8 +55,8 @@ function sortPriority(aIn: TaskType, bIn: TaskType) {
 }
 
 function sortTitle(aIn: TaskType, bIn: TaskType) {
-  const a = aIn.title ?? '';
-  const b = bIn.title ?? '';
+  const a = aIn.title ?? "";
+  const b = bIn.title ?? "";
   return a.localeCompare(b);
 }
 
@@ -64,22 +64,22 @@ function getSortFunction(sortOrder: string) {
   const sortFunctions: (typeof sortTitle)[] = [sortCompleted];
 
   switch (sortOrder) {
-    case 'smart':
+    case "smart":
       sortFunctions.push(sortPriority);
       sortFunctions.push(sortDueDate);
       sortFunctions.push(sortTitle);
       break;
-    case 'dueDate':
+    case "dueDate":
       sortFunctions.push(sortDueDate);
       break;
-    case 'priority':
+    case "priority":
       sortFunctions.push(sortPriority);
       sortFunctions.push(sortDueDate);
       break;
-    case 'title':
+    case "title":
       sortFunctions.push(sortTitle);
       break;
-    case 'lastModifiedDate':
+    case "lastModifiedDate":
       // Do nothing because it's the last sort function anyway
       break;
   }
@@ -116,8 +116,8 @@ interface PropsType {
 export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
   const [showHidden, setShowHidden] = React.useState(false);
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [toast, setToast] = React.useState<{ message: string, severity: ToastProps['severity'] }>({ message: '', severity: undefined });
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [toast, setToast] = React.useState<{ message: string, severity: ToastProps["severity"] }>({ message: "", severity: undefined });
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
   const etesync = useCredentials()!;
@@ -136,7 +136,7 @@ export default function TaskList(props: PropsType) {
     const syncJournal = props.syncInfo.get((task as any).journalUid);
 
     if (syncJournal === undefined) {
-      setToast({ message: 'Could not sync.', severity: 'error' });
+      setToast({ message: "Could not sync.", severity: "error" });
       return;
     }
 
@@ -170,11 +170,11 @@ export default function TaskList(props: PropsType) {
       })
       .then(() => {
         if (nextTask) {
-          setToast({ message: `${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`, severity: 'success' });
+          setToast({ message: `${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`, severity: "success" });
         }
       })
       .catch(() => {
-        setToast({ message: 'Failed to save changes. This may be due to a network error.', severity: 'error' });
+        setToast({ message: "Failed to save changes. This may be due to a network error.", severity: "error" });
       });
   };
 
@@ -187,8 +187,8 @@ export default function TaskList(props: PropsType) {
           maxPatternLength: 32,
           minMatchCharLength: 2,
           keys: [
-            'title',
-            'desc',
+            "title",
+            "desc",
           ],
         }).search(searchTerm);
         return result.map((x) => x.item);
@@ -201,11 +201,11 @@ export default function TaskList(props: PropsType) {
 
   let entries;
 
-  const tagPrefix = 'tag:';
+  const tagPrefix = "tag:";
   if (filterBy?.startsWith(tagPrefix)) {
     const tag = filterBy.slice(tagPrefix.length);
     entries = potentialEntries.filter((x) => x.tags.includes(tag));
-  } else if (filterBy === 'today') {
+  } else if (filterBy === "today") {
     entries = potentialEntries.filter((x) => x.dueToday);
   } else {
     entries = potentialEntries;
@@ -267,16 +267,16 @@ export default function TaskList(props: PropsType) {
 
       <Grid item xs>
 
-        {props.collections?.[0] && <QuickAdd style={{ flexGrow: 1, marginRight: '0.75em' }} onSubmit={props.onItemSave} defaultCollection={props.collections?.[0]} />}
+        {props.collections?.[0] && <QuickAdd style={{ flexGrow: 1, marginRight: "0.75em" }} onSubmit={props.onItemSave} defaultCollection={props.collections?.[0]} />}
 
-        <Divider style={{ marginTop: '1em' }} />
+        <Divider style={{ marginTop: "1em" }} />
 
         <List>
           {itemList}
         </List>
       </Grid>
 
-      <Toast open={!!toast.message} severity={toast.severity} onClose={() => setToast({ message: '', severity: undefined })} autoHideDuration={3000}>
+      <Toast open={!!toast.message} severity={toast.severity} onClose={() => setToast({ message: "", severity: undefined })} autoHideDuration={3000}>
         {toast.message}
       </Toast>
     </Grid>

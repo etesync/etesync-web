@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import { TaskType, TaskPriorityType } from '../../pim-types';
-import { ListItem } from '../../widgets/List';
+import { TaskType, TaskPriorityType } from "../../pim-types";
+import { ListItem } from "../../widgets/List";
 
-import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import * as colors from '@material-ui/core/colors';
-import Chip from '@material-ui/core/Chip';
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import * as colors from "@material-ui/core/colors";
+import Chip from "@material-ui/core/Chip";
 
-import { mapPriority, formatDate } from '../../helpers';
+import { mapPriority, formatDate } from "../../helpers";
 
 const checkboxColor = {
   [TaskPriorityType.Undefined]: colors.grey[600],
@@ -27,7 +27,7 @@ const TagsList = React.memo((props: { tags: string[] }) => (
       color="secondary"
       size="small"
       label={tag}
-      style={{ marginRight: '0.75em' }}
+      style={{ marginRight: "0.75em" }}
       component="li"
     />)}
   </ul>));
@@ -48,15 +48,15 @@ export default React.memo(function TaskListItem(props: PropsType) {
   } = props;
   const title = task.title;
 
-  const dueDateText = task.dueDate ? `Due ${formatDate(task.dueDate)}` : '';
-  const freqText = task.rrule ? `(repeats ${task.rrule.freq.toLowerCase()})` : '';
+  const dueDateText = task.dueDate ? `Due ${formatDate(task.dueDate)}` : "";
+  const freqText = task.rrule ? `(repeats ${task.rrule.freq.toLowerCase()})` : "";
   const secondaryText = `${dueDateText} ${freqText}`;
 
   return (
     <ListItem
       primaryText={title}
       secondaryText={secondaryText}
-      secondaryTextColor={task.overdue ? 'error' : 'textSecondary'}
+      secondaryTextColor={task.overdue ? "error" : "textSecondary"}
       nestedItems={nestedItems}
       onClick={() => onClick(task)}
       leftIcon={

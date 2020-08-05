@@ -1,22 +1,22 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import ContactsIcon from '@material-ui/icons/Contacts';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import ContactsIcon from "@material-ui/icons/Contacts";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 
-import { List, ListItem } from '../widgets/List';
+import { List, ListItem } from "../widgets/List";
 
-import AppBarOverride from '../widgets/AppBarOverride';
-import Container from '../widgets/Container';
+import AppBarOverride from "../widgets/AppBarOverride";
+import Container from "../widgets/Container";
 
-import { JournalsData, UserInfoData, CredentialsData } from '../store';
-import ImportDialog from './ImportDialog';
-import { SyncInfo, SyncInfoJournal } from '../SyncGate';
-import { colorIntToHtml } from '../journal-processors';
-import ColorBox from '../widgets/ColorBox';
+import { JournalsData, UserInfoData, CredentialsData } from "../store";
+import ImportDialog from "./ImportDialog";
+import { SyncInfo, SyncInfoJournal } from "../SyncGate";
+import { colorIntToHtml } from "../journal-processors";
+import ColorBox from "../widgets/ColorBox";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -37,8 +37,8 @@ export default function JournalsList(props: PropsType) {
       const info = journal.getInfo(cryptoManager);
       let colorBox: React.ReactElement | undefined;
       switch (info.type) {
-        case 'CALENDAR':
-        case 'TASKS':
+        case "CALENDAR":
+        case "TASKS":
           colorBox = (
             <ColorBox size={24} color={colorIntToHtml(info.color)} />
           );

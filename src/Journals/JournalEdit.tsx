@@ -1,26 +1,26 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import IconDelete from '@material-ui/icons/Delete';
-import IconCancel from '@material-ui/icons/Clear';
-import IconSave from '@material-ui/icons/Save';
-import * as colors from '@material-ui/core/colors';
+import * as React from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import IconDelete from "@material-ui/icons/Delete";
+import IconCancel from "@material-ui/icons/Clear";
+import IconSave from "@material-ui/icons/Save";
+import * as colors from "@material-ui/core/colors";
 
-import AppBarOverride from '../widgets/AppBarOverride';
-import Container from '../widgets/Container';
-import ConfirmationDialog from '../widgets/ConfirmationDialog';
+import AppBarOverride from "../widgets/AppBarOverride";
+import Container from "../widgets/Container";
+import ConfirmationDialog from "../widgets/ConfirmationDialog";
 
-import * as EteSync from 'etesync';
-import { SyncInfo } from '../SyncGate';
-import ColorPicker from '../widgets/ColorPicker';
-import { defaultColor, colorHtmlToInt, colorIntToHtml } from '../journal-processors';
+import * as EteSync from "etesync";
+import { SyncInfo } from "../SyncGate";
+import ColorPicker from "../widgets/ColorPicker";
+import { defaultColor, colorHtmlToInt, colorIntToHtml } from "../journal-processors";
 
 interface PropsType {
   syncInfo: SyncInfo;
@@ -39,7 +39,7 @@ export default function JournalEdit(props: PropsType) {
   const [errors, setErrors] = React.useState<FormErrors>({});
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [info, setInfo] = React.useState<EteSync.CollectionInfo>();
-  const [selectedColor, setSelectedColor] = React.useState('');
+  const [selectedColor, setSelectedColor] = React.useState("");
 
   React.useEffect(() => {
     if (props.item !== undefined) {
@@ -50,9 +50,9 @@ export default function JournalEdit(props: PropsType) {
     } else {
       setInfo({
         uid: EteSync.genUid(),
-        type: 'ADDRESS_BOOK',
-        displayName: '',
-        description: '',
+        type: "ADDRESS_BOOK",
+        displayName: "",
+        description: "",
       } as EteSync.CollectionInfo);
     }
   }, [props.item]);
@@ -64,7 +64,7 @@ export default function JournalEdit(props: PropsType) {
   function onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
     const saveErrors: FormErrors = {};
-    const fieldRequired = 'This field is required!';
+    const fieldRequired = "This field is required!";
 
     const { onSave } = props;
 
@@ -76,7 +76,7 @@ export default function JournalEdit(props: PropsType) {
     }
 
     if (selectedColor && !color) {
-      saveErrors.color = 'Must be of the form #RRGGBB or #RRGGBBAA or empty';
+      saveErrors.color = "Must be of the form #RRGGBB or #RRGGBBAA or empty";
     }
 
     if (Object.keys(saveErrors).length > 0) {
@@ -94,28 +94,28 @@ export default function JournalEdit(props: PropsType) {
 
   const { item, onDelete, onCancel } = props;
 
-  const pageTitle = (item !== undefined) ? item.displayName : 'New Journal';
+  const pageTitle = (item !== undefined) ? item.displayName : "New Journal";
 
   const styles = {
     fullWidth: {
-      width: '100%',
+      width: "100%",
     },
     submit: {
       marginTop: 40,
       marginBottom: 20,
-      textAlign: 'right' as any,
+      textAlign: "right" as any,
     },
   };
 
   const journalTypes = {
-    ADDRESS_BOOK: 'Address Book',
-    CALENDAR: 'Calendar',
-    TASKS: 'Task List',
+    ADDRESS_BOOK: "Address Book",
+    CALENDAR: "Calendar",
+    TASKS: "Task List",
   };
   let collectionColorBox: React.ReactNode;
   switch (info.type) {
-    case 'CALENDAR':
-    case 'TASKS':
+    case "CALENDAR":
+    case "TASKS":
       collectionColorBox = (
         <ColorPicker
           defaultColor={defaultColor}
@@ -130,7 +130,7 @@ export default function JournalEdit(props: PropsType) {
   return (
     <>
       <AppBarOverride title={pageTitle} />
-      <Container style={{ maxWidth: '30rem' }}>
+      <Container style={{ maxWidth: "30rem" }}>
         <form onSubmit={onSubmit}>
           <FormControl disabled={props.item !== undefined} style={styles.fullWidth}>
             <InputLabel>
@@ -180,7 +180,7 @@ export default function JournalEdit(props: PropsType) {
             {props.item &&
               <Button
                 variant="contained"
-                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
+                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: "white" }}
                 onClick={onDeleteRequest}
               >
                 <IconDelete style={{ marginRight: 8 }} />

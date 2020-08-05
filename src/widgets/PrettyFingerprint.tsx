@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import sjcl from 'sjcl';
+import * as React from "react";
+import sjcl from "sjcl";
 
-import { byte, base64 } from 'etesync';
+import { byte, base64 } from "etesync";
 
 function byteArray4ToNumber(bytes: byte[], offset: number) {
   // tslint:disable:no-bitwise
@@ -18,7 +18,7 @@ function byteArray4ToNumber(bytes: byte[], offset: number) {
 
 function getEncodedChunk(publicKey: byte[], offset: number) {
   const chunk = byteArray4ToNumber(publicKey, offset) % 100000;
-  return chunk.toString().padStart(5, '0');
+  return chunk.toString().padStart(5, "0");
 }
 
 interface PropsType {
@@ -31,12 +31,12 @@ class PrettyFingerprint extends React.PureComponent<PropsType> {
       sjcl.hash.sha256.hash(sjcl.codec.base64.toBits(this.props.publicKey))
     );
 
-    const spacing = '   ';
+    const spacing = "   ";
     const prettyPublicKey =
       getEncodedChunk(fingerprint, 0) + spacing +
       getEncodedChunk(fingerprint, 4) + spacing +
       getEncodedChunk(fingerprint, 8) + spacing +
-      getEncodedChunk(fingerprint, 12) + '\n' +
+      getEncodedChunk(fingerprint, 12) + "\n" +
       getEncodedChunk(fingerprint, 16) + spacing +
       getEncodedChunk(fingerprint, 20) + spacing +
       getEncodedChunk(fingerprint, 24) + spacing +

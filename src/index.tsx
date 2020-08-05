@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/es/integration/react';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import './index.css';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/es/integration/react";
+import App from "./App";
+import registerServiceWorker from "./registerServiceWorker";
+import "./index.css";
 
-import { store, persistor } from './store';
+import { store, persistor } from "./store";
 
 ReactDOM.render(
   <Provider store={store}>
@@ -17,6 +17,6 @@ ReactDOM.render(
       <App />
     </PersistGate>
   </Provider>,
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 registerServiceWorker();

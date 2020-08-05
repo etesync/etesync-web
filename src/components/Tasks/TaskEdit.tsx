@@ -1,51 +1,51 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputLabel from '@material-ui/core/InputLabel';
-import * as colors from '@material-ui/core/colors';
-import FormLabel from '@material-ui/core/FormLabel';
-import RadioGroup from '@material-ui/core/RadioGroup';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import InputLabel from "@material-ui/core/InputLabel";
+import * as colors from "@material-ui/core/colors";
+import FormLabel from "@material-ui/core/FormLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
 
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
-import IconDelete from '@material-ui/icons/Delete';
-import IconCancel from '@material-ui/icons/Clear';
-import IconSave from '@material-ui/icons/Save';
+import IconDelete from "@material-ui/icons/Delete";
+import IconCancel from "@material-ui/icons/Clear";
+import IconSave from "@material-ui/icons/Save";
 
-import DateTimePicker from '../../widgets/DateTimePicker';
+import DateTimePicker from "../../widgets/DateTimePicker";
 
-import ConfirmationDialog from '../../widgets/ConfirmationDialog';
-import TimezonePicker from '../../widgets/TimezonePicker';
-import Toast from '../../widgets/Toast';
+import ConfirmationDialog from "../../widgets/ConfirmationDialog";
+import TimezonePicker from "../../widgets/TimezonePicker";
+import Toast from "../../widgets/Toast";
 
-import { Location } from 'history';
-import { withRouter } from 'react-router';
+import { Location } from "history";
+import { withRouter } from "react-router";
 
-import * as uuid from 'uuid';
-import * as ICAL from 'ical.js';
+import * as uuid from "uuid";
+import * as ICAL from "ical.js";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import { getCurrentTimezone, mapPriority } from '../../helpers';
+import { getCurrentTimezone, mapPriority } from "../../helpers";
 
-import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType, TaskTags } from '../../pim-types';
+import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType, TaskTags } from "../../pim-types";
 
-import { History } from 'history';
+import { History } from "history";
 
-import ColoredRadio from '../../widgets/ColoredRadio';
-import RRule, { RRuleOptions } from '../../widgets/RRule';
+import ColoredRadio from "../../widgets/ColoredRadio";
+import RRule, { RRuleOptions } from "../../widgets/RRule";
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
@@ -81,17 +81,17 @@ class TaskEdit extends React.PureComponent<PropsType> {
   constructor(props: any) {
     super(props);
     this.state = {
-      uid: '',
-      title: '',
+      uid: "",
+      title: "",
       status: TaskStatusType.NeedsAction,
       priority: TaskPriorityType.Undefined,
       includeTime: false,
-      location: '',
-      description: '',
+      location: "",
+      description: "",
       tags: [],
       timezone: null,
 
-      journalUid: '',
+      journalUid: "",
       showDeleteDialog: false,
     };
 
@@ -99,7 +99,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       const task = this.props.item;
 
       this.state.uid = task.uid;
-      this.state.title = task.title ? task.title : '';
+      this.state.title = task.title ? task.title : "";
       this.state.status = task.status ?? TaskStatusType.NeedsAction;
       this.state.priority = task.priority ?? TaskPriorityType.Undefined;
       if (task.startDate) {
@@ -116,8 +116,8 @@ class TaskEdit extends React.PureComponent<PropsType> {
           this.state.rrule.until = rrule.until;
         }
       }
-      this.state.location = task.location ? task.location : '';
-      this.state.description = task.description ? task.description : '';
+      this.state.location = task.location ? task.location : "";
+      this.state.description = task.description ? task.description : "";
       this.state.timezone = task.timezone;
       this.state.tags = task.tags;
     } else {
@@ -160,15 +160,15 @@ class TaskEdit extends React.PureComponent<PropsType> {
   }
 
   public handleCloseToast(_event?: React.SyntheticEvent, reason?: string) {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
-    this.setState({ error: '' });
+    this.setState({ error: "" });
   }
 
   public toggleRecurring() {
-    const value = this.state.rrule ? undefined : { freq: 'WEEKLY', interval: 1 };
+    const value = this.state.rrule ? undefined : { freq: "WEEKLY", interval: 1 };
     this.setState({ rrule: value });
   }
 
@@ -180,7 +180,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
     e.preventDefault();
 
     if (this.state.rrule && !(this.state.start || this.state.due)) {
-      this.setState({ error: 'A recurring task must have either Hide Until or Due Date set!' });
+      this.setState({ error: "A recurring task must have either Hide Until or Due Date set!" });
       return;
     }
 
@@ -203,7 +203,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
 
     if (startDate && dueDate) {
       if (startDate.compare(dueDate) >= 0) {
-        this.setState({ error: 'End time must be later than start time!' });
+        this.setState({ error: "End time must be later than start time!" });
         return;
       }
     }
@@ -243,7 +243,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
       }
     }
 
-    task.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
+    task.component.updatePropertyWithValue("last-modified", ICAL.Time.now());
 
     this.props.onSave(task, this.state.journalUid, this.props.item)
       .then(() => {
@@ -258,7 +258,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
         this.props.history.goBack();
       })
       .catch(() => {
-        this.setState({ error: 'Could not save task' });
+        this.setState({ error: "Could not save task" });
       });
   }
 
@@ -273,14 +273,14 @@ class TaskEdit extends React.PureComponent<PropsType> {
       form: {
       },
       fullWidth: {
-        width: '100%',
-        boxSizing: 'border-box' as any,
+        width: "100%",
+        boxSizing: "border-box" as any,
         marginTop: 16,
       },
       submit: {
         marginTop: 40,
         marginBottom: 20,
-        textAlign: 'right' as any,
+        textAlign: "right" as any,
       },
     };
 
@@ -290,11 +290,11 @@ class TaskEdit extends React.PureComponent<PropsType> {
     return (
       <React.Fragment>
         <h2>
-          {this.props.item ? 'Edit Task' : 'New Task'}
+          {this.props.item ? "Edit Task" : "New Task"}
         </h2>
         {recurring && (
           <div>
-            <span style={{ color: 'red' }}>IMPORTANT: </span>
+            <span style={{ color: "red" }}>IMPORTANT: </span>
             This is a recurring task, for now, only editing the whole series
             (by editing the first instance) is supported.
           </div>
@@ -349,7 +349,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             <RadioGroup
               row
               value={mapPriority(this.state.priority)}
-              onChange={(e) => this.handleChange('priority', Number(e.target.value))}
+              onChange={(e) => this.handleChange("priority", Number(e.target.value))}
             >
               <ColoredRadio value={TaskPriorityType.Undefined} label="None" color={colors.grey[600]} />
               <ColoredRadio value={TaskPriorityType.Low} label="Low" color={colors.blue[600]} />
@@ -418,7 +418,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
           {this.state.rrule &&
             <RRule
               onChange={this.handleRRuleChange}
-              rrule={this.state.rrule ? this.state.rrule : { freq: 'DAILY', interval: 1 }}
+              rrule={this.state.rrule ? this.state.rrule : { freq: "DAILY", interval: 1 }}
             />
           }
 
@@ -445,7 +445,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             multiple
             options={TaskTags}
             value={this.state.tags}
-            onChange={(_e, value) => this.handleChange('tags', value)}
+            onChange={(_e, value) => this.handleChange("tags", value)}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -468,7 +468,7 @@ class TaskEdit extends React.PureComponent<PropsType> {
             {this.props.item &&
               <Button
                 variant="contained"
-                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
+                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: "white" }}
                 onClick={this.onDeleteRequest}
               >
                 <IconDelete style={{ marginRight: 8 }} />

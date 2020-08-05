@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import ICAL from 'ical.js';
+import ICAL from "ical.js";
 
-import uuid from 'uuid';
+import uuid from "uuid";
 
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 
-import { TaskType, PimType, TaskStatusType } from '../../pim-types';
+import { TaskType, PimType, TaskStatusType } from "../../pim-types";
 
 interface PropsType {
   style: React.CSSProperties;
@@ -20,7 +20,7 @@ interface PropsType {
 }
 
 function QuickAdd(props: PropsType) {
-  const [title, setTitle] = React.useState('');
+  const [title, setTitle] = React.useState("");
   const { style, onSubmit: save, defaultCollection } = props;
 
 
@@ -39,7 +39,7 @@ function QuickAdd(props: PropsType) {
 
     save(task, defaultCollection.uid, undefined);
 
-    setTitle('');
+    setTitle("");
   }
 
 

@@ -1,36 +1,36 @@
-import * as React from 'react';
+import * as React from "react";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import Switch from '@material-ui/core/Switch';
-import IconButton from '@material-ui/core/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import MenuItem from '@material-ui/core/MenuItem';
-import SortIcon from '@material-ui/icons/Sort';
-import SearchIcon from '@material-ui/icons/Search';
-import CloseIcon from '@material-ui/icons/Close';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
-import { Transition } from 'react-transition-group';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import Switch from "@material-ui/core/Switch";
+import IconButton from "@material-ui/core/IconButton";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import MenuItem from "@material-ui/core/MenuItem";
+import SortIcon from "@material-ui/icons/Sort";
+import SearchIcon from "@material-ui/icons/Search";
+import CloseIcon from "@material-ui/icons/Close";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+import { Transition } from "react-transition-group";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
-import { PimType } from '../../pim-types';
+import { PimType } from "../../pim-types";
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 
-import { setSettings } from '../../store/actions';
-import { StoreState } from '../../store';
+import { setSettings } from "../../store/actions";
+import { StoreState } from "../../store";
 
-import Menu from '../../widgets/Menu';
-import { ListItemText, ListItemSecondaryAction } from '@material-ui/core';
+import Menu from "../../widgets/Menu";
+import { ListItemText, ListItemSecondaryAction } from "@material-ui/core";
 
 const transitionTimeout = 300;
 
 const transitionStyles = {
-  entering: { visibility: 'visible', width: '100%', overflow: 'hidden' },
-  entered: { visibility: 'visible', width: '100%' },
-  exiting: { visibility: 'visible', width: '0%', overflow: 'hidden' },
-  exited: { visibility: 'hidden', width: '0%' },
+  entering: { visibility: "visible", width: "100%", overflow: "hidden" },
+  entered: { visibility: "visible", width: "100%" },
+  exiting: { visibility: "visible", width: "0%", overflow: "hidden" },
+  exited: { visibility: "hidden", width: "0%" },
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -69,7 +69,7 @@ export default function Toolbar(props: PropsType) {
 
   const toggleSearchField = () => {
     if (showSearchField) {
-      setSearchTerm('');
+      setSearchTerm("");
     }
     setShowSearchField(!showSearchField);
   };
@@ -86,7 +86,7 @@ export default function Toolbar(props: PropsType) {
   });
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
       <Transition in={showSearchField} timeout={transitionTimeout}>
         {(state) => (
           <TextField
@@ -110,7 +110,7 @@ export default function Toolbar(props: PropsType) {
       </Transition>
 
       <div className={classes.button}>
-        <IconButton size="small" onClick={toggleSearchField} title={showSearchField ? 'Close' : 'Search'}>
+        <IconButton size="small" onClick={toggleSearchField} title={showSearchField ? "Close" : "Search"}>
           {showSearchField ? <CloseIcon /> : <SearchIcon />}
         </IconButton>
       </div>
@@ -160,13 +160,13 @@ export default function Toolbar(props: PropsType) {
           onClose={() => setOptionsAnchorEl(null)}
         >
           <MenuItem>
-            <ListItemText style={{ marginRight: '1.5em' }}>Show completed</ListItemText>
+            <ListItemText style={{ marginRight: "1.5em" }}>Show completed</ListItemText>
             <ListItemSecondaryAction>
               <Switch checked={showCompleted} onChange={(_e, checked) => setShowCompleted(checked)} edge="end" />
             </ListItemSecondaryAction>
           </MenuItem>
           <MenuItem>
-            <ListItemText style={{ marginRight: '1.5em' }}>Show hidden</ListItemText>
+            <ListItemText style={{ marginRight: "1.5em" }}>Show hidden</ListItemText>
             <ListItemSecondaryAction>
               <Switch checked={showHidden} onChange={(_e, checked) => setShowHidden(checked)} edge="end" />
             </ListItemSecondaryAction>

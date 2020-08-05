@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
-import * as colors from '@material-ui/core/colors';
-import { AutoSizer, List as VirtualizedList } from 'react-virtualized';
+import * as colors from "@material-ui/core/colors";
+import { AutoSizer, List as VirtualizedList } from "react-virtualized";
 
-import { Avatar } from '../widgets/Avatar';
-import { List, ListItem } from '../widgets/List';
+import { Avatar } from "../widgets/Avatar";
+import { List, ListItem } from "../widgets/List";
 
-import { ContactType } from '../pim-types';
+import { ContactType } from "../pim-types";
 
 function getContactColor(contact: ContactType) {
   const colorOptions = [
@@ -73,10 +73,10 @@ const sortSelector = createSelector(
   (entries: ContactType[]) => entries,
   (entries) => {
     return entries.sort((_a, _b) => {
-      const a = _a.fn ?? '';
-      const b = _b.fn ?? '';
+      const a = _a.fn ?? "";
+      const b = _b.fn ?? "";
 
-      return a.localeCompare(b, undefined, { sensitivity: 'base' });
+      return a.localeCompare(b, undefined, { sensitivity: "base" });
     });
   }
 );
@@ -96,7 +96,7 @@ class AddressBook extends React.PureComponent<PropsType> {
       : sortedEntries;
 
     return (
-      <List style={{ height: 'calc(100vh - 300px)' }}>
+      <List style={{ height: "calc(100vh - 300px)" }}>
         <AutoSizer>
           {({ height, width }) => (
             <VirtualizedList

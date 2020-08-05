@@ -1,93 +1,93 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { List as ImmutableList } from 'immutable';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
-import { MuiThemeProvider as ThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
-import amber from '@material-ui/core/colors/amber';
-import lightBlue from '@material-ui/core/colors/lightBlue';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
+import * as React from "react";
+import { List as ImmutableList } from "immutable";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { BrowserRouter } from "react-router-dom";
+import { MuiThemeProvider as ThemeProvider, createMuiTheme } from "@material-ui/core/styles"; // v1.x
+import amber from "@material-ui/core/colors/amber";
+import lightBlue from "@material-ui/core/colors/lightBlue";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Drawer from "@material-ui/core/Drawer";
+import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
 
-import NavigationMenu from '@material-ui/icons/Menu';
-import NavigationBack from '@material-ui/icons/ArrowBack';
-import NavigationRefresh from '@material-ui/icons/Refresh';
-import ErrorsIcon from '@material-ui/icons/Error';
+import NavigationMenu from "@material-ui/icons/Menu";
+import NavigationBack from "@material-ui/icons/ArrowBack";
+import NavigationRefresh from "@material-ui/icons/Refresh";
+import ErrorsIcon from "@material-ui/icons/Error";
 
-import 'react-virtualized/styles.css'; // only needs to be imported once
+import "react-virtualized/styles.css"; // only needs to be imported once
 
-import './App.css';
+import "./App.css";
 
-import ConfirmationDialog from './widgets/ConfirmationDialog';
-import PrettyError from './widgets/PrettyError';
-import { List, ListItem } from './widgets/List';
-import withSpin from './widgets/withSpin';
-import ErrorBoundary from './components/ErrorBoundary';
-import SideMenu from './SideMenu';
-import LoginGate from './LoginGate';
-import { RouteResolver } from './routes';
+import ConfirmationDialog from "./widgets/ConfirmationDialog";
+import PrettyError from "./widgets/PrettyError";
+import { List, ListItem } from "./widgets/List";
+import withSpin from "./widgets/withSpin";
+import ErrorBoundary from "./components/ErrorBoundary";
+import SideMenu from "./SideMenu";
+import LoginGate from "./LoginGate";
+import { RouteResolver } from "./routes";
 
-import * as store from './store';
-import * as actions from './store/actions';
+import * as store from "./store";
+import * as actions from "./store/actions";
 
-import { credentialsSelector } from './login';
+import { credentialsSelector } from "./login";
 
-import { History } from 'history';
+import { History } from "history";
 
 export const routeResolver = new RouteResolver({
-  home: '',
+  home: "",
   pim: {
     contacts: {
       _id: {
-        _base: ':itemUid',
-        edit: 'edit',
-        log: 'log',
+        _base: ":itemUid",
+        edit: "edit",
+        log: "log",
       },
-      new: 'new',
+      new: "new",
     },
     events: {
       _id: {
-        _base: ':itemUid',
-        edit: 'edit',
-        duplicate: 'duplicate',
-        log: 'log',
+        _base: ":itemUid",
+        edit: "edit",
+        duplicate: "duplicate",
+        log: "log",
       },
-      new: 'new',
+      new: "new",
     },
     tasks: {
       _id: {
-        _base: ':itemUid',
-        edit: 'edit',
-        log: 'log',
+        _base: ":itemUid",
+        edit: "edit",
+        log: "log",
       },
-      new: 'new',
+      new: "new",
     },
   },
   journals: {
     _id: {
-      _base: ':journalUid',
-      edit: 'edit',
+      _base: ":journalUid",
+      edit: "edit",
       items: {
         _id: {
-          _base: ':itemUid',
+          _base: ":itemUid",
         },
       },
       entries: {
         _id: {
-          _base: ':entryUid',
+          _base: ":entryUid",
         },
       },
       members: {
       },
     },
-    new: 'new',
-    import: 'import',
+    new: "new",
+    import: "import",
   },
   settings: {
   },
@@ -132,7 +132,7 @@ const AppBarWitHistory = withRouter(
               }
             </div>
 
-            <div style={{ flexGrow: 1, fontSize: '1.25em' }} id="appbar-title" />
+            <div style={{ flexGrow: 1, fontSize: "1.25em" }} id="appbar-title" />
 
             <div style={{ marginRight: -12 }} id="appbar-buttons">
               {iconElementRight}
@@ -145,8 +145,8 @@ const AppBarWitHistory = withRouter(
     private canGoBack() {
       return (
         (this.props.history!.length > 1) &&
-        (this.props.history!.location.pathname !== routeResolver.getRoute('pim')) &&
-        (this.props.history!.location.pathname !== routeResolver.getRoute('home'))
+        (this.props.history!.location.pathname !== routeResolver.getRoute("pim")) &&
+        (this.props.history!.location.pathname !== routeResolver.getRoute("home"))
       );
     }
 
@@ -191,13 +191,13 @@ class App extends React.PureComponent {
 
     const muiTheme = createMuiTheme({
       palette: {
-        type: darkMode ? 'dark' : undefined,
+        type: darkMode ? "dark" : undefined,
         primary: amber,
         secondary: {
           light: lightBlue.A200,
           main: lightBlue.A400,
           dark: lightBlue.A700,
-          contrastText: '#fff',
+          contrastText: "#fff",
         },
       },
     });
@@ -213,7 +213,7 @@ class App extends React.PureComponent {
     return (
       <ThemeProvider theme={muiTheme}>
         <BrowserRouter>
-          <div style={styles.main} className={darkMode ? 'theme-dark' : 'theme-light'}>
+          <div style={styles.main} className={darkMode ? "theme-dark" : "theme-light"}>
             <AppBarWitHistory
               toggleDrawerIcon={<IconButton onClick={this.toggleDrawer}><NavigationMenu /></IconButton>}
               iconElementRight={
@@ -245,7 +245,7 @@ class App extends React.PureComponent {
                 {errors.map((error, index) => (
                   <ListItem
                     key={index}
-                    style={{ height: 'unset' }}
+                    style={{ height: "unset" }}
                     onClick={() => (window as any).navigator.clipboard.writeText(`${error.message}\n\n${error.stack}`)}
                   >
                     <PrettyError error={error} />

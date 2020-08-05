@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { TextField, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
-import DateTimePicker from '../widgets/DateTimePicker';
-import * as ICAL from 'ical.js';
+import * as React from "react";
+import { TextField, Select, MenuItem, InputLabel, FormControl } from "@material-ui/core";
+import DateTimePicker from "../widgets/DateTimePicker";
+import * as ICAL from "ical.js";
 
 export type RRuleOptions = ICAL.RecurData;
 
@@ -53,13 +53,13 @@ const menuItemsEnds = [Ends.Forever, Ends.Until, Ends.After].map((key) => {
   let displayhName;
   switch (key) {
     case Ends.Forever:
-      displayhName = 'Forever';
+      displayhName = "Forever";
       break;
     case Ends.Until:
-      displayhName = 'Until';
+      displayhName = "Until";
       break;
     case Ends.After:
-      displayhName = 'For';
+      displayhName = "For";
       break;
   }
 
@@ -67,7 +67,7 @@ const menuItemsEnds = [Ends.Forever, Ends.Until, Ends.After].map((key) => {
     <MenuItem key={key} value={key}>{displayhName}</MenuItem>
   );
 });
-const menuItemsFrequency = ['YEARLY', 'MONTHLY', 'WEEKLY', 'DAILY'].map((value) => {
+const menuItemsFrequency = ["YEARLY", "MONTHLY", "WEEKLY", "DAILY"].map((value) => {
   return (
     <MenuItem key={value} value={value}>{value.toLowerCase()}</MenuItem>
   );
@@ -108,7 +108,7 @@ function sanitizeByDay(item: string | string[] | undefined) {
 }
 
 const styles = {
-  multiSelect: { minWidth: 120, maxWidth: '100%' },
+  multiSelect: { minWidth: 120, maxWidth: "100%" },
   width: { width: 120 },
 };
 
@@ -146,12 +146,12 @@ export default function RRule(props: PropsType) {
     }
   }
   return (
-    <div style={{ paddingLeft: '2em' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ paddingLeft: "2em" }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         <span>Repeat</span>
         <Select
           value={options.freq}
-          style={{ marginLeft: '0.5em' }}
+          style={{ marginLeft: "0.5em" }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             const freq = (event.target as HTMLSelectElement).value as ICAL.FrequencyValues;
             updateRule({ freq: freq }, true);
@@ -159,16 +159,16 @@ export default function RRule(props: PropsType) {
         >
           {menuItemsFrequency}
         </Select>
-        <span style={{ marginLeft: '0.5em' }}>every</span>
+        <span style={{ marginLeft: "0.5em" }}>every</span>
         <TextField
-          style={{ marginLeft: '0.5em', width: '2.2em' }}
+          style={{ marginLeft: "0.5em", width: "2.2em" }}
           type="number"
           inputProps={{ min: 1, max: 99 }}
           value={options.interval ?? 1}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             event.preventDefault();
             const inputNode = event.currentTarget as HTMLInputElement;
-            if (inputNode.value === '') {
+            if (inputNode.value === "") {
               updateRule({ interval: 1 });
             } else if (inputNode.valueAsNumber) {
               updateRule({ interval: inputNode.valueAsNumber });
@@ -176,7 +176,7 @@ export default function RRule(props: PropsType) {
           }}
         />
       </div>
-      {(options.freq && options.freq !== 'DAILY') &&
+      {(options.freq && options.freq !== "DAILY") &&
         <div>
           <FormControl>
             <InputLabel>Weekdays</InputLabel>
@@ -194,8 +194,8 @@ export default function RRule(props: PropsType) {
         </div>
       }
       {!disableComplex && (
-        <div style={{ display: 'flex' }}>
-          {(options.freq === 'MONTHLY') &&
+        <div style={{ display: "flex" }}>
+          {(options.freq === "MONTHLY") &&
             <Select value={options.bysetpos ? MonthRepeat.Bysetpos : MonthRepeat.Bymonthday}
               onChange={(event: React.FormEvent<{ value: unknown }>) => {
                 const value = Number((event.target as HTMLInputElement).value);
@@ -225,7 +225,7 @@ export default function RRule(props: PropsType) {
       )}
 
       <div>
-        {options.freq === 'MONTHLY' &&
+        {options.freq === "MONTHLY" &&
           <TextField
             type="number"
             value={options.bymonthday ? options.bymonthday[0] : undefined}
@@ -236,7 +236,7 @@ export default function RRule(props: PropsType) {
               event.preventDefault();
               const value = (event.currentTarget as HTMLInputElement).value;
               const numberValue = Number(value);
-              if (value === '') {
+              if (value === "") {
                 updateRule({ bymonthday: undefined });
               } else if (numberValue < 32 && numberValue > 0) {
                 updateRule({ bymonthday: [numberValue] });
@@ -244,7 +244,7 @@ export default function RRule(props: PropsType) {
             }}
           />
         }
-        {options.freq === 'YEARLY' &&
+        {options.freq === "YEARLY" &&
           <div>
             <FormControl>
               <InputLabel>Months</InputLabel>
@@ -262,10 +262,10 @@ export default function RRule(props: PropsType) {
           </div>
         }
       </div>
-      <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+      <div style={{ display: "inline-flex", alignItems: "center" }}>
         <Select
           value={getEnds()}
-          style={{ marginRight: '0.5em' }}
+          style={{ marginRight: "0.5em" }}
           onChange={(event: React.FormEvent<{ value: unknown }>) => {
             const value = Number((event.target as HTMLSelectElement).value);
             let updateOptions;
@@ -296,19 +296,19 @@ export default function RRule(props: PropsType) {
             <TextField
               type="number"
               value={options.count}
-              style={{ width: '4em' }}
+              style={{ width: "4em" }}
               inputProps={{ min: 1, step: 1 }}
               onChange={(event: React.FormEvent<{ value: unknown }>) => {
                 event.preventDefault();
                 const inputNode = event.currentTarget as HTMLInputElement;
-                if (inputNode.value === '') {
+                if (inputNode.value === "") {
                   updateRule({ count: 1 });
                 } else if (inputNode.valueAsNumber) {
                   updateRule({ count: inputNode.valueAsNumber });
                 }
               }}
             />
-            <span style={{ marginLeft: '0.5em' }}>events</span>
+            <span style={{ marginLeft: "0.5em" }}>events</span>
           </>
         }
       </div>

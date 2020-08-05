@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import MomentUtils from '@date-io/moment';
-import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardDateTimePicker } from '@material-ui/pickers';
+import MomentUtils from "@date-io/moment";
+import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
 
-import moment from 'moment';
+import moment from "moment";
 
 interface PropsType {
   placeholder: string;
@@ -23,7 +23,7 @@ class DateTimePicker extends React.PureComponent<PropsType> {
 
   public render() {
     const Picker = (this.props.dateOnly) ? KeyboardDatePicker : KeyboardDateTimePicker;
-    const dateFormat = (this.props.dateOnly) ? 'DD/MM/YYYY' : 'DD/MM/YYYY HH:mm';
+    const dateFormat = (this.props.dateOnly) ? "DD/MM/YYYY" : "DD/MM/YYYY HH:mm";
     return (
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <Picker
@@ -33,7 +33,7 @@ class DateTimePicker extends React.PureComponent<PropsType> {
           ampm={false}
           showTodayButton
           KeyboardButtonProps={{
-            'aria-label': 'change date',
+            "aria-label": "change date",
           }}
         />
       </MuiPickersUtilsProvider>

@@ -1,29 +1,29 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
-import Dropzone from 'react-dropzone';
+import Dropzone from "react-dropzone";
 
-import LoadingIndicator from '../widgets/LoadingIndicator';
+import LoadingIndicator from "../widgets/LoadingIndicator";
 
-import { SyncInfoJournal } from '../SyncGate';
+import { SyncInfoJournal } from "../SyncGate";
 
-import { store, CredentialsData, UserInfoData } from '../store';
-import { addEntries } from '../store/actions';
-import { createJournalEntry } from '../etesync-helpers';
-import * as EteSync from 'etesync';
+import { store, CredentialsData, UserInfoData } from "../store";
+import { addEntries } from "../store/actions";
+import { createJournalEntry } from "../etesync-helpers";
+import * as EteSync from "etesync";
 
-import * as uuid from 'uuid';
-import * as ICAL from 'ical.js';
-import { ContactType, EventType, TaskType, PimType } from '../pim-types';
+import * as uuid from "uuid";
+import * as ICAL from "ical.js";
+import { ContactType, EventType, TaskType, PimType } from "../pim-types";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -55,14 +55,14 @@ class ImportDialog extends React.Component<PropsType> {
     let acceptTypes;
     let dropFunction;
 
-    if (collectionInfo.type === 'ADDRESS_BOOK') {
-      acceptTypes = ['text/vcard', 'text/directory', 'text/x-vcard', '.vcf'];
+    if (collectionInfo.type === "ADDRESS_BOOK") {
+      acceptTypes = ["text/vcard", "text/directory", "text/x-vcard", ".vcf"];
       dropFunction = this.onFileDropContact;
-    } else if (collectionInfo.type === 'CALENDAR') {
-      acceptTypes = ['text/calendar', '.ics', '.ical'];
+    } else if (collectionInfo.type === "CALENDAR") {
+      acceptTypes = ["text/calendar", ".ics", ".ical"];
       dropFunction = this.onFileDropEvent;
-    } else if (collectionInfo.type === 'TASKS') {
-      acceptTypes = ['text/calendar', '.ics', '.ical'];
+    } else if (collectionInfo.type === "TASKS") {
+      acceptTypes = ["text/calendar", ".ics", ".ical"];
       dropFunction = this.onFileDropTask;
     }
 
@@ -75,7 +75,7 @@ class ImportDialog extends React.Component<PropsType> {
           <DialogTitle>Import entries from file?</DialogTitle>
           <DialogContent>
             {loading ?
-              <LoadingIndicator style={{ display: 'block', margin: 'auto' }} />
+              <LoadingIndicator style={{ display: "block", margin: "auto" }} />
               :
               <Dropzone
                 onDrop={dropFunction}
@@ -111,13 +111,13 @@ class ImportDialog extends React.Component<PropsType> {
 
     reader.onabort = () => {
       this.setState({ loading: false });
-      console.error('Import Aborted');
-      alert('file reading was aborted');
+      console.error("Import Aborted");
+      alert("file reading was aborted");
     };
     reader.onerror = (e) => {
       this.setState({ loading: false });
       console.error(e);
-      alert('file reading has failed');
+      alert("file reading has failed");
     };
     reader.onload = async () => {
       try {
@@ -144,7 +144,7 @@ class ImportDialog extends React.Component<PropsType> {
         );
       } catch (e) {
         console.error(e);
-        alert('An error has occurred, please contact developers.');
+        alert("An error has occurred, please contact developers.");
         throw e;
       } finally {
         if (this.props.onClose) {
@@ -160,8 +160,8 @@ class ImportDialog extends React.Component<PropsType> {
         reader.readAsText(file);
       });
     } else {
-      alert('Failed importing file. Is the file type supported?');
-      console.log('Failed importing files. Rejected:', rejectedFiles);
+      alert("Failed importing file. Is the file type supported?");
+      console.log("Failed importing files. Rejected:", rejectedFiles);
     }
   }
 
@@ -183,7 +183,7 @@ class ImportDialog extends React.Component<PropsType> {
   private onFileDropEvent(acceptedFiles: File[], rejectedFiles: File[]) {
     const itemsCreator = (fileText: string) => {
       const calendarComp = new ICAL.Component(ICAL.parse(fileText));
-      return calendarComp.getAllSubcomponents('vevent').map((comp) => {
+      return calendarComp.getAllSubcomponents("vevent").map((comp) => {
         const ret = new EventType(comp);
         if (!ret.uid) {
           ret.uid = uuid.v4();
@@ -198,7 +198,7 @@ class ImportDialog extends React.Component<PropsType> {
   private onFileDropTask(acceptedFiles: File[], rejectedFiles: File[]) {
     const itemsCreator = (fileText: string) => {
       const calendarComp = new ICAL.Component(ICAL.parse(fileText));
-      return calendarComp.getAllSubcomponents('vtodo').map((comp) => {
+      return calendarComp.getAllSubcomponents("vtodo").map((comp) => {
         const ret = new TaskType(comp);
         if (!ret.uid) {
           ret.uid = uuid.v4();

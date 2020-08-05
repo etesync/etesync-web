@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 
-import IconButton from '@material-ui/core/IconButton';
-import IconSearch from '@material-ui/icons/Search';
-import IconClear from '@material-ui/icons/Clear';
+import IconButton from "@material-ui/core/IconButton";
+import IconSearch from "@material-ui/icons/Search";
+import IconClear from "@material-ui/icons/Clear";
 
-import { ContactType } from '../pim-types';
+import { ContactType } from "../pim-types";
 
-import AddressBook from '../components/AddressBook';
+import AddressBook from "../components/AddressBook";
 
 class SearchableAddressBook extends React.PureComponent {
   public props: {
@@ -25,7 +25,7 @@ class SearchableAddressBook extends React.PureComponent {
 
   constructor(props: any) {
     super(props);
-    this.state = { searchQuery: '' };
+    this.state = { searchQuery: "" };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
@@ -43,19 +43,19 @@ class SearchableAddressBook extends React.PureComponent {
       ...rest
     } = this.props;
 
-    const reg = new RegExp(this.state.searchQuery, 'i');
+    const reg = new RegExp(this.state.searchQuery, "i");
 
     return (
       <React.Fragment>
         <TextField
           name="searchQuery"
           value={this.state.searchQuery}
-          style={{ fontSize: '120%', marginLeft: 20 }}
+          style={{ fontSize: "120%", marginLeft: 20 }}
           placeholder="Find Contacts"
           onChange={this.handleInputChange}
         />
         {this.state.searchQuery &&
-          <IconButton onClick={() => this.setState({ searchQuery: '' })}>
+          <IconButton onClick={() => this.setState({ searchQuery: "" })}>
             <IconClear />
           </IconButton>
         }

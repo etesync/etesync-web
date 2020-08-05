@@ -1,52 +1,52 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import * as colors from '@material-ui/core/colors';
+import * as React from "react";
+import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import * as colors from "@material-ui/core/colors";
 
-import IconDelete from '@material-ui/icons/Delete';
-import IconAdd from '@material-ui/icons/Add';
-import IconClear from '@material-ui/icons/Clear';
-import IconCancel from '@material-ui/icons/Clear';
-import IconSave from '@material-ui/icons/Save';
+import IconDelete from "@material-ui/icons/Delete";
+import IconAdd from "@material-ui/icons/Add";
+import IconClear from "@material-ui/icons/Clear";
+import IconCancel from "@material-ui/icons/Clear";
+import IconSave from "@material-ui/icons/Save";
 
-import ConfirmationDialog from '../widgets/ConfirmationDialog';
+import ConfirmationDialog from "../widgets/ConfirmationDialog";
 
-import * as uuid from 'uuid';
-import * as ICAL from 'ical.js';
+import * as uuid from "uuid";
+import * as ICAL from "ical.js";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import { ContactType } from '../pim-types';
+import { ContactType } from "../pim-types";
 
-import { History } from 'history';
+import { History } from "history";
 
 const telTypes = [
-  { type: 'Home' },
-  { type: 'Work' },
-  { type: 'Cell' },
-  { type: 'Other' },
+  { type: "Home" },
+  { type: "Work" },
+  { type: "Cell" },
+  { type: "Other" },
 ];
 
 const emailTypes = telTypes;
 
 const addressTypes = [
-  { type: 'Home' },
-  { type: 'Work' },
-  { type: 'Other' },
+  { type: "Home" },
+  { type: "Work" },
+  { type: "Other" },
 ];
 
 const imppTypes = [
-  { type: 'Jabber' },
-  { type: 'Hangouts' },
-  { type: 'Other' },
+  { type: "Jabber" },
+  { type: "Hangouts" },
+  { type: "Other" },
 ];
 
 const TypeSelector = (props: any) => {
@@ -70,8 +70,8 @@ class ValueType {
   public value: string;
 
   constructor(type?: string, value?: string) {
-    this.type = type ? type : 'home';
-    this.value = value ? value : '';
+    this.type = type ? type : "home";
+    this.value = value ? value : "";
   }
 }
 
@@ -150,22 +150,22 @@ class ContactEdit extends React.PureComponent<PropsType> {
   constructor(props: any) {
     super(props);
     this.state = {
-      uid: '',
-      fn: '',
-      lastName: '',
-      firstName: '',
-      middleName: '',
-      namePrefix: '',
-      nameSuffix: '',
+      uid: "",
+      fn: "",
+      lastName: "",
+      firstName: "",
+      middleName: "",
+      namePrefix: "",
+      nameSuffix: "",
       phone: [new ValueType()],
       email: [new ValueType()],
       address: [new ValueType()],
-      impp: [new ValueType('jabber')],
-      org: '',
-      note: '',
-      title: '',
+      impp: [new ValueType("jabber")],
+      org: "",
+      note: "",
+      title: "",
 
-      journalUid: '',
+      journalUid: "",
       showDeleteDialog: false,
     };
 
@@ -173,7 +173,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
       const contact = this.props.item;
 
       this.state.uid = contact.uid;
-      this.state.fn = contact.fn ? contact.fn : '';
+      this.state.fn = contact.fn ? contact.fn : "";
       if (contact.n) {
         this.state.lastName = contact.n[0];
         this.state.firstName = contact.n[1];
@@ -181,18 +181,18 @@ class ContactEdit extends React.PureComponent<PropsType> {
         this.state.namePrefix = contact.n[3];
         this.state.nameSuffix = contact.n[4];
       } else {
-        let name = this.state.fn.trim().split(',');
-        if (name.length > 2 && name[0] !== '' && name[name.length - 1] !== '') {
-          this.state.nameSuffix = name.pop() || '';
+        let name = this.state.fn.trim().split(",");
+        if (name.length > 2 && name[0] !== "" && name[name.length - 1] !== "") {
+          this.state.nameSuffix = name.pop() || "";
         }
-        name = name.join(',').split(' ');
+        name = name.join(",").split(" ");
         if (name.length === 1) {
           this.state.firstName = name[0];
         } else if (name.length === 2) {
           this.state.firstName = name[0];
           this.state.lastName = name[1];
         } else if (name.length > 2) {
-          this.state.firstName = name.slice(0, name.length - 2).join(' ');
+          this.state.firstName = name.slice(0, name.length - 2).join(" ");
           this.state.middleName = name[name.length - 2];
           this.state.lastName = name[name.length - 1];
         }
@@ -208,19 +208,19 @@ class ContactEdit extends React.PureComponent<PropsType> {
         ))
       );
 
-      this.state.phone = propToValueType(contact.comp, 'tel');
-      this.state.email = propToValueType(contact.comp, 'email');
-      this.state.address = propToValueType(contact.comp, 'adr');
-      this.state.impp = propToValueType(contact.comp, 'impp');
+      this.state.phone = propToValueType(contact.comp, "tel");
+      this.state.email = propToValueType(contact.comp, "email");
+      this.state.address = propToValueType(contact.comp, "adr");
+      this.state.impp = propToValueType(contact.comp, "impp");
 
       const propToStringType = (comp: ICAL.Component, propName: string) => {
         const val = comp.getFirstPropertyValue(propName);
-        return val ? val : '';
+        return val ? val : "";
       };
 
-      this.state.org = propToStringType(contact.comp, 'org');
-      this.state.title = propToStringType(contact.comp, 'title');
-      this.state.note = propToStringType(contact.comp, 'note');
+      this.state.org = propToStringType(contact.comp, "org");
+      this.state.title = propToStringType(contact.comp, "title");
+      this.state.note = propToStringType(contact.comp, "note");
 
     } else {
       this.state.uid = uuid.v4();
@@ -241,7 +241,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
   }
 
   public addValueType(name: string, _type?: string) {
-    const type = _type ? _type : 'home';
+    const type = _type ? _type : "home";
     this.setState((prevState) => {
       const newArray = prevState[name].slice(0);
       newArray.push(new ValueType(type));
@@ -293,14 +293,14 @@ class ContactEdit extends React.PureComponent<PropsType> {
     const contact = (this.props.item) ?
       this.props.item.clone()
       :
-      new ContactType(new ICAL.Component(['vcard', [], []]))
+      new ContactType(new ICAL.Component(["vcard", [], []]))
       ;
 
     const comp = contact.comp;
-    comp.updatePropertyWithValue('prodid', '-//iCal.js EteSync Web');
-    comp.updatePropertyWithValue('version', '4.0');
-    comp.updatePropertyWithValue('uid', this.state.uid);
-    comp.updatePropertyWithValue('rev', ICAL.Time.now());
+    comp.updatePropertyWithValue("prodid", "-//iCal.js EteSync Web");
+    comp.updatePropertyWithValue("version", "4.0");
+    comp.updatePropertyWithValue("uid", this.state.uid);
+    comp.updatePropertyWithValue("rev", ICAL.Time.now());
 
     const lastName = this.state.lastName.trim();
     const firstName = this.state.firstName.trim();
@@ -310,13 +310,13 @@ class ContactEdit extends React.PureComponent<PropsType> {
     
     let fn = `${namePrefix} ${firstName} ${middleName} ${lastName}`.trim();
 
-    if (fn === '') { 
+    if (fn === "") { 
       fn = nameSuffix;
-    } else if (nameSuffix !== '') { 
+    } else if (nameSuffix !== "") { 
       fn = `${fn}, ${nameSuffix}`;
     }
 
-    comp.updatePropertyWithValue('fn', fn);
+    comp.updatePropertyWithValue("fn", fn);
 
     const name = [lastName,
       firstName,
@@ -325,39 +325,39 @@ class ContactEdit extends React.PureComponent<PropsType> {
       nameSuffix,
     ];
 
-    comp.updatePropertyWithValue('n', name);
+    comp.updatePropertyWithValue("n", name);
 
     function setProperties(name: string, source: ValueType[]) {
       comp.removeAllProperties(name);
       source.forEach((x) => {
-        if (x.value === '') {
+        if (x.value === "") {
           return;
         }
 
         const prop = new ICAL.Property(name, comp);
-        prop.setParameter('type', x.type);
+        prop.setParameter("type", x.type);
         prop.setValue(x.value);
         comp.addProperty(prop);
       });
     }
 
-    setProperties('tel', this.state.phone);
-    setProperties('email', this.state.email);
-    setProperties('adr', this.state.address);
-    setProperties('impp', this.state.impp.map((x) => (
-      { type: x.type, value: x.type + ':' + x.value }
+    setProperties("tel", this.state.phone);
+    setProperties("email", this.state.email);
+    setProperties("adr", this.state.address);
+    setProperties("impp", this.state.impp.map((x) => (
+      { type: x.type, value: x.type + ":" + x.value }
     )));
 
     function setProperty(name: string, value: string) {
       comp.removeAllProperties(name);
-      if (value !== '') {
+      if (value !== "") {
         comp.updatePropertyWithValue(name, value);
       }
     }
 
-    setProperty('org', this.state.org);
-    setProperty('title', this.state.title);
-    setProperty('note', this.state.note);
+    setProperty("org", this.state.org);
+    setProperty("title", this.state.title);
+    setProperty("note", this.state.note);
 
 
     this.props.onSave(contact, this.state.journalUid, this.props.item)
@@ -377,20 +377,20 @@ class ContactEdit extends React.PureComponent<PropsType> {
       form: {
       },
       fullWidth: {
-        width: '100%',
-        boxSizing: 'border-box' as any,
+        width: "100%",
+        boxSizing: "border-box" as any,
       },
       submit: {
         marginTop: 40,
         marginBottom: 20,
-        textAlign: 'right' as any,
+        textAlign: "right" as any,
       },
     };
 
     return (
       <React.Fragment>
         <h2>
-          {this.props.item ? 'Edit Contact' : 'New Contact'}
+          {this.props.item ? "Edit Contact" : "New Contact"}
         </h2>
         <form style={styles.form} onSubmit={this.onSubmit}>
           <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
@@ -411,7 +411,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <TextField
             name="namePrefix"
             placeholder="Prefix"
-            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.namePrefix}
             onChange={this.handleInputChange}
           />
@@ -419,7 +419,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <TextField
             name="firstName"
             placeholder="First name"
-            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.firstName}
             onChange={this.handleInputChange}
           />
@@ -427,7 +427,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <TextField
             name="middleName"
             placeholder="Middle name"
-            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.middleName}
             onChange={this.handleInputChange}
           />
@@ -435,7 +435,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <TextField
             name="lastName"
             placeholder="Last name"
-            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.lastName}
             onChange={this.handleInputChange}
           />
@@ -443,7 +443,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <TextField
             name="nameSuffix"
             placeholder="Suffix"
-            style={{ marginTop: '2rem', ...styles.fullWidth }}
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.nameSuffix}
             onChange={this.handleInputChange}
           />
@@ -451,7 +451,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <div>
             Phone numbers
             <IconButton
-              onClick={() => this.addValueType('phone')}
+              onClick={() => this.addValueType("phone")}
               title="Add phone number"
             >
               <IconAdd />
@@ -474,7 +474,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <div>
             Emails
             <IconButton
-              onClick={() => this.addValueType('email')}
+              onClick={() => this.addValueType("email")}
               title="Add email address"
             >
               <IconAdd />
@@ -497,7 +497,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <div>
             IMPP
             <IconButton
-              onClick={() => this.addValueType('impp', 'jabber')}
+              onClick={() => this.addValueType("impp", "jabber")}
               title="Add impp address"
             >
               <IconAdd />
@@ -520,7 +520,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <div>
             Addresses
             <IconButton
-              onClick={() => this.addValueType('address')}
+              onClick={() => this.addValueType("address")}
               title="Add address"
             >
               <IconAdd />
@@ -578,7 +578,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
             {this.props.item &&
               <Button
                 variant="contained"
-                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
+                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: "white" }}
                 onClick={this.onDeleteRequest}
               >
                 <IconDelete style={{ marginRight: 8 }} />

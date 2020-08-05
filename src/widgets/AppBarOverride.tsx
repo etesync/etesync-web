@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 export default (props: {title: string, children?: React.ReactNode | React.ReactNode[]}) => {
-  const titleEl = document.querySelector('#appbar-title');
-  const buttonsEl = document.querySelector('#appbar-buttons');
+  const titleEl = document.querySelector("#appbar-title");
+  const buttonsEl = document.querySelector("#appbar-buttons");
 
   return (
     <>

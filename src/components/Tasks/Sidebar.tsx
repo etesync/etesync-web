@@ -1,16 +1,16 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 
-import InboxIcon from '@material-ui/icons/Inbox';
-import LabelIcon from '@material-ui/icons/LabelOutlined';
-import TodayIcon from '@material-ui/icons/Today';
+import InboxIcon from "@material-ui/icons/Inbox";
+import LabelIcon from "@material-ui/icons/LabelOutlined";
+import TodayIcon from "@material-ui/icons/Today";
 
-import { setSettings } from '../../store/actions';
-import { StoreState } from '../../store';
+import { setSettings } from "../../store/actions";
+import { StoreState } from "../../store";
 
-import { List, ListItem, ListSubheader } from '../../widgets/List';
-import { TaskType } from '../../pim-types';
+import { List, ListItem, ListSubheader } from "../../widgets/List";
+import { TaskType } from "../../pim-types";
 
 interface ListItemPropsType {
   name: string | null;
@@ -34,7 +34,7 @@ function SidebarListItem(props: ListItemPropsType) {
       onClick={handleClick}
       selected={name === filterBy}
       leftIcon={icon}
-      rightIcon={<span style={{ width: '100%', textAlign: 'right' }}>{(amount > 0) && amount}</span>}
+      rightIcon={<span style={{ width: "100%", textAlign: "right" }}>{(amount > 0) && amount}</span>}
       primaryText={primaryText}
     />
   );

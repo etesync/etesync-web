@@ -1,21 +1,21 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { addEntries, fetchEntries } from './actions';
-import { entries, EntriesData } from './reducers';
+import { addEntries, fetchEntries } from "./actions";
+import { entries, EntriesData } from "./reducers";
 
-import { Map } from 'immutable';
+import { Map } from "immutable";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-it('Entries reducer', () => {
-  const jId = '24324324324';
+it("Entries reducer", () => {
+  const jId = "24324324324";
   let state = Map({}) as EntriesData;
 
   const entry = new EteSync.Entry();
   entry.deserialize({
-    content: 'someContent',
-    uid: '6355209e2a2c26a6c1e6e967c2032737d538f602cf912474da83a2902f8a0a83',
+    content: "someContent",
+    uid: "6355209e2a2c26a6c1e6e967c2032737d538f602cf912474da83a2902f8a0a83",
   });
 
   const action = {

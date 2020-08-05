@@ -65,7 +65,7 @@ module.exports = {
     "react/no-unknown-property": ["error"],
 
     "quotes": "off",
-    "@typescript-eslint/quotes": ["error", "single", { "allowTemplateLiterals": true, "avoidEscape": true }],
+    "@typescript-eslint/quotes": ["error", "double", { "allowTemplateLiterals": true, "avoidEscape": true }],
     "semi": "off",
     "@typescript-eslint/semi": ["error", "always", { "omitLastInOneLineBlock": true }],
     "comma-dangle": ["error", {

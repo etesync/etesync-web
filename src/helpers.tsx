@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import * as ICAL from 'ical.js';
-import moment from 'moment';
-import { TaskPriorityType } from './pim-types';
+import * as React from "react";
+import * as ICAL from "ical.js";
+import moment from "moment";
+import { TaskPriorityType } from "./pim-types";
 
 // Generic handling of input changes
 export function handleInputChange(self: React.Component, part?: string) {
@@ -14,7 +14,7 @@ export function handleInputChange(self: React.Component, part?: string) {
 
     let newState;
 
-    if (event.target.type === 'checkbox') {
+    if (event.target.type === "checkbox") {
       newState = {
         [name]: event.target.checked,
       };
@@ -54,8 +54,8 @@ export function insertSorted<T>(array: T[] = [], newItem: T, key: string) {
   return array;
 }
 
-const allDayFormat = 'dddd, LL';
-const fullFormat = 'LLLL';
+const allDayFormat = "dddd, LL";
+const fullFormat = "LLLL";
 
 export function formatDate(date: ICAL.Time) {
   const mDate = moment(date.toJSDate());
@@ -74,15 +74,15 @@ export function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
 
   // All day
   if (start.isDate) {
-    if (mEnd.diff(mStart, 'days', true) === 1) {
+    if (mEnd.diff(mStart, "days", true) === 1) {
       return mStart.format(allDayFormat);
     } else {
       strStart = mStart.format(allDayFormat);
-      strEnd = mEnd.clone().subtract(1, 'day').format(allDayFormat);
+      strEnd = mEnd.clone().subtract(1, "day").format(allDayFormat);
     }
-  } else if (mStart.isSame(mEnd, 'day')) {
+  } else if (mStart.isSame(mEnd, "day")) {
     strStart = mStart.format(fullFormat);
-    strEnd = mEnd.format('LT');
+    strEnd = mEnd.format("LT");
 
     if (mStart.isSame(mEnd)) {
       return strStart;
@@ -92,17 +92,17 @@ export function formatDateRange(start: ICAL.Time, end: ICAL.Time) {
     strEnd = mEnd.format(fullFormat);
   }
 
-  return strStart + ' - ' + strEnd;
+  return strStart + " - " + strEnd;
 }
 
 export function formatOurTimezoneOffset() {
   let offset = new Date().getTimezoneOffset();
-  const prefix = (offset > 0) ? '-' : '+';
+  const prefix = (offset > 0) ? "-" : "+";
   offset = Math.abs(offset);
   const hours = Math.floor(offset / 60);
   const minutes = offset % 60;
 
-  return `GMT${prefix}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  return `GMT${prefix}${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 }
 
 export function getCurrentTimezone() {

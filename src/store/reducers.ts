@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { Action, ActionMeta, ActionFunctionAny, combineActions, handleAction, handleActions } from 'redux-actions';
-import { shallowEqual } from 'react-redux';
+import { Action, ActionMeta, ActionFunctionAny, combineActions, handleAction, handleActions } from "redux-actions";
+import { shallowEqual } from "react-redux";
 
-import { List, Map as ImmutableMap } from 'immutable';
+import { List, Map as ImmutableMap } from "immutable";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import * as actions from './actions';
+import * as actions from "./actions";
 
 export interface CredentialsDataRemote {
   serviceApiUrl: string;
@@ -218,10 +218,10 @@ const fetchActions = [
 ] as Array<ActionFunctionAny<Action<any>>>;
 
 for (const func in actions) {
-  if (func.startsWith('fetch') ||
-    func.startsWith('add') ||
-    func.startsWith('update') ||
-    func.startsWith('delete')) {
+  if (func.startsWith("fetch") ||
+    func.startsWith("add") ||
+    func.startsWith("update") ||
+    func.startsWith("delete")) {
 
     fetchActions.push(actions[func]);
   }
@@ -286,11 +286,11 @@ export const settingsReducer = handleActions(
     ),
   },
   {
-    locale: 'en-gb',
+    locale: "en-gb",
     darkMode: false,
     taskSettings: {
       filterBy: null,
-      sortBy: 'smart',
+      sortBy: "smart",
     },
   }
 );

@@ -1,47 +1,47 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { Route, Switch } from 'react-router';
-import Button from '@material-ui/core/Button';
-import IconEdit from '@material-ui/icons/Edit';
-import IconDuplicate from '@material-ui/icons/FileCopy';
-import IconChangeHistory from '@material-ui/icons/ChangeHistory';
-import { withStyles } from '@material-ui/core/styles';
+import * as React from "react";
+import { Route, Switch } from "react-router";
+import Button from "@material-ui/core/Button";
+import IconEdit from "@material-ui/icons/Edit";
+import IconDuplicate from "@material-ui/icons/FileCopy";
+import IconChangeHistory from "@material-ui/icons/ChangeHistory";
+import { withStyles } from "@material-ui/core/styles";
 
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps, withRouter } from "react-router";
 
-import { Action } from 'redux-actions';
+import { Action } from "redux-actions";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
-import { History } from 'history';
+import { History } from "history";
 
-import { PimType, ContactType, EventType, TaskType } from '../pim-types';
+import { PimType, ContactType, EventType, TaskType } from "../pim-types";
 
-import Container from '../widgets/Container';
+import Container from "../widgets/Container";
 
-import JournalEntries from '../components/JournalEntries';
-import ContactEdit from '../components/ContactEdit';
-import Contact from '../components/Contact';
-import EventEdit from '../components/EventEdit';
-import Event from '../components/Event';
-import TaskEdit from '../components/Tasks/TaskEdit';
-import Task from '../components/Tasks/Task';
-import PimMain from './PimMain';
+import JournalEntries from "../components/JournalEntries";
+import ContactEdit from "../components/ContactEdit";
+import Contact from "../components/Contact";
+import EventEdit from "../components/EventEdit";
+import Event from "../components/Event";
+import TaskEdit from "../components/Tasks/TaskEdit";
+import Task from "../components/Tasks/Task";
+import PimMain from "./PimMain";
 
-import { routeResolver } from '../App';
+import { routeResolver } from "../App";
 
-import { store, CredentialsData, UserInfoData } from '../store';
-import { fetchEntries } from '../store/actions';
+import { store, CredentialsData, UserInfoData } from "../store";
+import { fetchEntries } from "../store/actions";
 
-import { SyncInfo } from '../SyncGate';
+import { SyncInfo } from "../SyncGate";
 
-import { addJournalEntry } from '../etesync-helpers';
+import { addJournalEntry } from "../etesync-helpers";
 
-import { syncEntriesToItemMap, syncEntriesToEventItemMap, syncEntriesToTaskItemMap } from '../journal-processors';
+import { syncEntriesToItemMap, syncEntriesToEventItemMap, syncEntriesToTaskItemMap } from "../journal-processors";
 
 const itemsSelector = createSelector(
   (props: {syncInfo: SyncInfo}) => props.syncInfo,
@@ -58,13 +58,13 @@ const itemsSelector = createSelector(
 
         const collectionInfo = syncJournal.collection;
 
-        if (collectionInfo.type === 'ADDRESS_BOOK') {
+        if (collectionInfo.type === "ADDRESS_BOOK") {
           addressBookItems = syncEntriesToItemMap(collectionInfo, syncEntries, addressBookItems);
           collectionsAddressBook.push(collectionInfo);
-        } else if (collectionInfo.type === 'CALENDAR') {
+        } else if (collectionInfo.type === "CALENDAR") {
           calendarItems = syncEntriesToEventItemMap(collectionInfo, syncEntries, calendarItems);
           collectionsCalendar.push(collectionInfo);
-        } else if (collectionInfo.type === 'TASKS') {
+        } else if (collectionInfo.type === "TASKS") {
           taskListItems = syncEntriesToTaskItemMap(collectionInfo, syncEntries, taskListItems);
           collectionsTaskList.push(collectionInfo);
         }
@@ -88,9 +88,9 @@ const ItemChangeLog = React.memo((props: any) => {
     paramItemUid,
   } = props;
 
-  const tmp = paramItemUid.split('|');
+  const tmp = paramItemUid.split("|");
   const journalUid = tmp.shift();
-  const uid = tmp.join('|');
+  const uid = tmp.join("|");
   const journalItem = syncInfo.get(journalUid);
 
   return (
@@ -152,10 +152,10 @@ const CollectionRoutes = withStyles(styles)(withRouter(
       return (
         <Switch>
           <Route
-            path={routeResolver.getRoute(props.routePrefix + '.new')}
+            path={routeResolver.getRoute(props.routePrefix + ".new")}
             exact
             render={() => (
-              <Container style={{ maxWidth: '30rem' }}>
+              <Container style={{ maxWidth: "30rem" }}>
                 <ComponentEdit
                   key={props.routePrefix}
                   collections={props.collections}
@@ -167,7 +167,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             )}
           />
           <Route
-            path={routeResolver.getRoute(props.routePrefix + '._id.edit')}
+            path={routeResolver.getRoute(props.routePrefix + "._id.edit")}
             exact
             render={({ match }) => {
               const itemUid = decodeURIComponent(match.params.itemUid);
@@ -175,7 +175,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                 return PageNotFound();
               }
               return (
-                <Container style={{ maxWidth: '30rem' }}>
+                <Container style={{ maxWidth: "30rem" }}>
                   {(itemUid in props.items) &&
                     <ComponentEdit
                       key={(props.items[itemUid] as any).journalUid}
@@ -192,9 +192,9 @@ const CollectionRoutes = withStyles(styles)(withRouter(
               );
             }}
           />
-          {props.routePrefix === 'pim.events' &&
+          {props.routePrefix === "pim.events" &&
             <Route
-              path={routeResolver.getRoute(props.routePrefix + '._id.duplicate')}
+              path={routeResolver.getRoute(props.routePrefix + "._id.duplicate")}
               exact
               render={({ match }) => {
                 const itemUid = decodeURIComponent(match.params.itemUid);
@@ -202,7 +202,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                   return PageNotFound();
                 }
                 return (
-                  <Container style={{ maxWidth: '30rem' }}>
+                  <Container style={{ maxWidth: "30rem" }}>
                     {(itemUid in props.items) &&
                       <ComponentEdit
                         key={(props.items[itemUid] as any).journalUid}
@@ -222,7 +222,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             />
           }
           <Route
-            path={routeResolver.getRoute(props.routePrefix + '._id.log')}
+            path={routeResolver.getRoute(props.routePrefix + "._id.log")}
             exact
             render={({ match }) => {
               const paramItemUid = decodeURIComponent(match.params.itemUid);
@@ -240,7 +240,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
             }}
           />
           <Route
-            path={routeResolver.getRoute(props.routePrefix + '._id')}
+            path={routeResolver.getRoute(props.routePrefix + "._id")}
             exact
             render={({ match, history }) => {
               const itemUid = decodeURIComponent(match.params.itemUid);
@@ -249,13 +249,13 @@ const CollectionRoutes = withStyles(styles)(withRouter(
               }
               return (
                 <Container>
-                  <div style={{ textAlign: 'right', marginBottom: 15 }}>
+                  <div style={{ textAlign: "right", marginBottom: 15 }}>
                     <Button
                       variant="contained"
                       className={classes.button}
                       onClick={() =>
                         history.push(routeResolver.getRoute(
-                          props.routePrefix + '._id.log',
+                          props.routePrefix + "._id.log",
                           { itemUid: match.params.itemUid }))
                       }
                     >
@@ -271,7 +271,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                       style={{ marginLeft: 15 }}
                       onClick={() =>
                         history.push(routeResolver.getRoute(
-                          props.routePrefix + '._id.edit',
+                          props.routePrefix + "._id.edit",
                           { itemUid: match.params.itemUid }))
                       }
                     >
@@ -279,7 +279,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                       Edit
                     </Button>
 
-                    {props.routePrefix === 'pim.events' &&
+                    {props.routePrefix === "pim.events" &&
                       <Button
                         color="secondary"
                         variant="contained"
@@ -288,7 +288,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                         style={{ marginLeft: 15 }}
                         onClick={() =>
                           history.push(routeResolver.getRoute(
-                            props.routePrefix + '._id.duplicate',
+                            props.routePrefix + "._id.duplicate",
                             { itemUid: match.params.itemUid }))
                         }
                       >
@@ -385,7 +385,7 @@ class Pim extends React.PureComponent {
             this.props.etesync, this.props.userInfo, journal,
             prevUid, action, item.toIcal()));
         (deleteItem as any).then(() => {
-          this.props.history.push(routeResolver.getRoute('pim'));
+          this.props.history.push(routeResolver.getRoute("pim"));
         });
       });
   }
@@ -401,7 +401,7 @@ class Pim extends React.PureComponent {
     return (
       <Switch>
         <Route
-          path={routeResolver.getRoute('pim')}
+          path={routeResolver.getRoute("pim")}
           exact
           render={({ history }) => (
             <PimMain
@@ -418,7 +418,7 @@ class Pim extends React.PureComponent {
           )}
         />
         <Route
-          path={routeResolver.getRoute('pim.contacts')}
+          path={routeResolver.getRoute("pim.contacts")}
           render={() => (
             <CollectionRoutes
               syncInfo={this.props.syncInfo}
@@ -434,7 +434,7 @@ class Pim extends React.PureComponent {
           )}
         />
         <Route
-          path={routeResolver.getRoute('pim.events')}
+          path={routeResolver.getRoute("pim.events")}
           render={() => (
             <CollectionRoutes
               syncInfo={this.props.syncInfo}
@@ -450,7 +450,7 @@ class Pim extends React.PureComponent {
           )}
         />
         <Route
-          path={routeResolver.getRoute('pim.tasks')}
+          path={routeResolver.getRoute("pim.tasks")}
           render={() => (
             <CollectionRoutes
               syncInfo={this.props.syncInfo}

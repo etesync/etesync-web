@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { shallowEqual, useSelector } from 'react-redux';
-import { createSelector } from 'reselect';
+import { shallowEqual, useSelector } from "react-redux";
+import { createSelector } from "reselect";
 
-import * as store from '../store';
+import * as store from "../store";
 
 export const remoteCredentialsSelector = createSelector(
   (state: store.StoreState) => state.credentials.credentials,

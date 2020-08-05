@@ -1,16 +1,16 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import * as React from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
-import ExternalLink from '../widgets/ExternalLink';
+import ExternalLink from "../widgets/ExternalLink";
 
-import * as C from '../constants';
+import * as C from "../constants";
 
 interface FormErrors {
   errorEmail?: string;
@@ -40,9 +40,9 @@ class LoginForm extends React.PureComponent {
     this.state = {
       showAdvanced: false,
       errors: {},
-      server: '',
-      username: '',
-      password: '',
+      server: "",
+      username: "",
+      password: "",
     };
     this.generateEncryption = this.generateEncryption.bind(this);
     this.toggleAdvancedSettings = this.toggleAdvancedSettings.bind(this);
@@ -65,7 +65,7 @@ class LoginForm extends React.PureComponent {
     const password = this.state.password;
 
     const errors: FormErrors = {};
-    const fieldRequired = 'This field is required!';
+    const fieldRequired = "This field is required!";
     if (!username) {
       errors.errorEmail = fieldRequired;
     }
@@ -73,9 +73,9 @@ class LoginForm extends React.PureComponent {
       errors.errorPassword = fieldRequired;
     }
 
-    if (process.env.NODE_ENV !== 'development') {
-      if (this.state.showAdvanced && !this.state.server.startsWith('https://')) {
-        errors.errorServer = 'Server URI must start with https://';
+    if (process.env.NODE_ENV !== "development") {
+      if (this.state.showAdvanced && !this.state.server.startsWith("https://")) {
+        errors.errorServer = "Server URI must start with https://";
       }
     }
 
@@ -105,7 +105,7 @@ class LoginForm extends React.PureComponent {
       },
       submit: {
         marginTop: 40,
-        textAlign: 'right' as any,
+        textAlign: "right" as any,
       },
     };
 
@@ -133,7 +133,7 @@ class LoginForm extends React.PureComponent {
         {(this.props.error) && (<div>Error! {this.props.error.message}</div>)}
         <form style={styles.form} onSubmit={this.generateEncryption}>
           <TextField
-            type={this.state.showAdvanced ? 'text' : 'email'}
+            type={this.state.showAdvanced ? "text" : "email"}
             style={styles.textField}
             error={!!this.state.errors.errorEmail}
             helperText={this.state.errors.errorEmail}
@@ -177,7 +177,7 @@ class LoginForm extends React.PureComponent {
               color="secondary"
               disabled={this.props.loading}
             >
-              {this.props.loading ? 'Loading…' : 'Log In'}
+              {this.props.loading ? "Loading…" : "Log In"}
             </Button>
           </div>
         </form>

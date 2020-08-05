@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { Calendar as BigCalendar, momentLocalizer, View } from 'react-big-calendar';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import moment from 'moment';
-import * as ICAL from 'ical.js';
+import * as React from "react";
+import { Calendar as BigCalendar, momentLocalizer, View } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import moment from "moment";
+import * as ICAL from "ical.js";
 
-import { EventType } from '../pim-types';
+import { EventType } from "../pim-types";
 
-import './Calendar.css';
+import "./Calendar.css";
 
 const calendarLocalizer = momentLocalizer(moment);
 
@@ -25,8 +25,8 @@ function eventPropGetter(event: EventType) {
 }
 
 function agendaHeaderFormat(date: {start: Date, end: Date}, _culture: string, localizer: any) {
-  const format = 'll';
-  return localizer.format(date.start, format) + ' - ' + localizer.format(date.end, format);
+  const format = "ll";
+  return localizer.format(date.start, format) + " - " + localizer.format(date.end, format);
 }
 
 interface PropsType {
@@ -75,7 +75,7 @@ class Calendar extends React.PureComponent<PropsType> {
     });
 
     return (
-      <div style={{ width: '100%', height: 'calc(100vh - 230px)', minHeight: 500 }}>
+      <div style={{ width: "100%", height: "calc(100vh - 230px)", minHeight: 500 }}>
         <BigCalendar
           defaultDate={new Date()}
           scrollToTime={new Date(1970, 1, 1, 8)}

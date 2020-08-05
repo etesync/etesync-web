@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { withRouter } from 'react-router';
+import * as React from "react";
+import { withRouter } from "react-router";
 
 // FIXME: Should probably tie this to the history object, or at least based on the depth of the history
 const stateCache = {};
@@ -29,7 +29,7 @@ export function historyPersistor(tag: string) {
       }
 
       public getKeyForTag(props: any, tagName: string) {
-        return props.location.pathname + ':' + tagName;
+        return props.location.pathname + ":" + tagName;
       }
     });
   };

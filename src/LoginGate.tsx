@@ -1,26 +1,26 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import { Action } from 'redux-actions';
+import { Action } from "redux-actions";
 
-import Container from './widgets/Container';
-import ExternalLink from './widgets/ExternalLink';
-import SyncGate from './SyncGate';
-import LoginForm from './components/LoginForm';
-import EncryptionLoginForm from './components/EncryptionLoginForm';
+import Container from "./widgets/Container";
+import ExternalLink from "./widgets/ExternalLink";
+import SyncGate from "./SyncGate";
+import LoginForm from "./components/LoginForm";
+import EncryptionLoginForm from "./components/EncryptionLoginForm";
 
-import { store, StoreState, CredentialsDataRemote } from './store';
-import { deriveKey, fetchCredentials, fetchUserInfo, logout } from './store/actions';
+import { store, StoreState, CredentialsDataRemote } from "./store";
+import { deriveKey, fetchCredentials, fetchUserInfo, logout } from "./store/actions";
 
-import * as EteSync from 'etesync';
-import * as C from './constants';
+import * as EteSync from "etesync";
+import * as C from "./constants";
 
-import SignedPagesBadge from './images/signed-pages-badge.svg';
-import LoadingIndicator from './widgets/LoadingIndicator';
-import { useCredentials, useRemoteCredentials } from './login';
-import { useSelector } from 'react-redux';
+import SignedPagesBadge from "./images/signed-pages-badge.svg";
+import LoadingIndicator from "./widgets/LoadingIndicator";
+import { useCredentials, useRemoteCredentials } from "./login";
+import { useSelector } from "react-redux";
 
 
 function EncryptionPart(props: { credentials: CredentialsDataRemote }) {
@@ -60,7 +60,7 @@ function EncryptionPart(props: { credentials: CredentialsDataRemote }) {
       try {
         userInfo.verify(userInfoCryptoManager);
       } catch (e) {
-        setError(new EteSync.EncryptionPasswordError('Wrong encryption password'));
+        setError(new EteSync.EncryptionPasswordError("Wrong encryption password"));
         return;
       }
     }
@@ -70,7 +70,7 @@ function EncryptionPart(props: { credentials: CredentialsDataRemote }) {
   const isNewUser = !userInfo;
 
   return (
-    <Container style={{ maxWidth: '30rem' }}>
+    <Container style={{ maxWidth: "30rem" }}>
       <h2>Encryption Password</h2>
       {(isNewUser) ?
         <div>
@@ -115,17 +115,17 @@ export default function LoginGate() {
   if (remoteCredentials === null) {
     const style = {
       isSafe: {
-        textDecoration: 'none',
-        display: 'block',
+        textDecoration: "none",
+        display: "block",
       },
       divider: {
-        margin: '30px 0',
-        color: '#00000025',
+        margin: "30px 0",
+        color: "#00000025",
       },
     };
 
     return (
-      <Container style={{ maxWidth: '30rem' }}>
+      <Container style={{ maxWidth: "30rem" }}>
         <h2>Please Log In</h2>
         <LoginForm
           onSubmit={onFormSubmit}
@@ -140,7 +140,7 @@ export default function LoginGate() {
           <li><ExternalLink style={style.isSafe} href={C.homePage}>
             The EteSync Website
           </ExternalLink></li>
-          <li><ExternalLink style={style.isSafe} href={C.faq + '#web-client'}>
+          <li><ExternalLink style={style.isSafe} href={C.faq + "#web-client"}>
             Is the web client safe to use?
           </ExternalLink></li>
           <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>

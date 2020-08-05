@@ -1,23 +1,23 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { Location, History } from 'history';
-import { Route, Switch } from 'react-router';
+import * as React from "react";
+import { Location, History } from "history";
+import { Route, Switch } from "react-router";
 
-import Journal from './Journal';
-import JournalEdit from './JournalEdit';
-import JournalMembers from './JournalMembers';
-import JournalsList from './JournalsList';
-import JournalsListImport from './JournalsListImport';
+import Journal from "./Journal";
+import JournalEdit from "./JournalEdit";
+import JournalMembers from "./JournalMembers";
+import JournalsList from "./JournalsList";
+import JournalsListImport from "./JournalsListImport";
 
-import { routeResolver } from '../App';
+import { routeResolver } from "../App";
 
-import { store, JournalsData, UserInfoData, CredentialsData } from '../store';
-import { addJournal, deleteJournal, updateJournal } from '../store/actions';
-import { SyncInfo } from '../SyncGate';
+import { store, JournalsData, UserInfoData, CredentialsData } from "../store";
+import { addJournal, deleteJournal, updateJournal } from "../store/actions";
+import { SyncInfo } from "../SyncGate";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
 class Journals extends React.PureComponent {
   public props: {
@@ -40,7 +40,7 @@ class Journals extends React.PureComponent {
     return (
       <Switch>
         <Route
-          path={routeResolver.getRoute('journals')}
+          path={routeResolver.getRoute("journals")}
           exact
           render={({ history }) => (
             <>
@@ -54,7 +54,7 @@ class Journals extends React.PureComponent {
           )}
         />
         <Route
-          path={routeResolver.getRoute('journals.import')}
+          path={routeResolver.getRoute("journals.import")}
           exact
           render={() => (
             <>
@@ -68,7 +68,7 @@ class Journals extends React.PureComponent {
           )}
         />
         <Route
-          path={routeResolver.getRoute('journals.new')}
+          path={routeResolver.getRoute("journals.new")}
           render={() => (
             <JournalEdit
               syncInfo={this.props.syncInfo}
@@ -79,7 +79,7 @@ class Journals extends React.PureComponent {
           )}
         />
         <Route
-          path={routeResolver.getRoute('journals._id')}
+          path={routeResolver.getRoute("journals._id")}
           render={({ match }) => {
             const journalUid = match.params.journalUid;
 
@@ -94,7 +94,7 @@ class Journals extends React.PureComponent {
             return (
               <Switch>
                 <Route
-                  path={routeResolver.getRoute('journals._id.edit')}
+                  path={routeResolver.getRoute("journals._id.edit")}
                   render={() => (
                     <JournalEdit
                       syncInfo={this.props.syncInfo}
@@ -106,7 +106,7 @@ class Journals extends React.PureComponent {
                   )}
                 />
                 <Route
-                  path={routeResolver.getRoute('journals._id.members')}
+                  path={routeResolver.getRoute("journals._id.members")}
                   render={() => (
                     <JournalMembers
                       etesync={this.props.etesync}
@@ -116,7 +116,7 @@ class Journals extends React.PureComponent {
                   )}
                 />
                 <Route
-                  path={routeResolver.getRoute('journals._id')}
+                  path={routeResolver.getRoute("journals._id")}
                   render={() => (
                     <Journal
                       etesync={this.props.etesync}
@@ -169,7 +169,7 @@ class Journals extends React.PureComponent {
     journal.setInfo(cryptoManager, info);
 
     store.dispatch<any>(deleteJournal(this.props.etesync, journal)).then(() =>
-      this.props.history.push(routeResolver.getRoute('journals'))
+      this.props.history.push(routeResolver.getRoute("journals"))
     );
   }
 

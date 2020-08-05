@@ -1,31 +1,31 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { useSelector } from 'react-redux';
-import { Route, Switch, Redirect, RouteComponentProps, withRouter } from 'react-router';
+import * as React from "react";
+import { useSelector } from "react-redux";
+import { Route, Switch, Redirect, RouteComponentProps, withRouter } from "react-router";
 
-import moment from 'moment';
-import 'moment/locale/en-gb';
+import moment from "moment";
+import "moment/locale/en-gb";
 
-import { List, Map } from 'immutable';
-import { createSelector } from 'reselect';
+import { List, Map } from "immutable";
+import { createSelector } from "reselect";
 
-import { routeResolver } from './App';
+import { routeResolver } from "./App";
 
-import AppBarOverride from './widgets/AppBarOverride';
-import LoadingIndicator from './widgets/LoadingIndicator';
+import AppBarOverride from "./widgets/AppBarOverride";
+import LoadingIndicator from "./widgets/LoadingIndicator";
 
-import Journals from './Journals';
-import Settings from './Settings';
-import Debug from './Debug';
-import Pim from './Pim';
+import Journals from "./Journals";
+import Settings from "./Settings";
+import Debug from "./Debug";
+import Pim from "./Pim";
 
-import * as EteSync from 'etesync';
-import { CURRENT_VERSION } from 'etesync';
+import * as EteSync from "etesync";
+import { CURRENT_VERSION } from "etesync";
 
-import { store, JournalsData, EntriesData, StoreState, CredentialsData, UserInfoData } from './store';
-import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from './store/actions';
+import { store, JournalsData, EntriesData, StoreState, CredentialsData, UserInfoData } from "./store";
+import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from "./store/actions";
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -119,16 +119,16 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
 
         [
           {
-            type: 'ADDRESS_BOOK',
-            name: 'My Contacts',
+            type: "ADDRESS_BOOK",
+            name: "My Contacts",
           },
           {
-            type: 'CALENDAR',
-            name: 'My Calendar',
+            type: "CALENDAR",
+            name: "My Calendar",
           },
           {
-            type: 'TASKS',
-            name: 'My Tasks',
+            type: "TASKS",
+            name: "My Tasks",
           },
         ].forEach((collectionDesc) => {
           const collection = new EteSync.CollectionInfo();
@@ -179,7 +179,7 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
     ((fetchCount > 0) &&
       ((entryArrays.size === 0) || entryArrays.some((x) => (x.size === 0))))
   ) {
-    return (<LoadingIndicator style={{ display: 'block', margin: '40px auto' }} />);
+    return (<LoadingIndicator style={{ display: "block", margin: "40px auto" }} />);
   }
 
   // FIXME: Shouldn't be here
@@ -191,14 +191,14 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
   return (
     <Switch>
       <Route
-        path={routeResolver.getRoute('home')}
+        path={routeResolver.getRoute("home")}
         exact
         render={() => (
-          <Redirect to={routeResolver.getRoute('pim')} />
+          <Redirect to={routeResolver.getRoute("pim")} />
         )}
       />
       <Route
-        path={routeResolver.getRoute('pim')}
+        path={routeResolver.getRoute("pim")}
         render={({ history }) => (
           <>
             <AppBarOverride title="EteSync" />
@@ -212,7 +212,7 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
         )}
       />
       <Route
-        path={routeResolver.getRoute('journals')}
+        path={routeResolver.getRoute("journals")}
         render={({ location, history }) => (
           <Journals
             etesync={etesync}
@@ -225,14 +225,14 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
         )}
       />
       <Route
-        path={routeResolver.getRoute('settings')}
+        path={routeResolver.getRoute("settings")}
         exact
         render={() => (
           <Settings />
         )}
       />
       <Route
-        path={routeResolver.getRoute('debug')}
+        path={routeResolver.getRoute("debug")}
         exact
         render={() => (
           <Debug

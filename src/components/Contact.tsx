@@ -1,21 +1,21 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import moment from 'moment';
+import * as React from "react";
+import moment from "moment";
 
-import { List, ListItem, ListDivider as Divider } from '../widgets/List';
-import IconHome from '@material-ui/icons/Home';
-import IconDate from '@material-ui/icons/DateRange';
-import CommunicationCall from '@material-ui/icons/Call';
-import CommunicationChatBubble from '@material-ui/icons/ChatBubble';
-import CommunicationEmail from '@material-ui/icons/Email';
-import CopyIcon from '../icons/Copy';
+import { List, ListItem, ListDivider as Divider } from "../widgets/List";
+import IconHome from "@material-ui/icons/Home";
+import IconDate from "@material-ui/icons/DateRange";
+import CommunicationCall from "@material-ui/icons/Call";
+import CommunicationChatBubble from "@material-ui/icons/ChatBubble";
+import CommunicationEmail from "@material-ui/icons/Email";
+import CopyIcon from "../icons/Copy";
 
-import PimItemHeader from './PimItemHeader';
+import PimItemHeader from "./PimItemHeader";
 
-import { ContactType } from '../pim-types';
-import { IconButton, Avatar } from '@material-ui/core';
+import { ContactType } from "../pim-types";
+import { IconButton, Avatar } from "@material-ui/core";
 
 class Contact extends React.PureComponent {
   public props: {
@@ -24,15 +24,15 @@ class Contact extends React.PureComponent {
 
   public render() {
     if (this.props.item === undefined) {
-      throw Error('Contact should be defined!');
+      throw Error("Contact should be defined!");
     }
 
     const contact = this.props.item;
     const name = contact.fn;
 
-    const revProp = contact.comp.getFirstProperty('rev');
+    const revProp = contact.comp.getFirstProperty("rev");
     const lastModified = (revProp) ?
-      'Modified: ' + moment(revProp.getFirstValue().toJSDate()).format('LLLL') : undefined;
+      "Modified: " + moment(revProp.getFirstValue().toJSDate()).format("LLLL") : undefined;
 
     const lists = [];
 
@@ -74,60 +74,60 @@ class Contact extends React.PureComponent {
     }
 
     lists.push(getAllType(
-      'tel',
+      "tel",
       {
         leftIcon: <CommunicationCall />,
       },
-      (x) => ('tel:' + x)
+      (x) => ("tel:" + x)
     ));
 
     lists.push(getAllType(
-      'email',
+      "email",
       {
         leftIcon: <CommunicationEmail />,
       },
-      (x) => ('mailto:' + x)
+      (x) => ("mailto:" + x)
     ));
 
     lists.push(getAllType(
-      'impp',
+      "impp",
       {
         leftIcon: <CommunicationChatBubble />,
       },
       (x) => x,
-      (x) => (x.substring(x.indexOf(':') + 1)),
-      (x) => (x.substring(0, x.indexOf(':')))
+      (x) => (x.substring(x.indexOf(":") + 1)),
+      (x) => (x.substring(0, x.indexOf(":")))
     ));
 
     lists.push(getAllType(
-      'adr',
+      "adr",
       {
         leftIcon: <IconHome />,
       }
     ));
 
     lists.push(getAllType(
-      'bday',
+      "bday",
       {
         leftIcon: <IconDate />,
       },
       undefined,
-      ((x: any) => moment(x.toJSDate()).format('dddd, LL')),
-      () => 'Birthday'
+      ((x: any) => moment(x.toJSDate()).format("dddd, LL")),
+      () => "Birthday"
     ));
 
     lists.push(getAllType(
-      'anniversary',
+      "anniversary",
       {
         leftIcon: <IconDate />,
       },
       undefined,
-      ((x: any) => moment(x.toJSDate()).format('dddd, LL')),
-      () => 'Anniversary'
+      ((x: any) => moment(x.toJSDate()).format("dddd, LL")),
+      () => "Anniversary"
     ));
 
-    const skips = ['tel', 'email', 'impp', 'adr', 'bday', 'anniversary', 'rev',
-      'prodid', 'uid', 'fn', 'n', 'version', 'photo', 'note'];
+    const skips = ["tel", "email", "impp", "adr", "bday", "anniversary", "rev",
+      "prodid", "uid", "fn", "n", "version", "photo", "note"];
     const theRest = contact.comp.getAllProperties().filter((prop) => (
       skips.indexOf(prop.name) === -1
     )).map((prop, idx) => {
@@ -146,14 +146,14 @@ class Contact extends React.PureComponent {
     });
 
     {
-      const note = contact.comp.getFirstPropertyValue('note');
+      const note = contact.comp.getFirstPropertyValue("note");
       const item = (
         <ListItem
           key="note"
           insetChildren
           secondaryText="note"
         >
-          <pre style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap', overflowX: 'auto' }}>{note}</pre>
+          <pre style={{ wordWrap: "break-word", whiteSpace: "pre-wrap", overflowX: "auto" }}>{note}</pre>
         </ListItem>
       );
       theRest.push([item]);
@@ -176,13 +176,13 @@ class Contact extends React.PureComponent {
       }
     }
 
-    const contactImageSrc = contact.comp.getFirstProperty('photo')?.getFirstValue();
+    const contactImageSrc = contact.comp.getFirstProperty("photo")?.getFirstValue();
 
     return (
       <div>
-        <PimItemHeader text={name} rightItem={contactImageSrc && (<Avatar style={{ width: '3em', height: '3em' }} src={contactImageSrc} />)}>
+        <PimItemHeader text={name} rightItem={contactImageSrc && (<Avatar style={{ width: "3em", height: "3em" }} src={contactImageSrc} />)}>
           {lastModified && (
-            <span style={{ fontSize: '90%' }}>{lastModified}</span>
+            <span style={{ fontSize: "90%" }}>{lastModified}</span>
           )}
         </PimItemHeader>
         {lists.map((list, idx) => (

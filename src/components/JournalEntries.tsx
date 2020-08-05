@@ -1,31 +1,31 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as Immutable from 'immutable';
+import * as Immutable from "immutable";
 
-import { AutoSizer, List as VirtualizedList } from 'react-virtualized';
+import { AutoSizer, List as VirtualizedList } from "react-virtualized";
 
-import * as React from 'react';
-import { List, ListItem } from '../widgets/List';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
-import IconAdd from '@material-ui/icons/Add';
-import IconDelete from '@material-ui/icons/Delete';
-import IconEdit from '@material-ui/icons/Edit';
-import IconError from '@material-ui/icons/Error';
+import * as React from "react";
+import { List, ListItem } from "../widgets/List";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/Button";
+import IconAdd from "@material-ui/icons/Add";
+import IconDelete from "@material-ui/icons/Delete";
+import IconEdit from "@material-ui/icons/Edit";
+import IconError from "@material-ui/icons/Error";
 
-import { TaskType, EventType, ContactType, parseString } from '../pim-types';
+import { TaskType, EventType, ContactType, parseString } from "../pim-types";
 
-import * as EteSync from 'etesync';
-import LoadingIndicator from '../widgets/LoadingIndicator';
-import { useCredentials } from '../login';
-import { createJournalEntry } from '../etesync-helpers';
-import { useSelector, useDispatch } from 'react-redux';
-import { StoreState } from '../store';
-import { addEntries } from '../store/actions';
+import * as EteSync from "etesync";
+import LoadingIndicator from "../widgets/LoadingIndicator";
+import { useCredentials } from "../login";
+import { createJournalEntry } from "../etesync-helpers";
+import { useSelector, useDispatch } from "react-redux";
+import { StoreState } from "../store";
+import { addEntries } from "../store/actions";
 
 interface RollbackToHereDialogPropsType {
   journal: EteSync.Journal;
@@ -48,8 +48,8 @@ function RollbackToHereDialog(props: RollbackToHereDialogPropsType) {
 
     for (const entry of props.entries.reverse()) {
       const comp = parseString(entry.content);
-      const itemComp = comp.getFirstSubcomponent('vevent') ?? comp.getFirstSubcomponent('vtodo') ?? comp;
-      const itemUid = itemComp.getFirstPropertyValue('uid');
+      const itemComp = comp.getFirstSubcomponent("vevent") ?? comp.getFirstSubcomponent("vtodo") ?? comp;
+      const itemUid = itemComp.getFirstPropertyValue("uid");
 
       if (itemUid && !changes.has(itemUid)) {
         changes.set(itemUid, entry);
@@ -94,7 +94,7 @@ function RollbackToHereDialog(props: RollbackToHereDialogPropsType) {
       </DialogTitle>
       <DialogContent>
         {loading ? (
-          <LoadingIndicator style={{ display: 'block', margin: 'auto' }} />
+          <LoadingIndicator style={{ display: "block", margin: "auto" }} />
         ) : (
           <p>
             This function restores all of the deleted items that happened after this change entry. It will not modify any items that haven't been changed since the item was deleted.
@@ -154,7 +154,7 @@ class JournalEntries extends React.PureComponent {
       try {
         comp = parseString(syncEntry.content);
       } catch (e) {
-        const icon = (<IconError style={{ color: 'red' }} />);
+        const icon = (<IconError style={{ color: "red" }} />);
         return (
           <ListItem
             key={key}
@@ -173,16 +173,16 @@ class JournalEntries extends React.PureComponent {
 
       let icon;
       if (syncEntry.action === EteSync.SyncEntryAction.Add) {
-        icon = (<IconAdd style={{ color: '#16B14B' }} />);
+        icon = (<IconAdd style={{ color: "#16B14B" }} />);
       } else if (syncEntry.action === EteSync.SyncEntryAction.Change) {
-        icon = (<IconEdit style={{ color: '#FEB115' }} />);
+        icon = (<IconEdit style={{ color: "#FEB115" }} />);
       } else if (syncEntry.action === EteSync.SyncEntryAction.Delete) {
-        icon = (<IconDelete style={{ color: '#F20C0C' }} />);
+        icon = (<IconDelete style={{ color: "#F20C0C" }} />);
       }
 
       let name;
       let uid;
-      if (comp.name === 'vcalendar') {
+      if (comp.name === "vcalendar") {
         if (EventType.isEvent(comp)) {
           const vevent = EventType.fromVCalendar(comp);
           name = vevent.summary;
@@ -192,13 +192,13 @@ class JournalEntries extends React.PureComponent {
           name = vtodo.summary;
           uid = vtodo.uid;
         }
-      } else if (comp.name === 'vcard') {
+      } else if (comp.name === "vcard") {
         const vcard = new ContactType(comp);
         name = vcard.fn;
         uid = vcard.uid;
       } else {
-        name = 'Error processing entry';
-        uid = '';
+        name = "Error processing entry";
+        uid = "";
       }
 
       if (this.props.uid && (this.props.uid !== uid)) {
@@ -265,7 +265,7 @@ class JournalEntries extends React.PureComponent {
             </Button>
           </DialogActions>
         </Dialog>
-        <List style={{ height: 'calc(100vh - 300px)' }}>
+        <List style={{ height: "calc(100vh - 300px)" }}>
           <AutoSizer>
             {({ height, width }) => (
               <VirtualizedList

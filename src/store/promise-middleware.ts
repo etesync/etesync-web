@@ -4,7 +4,7 @@
 // Based on: https://github.com/acdlite/redux-promise/blob/master/src/index.js
 
 function isPromise(val: any): val is Promise<any> {
-  return val && typeof val.then === 'function';
+  return val && typeof val.then === "function";
 }
 
 export default function promiseMiddleware({ dispatch }: any) {

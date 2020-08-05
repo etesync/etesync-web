@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import SvgIcon from '@material-ui/core/SvgIcon';
+import SvgIcon from "@material-ui/core/SvgIcon";
 
 export default function CopyIcon(props: any) {
   return (

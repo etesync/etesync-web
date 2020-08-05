@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import * as EteSync from 'etesync';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import * as React from "react";
+import * as EteSync from "etesync";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
-import Container from './widgets/Container';
-import { useSelector } from 'react-redux';
-import { StoreState, CredentialsData, UserInfoData, EntriesListData } from './store';
+import Container from "./widgets/Container";
+import { useSelector } from "react-redux";
+import { StoreState, CredentialsData, UserInfoData, EntriesListData } from "./store";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -16,9 +16,9 @@ interface PropsType {
 }
 
 export default function Debug(props: PropsType) {
-  const [stateJournalUid, setJournalUid] = React.useState('');
-  const [entriesUids, setEntriesUids] = React.useState('');
-  const [result, setResult] = React.useState('');
+  const [stateJournalUid, setJournalUid] = React.useState("");
+  const [entriesUids, setEntriesUids] = React.useState("");
+  const [result, setResult] = React.useState("");
   const journals = useSelector((state: StoreState) => state.cache.journals!);
   const journalEntries = useSelector((state: StoreState) => state.cache.entries);
 
@@ -32,7 +32,7 @@ export default function Debug(props: PropsType) {
     <Container>
       <div>
         <TextField
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           type="text"
           label="Journal UID"
           value={stateJournalUid}
@@ -41,7 +41,7 @@ export default function Debug(props: PropsType) {
       </div>
       <div>
         <TextField
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           type="text"
           multiline
           label="Entry UIDs"
@@ -60,13 +60,13 @@ export default function Debug(props: PropsType) {
           const journalUid = stateJournalUid.trim();
           const journal = journals.get(journalUid);
           if (!journal) {
-            setResult('Error: journal uid not found.');
+            setResult("Error: journal uid not found.");
             return;
           }
 
           const wantedEntries = {};
-          const wantAll = (entriesUids.trim() === 'all');
-          entriesUids.split('\n').forEach((ent) => wantedEntries[ent.trim()] = true);
+          const wantAll = (entriesUids.trim() === "all");
+          entriesUids.split("\n").forEach((ent) => wantedEntries[ent.trim()] = true);
 
           const cryptoManager = journal.getCryptoManager(derived, keyPair);
           let prevUid: string | null = null;
@@ -79,7 +79,7 @@ export default function Debug(props: PropsType) {
             return (wantAll || wantedEntries[entry.uid]) ? syncEntry : undefined;
           }).filter((x) => x !== undefined);
 
-          setResult(syncEntries.map((ent) => ent?.content).join('\n\n'));
+          setResult(syncEntries.map((ent) => ent?.content).join("\n\n"));
         }}
       >
         Decrypt

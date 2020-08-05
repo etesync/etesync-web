@@ -1,27 +1,27 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { History } from 'history';
+import * as React from "react";
+import { History } from "history";
 
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import IconButton from '@material-ui/core/IconButton';
-import IconAdd from '@material-ui/icons/Add';
-import ContactsIcon from '@material-ui/icons/Contacts';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import IconButton from "@material-ui/core/IconButton";
+import IconAdd from "@material-ui/icons/Add";
+import ContactsIcon from "@material-ui/icons/Contacts";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 
-import { List, ListItem } from '../widgets/List';
+import { List, ListItem } from "../widgets/List";
 
-import AppBarOverride from '../widgets/AppBarOverride';
-import Container from '../widgets/Container';
+import AppBarOverride from "../widgets/AppBarOverride";
+import Container from "../widgets/Container";
 
-import { routeResolver } from '../App';
+import { routeResolver } from "../App";
 
-import { JournalsData, UserInfoData, CredentialsData } from '../store';
-import ColorBox from '../widgets/ColorBox';
-import { colorIntToHtml } from '../journal-processors';
+import { JournalsData, UserInfoData, CredentialsData } from "../store";
+import ColorBox from "../widgets/ColorBox";
+import { colorIntToHtml } from "../journal-processors";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -34,7 +34,7 @@ export default function JournalsList(props: PropsType) {
   const derived = props.etesync.encryptionKey;
 
   function journalClicked(journalUid: string) {
-    props.history.push(routeResolver.getRoute('journals._id', { journalUid }));
+    props.history.push(routeResolver.getRoute("journals._id", { journalUid }));
   }
 
   const journalMap = props.journals.reduce(
@@ -45,8 +45,8 @@ export default function JournalsList(props: PropsType) {
       const info = journal.getInfo(cryptoManager);
       let colorBox: React.ReactElement | undefined;
       switch (info.type) {
-        case 'CALENDAR':
-        case 'TASKS':
+        case "CALENDAR":
+        case "TASKS":
           colorBox = (
             <ColorBox size={24} color={colorIntToHtml(info.color)} />
           );
@@ -74,7 +74,7 @@ export default function JournalsList(props: PropsType) {
         <IconButton
           component={Link}
           title="New"
-          {...{ to: routeResolver.getRoute('journals.new') }}
+          {...{ to: routeResolver.getRoute("journals.new") }}
         >
           <IconAdd />
         </IconButton>

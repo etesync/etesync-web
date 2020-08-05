@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import MuiList from '@material-ui/core/List';
-import MuiListItem from '@material-ui/core/ListItem';
-import MuiListSubheader from '@material-ui/core/ListSubheader';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import MuiList from "@material-ui/core/List";
+import MuiListItem from "@material-ui/core/ListItem";
+import MuiListSubheader from "@material-ui/core/ListSubheader";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
 
-import ExternalLink from './ExternalLink';
+import ExternalLink from "./ExternalLink";
 
 const useStyles = makeStyles((theme) => (createStyles({
   inset: {
@@ -46,7 +46,7 @@ interface ListItemPropsType {
   insetChildren?: boolean;
   nestedItems?: React.ReactNode[];
   selected?: boolean;
-  secondaryTextColor?: 'initial' | 'inherit' | 'primary' | 'secondary' | 'textPrimary' | 'textSecondary' | 'error';
+  secondaryTextColor?: "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | "error";
 }
 
 export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) {
@@ -70,7 +70,7 @@ export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) 
     button: true,
     href,
     onClick,
-    component: (href) ? ExternalLink : 'div',
+    component: (href) ? ExternalLink : "div",
   } : undefined;
 
   return (

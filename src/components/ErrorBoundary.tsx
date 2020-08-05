@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import { store, persistor } from '../store';
-import { resetKey } from '../store/actions';
+import { store, persistor } from "../store";
+import { resetKey } from "../store/actions";
 
-import { EncryptionPasswordError, IntegrityError } from 'etesync';
-import PrettyError from '../widgets/PrettyError';
+import { EncryptionPasswordError, IntegrityError } from "etesync";
+import PrettyError from "../widgets/PrettyError";
 
 interface PropsType {
   children: React.ReactNode | React.ReactNode[];

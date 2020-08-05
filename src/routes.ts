@@ -16,8 +16,8 @@ export class RouteResolver {
     let dict = this.routes;
 
     let path: string[] = [];
-    name.split('.').forEach((key) => {
-      const val = (typeof dict[key] === 'string') ? dict[key] : (dict[key]._base) ? dict[key]._base : key;
+    name.split(".").forEach((key) => {
+      const val = (typeof dict[key] === "string") ? dict[key] : (dict[key]._base) ? dict[key]._base : key;
       path.push(val);
 
       dict = dict[key];
@@ -27,11 +27,11 @@ export class RouteResolver {
       const keys = Object.assign({}, _keys);
 
       path = path.map((pathComponent) => {
-        return pathComponent.split('/').map((val) => {
-          if (val[0] === ':') {
+        return pathComponent.split("/").map((val) => {
+          if (val[0] === ":") {
             const ret = keys[val.slice(1)];
             if (ret === undefined) {
-              throw new Error('Missing key: ' + val.slice(1));
+              throw new Error("Missing key: " + val.slice(1));
             }
 
             delete keys[val.slice(1)];
@@ -39,14 +39,14 @@ export class RouteResolver {
           }
 
           return val;
-        }).join('/');
+        }).join("/");
       });
 
       if (Object.keys(keys).length !== 0) {
-        throw new Error('Too many keys for route.');
+        throw new Error("Too many keys for route.");
       }
     }
 
-    return '/' + path.join('/');
+    return "/" + path.join("/");
   }
 }

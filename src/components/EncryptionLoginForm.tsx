@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import * as React from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 interface FormErrors {
   errorEncryptionPassword?: string;
@@ -25,7 +25,7 @@ class EncryptionLoginForm extends React.PureComponent {
     super(props);
     this.state = {
       errors: {},
-      encryptionPassword: '',
+      encryptionPassword: "",
     };
     this.generateEncryption = this.generateEncryption.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -45,7 +45,7 @@ class EncryptionLoginForm extends React.PureComponent {
     const encryptionPassword = this.state.encryptionPassword;
 
     const errors: FormErrors = {};
-    const fieldRequired = 'This field is required!';
+    const fieldRequired = "This field is required!";
     if (!encryptionPassword) {
       errors.errorEncryptionPassword = fieldRequired;
     }
@@ -66,7 +66,7 @@ class EncryptionLoginForm extends React.PureComponent {
       },
       submit: {
         marginTop: 40,
-        textAlign: 'right' as any,
+        textAlign: "right" as any,
       },
     };
 
@@ -92,7 +92,7 @@ class EncryptionLoginForm extends React.PureComponent {
               color="secondary"
               disabled={this.props.loading}
             >
-              {this.props.loading ? 'Loading…' : 'Continue'}
+              {this.props.loading ? "Loading…" : "Continue"}
             </Button>
           </div>
         </form>

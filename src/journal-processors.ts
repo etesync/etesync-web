@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { List } from 'immutable';
+import { List } from "immutable";
 
-import { EventType, ContactType, TaskType } from './pim-types';
-import { store } from './store';
-import { appendError } from './store/actions';
+import { EventType, ContactType, TaskType } from "./pim-types";
+import { store } from "./store";
+import { appendError } from "./store/actions";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
 export function syncEntriesToItemMap(
   collection: EteSync.CollectionInfo, entries: List<EteSync.SyncEntry>, base: {[key: string]: ContactType} = {}) {
@@ -44,7 +44,7 @@ export function syncEntriesToItemMap(
   return items;
 }
 
-export const defaultColor = '#8BC34A';
+export const defaultColor = "#8BC34A";
 
 export function colorIntToHtml(color?: number) {
   if (color === undefined) {
@@ -60,10 +60,10 @@ export function colorIntToHtml(color?: number) {
 
   function toHex(num: number) {
     const ret = num.toString(16);
-    return (ret.length === 1) ? '0' + ret : ret;
+    return (ret.length === 1) ? "0" + ret : ret;
   }
 
-  return '#' + toHex(red) + toHex(green) + toHex(blue) + toHex(alpha);
+  return "#" + toHex(red) + toHex(green) + toHex(blue) + toHex(alpha);
 }
 
 export function colorHtmlToInt(color?: string) {

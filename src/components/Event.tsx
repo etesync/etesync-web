@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import PimItemHeader from './PimItemHeader';
+import PimItemHeader from "./PimItemHeader";
 
-import { formatDateRange, formatOurTimezoneOffset } from '../helpers';
+import { formatDateRange, formatOurTimezoneOffset } from "../helpers";
 
-import { EventType } from '../pim-types';
+import { EventType } from "../pim-types";
 
 class Event extends React.PureComponent {
   public props: {
@@ -16,7 +16,7 @@ class Event extends React.PureComponent {
 
   public render() {
     if (this.props.item === undefined) {
-      throw Error('Event should be defined!');
+      throw Error("Event should be defined!");
     }
 
     const style = {
@@ -35,9 +35,9 @@ class Event extends React.PureComponent {
           <div><u>{this.props.item.location}</u></div>
         </PimItemHeader>
         <div style={style.content}>
-          <p style={{ wordWrap: 'break-word' }}>{this.props.item.description}</p>
+          <p style={{ wordWrap: "break-word" }}>{this.props.item.description}</p>
           {(this.props.item.attendees.length > 0) && (
-            <div>Attendees: {this.props.item.attendees.map((x) => (x.getFirstValue())).join(', ')}</div>)}
+            <div>Attendees: {this.props.item.attendees.map((x) => (x.getFirstValue())).join(", ")}</div>)}
         </div>
       </React.Fragment>
     );

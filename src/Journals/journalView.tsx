@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { Route, Switch, withRouter } from 'react-router';
+import * as React from "react";
+import { Route, Switch, withRouter } from "react-router";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import { routeResolver } from '../App';
+import { routeResolver } from "../App";
 
-import { History } from 'history';
-import { SyncInfo } from '../SyncGate';
+import { History } from "history";
+import { SyncInfo } from "../SyncGate";
 
 function objValues(obj: any) {
   return Object.keys(obj).map((x) => obj[x]);
@@ -33,7 +33,7 @@ export function journalView(JournalList: any, JournalItem: any) {
       const uid = contact.uid;
 
       this.props.history!.push(
-        routeResolver.getRoute('journals._id.items._id', { journalUid: this.props.journal.uid, itemUid: encodeURIComponent(uid) }));
+        routeResolver.getRoute("journals._id.items._id", { journalUid: this.props.journal.uid, itemUid: encodeURIComponent(uid) }));
     }
 
     public render() {
@@ -42,7 +42,7 @@ export function journalView(JournalList: any, JournalItem: any) {
       return (
         <Switch>
           <Route
-            path={routeResolver.getRoute('journals._id')}
+            path={routeResolver.getRoute("journals._id")}
             exact
             render={() => (
               <JournalList syncInfo={this.props.syncInfo} entries={objValues(items)} onItemClick={this.itemClicked} />
@@ -50,7 +50,7 @@ export function journalView(JournalList: any, JournalItem: any) {
             }
           />
           <Route
-            path={routeResolver.getRoute('journals._id.items._id')}
+            path={routeResolver.getRoute("journals._id.items._id")}
             exact
             render={({ match }) => {
 

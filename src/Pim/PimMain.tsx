@@ -1,38 +1,38 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import Fab from '@material-ui/core/Fab';
-import ContentAdd from '@material-ui/icons/Add';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import { Theme, withTheme } from '@material-ui/core/styles';
+import * as React from "react";
+import Fab from "@material-ui/core/Fab";
+import ContentAdd from "@material-ui/icons/Add";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import { Theme, withTheme } from "@material-ui/core/styles";
 
-import * as ICAL from 'ical.js';
+import * as ICAL from "ical.js";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import { Location, History } from 'history';
+import { Location, History } from "history";
 
-import Container from '../widgets/Container';
+import Container from "../widgets/Container";
 
-import SearchableAddressBook from '../components/SearchableAddressBook';
-import Calendar from '../components/Calendar';
-import TaskList from '../components/Tasks/TaskList';
+import SearchableAddressBook from "../components/SearchableAddressBook";
+import Calendar from "../components/Calendar";
+import TaskList from "../components/Tasks/TaskList";
 
-import { EventType, ContactType, TaskType, PimType } from '../pim-types';
+import { EventType, ContactType, TaskType, PimType } from "../pim-types";
 
-import { routeResolver } from '../App';
+import { routeResolver } from "../App";
 
-import { historyPersistor } from '../persist-state-history';
-import { SyncInfo } from '../SyncGate';
-import { UserInfoData, CredentialsData } from '../store';
+import { historyPersistor } from "../persist-state-history";
+import { SyncInfo } from "../SyncGate";
+import { UserInfoData, CredentialsData } from "../store";
 
-const addressBookTitle = 'Address Book';
-const calendarTitle = 'Calendar';
-const tasksTitle = 'Tasks';
+const addressBookTitle = "Address Book";
+const calendarTitle = "Calendar";
+const tasksTitle = "Tasks";
 
-const PersistCalendar = historyPersistor('Calendar')(Calendar);
+const PersistCalendar = historyPersistor("Calendar")(Calendar);
 
 interface PropsType {
   contacts: ContactType[];
@@ -68,7 +68,7 @@ class PimMain extends React.PureComponent<PropsType> {
     const itemUid = `${(event as any).journalUid}|${encodeURIComponent(event.uid)}`;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.events._id', { itemUid }));
+      routeResolver.getRoute("pim.events._id", { itemUid }));
   }
 
   public taskClicked(event: ICAL.Event) {
@@ -76,7 +76,7 @@ class PimMain extends React.PureComponent<PropsType> {
     const itemUid = `${(event as any).journalUid}|${encodeURIComponent(event.uid)}`;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.tasks._id.edit', { itemUid }));
+      routeResolver.getRoute("pim.tasks._id.edit", { itemUid }));
   }
 
   public contactClicked(contact: ContactType) {
@@ -84,12 +84,12 @@ class PimMain extends React.PureComponent<PropsType> {
     const itemUid = `${(contact as any).journalUid}|${encodeURIComponent(contact.uid)}`;
 
     this.props.history!.push(
-      routeResolver.getRoute('pim.contacts._id', { itemUid }));
+      routeResolver.getRoute("pim.contacts._id", { itemUid }));
   }
 
   public newEvent(start?: Date, end?: Date) {
     this.props.history!.push(
-      routeResolver.getRoute('pim.events.new'),
+      routeResolver.getRoute("pim.events.new"),
       { start, end }
     );
   }
@@ -97,13 +97,13 @@ class PimMain extends React.PureComponent<PropsType> {
   public floatingButtonClicked() {
     if (this.state.tab === 0) {
       this.props.history!.push(
-        routeResolver.getRoute('pim.contacts.new')
+        routeResolver.getRoute("pim.contacts.new")
       );
     } else if (this.state.tab === 1) {
       this.newEvent();
     } else if (this.state.tab === 2) {
       this.props.history!.push(
-        routeResolver.getRoute('pim.tasks.new')
+        routeResolver.getRoute("pim.tasks.new")
       );
     }
   }
@@ -114,11 +114,11 @@ class PimMain extends React.PureComponent<PropsType> {
     const style = {
       floatingButton: {
         margin: 0,
-        top: 'auto',
+        top: "auto",
         right: 20,
         bottom: 20,
-        left: 'auto',
-        position: 'fixed',
+        left: "auto",
+        position: "fixed",
       } as any,
     };
 
@@ -176,4 +176,4 @@ class PimMain extends React.PureComponent<PropsType> {
   }
 }
 
-export default withTheme(historyPersistor('PimMain')(PimMain));
+export default withTheme(historyPersistor("PimMain")(PimMain));

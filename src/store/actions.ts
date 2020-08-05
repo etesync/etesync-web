@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { Action, createAction, createActions } from 'redux-actions';
+import { Action, createAction, createActions } from "redux-actions";
 
-import * as EteSync from 'etesync';
-import { UserInfo } from 'etesync';
+import * as EteSync from "etesync";
+import { UserInfo } from "etesync";
 
-import { CredentialsData, CredentialsDataRemote, EntriesData, SettingsType } from './';
+import { CredentialsData, CredentialsDataRemote, EntriesData, SettingsType } from "./";
 
 export const { fetchCredentials } = createActions({
   FETCH_CREDENTIALS: (username: string, password: string, server: string) => {
@@ -33,7 +33,7 @@ export const { fetchCredentials } = createActions({
 });
 
 export const logout = createAction(
-  'LOGOUT',
+  "LOGOUT",
   (etesync: CredentialsDataRemote) => {
     (async () => {
       const authenticator = new EteSync.Authenticator(etesync.serviceApiUrl);
@@ -54,7 +54,7 @@ export const { deriveKey } = createActions({
 });
 
 export const resetKey = createAction(
-  'RESET_KEY',
+  "RESET_KEY",
   () => {
     return null;
   }
@@ -79,7 +79,7 @@ export const { fetchListJournal } = createActions({
 });
 
 export const addJournal = createAction(
-  'ADD_JOURNAL',
+  "ADD_JOURNAL",
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
@@ -93,7 +93,7 @@ export const addJournal = createAction(
 );
 
 export const updateJournal = createAction(
-  'UPDATE_JOURNAL',
+  "UPDATE_JOURNAL",
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
@@ -107,7 +107,7 @@ export const updateJournal = createAction(
 );
 
 export const deleteJournal = createAction(
-  'DELETE_JOURNAL',
+  "DELETE_JOURNAL",
   (etesync: CredentialsData, journal: EteSync.Journal) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
@@ -158,7 +158,7 @@ export const { fetchUserInfo } = createActions({
 });
 
 export const createUserInfo = createAction(
-  'CREATE_USER_INFO',
+  "CREATE_USER_INFO",
   (etesync: CredentialsData, userInfo: UserInfo) => {
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
@@ -197,14 +197,14 @@ export function fetchAll(etesync: CredentialsData, currentEntries: EntriesData) 
 
 
 export const appendError = createAction(
-  'APPEND_ERROR',
+  "APPEND_ERROR",
   (_etesync: CredentialsData, error: Error | Error[]) => {
     return Array.isArray(error) ? error : [error];
   }
 );
 
 export const clearErros = createAction(
-  'CLEAR_ERRORS',
+  "CLEAR_ERRORS",
   (_etesync: CredentialsData) => {
     return true;
   }
@@ -212,7 +212,7 @@ export const clearErros = createAction(
 
 // FIXME: Move the rest to their own file
 export const setSettings = createAction(
-  'SET_SETTINGS',
+  "SET_SETTINGS",
   (settings: Partial<SettingsType>) => {
     return { ...settings };
   }

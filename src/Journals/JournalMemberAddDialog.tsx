@@ -1,20 +1,20 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-import LoadingIndicator from '../widgets/LoadingIndicator';
-import ConfirmationDialog from '../widgets/ConfirmationDialog';
-import PrettyFingerprint from '../widgets/PrettyFingerprint';
+import LoadingIndicator from "../widgets/LoadingIndicator";
+import ConfirmationDialog from "../widgets/ConfirmationDialog";
+import PrettyFingerprint from "../widgets/PrettyFingerprint";
 
-import * as EteSync from 'etesync';
-import { CredentialsData } from '../store';
+import * as EteSync from "etesync";
+import { CredentialsData } from "../store";
 
-import { handleInputChange } from '../helpers';
+import { handleInputChange } from "../helpers";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -25,8 +25,8 @@ interface PropsType {
 
 class JournalMemberAddDialog extends React.PureComponent<PropsType> {
   public state = {
-    addUser: '',
-    publicKey: '',
+    addUser: "",
+    publicKey: "",
     readOnly: false,
     userChosen: false,
     error: undefined as Error | undefined,
@@ -75,7 +75,7 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
             <p>
               Verify {addUser}'s security fingerprint to ensure the encryption is secure.
             </p>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: "center" }}>
               <PrettyFingerprint publicKey={publicKey} />
             </div>
           </ConfirmationDialog>
@@ -99,7 +99,7 @@ class JournalMemberAddDialog extends React.PureComponent<PropsType> {
                   name="addUser"
                   type="email"
                   placeholder="User email"
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                   value={addUser}
                   onChange={this.handleInputChange}
                 />

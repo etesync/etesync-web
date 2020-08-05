@@ -1,23 +1,23 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import * as React from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import Switch from '@material-ui/core/Switch';
-import InputLabel from '@material-ui/core/InputLabel';
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormGroup from "@material-ui/core/FormGroup";
+import Switch from "@material-ui/core/Switch";
+import InputLabel from "@material-ui/core/InputLabel";
 
-import { StoreState } from '../store';
-import { setSettings } from '../store/actions';
+import { StoreState } from "../store";
+import { setSettings } from "../store/actions";
 
-import Container from '../widgets/Container';
-import AppBarOverride from '../widgets/AppBarOverride';
-import PrettyFingerprint from '../widgets/PrettyFingerprint';
+import Container from "../widgets/Container";
+import AppBarOverride from "../widgets/AppBarOverride";
+import PrettyFingerprint from "../widgets/PrettyFingerprint";
 
 function SecurityFingerprint() {
   const userInfo = useSelector((state: StoreState) => state.cache.userInfo);
@@ -58,7 +58,7 @@ export default React.memo(function Settings() {
         <h1>Security Fingerprint</h1>
         <SecurityFingerprint />
         <h1>Date & Time</h1>
-        <FormControl style={{ width: '15em' }}>
+        <FormControl style={{ width: "15em" }}>
           <InputLabel>
             Locale
           </InputLabel>

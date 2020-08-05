@@ -1,19 +1,19 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as localforage from 'localforage';
-import { combineReducers } from 'redux';
-import { createMigrate, persistReducer, createTransform } from 'redux-persist';
-import session from 'redux-persist/lib/storage/session';
+import * as localforage from "localforage";
+import { combineReducers } from "redux";
+import { createMigrate, persistReducer, createTransform } from "redux-persist";
+import session from "redux-persist/lib/storage/session";
 
-import { List, Map as ImmutableMap } from 'immutable';
+import { List, Map as ImmutableMap } from "immutable";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 import {
   JournalsData, EntriesData, UserInfoData,
   CredentialsDataRemote, SettingsType,
   fetchCount, journals, entries, credentials, userInfo, settingsReducer, encryptionKeyReducer, errorsReducer,
-} from './reducers';
+} from "./reducers";
 
 export interface StoreState {
   fetchCount: number;
@@ -34,14 +34,14 @@ const settingsMigrations = {
       ...state,
       taskSettings: {
         filterBy: null,
-        sortBy: 'smart',
+        sortBy: "smart",
       },
     };
   },
 };
 
 const settingsPersistConfig = {
-  key: 'settings',
+  key: "settings",
   version: 0,
   storage: localforage,
   migrate: createMigrate(settingsMigrations, { debug: false }),
@@ -54,14 +54,14 @@ const credentialsMigrations = {
 };
 
 const credentialsPersistConfig = {
-  key: 'credentials',
+  key: "credentials",
   version: 0,
   storage: localforage,
   migrate: createMigrate(credentialsMigrations, { debug: false }),
 };
 
 const encryptionKeyPersistConfig = {
-  key: 'encryptionKey',
+  key: "encryptionKey",
   storage: session,
 };
 
@@ -127,15 +127,15 @@ const userInfoDeserialize = (state: EteSync.UserInfoJson) => {
 };
 
 const cacheSerialize = (state: any, key: string | number) => {
-  if (key === 'entries') {
+  if (key === "entries") {
     const ret = {};
     state.forEach((value: List<EteSync.Entry>, mapKey: string) => {
       ret[mapKey] = entriesSerialize(value);
     });
     return ret;
-  } else if (key === 'journals') {
+  } else if (key === "journals") {
     return journalsSerialize(state);
-  } else if (key === 'userInfo') {
+  } else if (key === "userInfo") {
     return userInfoSerialize(state);
   }
 
@@ -143,15 +143,15 @@ const cacheSerialize = (state: any, key: string | number) => {
 };
 
 const cacheDeserialize = (state: any, key: string | number) => {
-  if (key === 'entries') {
+  if (key === "entries") {
     const ret = {};
     Object.keys(state).forEach((mapKey) => {
       ret[mapKey] = entriesDeserialize(state[mapKey]);
     });
     return ImmutableMap(ret);
-  } else if (key === 'journals') {
+  } else if (key === "journals") {
     return journalsDeserialize(state);
-  } else if (key === 'userInfo') {
+  } else if (key === "userInfo") {
     return userInfoDeserialize(state);
   }
 
@@ -176,7 +176,7 @@ const cacheMigrations = {
 };
 
 const cachePersistConfig = {
-  key: 'cache',
+  key: "cache",
   version: 2,
   storage: localforage,
   transforms: [createTransform(cacheSerialize, cacheDeserialize)],

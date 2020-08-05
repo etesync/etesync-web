@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
-import Radio from '@material-ui/core/Radio';
-import { Omit } from '@material-ui/types';
-import FormControlLabel, { FormControlLabelProps } from '@material-ui/core/FormControlLabel';
+import { makeStyles } from "@material-ui/core/styles";
+import Radio from "@material-ui/core/Radio";
+import { Omit } from "@material-ui/types";
+import FormControlLabel, { FormControlLabelProps } from "@material-ui/core/FormControlLabel";
 
 interface Props {
   color: string;
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ColoredRadio(props: Props & Omit<FormControlLabelProps, keyof Props | 'control'>) {
+export default function ColoredRadio(props: Props & Omit<FormControlLabelProps, keyof Props | "control">) {
   const { color, label, value, ...other } = props;
   const { root } = useStyles(props);
 

@@ -1,16 +1,16 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 export interface PropsType {
   open: boolean;
   children: React.ReactNode;
   onClose?: (event?: React.SyntheticEvent, reason?: string) => void;
-  severity?: 'error' | 'info' | 'success' | 'warning';
+  severity?: "error" | "info" | "success" | "warning";
   autoHideDuration?: number;
 }
 

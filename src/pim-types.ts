@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as ICAL from 'ical.js';
-import * as zones from './data/zones.json';
-import moment from 'moment';
-import * as uuid from 'uuid';
+import * as ICAL from "ical.js";
+import * as zones from "./data/zones.json";
+import moment from "moment";
+import * as uuid from "uuid";
 
-export const PRODID = '-//iCal.js EteSync iOS';
+export const PRODID = "-//iCal.js EteSync iOS";
 
 export interface PimType {
   uid: string;
@@ -32,11 +32,11 @@ export function timezoneLoadFromName(timezone: string | null) {
     return ICAL.TimezoneService.get(timezone);
   }
 
-  const component = new ICAL.Component('vtimezone');
+  const component = new ICAL.Component("vtimezone");
   zone.ics.forEach((zonePart: string) => {
     component.addSubcomponent(new ICAL.Component(ICAL.parse(zonePart)));
   });
-  component.addPropertyWithValue('tzid', timezone);
+  component.addPropertyWithValue("tzid", timezone);
 
   const retZone = new ICAL.Timezone({
     component,
@@ -49,17 +49,17 @@ export function timezoneLoadFromName(timezone: string | null) {
 }
 
 export function parseString(content: string) {
-  content = content.replace(/^[a-zA-Z0-9]*\./gm, ''); // FIXME: ugly hack to ignore item groups.
+  content = content.replace(/^[a-zA-Z0-9]*\./gm, ""); // FIXME: ugly hack to ignore item groups.
   return new ICAL.Component(ICAL.parse(content));
 }
 
 export class EventType extends ICAL.Event implements PimType {
   public static isEvent(comp: ICAL.Component) {
-    return !!comp.getFirstSubcomponent('vevent');
+    return !!comp.getFirstSubcomponent("vevent");
   }
 
   public static fromVCalendar(comp: ICAL.Component) {
-    const event = new EventType(comp.getFirstSubcomponent('vevent'));
+    const event = new EventType(comp.getFirstSubcomponent("vevent"));
     // FIXME: we need to clone it so it loads the correct timezone and applies it
     timezoneLoadFromName(event.timezone);
     return event.clone();
@@ -106,25 +106,25 @@ export class EventType extends ICAL.Event implements PimType {
   }
 
   get lastModified() {
-    return this.component.getFirstPropertyValue('last-modified');
+    return this.component.getFirstPropertyValue("last-modified");
   }
 
   set lastModified(time: ICAL.Time) {
-    this.component.updatePropertyWithValue('last-modified', time);
+    this.component.updatePropertyWithValue("last-modified", time);
   }
 
   get rrule() {
-    return this.component.getFirstPropertyValue('rrule');
+    return this.component.getFirstPropertyValue("rrule");
   }
 
   set rrule(rule: ICAL.Recur) {
-    this.component.updatePropertyWithValue('rrule', rule);
+    this.component.updatePropertyWithValue("rrule", rule);
   }
 
   public toIcal() {
-    const comp = new ICAL.Component(['vcalendar', [], []]);
-    comp.updatePropertyWithValue('prodid', PRODID);
-    comp.updatePropertyWithValue('version', '2.0');
+    const comp = new ICAL.Component(["vcalendar", [], []]);
+    comp.updatePropertyWithValue("prodid", PRODID);
+    comp.updatePropertyWithValue("version", "2.0");
 
     comp.addSubcomponent(this.component);
     ICAL.helpers.updateTimezones(comp);
@@ -139,10 +139,10 @@ export class EventType extends ICAL.Event implements PimType {
 }
 
 export enum TaskStatusType {
-  NeedsAction = 'NEEDS-ACTION',
-  Completed = 'COMPLETED',
-  InProcess = 'IN-PROCESS',
-  Cancelled = 'CANCELLED',
+  NeedsAction = "NEEDS-ACTION",
+  Completed = "COMPLETED",
+  InProcess = "IN-PROCESS",
+  Cancelled = "CANCELLED",
 }
 
 export enum TaskPriorityType {
@@ -152,11 +152,11 @@ export enum TaskPriorityType {
   Low = 9
 }
 
-export const TaskTags = ['Work', 'Home'];
+export const TaskTags = ["Work", "Home"];
 
 export class TaskType extends EventType {
   public static fromVCalendar(comp: ICAL.Component) {
-    const task = new TaskType(comp.getFirstSubcomponent('vtodo'));
+    const task = new TaskType(comp.getFirstSubcomponent("vtodo"));
     // FIXME: we need to clone it so it loads the correct timezone and applies it
     timezoneLoadFromName(task.timezone);
     return task.clone();
@@ -169,7 +169,7 @@ export class TaskType extends EventType {
   public color: string;
 
   constructor(comp?: ICAL.Component | null) {
-    super(comp ? comp : new ICAL.Component('vtodo'));
+    super(comp ? comp : new ICAL.Component("vtodo"));
   }
 
   get finished() {
@@ -178,64 +178,64 @@ export class TaskType extends EventType {
   }
 
   set status(status: TaskStatusType) {
-    this.component.updatePropertyWithValue('status', status);
+    this.component.updatePropertyWithValue("status", status);
   }
 
   get status(): TaskStatusType {
-    return this.component.getFirstPropertyValue('status');
+    return this.component.getFirstPropertyValue("status");
   }
 
   set priority(priority: TaskPriorityType) {
-    this.component.updatePropertyWithValue('priority', priority);
+    this.component.updatePropertyWithValue("priority", priority);
   }
 
   get priority() {
-    return this.component.getFirstPropertyValue('priority');
+    return this.component.getFirstPropertyValue("priority");
   }
 
   set tags(tags: string[]) {
-    this.component.updatePropertyWithValue('categories', tags.join(','));
+    this.component.updatePropertyWithValue("categories", tags.join(","));
   }
 
   get tags() {
-    const tags = this.component.getFirstPropertyValue('categories');
-    return tags ? tags.split(',') : [];
+    const tags = this.component.getFirstPropertyValue("categories");
+    return tags ? tags.split(",") : [];
   }
 
   set dueDate(date: ICAL.Time | undefined) {
     if (date) {
-      this.component.updatePropertyWithValue('due', date);
+      this.component.updatePropertyWithValue("due", date);
     } else {
-      this.component.removeAllProperties('due');
+      this.component.removeAllProperties("due");
     }
   }
 
   get dueDate() {
-    return this.component.getFirstPropertyValue('due');
+    return this.component.getFirstPropertyValue("due");
   }
 
   set completionDate(date: ICAL.Time | undefined) {
     if (date) {
-      this.component.updatePropertyWithValue('completed', date);
+      this.component.updatePropertyWithValue("completed", date);
     } else {
-      this.component.removeAllProperties('completed');
+      this.component.removeAllProperties("completed");
     }
   }
 
   get completionDate() {
-    return this.component.getFirstPropertyValue('completed');
+    return this.component.getFirstPropertyValue("completed");
   }
 
   set relatedTo(parentUid: string | undefined) {
     if (parentUid !== undefined) {
-      this.component.updatePropertyWithValue('related-to', parentUid);
+      this.component.updatePropertyWithValue("related-to", parentUid);
     } else {
-      this.component.removeAllProperties('related-to');
+      this.component.removeAllProperties("related-to");
     }
   }
 
   get relatedTo(): string | undefined {
-    return this.component.getFirstPropertyValue('related-to');
+    return this.component.getFirstPropertyValue("related-to");
   }
 
   get endDate() {
@@ -248,7 +248,7 @@ export class TaskType extends EventType {
   }
 
   get dueToday() {
-    return this.dueDate && moment(this.dueDate.toJSDate()).isSameOrBefore(moment(), 'day');
+    return this.dueDate && moment(this.dueDate.toJSDate()).isSameOrBefore(moment(), "day");
   }
 
   get overdue() {
@@ -258,7 +258,7 @@ export class TaskType extends EventType {
 
     const dueDate = moment(this.dueDate.toJSDate());
     const now = moment();
-    return (this.dueDate.isDate) ? dueDate.isBefore(now, 'day') : dueDate.isBefore(now);
+    return (this.dueDate.isDate) ? dueDate.isBefore(now, "day") : dueDate.isBefore(now);
   }
 
   get hidden() {
@@ -349,23 +349,23 @@ export class ContactType implements PimType {
   }
 
   get uid() {
-    return this.comp.getFirstPropertyValue('uid');
+    return this.comp.getFirstPropertyValue("uid");
   }
 
   set uid(uid: string) {
-    this.comp.updatePropertyWithValue('uid', uid);
+    this.comp.updatePropertyWithValue("uid", uid);
   }
 
   get fn() {
-    return this.comp.getFirstPropertyValue('fn');
+    return this.comp.getFirstPropertyValue("fn");
   }
 
   get n() {
-    return this.comp.getFirstPropertyValue('n');
+    return this.comp.getFirstPropertyValue("n");
   }
 
   get group() {
-    const kind = this.comp.getFirstPropertyValue('kind');
-    return kind in ['group', 'organization'];
+    const kind = this.comp.getFirstPropertyValue("kind");
+    return kind in ["group", "organization"];
   }
 }

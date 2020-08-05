@@ -1,26 +1,26 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import IconEdit from '@material-ui/icons/Edit';
-import IconMembers from '@material-ui/icons/People';
-import IconImport from '@material-ui/icons/ImportExport';
+import * as React from "react";
+import IconButton from "@material-ui/core/IconButton";
+import IconEdit from "@material-ui/icons/Edit";
+import IconMembers from "@material-ui/icons/People";
+import IconImport from "@material-ui/icons/ImportExport";
 
 
-import AppBarOverride from '../widgets/AppBarOverride';
-import Container from '../widgets/Container';
+import AppBarOverride from "../widgets/AppBarOverride";
+import Container from "../widgets/Container";
 
-import JournalEntries from '../components/JournalEntries';
-import ImportDialog from './ImportDialog';
+import JournalEntries from "../components/JournalEntries";
+import ImportDialog from "./ImportDialog";
 
-import { SyncInfo, SyncInfoJournal } from '../SyncGate';
+import { SyncInfo, SyncInfoJournal } from "../SyncGate";
 
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { routeResolver } from '../App';
+import { routeResolver } from "../App";
 
-import { CredentialsData, UserInfoData } from '../store';
+import { CredentialsData, UserInfoData } from "../store";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -61,14 +61,14 @@ class Journal extends React.Component<PropsType> {
               <IconButton
                 component={Link}
                 title="Edit"
-                {...{ to: routeResolver.getRoute('journals._id.edit', { journalUid: journal.uid }) }}
+                {...{ to: routeResolver.getRoute("journals._id.edit", { journalUid: journal.uid }) }}
               >
                 <IconEdit />
               </IconButton>
               <IconButton
                 component={Link}
                 title="Members"
-                {...{ to: routeResolver.getRoute('journals._id.members', { journalUid: journal.uid }) }}
+                {...{ to: routeResolver.getRoute("journals._id.members", { journalUid: journal.uid }) }}
               >
                 <IconMembers />
               </IconButton>

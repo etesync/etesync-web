@@ -1,45 +1,45 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import * as React from 'react';
+import * as React from "react";
 
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputLabel from '@material-ui/core/InputLabel';
-import * as colors from '@material-ui/core/colors';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import InputLabel from "@material-ui/core/InputLabel";
+import * as colors from "@material-ui/core/colors";
 
-import IconDelete from '@material-ui/icons/Delete';
-import IconCancel from '@material-ui/icons/Clear';
-import IconSave from '@material-ui/icons/Save';
+import IconDelete from "@material-ui/icons/Delete";
+import IconCancel from "@material-ui/icons/Clear";
+import IconSave from "@material-ui/icons/Save";
 
-import DateTimePicker from '../widgets/DateTimePicker';
+import DateTimePicker from "../widgets/DateTimePicker";
 
-import ConfirmationDialog from '../widgets/ConfirmationDialog';
-import TimezonePicker from '../widgets/TimezonePicker';
-import Toast from '../widgets/Toast';
+import ConfirmationDialog from "../widgets/ConfirmationDialog";
+import TimezonePicker from "../widgets/TimezonePicker";
+import Toast from "../widgets/Toast";
 
-import { Location } from 'history';
-import { withRouter } from 'react-router';
+import { Location } from "history";
+import { withRouter } from "react-router";
 
-import * as uuid from 'uuid';
-import * as ICAL from 'ical.js';
+import * as uuid from "uuid";
+import * as ICAL from "ical.js";
 
-import * as EteSync from 'etesync';
+import * as EteSync from "etesync";
 
-import { getCurrentTimezone } from '../helpers';
+import { getCurrentTimezone } from "../helpers";
 
-import { EventType, timezoneLoadFromName } from '../pim-types';
-import RRule, { RRuleOptions } from '../widgets/RRule';
+import { EventType, timezoneLoadFromName } from "../pim-types";
+import RRule, { RRuleOptions } from "../widgets/RRule";
 
-import { History } from 'history';
+import { History } from "history";
 
 interface PropsType {
   collections: EteSync.CollectionInfo[];
@@ -73,14 +73,14 @@ class EventEdit extends React.PureComponent<PropsType> {
   constructor(props: any) {
     super(props);
     this.state = {
-      uid: '',
-      title: '',
+      uid: "",
+      title: "",
       allDay: false,
-      location: '',
-      description: '',
+      location: "",
+      description: "",
       timezone: null,
 
-      journalUid: '',
+      journalUid: "",
       showDeleteDialog: false,
     };
 
@@ -107,18 +107,18 @@ class EventEdit extends React.PureComponent<PropsType> {
       }
 
       if (this.props.duplicate) {
-        this.state.title = event.title ? `Copy of ${event.title}` : '';
+        this.state.title = event.title ? `Copy of ${event.title}` : "";
       } else {
         this.state.uid = event.uid;
-        this.state.title = event.title ? event.title : '';
+        this.state.title = event.title ? event.title : "";
       }
       this.state.allDay = allDay;
       this.state.start = event.startDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
       this.state.end = endDate.convertToZone(ICAL.Timezone.localTimezone).toJSDate();
-      this.state.location = event.location ? event.location : '';
-      this.state.description = event.description ? event.description : '';
+      this.state.location = event.location ? event.location : "";
+      this.state.description = event.description ? event.description : "";
       this.state.timezone = event.timezone;
-      const rruleProp = this.props.item?.component.getFirstPropertyValue<ICAL.Recur>('rrule');
+      const rruleProp = this.props.item?.component.getFirstPropertyValue<ICAL.Recur>("rrule");
       if (rruleProp) {
         this.state.rrule = rruleProp.toJSON() as any;
         if (this.state.rrule && rruleProp.until) {
@@ -165,7 +165,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     this.setState({ allDay: !this.state.allDay });
   }
   public toggleRecurring() {
-    const value = this.state.rrule ? undefined : { freq: 'WEEKLY', interval: 1 };
+    const value = this.state.rrule ? undefined : { freq: "WEEKLY", interval: 1 };
     this.setState({ rrule: value });
   }
 
@@ -175,18 +175,18 @@ class EventEdit extends React.PureComponent<PropsType> {
   }
 
   public handleCloseToast(_event?: React.SyntheticEvent, reason?: string) {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
-    this.setState({ error: '' });
+    this.setState({ error: "" });
   }
 
   public onSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
     if ((!this.state.start) || (!this.state.end)) {
-      this.setState({ error: 'Both start and end time must be set!' });
+      this.setState({ error: "Both start and end time must be set!" });
       return;
     }
 
@@ -209,7 +209,7 @@ class EventEdit extends React.PureComponent<PropsType> {
     }
 
     if (startDate.compare(endDate) >= 0) {
-      this.setState({ error: 'End time must be later than start time!' });
+      this.setState({ error: "End time must be later than start time!" });
       return;
     }
 
@@ -233,10 +233,10 @@ class EventEdit extends React.PureComponent<PropsType> {
       }
     }
     if (this.state.rrule) {
-      event.component.updatePropertyWithValue('rrule', new ICAL.Recur(this.state.rrule!));
+      event.component.updatePropertyWithValue("rrule", new ICAL.Recur(this.state.rrule!));
     }
 
-    event.component.updatePropertyWithValue('last-modified', ICAL.Time.now());
+    event.component.updatePropertyWithValue("last-modified", ICAL.Time.now());
 
     this.props.onSave(event, this.state.journalUid, this.props.item)
       .then(() => {
@@ -255,14 +255,14 @@ class EventEdit extends React.PureComponent<PropsType> {
       form: {
       },
       fullWidth: {
-        width: '100%',
-        boxSizing: 'border-box' as any,
+        width: "100%",
+        boxSizing: "border-box" as any,
         marginTop: 16,
       },
       submit: {
         marginTop: 40,
         marginBottom: 20,
-        textAlign: 'right' as any,
+        textAlign: "right" as any,
       },
     };
 
@@ -272,11 +272,11 @@ class EventEdit extends React.PureComponent<PropsType> {
     return (
       <>
         <h2>
-          {(this.props.item && !this.props.duplicate) ? 'Edit Event' : 'New Event'}
+          {(this.props.item && !this.props.duplicate) ? "Edit Event" : "New Event"}
         </h2>
         {recurring && (
           <div>
-            <span style={{ color: 'red' }}>IMPORTANT: </span>
+            <span style={{ color: "red" }}>IMPORTANT: </span>
             This is a recurring event, for now, only editing the whole series
             (by editing the first instance) is supported.
           </div>
@@ -385,7 +385,7 @@ class EventEdit extends React.PureComponent<PropsType> {
           {this.state.rrule &&
             <RRule
               onChange={this.handleRRuleChange}
-              rrule={this.state.rrule ? this.state.rrule : { freq: 'DAILY', interval: 1 }}
+              rrule={this.state.rrule ? this.state.rrule : { freq: "DAILY", interval: 1 }}
             />
           }
           <div style={styles.submit}>
@@ -400,7 +400,7 @@ class EventEdit extends React.PureComponent<PropsType> {
             {this.props.item &&
               <Button
                 variant="contained"
-                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: 'white' }}
+                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: "white" }}
                 onClick={this.onDeleteRequest}
               >
                 <IconDelete style={{ marginRight: 8 }} />
