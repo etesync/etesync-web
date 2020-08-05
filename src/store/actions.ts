@@ -68,14 +68,18 @@ export const setCacheCollection = createAction(
     return Etebase.toBase64(await colMgr.cacheSave(col));
   },
   (_colMgr: Etebase.CollectionManager, col: Etebase.Collection) => {
-    return col.uid;
+    return {
+      colUid: col.uid,
+    };
   }
 );
 
 export const unsetCacheCollection = createAction(
   "UNSET_CACHE_COLLECTION",
   (_colMgr: Etebase.CollectionManager, colUid: string) => {
-    return colUid;
+    return {
+      colUid,
+    };
   }
 );
 
