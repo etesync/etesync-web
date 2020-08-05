@@ -14,6 +14,7 @@ import { routeResolver } from "./App";
 
 import AppBarOverride from "./widgets/AppBarOverride";
 import LoadingIndicator from "./widgets/LoadingIndicator";
+import SearchableAddressBook from "./components/SearchableAddressBook";
 
 import Journals from "./Journals";
 import Settings from "./Settings";
@@ -78,22 +79,42 @@ export default function SyncGate() {
           <Redirect to={routeResolver.getRoute("pim")} />
         )}
       />
-      {false && (
-        <>
+      <Route
+        path={routeResolver.getRoute("pim")}
+      >
+        <AppBarOverride title="EteSync" />
+        <PimRouter
+          etesync={etesync}
+          userInfo={userInfo}
+          syncInfo={false as any}
+          history={history}
+        />
+        <Switch>
           <Route
             path={routeResolver.getRoute("pim")}
-            render={({ history }) => (
-              <>
-                <AppBarOverride title="EteSync" />
-                <PimRouter
-                  etesync={etesync}
-                  userInfo={userInfo}
-                  syncInfo={false as any}
-                  history={history}
-                />
-              </>
-            )}
-          />
+            exact
+          >
+            <Redirect to={routeResolver.getRoute("pim.events")} />
+          </Route>
+          <Route
+            path={routeResolver.getRoute("pim.contacts")}
+          >
+            <SearchableAddressBook onItemClick={() => 1} />
+          </Route>
+          <Route
+            path={routeResolver.getRoute("pim.events")}
+          >
+            events
+          </Route>
+          <Route
+            path={routeResolver.getRoute("pim.tasks")}
+          >
+            tasks
+          </Route>
+        </Switch>
+      </Route>
+      {false && (
+        <>
           <Route
             path={routeResolver.getRoute("journals")}
             render={({ location, history }) => (
