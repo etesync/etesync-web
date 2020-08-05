@@ -14,10 +14,10 @@ import { ContactType, PimType } from "../pim-types";
 import { useCredentials } from "../credentials";
 import { useItems, useCollections, getCollectionManager } from "../etebase-helpers";
 import { routeResolver } from "../App";
-import SearchableAddressBook from "../components/SearchableAddressBook";
-import Contact from "../components/Contact";
+import SearchableAddressBook from "./SearchableAddressBook";
+import Contact from "./Contact";
 import LoadingIndicator from "../widgets/LoadingIndicator";
-import ContactEdit from "../components/ContactEdit";
+import ContactEdit from "./ContactEdit";
 import PageNotFound from "../PageNotFound";
 
 import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction } from "../Pim/helpers";

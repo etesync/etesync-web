@@ -12,7 +12,7 @@ import CommunicationChatBubble from "@material-ui/icons/ChatBubble";
 import CommunicationEmail from "@material-ui/icons/Email";
 import CopyIcon from "../icons/Copy";
 
-import PimItemHeader from "./PimItemHeader";
+import PimItemHeader from "../components/PimItemHeader";
 
 import { ContactType } from "../pim-types";
 import { IconButton, Avatar } from "@material-ui/core";

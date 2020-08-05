@@ -24,8 +24,6 @@ import { PimType, ContactType, EventType, TaskType } from "../pim-types";
 import Container from "../widgets/Container";
 
 import JournalEntries from "../components/JournalEntries";
-import ContactEdit from "../components/ContactEdit";
-import Contact from "../components/Contact";
 import EventEdit from "../components/EventEdit";
 import Event from "../components/Event";
 import TaskEdit from "../components/Tasks/TaskEdit";
@@ -389,26 +387,10 @@ class Pim extends React.PureComponent {
   }
 
   public render() {
-    const { collectionsAddressBook, collectionsCalendar, collectionsTaskList, addressBookItems, calendarItems, taskListItems } = itemsSelector(this.props);
+    const { collectionsCalendar, collectionsTaskList, calendarItems, taskListItems } = itemsSelector(this.props);
 
     return (
       <Switch>
-        <Route
-          path={routeResolver.getRoute("pim.contacts")}
-          render={() => (
-            <CollectionRoutes
-              syncInfo={this.props.syncInfo}
-              routePrefix="pim.contacts"
-              collections={collectionsAddressBook}
-              items={addressBookItems}
-              componentEdit={ContactEdit}
-              componentView={Contact}
-              onItemSave={this.onItemSave}
-              onItemDelete={this.onItemDelete}
-              onItemCancel={this.onCancel}
-            />
-          )}
-        />
         <Route
           path={routeResolver.getRoute("pim.events")}
           render={() => (

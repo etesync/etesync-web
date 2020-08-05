@@ -11,7 +11,7 @@ import IconClear from "@material-ui/icons/Clear";
 
 import { ContactType } from "../pim-types";
 
-import AddressBook from "../components/AddressBook";
+import AddressBook from "./AddressBook";
 
 interface PropsType {
   entries: ContactType[];
