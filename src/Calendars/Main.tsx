@@ -13,7 +13,7 @@ import IconChangeHistory from "@material-ui/icons/ChangeHistory";
 
 import { EventType, PimType } from "../pim-types";
 import { useCredentials } from "../credentials";
-import { useItems, useCollections, getCollectionManager } from "../etebase-helpers";
+import { useItems, useCollections } from "../etebase-helpers";
 import { routeResolver } from "../App";
 import Calendar from "./Calendar";
 import Event from "./Event";
@@ -21,7 +21,7 @@ import LoadingIndicator from "../widgets/LoadingIndicator";
 import EventEdit from "./EventEdit";
 import PageNotFound from "../PageNotFound";
 
-import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab } from "../Pim/helpers";
+import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemDelete, itemSave } from "../Pim/helpers";
 import { historyPersistor } from "../persist-state-history";
 
 const PersistCalendar = historyPersistor("Calendar")(Calendar);
@@ -60,47 +60,13 @@ export default function CalendarsMain() {
   }
 
   async function onItemSave(item: PimType, collectionUid: string, originalItem?: PimType): Promise<void> {
-    const itemUid = originalItem?.itemUid;
-    const colMgr = getCollectionManager(etebase);
     const collection = collections!.find((x) => x.uid === collectionUid)!;
-    const itemMgr = colMgr.getItemManager(collection);
-
-    const mtime = (new Date()).getTime();
-    const content = item.toIcal();
-
-    let eteItem;
-    if (itemUid) {
-      // Existing item
-      eteItem = items!.get(collectionUid)?.get(itemUid)!;
-      await eteItem.setContent(content);
-      const meta = await eteItem.getMeta();
-      meta.mtime = mtime;
-      await eteItem.setMeta(meta);
-    } else {
-      // New
-      const meta: Etebase.CollectionItemMetadata = {
-        mtime,
-        name: item.uid,
-      };
-      eteItem = await itemMgr.create(meta, content);
-    }
-
-    await itemMgr.batch([eteItem]);
+    await itemSave(etebase, collection, items!, item, collectionUid, originalItem);
   }
 
   async function onItemDelete(item: PimType, collectionUid: string) {
-    const itemUid = item.itemUid!;
-    const colMgr = getCollectionManager(etebase);
     const collection = collections!.find((x) => x.uid === collectionUid)!;
-    const itemMgr = colMgr.getItemManager(collection);
-
-    const eteItem = items!.get(collectionUid)?.get(itemUid)!;
-    const mtime = (new Date()).getTime();
-    const meta = await eteItem.getMeta();
-    meta.mtime = mtime;
-    await eteItem.setMeta(meta);
-    await eteItem.delete();
-    await itemMgr.batch([eteItem]);
+    await itemDelete(etebase, collection, items!, item, collectionUid);
 
     history.push(routeResolver.getRoute("pim.events"));
   }

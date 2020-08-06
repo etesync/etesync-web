@@ -10,6 +10,7 @@ import memoize from "memoizee";
 import * as Etebase from "etebase";
 
 import { PimType } from "../pim-types";
+import { getCollectionManager } from "../etebase-helpers";
 
 export const defaultColor = "#8BC34A";
 
@@ -63,6 +64,48 @@ export function getDecryptItemsFunction<T extends PimType>(_colType: string, par
     },
     { max: 1 }
   );
+}
+
+export async function itemSave(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.CollectionItem>>, item: PimType, collectionUid: string, originalItem?: PimType): Promise<void> {
+  const itemUid = originalItem?.itemUid;
+  const colMgr = getCollectionManager(etebase);
+  const itemMgr = colMgr.getItemManager(collection);
+
+  const mtime = (new Date()).getTime();
+  const content = item.toIcal();
+
+  let eteItem;
+  if (itemUid) {
+    // Existing item
+    eteItem = items!.get(collectionUid)?.get(itemUid)!;
+    await eteItem.setContent(content);
+    const meta = await eteItem.getMeta();
+    meta.mtime = mtime;
+    await eteItem.setMeta(meta);
+  } else {
+    // New
+    const meta: Etebase.CollectionItemMetadata = {
+      mtime,
+      name: item.uid,
+    };
+    eteItem = await itemMgr.create(meta, content);
+  }
+
+  await itemMgr.batch([eteItem]);
+}
+
+export async function itemDelete(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.CollectionItem>>, item: PimType, collectionUid: string) {
+  const itemUid = item.itemUid!;
+  const colMgr = getCollectionManager(etebase);
+  const itemMgr = colMgr.getItemManager(collection);
+
+  const eteItem = items!.get(collectionUid)?.get(itemUid)!;
+  const mtime = (new Date()).getTime();
+  const meta = await eteItem.getMeta();
+  meta.mtime = mtime;
+  await eteItem.setMeta(meta);
+  await eteItem.delete();
+  await itemMgr.batch([eteItem]);
 }
 
 interface PimFabPropsType {
