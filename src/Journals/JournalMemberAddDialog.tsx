@@ -12,9 +12,8 @@ import ConfirmationDialog from "../widgets/ConfirmationDialog";
 import PrettyFingerprint from "../widgets/PrettyFingerprint";
 
 import * as EteSync from "etesync";
-import { CredentialsData } from "../store";
 
-import { handleInputChange } from "../helpers";
+import { CredentialsData } from "../store";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -23,127 +22,104 @@ interface PropsType {
   onClose: () => void;
 }
 
-class JournalMemberAddDialog extends React.PureComponent<PropsType> {
-  public state = {
-    addUser: "",
-    publicKey: "",
-    readOnly: false,
-    userChosen: false,
-    error: undefined as Error | undefined,
-  };
+export default function JournalMemberAddDialog(props: PropsType) {
+  const [addUser, setAddUser] = React.useState("");
+  const [publicKey, setPublicKey] = React.useState("");
+  const [readOnly, setReadOnly] = React.useState(false);
+  const [userChosen, setUserChosen] = React.useState(false);
+  const [error, setError] = React.useState<Error>();
 
-  private handleInputChange: any;
+  function onAddRequest(_user: string) {
+    setUserChosen(true);
 
-  constructor(props: PropsType) {
-    super(props);
-
-    this.handleInputChange = handleInputChange(this);
-    this.onAddRequest = this.onAddRequest.bind(this);
-    this.onOk = this.onOk.bind(this);
-  }
-
-  public render() {
-    const { onClose } = this.props;
-    const { addUser, userChosen, publicKey, error } = this.state;
-
-    if (error) {
-      return (
-        <>
-          <ConfirmationDialog
-            title="Error adding member"
-            labelOk="OK"
-            open
-            onOk={onClose}
-            onCancel={onClose}
-          >
-            User ({addUser}) not found. Have they setup their encryption password from one of the apps?
-          </ConfirmationDialog>
-        </>
-      );
-    }
-
-    if (publicKey) {
-      return (
-        <>
-          <ConfirmationDialog
-            title="Verify security fingerprint"
-            labelOk="OK"
-            open
-            onOk={this.onOk}
-            onCancel={onClose}
-          >
-            <p>
-              Verify {addUser}'s security fingerprint to ensure the encryption is secure.
-            </p>
-            <div style={{ textAlign: "center" }}>
-              <PrettyFingerprint publicKey={publicKey} />
-            </div>
-          </ConfirmationDialog>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <ConfirmationDialog
-            title="Add member"
-            labelOk="OK"
-            open={!userChosen}
-            onOk={this.onAddRequest}
-            onCancel={onClose}
-          >
-            {userChosen ?
-              <LoadingIndicator />
-              :
-              <>
-                <TextField
-                  name="addUser"
-                  type="email"
-                  placeholder="User email"
-                  style={{ width: "100%" }}
-                  value={addUser}
-                  onChange={this.handleInputChange}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={this.state.readOnly}
-                      onChange={(event) => this.setState({ readOnly: event.target.checked })}
-                    />
-                  }
-                  label="Read only?"
-                />
-              </>
-            }
-          </ConfirmationDialog>
-        </>
-      );
-    }
-  }
-
-  private onAddRequest(_user: string) {
-    this.setState({
-      userChosen: true,
-    });
-
-    const { etesync } = this.props;
-    const { addUser } = this.state;
+    const { etesync } = props;
 
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
     const userInfoManager = new EteSync.UserInfoManager(creds, apiBase);
     userInfoManager.fetch(addUser).then((userInfo) => {
-      this.setState({
-        publicKey: userInfo.publicKey,
-      });
+      setPublicKey(userInfo.publicKey);
     }).catch((error) => {
-      this.setState({ error });
+      setError(error);
     });
   }
 
-  private onOk() {
-    const { addUser, publicKey, readOnly } = this.state;
-    this.props.onOk(addUser, publicKey, readOnly);
+  function onOk() {
+    props.onOk(addUser, publicKey, readOnly);
+  }
+
+  const { onClose } = props;
+
+  if (error) {
+    return (
+      <>
+        <ConfirmationDialog
+          title="Error adding member"
+          labelOk="OK"
+          open
+          onOk={onClose}
+          onCancel={onClose}
+        >
+          User ({addUser}) not found. Have they setup their encryption password from one of the apps?
+        </ConfirmationDialog>
+      </>
+    );
+  }
+
+  if (publicKey) {
+    return (
+      <>
+        <ConfirmationDialog
+          title="Verify security fingerprint"
+          labelOk="OK"
+          open
+          onOk={onOk}
+          onCancel={onClose}
+        >
+          <p>
+            Verify {addUser}'s security fingerprint to ensure the encryption is secure.
+          </p>
+          <div style={{ textAlign: "center" }}>
+            <PrettyFingerprint publicKey={publicKey} />
+          </div>
+        </ConfirmationDialog>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <ConfirmationDialog
+          title="Add member"
+          labelOk="OK"
+          open={!userChosen}
+          onOk={onAddRequest}
+          onCancel={onClose}
+        >
+          {userChosen ?
+            <LoadingIndicator />
+            :
+            <>
+              <TextField
+                name="addUser"
+                type="email"
+                placeholder="User email"
+                style={{ width: "100%" }}
+                value={addUser}
+                onChange={(ev) => setAddUser(ev.target.value)}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={readOnly}
+                    onChange={(event) => setReadOnly(event.target.checked)}
+                  />
+                }
+                label="Read only?"
+              />
+            </>
+          }
+        </ConfirmationDialog>
+      </>
+    );
   }
 }
-
-export default JournalMemberAddDialog;

@@ -6,7 +6,6 @@ import sjcl from "sjcl";
 
 import { List, ListItem } from "../widgets/List";
 
-import { Theme, withTheme } from "@material-ui/core/styles";
 import IconMemberAdd from "@material-ui/icons/PersonAdd";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
@@ -28,140 +27,48 @@ interface PropsType {
   userInfo: UserInfoData;
 }
 
-interface PropsTypeInner extends PropsType {
-  theme: Theme;
-}
+export default function JournalMembers(props: PropsType) {
+  const [members, setMembers] = React.useState<EteSync.JournalMemberJson[] | null>(null);
+  const [revokeUser, setRevokeUser] = React.useState<string | null>(null);
+  const [addMemberOpen, setAddMemberOpen] = React.useState(false);
 
-class JournalMembers extends React.PureComponent<PropsTypeInner> {
-  public state = {
-    members: null as EteSync.JournalMemberJson[] | null,
-    revokeUser: null as string | null,
-    addMemberOpen: false,
-  };
-
-  constructor(props: PropsTypeInner) {
-    super(props);
-
-    this.onRevokeRequest = this.onRevokeRequest.bind(this);
-    this.onRevokeDo = this.onRevokeDo.bind(this);
-    this.onMemberAdd = this.onMemberAdd.bind(this);
-  }
-
-  public render() {
-    const { syncJournal } = this.props;
-    const { members, revokeUser, addMemberOpen } = this.state;
-
-    const info = syncJournal.collection;
-    const sharingAllowed = syncJournal.journal.version > 1;
-
-    return (
-      <>
-        <AppBarOverride title={`${info.displayName} - Members`} />
-        <Container style={{ maxWidth: "30rem" }}>
-          {members ?
-            <List>
-              <ListItem rightIcon={<IconMemberAdd />} onClick={() => this.setState({ addMemberOpen: true })}>
-                Add member
-              </ListItem>
-              {(members.length > 0 ?
-                members.map((member) => (
-                  <ListItem
-                    key={member.user}
-                    onClick={() => this.onRevokeRequest(member.user)}
-                    rightIcon={(member.readOnly) ? (<VisibilityIcon />) : undefined}
-                  >
-                    {member.user}
-                  </ListItem>
-                ))
-                :
-                <ListItem>
-                  No members
-                </ListItem>
-              )}
-            </List>
-            :
-            <LoadingIndicator />
-          }
-        </Container>
-        <ConfirmationDialog
-          title="Remove member"
-          labelOk="OK"
-          open={revokeUser !== null}
-          onOk={this.onRevokeDo}
-          onCancel={() => this.setState({ revokeUser: null })}
-        >
-          Would you like to revoke {revokeUser}'s access?<br />
-          Please be advised that a malicious user would potentially be able to retain access to encryption keys. Please refer to the FAQ for more information.
-        </ConfirmationDialog>
-
-        {addMemberOpen &&
-          (sharingAllowed ?
-            <JournalMemberAddDialog
-              etesync={this.props.etesync}
-              info={info}
-              onOk={this.onMemberAdd}
-              onClose={() => this.setState({ addMemberOpen: false })}
-            />
-            :
-            <ConfirmationDialog
-              title="Now Allowed"
-              labelOk="OK"
-              open
-              onOk={() => this.setState({ addMemberOpen: false })}
-              onClose={() => this.setState({ addMemberOpen: false })}
-            >
-              Sharing of old-style journals is not allowed. In order to share this journal, create a new one, and copy its contents over using the "import" dialog. If you are experiencing any issues, please contact support.
-            </ConfirmationDialog>
-          )
-        }
-      </>
-    );
-  }
-
-  public componentDidMount() {
-    this.fetchMembers();
-  }
-
-  private fetchMembers() {
-    const { etesync, syncJournal } = this.props;
+  function fetchMembers() {
+    const { etesync, syncJournal } = props;
     const info = syncJournal.collection;
 
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
     const journalMembersManager = new EteSync.JournalMembersManager(creds, apiBase, info.uid);
     journalMembersManager.list().then((members) => {
-      this.setState({
-        members,
-      });
+      setMembers(members);
     });
   }
 
-  private onRevokeRequest(user: string) {
-    this.setState({
-      revokeUser: user,
-    });
+  React.useEffect(() => {
+    fetchMembers();
+  }, []);
+
+  function onRevokeRequest(user: string) {
+    setRevokeUser(user);
   }
 
-  private onRevokeDo() {
-    const { etesync, syncJournal } = this.props;
-    const { revokeUser } = this.state;
+  function onRevokeDo() {
+    const { etesync, syncJournal } = props;
     const info = syncJournal.collection;
 
     const creds = etesync.credentials;
     const apiBase = etesync.serviceApiUrl;
     const journalMembersManager = new EteSync.JournalMembersManager(creds, apiBase, info.uid);
     journalMembersManager.delete({ user: revokeUser!, key: "" }).then(() => {
-      this.fetchMembers();
+      fetchMembers();
     });
-    this.setState({
-      revokeUser: null,
-    });
+    setRevokeUser(null);
   }
 
-  private onMemberAdd(user: string, publicKey: string, readOnly: boolean) {
-    const { etesync, syncJournal, userInfo } = this.props;
+  function onMemberAdd(user: string, publicKey: string, readOnly: boolean) {
+    const { etesync, syncJournal, userInfo } = props;
     const journal = syncJournal.journal;
-    const derived = this.props.etesync.encryptionKey;
+    const derived = props.etesync.encryptionKey;
 
     const keyPair = userInfo.getKeyPair(userInfo.getCryptoManager(derived));
     const cryptoManager = journal.getCryptoManager(derived, keyPair);
@@ -173,12 +80,76 @@ class JournalMembers extends React.PureComponent<PropsTypeInner> {
     const apiBase = etesync.serviceApiUrl;
     const journalMembersManager = new EteSync.JournalMembersManager(creds, apiBase, journal.uid);
     journalMembersManager.create({ user, key: encryptedKey, readOnly }).then(() => {
-      this.fetchMembers();
+      fetchMembers();
     });
-    this.setState({
-      addMemberOpen: false,
-    });
+    setAddMemberOpen(false);
   }
-}
 
-export default withTheme(JournalMembers);
+  const { syncJournal } = props;
+
+  const info = syncJournal.collection;
+  const sharingAllowed = syncJournal.journal.version > 1;
+
+  return (
+    <>
+      <AppBarOverride title={`${info.displayName} - Members`} />
+      <Container style={{ maxWidth: "30rem" }}>
+        {members ?
+          <List>
+            <ListItem rightIcon={<IconMemberAdd />} onClick={() => setAddMemberOpen(true)}>
+              Add member
+            </ListItem>
+            {(members.length > 0 ?
+              members.map((member) => (
+                <ListItem
+                  key={member.user}
+                  onClick={() => onRevokeRequest(member.user)}
+                  rightIcon={(member.readOnly) ? (<VisibilityIcon />) : undefined}
+                >
+                  {member.user}
+                </ListItem>
+              ))
+              :
+              <ListItem>
+                No members
+              </ListItem>
+            )}
+          </List>
+          :
+          <LoadingIndicator />
+        }
+      </Container>
+      <ConfirmationDialog
+        title="Remove member"
+        labelOk="OK"
+        open={revokeUser !== null}
+        onOk={onRevokeDo}
+        onCancel={() => setRevokeUser(null)}
+      >
+        Would you like to revoke {revokeUser}'s access?<br />
+        Please be advised that a malicious user would potentially be able to retain access to encryption keys. Please refer to the FAQ for more information.
+      </ConfirmationDialog>
+
+      {addMemberOpen &&
+        (sharingAllowed ?
+          <JournalMemberAddDialog
+            etesync={props.etesync}
+            info={info}
+            onOk={onMemberAdd}
+            onClose={() => setAddMemberOpen(false)}
+          />
+          :
+          <ConfirmationDialog
+            title="Now Allowed"
+            labelOk="OK"
+            open
+            onOk={() => setAddMemberOpen(false)}
+            onClose={() => setAddMemberOpen(false)}
+          >
+            Sharing of old-style journals is not allowed. In order to share this journal, create a new one, and copy its contents over using the "import" dialog. If you are experiencing any issues, please contact support.
+          </ConfirmationDialog>
+        )
+      }
+    </>
+  );
+}
