@@ -61,7 +61,7 @@ export default function ContactsMain() {
     const collection = collections!.find((x) => x.uid === collectionUid)!;
     const itemMgr = colMgr.getItemManager(collection);
 
-    const mtime = (new Date()).getUTCMilliseconds();
+    const mtime = (new Date()).getTime();
     const content = item.toIcal();
 
     let eteItem;
@@ -91,7 +91,7 @@ export default function ContactsMain() {
     const itemMgr = colMgr.getItemManager(collection);
 
     const eteItem = items!.get(collectionUid)?.get(itemUid)!;
-    const mtime = (new Date()).getUTCMilliseconds();
+    const mtime = (new Date()).getTime();
     const meta = await eteItem.getMeta();
     meta.mtime = mtime;
     await eteItem.setMeta(meta);

@@ -61,7 +61,7 @@ export default function ImportDialog(props: PropsType) {
 
         const eteItems = [];
         for (const item of items) {
-          const mtime = (new Date()).getUTCMilliseconds();
+          const mtime = (new Date()).getTime();
           const meta = {
             mtime,
             name: item.uid,
