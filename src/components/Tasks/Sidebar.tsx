@@ -10,7 +10,7 @@ import { setSettings } from "../../store/actions";
 import { StoreState } from "../../store";
 
 import { List, ListItem, ListSubheader } from "../../widgets/List";
-import { TaskType } from "../../pim-types";
+import { TaskType, setTaskTags } from "../../pim-types";
 
 interface ListItemPropsType {
   name: string | null;
@@ -49,6 +49,8 @@ export default React.memo(function Sidebar(props: { tasks: TaskType[] }) {
   tasks.forEach((task) => task.tags.forEach((tag) => {
     tags.set(tag, (tags.get(tag) ?? 0) + 1);
   }));
+  // FIXME: ugly hack to support potential tags. Will be fixed very soon.
+  setTaskTags(Array.from(tags.keys()));
 
   const tagsList = [...tags].sort(([a], [b]) => a.localeCompare(b)).map(([tag, amount]) => (
     <SidebarListItem
