@@ -162,8 +162,7 @@ export default function App() {
   }
 
   function autoRefresh() {
-    if (navigator.onLine && etebase &&
-      !(window.location.pathname.match(/.*\/(new|edit|duplicate)$/))) {
+    if (navigator.onLine && etebase) {
       refresh();
     }
   }
