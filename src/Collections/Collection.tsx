@@ -7,6 +7,8 @@ import IconEdit from "@material-ui/icons/Edit";
 import IconMembers from "@material-ui/icons/People";
 import IconImport from "@material-ui/icons/ImportExport";
 
+import * as Etebase from "etebase";
+
 
 import AppBarOverride from "../widgets/AppBarOverride";
 import Container from "../widgets/Container";
@@ -42,7 +44,7 @@ class Collection extends React.Component<PropsType> {
 
   public render() {
     const { collection, metadata } = this.props.collection;
-    const isAdmin = true; // FIXME
+    const isAdmin = collection.accessLevel === Etebase.CollectionAccessLevel.Admin;
 
     return (
       <React.Fragment>

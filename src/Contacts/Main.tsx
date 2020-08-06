@@ -160,11 +160,8 @@ export default function ContactsMain() {
             return (<PageNotFound />);
           }
 
-          /* FIXME:
           const collection = collections!.find((x) => x.uid === colUid)!;
-          const readOnly = collection.accessLevel;
-           */
-          const readOnly = false;
+          const readOnly = collection.accessLevel === Etebase.CollectionAccessLevel.ReadOnly;
 
           return (
             <Switch>
