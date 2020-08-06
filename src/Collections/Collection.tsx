@@ -11,9 +11,7 @@ import IconImport from "@material-ui/icons/ImportExport";
 import AppBarOverride from "../widgets/AppBarOverride";
 import Container from "../widgets/Container";
 
-/* FIXME:
-import CollectionEntries from "../components/CollectionEntries";
- */
+import CollectionChangeEntries from "./CollectionChangeEntries";
 import ImportDialog from "./ImportDialog";
 
 import { Link } from "react-router-dom";
@@ -75,13 +73,8 @@ class Collection extends React.Component<PropsType> {
           </IconButton>
         </AppBarOverride>
         <Container>
-          Change entries: TBD
+          <CollectionChangeEntries collection={this.props.collection} />
         </Container>
-        {/*
-        <Container>
-          <CollectionEntries collection={collection} entries={syncEntries} />
-        </Container>
-        */}
 
         <ImportDialog
           key={this.state.importDialogOpen.toString()}
