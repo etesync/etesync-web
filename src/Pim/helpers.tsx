@@ -11,6 +11,8 @@ import * as Etebase from "etebase";
 
 import { PimType } from "../pim-types";
 
+export const defaultColor = "#8BC34A";
+
 export interface CachedCollection {
   collection: Etebase.Collection;
   metadata: Etebase.CollectionMetadata;

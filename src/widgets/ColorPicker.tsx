@@ -4,7 +4,6 @@
 import * as React from "react";
 
 import ColorBox from "./ColorBox";
-import { colorHtmlToInt } from "../journal-processors";
 import { TextField, ButtonBase } from "@material-ui/core";
 
 interface PropsType {
@@ -55,7 +54,7 @@ export default function ColorPicker(props: PropsType) {
         <ColorBox
           style={{ display: "inline-block" }}
           size={36}
-          color={(color && colorHtmlToInt(color)) ? color : props.defaultColor}
+          color={color}
         />
         <TextField
           style={{ marginLeft: 10, flex: 1 }}

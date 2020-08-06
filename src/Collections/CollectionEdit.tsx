@@ -20,7 +20,7 @@ import ConfirmationDialog from "../widgets/ConfirmationDialog";
 import * as Etebase from "etebase";
 
 import ColorPicker from "../widgets/ColorPicker";
-import { defaultColor } from "../journal-processors";
+import { defaultColor } from "../Pim/helpers";
 import { CachedCollection } from "../Pim/helpers";
 import { useCredentials } from "../credentials";
 import { getCollectionManager } from "../etebase-helpers";
