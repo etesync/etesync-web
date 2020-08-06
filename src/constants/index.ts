@@ -8,5 +8,3 @@ export const sourceCode = "https://github.com/etesync/etesync-web";
 export const reportIssue = sourceCode + "/issues";
 
 export const forgotPassword = "https://www.etesync.com/accounts/password/reset/";
-
-export const serviceApiBase = process.env.REACT_APP_DEFAULT_API_PATH || "https://api.etesync.com/";

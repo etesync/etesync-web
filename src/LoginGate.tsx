@@ -25,7 +25,6 @@ export default function LoginGate() {
   const [fetchError, setFetchError] = React.useState<Error>();
 
   async function onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
-    serviceApiUrl = serviceApiUrl ? serviceApiUrl : C.serviceApiBase;
     try {
       setFetchError(undefined);
       const ret = login(username, password, serviceApiUrl);
