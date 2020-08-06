@@ -159,7 +159,11 @@ export enum TaskPriorityType {
   Low = 9
 }
 
-export const TaskTags = ["Work", "Home"];
+export let TaskTags = ["Work", "Home"];
+
+export function setTaskTags(tags: string[]) {
+  TaskTags = tags;
+}
 
 export class TaskType extends EventType {
   public collectionUid?: string;
