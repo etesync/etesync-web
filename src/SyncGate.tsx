@@ -8,8 +8,6 @@ import { Route, Switch, Redirect, useHistory } from "react-router";
 import moment from "moment";
 import "moment/locale/en-gb";
 
-import { Map } from "immutable";
-
 import { routeResolver } from "./App";
 
 import AppBarOverride from "./widgets/AppBarOverride";
@@ -29,9 +27,6 @@ import { StoreState } from "./store";
 import { performSync } from "./store/actions";
 import { useCredentials } from "./credentials";
 import PimNavigationTabs from "./Pim/NavigationTabs";
-
-export type SyncInfoJournal = any;
-export type SyncInfo = Map<string, SyncInfoJournal>;
 
 export default function SyncGate() {
   const etebase = useCredentials();
