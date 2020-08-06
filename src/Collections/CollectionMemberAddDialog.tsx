@@ -3,6 +3,8 @@
 
 import * as React from "react";
 
+import * as Etebase from "etebase";
+
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -10,42 +12,36 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import LoadingIndicator from "../widgets/LoadingIndicator";
 import ConfirmationDialog from "../widgets/ConfirmationDialog";
 import PrettyFingerprint from "../widgets/PrettyFingerprint";
-
-import * as EteSync from "etesync";
-
-import { CredentialsData } from "../store";
+import { CachedCollection } from "../Pim/helpers";
+import { useCredentials } from "../credentials";
 
 interface PropsType {
-  etesync: CredentialsData;
-  info: EteSync.CollectionInfo;
-  onOk: (user: string, publicKey: string, readOnly: boolean) => void;
+  collection: CachedCollection;
+  onOk: (username: string, publicKey: Uint8Array, accessLevel: Etebase.CollectionAccessLevel) => void;
   onClose: () => void;
 }
 
-export default function JournalMemberAddDialog(props: PropsType) {
+export default function CollectionMemberAddDialog(props: PropsType) {
+  const etebase = useCredentials()!;
   const [addUser, setAddUser] = React.useState("");
-  const [publicKey, setPublicKey] = React.useState("");
+  const [publicKey, setPublicKey] = React.useState<Uint8Array>();
   const [readOnly, setReadOnly] = React.useState(false);
   const [userChosen, setUserChosen] = React.useState(false);
   const [error, setError] = React.useState<Error>();
 
-  function onAddRequest(_user: string) {
+  async function onAddRequest(_user: string) {
     setUserChosen(true);
-
-    const { etesync } = props;
-
-    const creds = etesync.credentials;
-    const apiBase = etesync.serviceApiUrl;
-    const userInfoManager = new EteSync.UserInfoManager(creds, apiBase);
-    userInfoManager.fetch(addUser).then((userInfo) => {
-      setPublicKey(userInfo.publicKey);
-    }).catch((error) => {
-      setError(error);
-    });
+    const inviteMgr = etebase.getInvitationManager();
+    try {
+      const userProfile = await inviteMgr.fetchUserProfile(addUser);
+      setPublicKey(userProfile.pubkey);
+    } catch (e) {
+      setError(e);
+    }
   }
 
   function onOk() {
-    props.onOk(addUser, publicKey, readOnly);
+    props.onOk(addUser, publicKey!, readOnly ? Etebase.CollectionAccessLevel.ReadOnly : Etebase.CollectionAccessLevel.ReadWrite);
   }
 
   const { onClose } = props;
@@ -80,7 +76,7 @@ export default function JournalMemberAddDialog(props: PropsType) {
             Verify {addUser}'s security fingerprint to ensure the encryption is secure.
           </p>
           <div style={{ textAlign: "center" }}>
-            <PrettyFingerprint publicKey={publicKey as any} />
+            <PrettyFingerprint publicKey={publicKey} />
           </div>
         </ConfirmationDialog>
       </>
@@ -89,7 +85,7 @@ export default function JournalMemberAddDialog(props: PropsType) {
     return (
       <>
         <ConfirmationDialog
-          title="Add member"
+          title="Invite user"
           labelOk="OK"
           open={!userChosen}
           onOk={onAddRequest}
@@ -101,8 +97,7 @@ export default function JournalMemberAddDialog(props: PropsType) {
             <>
               <TextField
                 name="addUser"
-                type="email"
-                placeholder="User email"
+                placeholder="Username"
                 style={{ width: "100%" }}
                 value={addUser}
                 onChange={(ev) => setAddUser(ev.target.value)}

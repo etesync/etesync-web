@@ -18,15 +18,12 @@ import { setSettings } from "../store/actions";
 import Container from "../widgets/Container";
 import AppBarOverride from "../widgets/AppBarOverride";
 import PrettyFingerprint from "../widgets/PrettyFingerprint";
+import { useCredentials } from "../credentials";
 
 function SecurityFingerprint() {
-  const userInfo = useSelector((state: StoreState) => state.cache.userInfo);
-
-  if (!userInfo) {
-    return <p>Security fingerprint error.</p>;
-  }
-
-  const publicKey = userInfo.publicKey;
+  const etebase = useCredentials()!;
+  const inviteMgr = etebase.getInvitationManager();
+  const publicKey = inviteMgr.pubkey;
 
   return (
     <>

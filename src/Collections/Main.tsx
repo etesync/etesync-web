@@ -16,6 +16,7 @@ import CollectionList from "./CollectionList";
 import CollectionImport from "./CollectionImport";
 import PageNotFound from "../PageNotFound";
 import CollectionEdit from "./CollectionEdit";
+import CollectionMembers from "./CollectionMembers";
 import Collection from "./Collection";
 
 const decryptCollections = getDecryptCollectionsFunction();
@@ -118,7 +119,7 @@ export default function CollectionsMain() {
                 path={routeResolver.getRoute("collections._id.members")}
                 exact
               >
-                Members
+                <CollectionMembers collection={collection} />
               </Route>
               <Route
                 path={routeResolver.getRoute("collections._id")}
