@@ -139,6 +139,8 @@ export class EventType extends ICAL.Event implements PimType {
   public clone() {
     const ret = new EventType(ICAL.Component.fromString(this.component.toString()));
     ret.color = this.color;
+    ret.collectionUid = this.collectionUid;
+    ret.itemUid = this.itemUid;
     return ret;
   }
 }

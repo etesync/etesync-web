@@ -66,7 +66,6 @@ class Calendar extends React.PureComponent<PropsType> {
 
           const shift = next.subtractDateTz(event.startDate);
           const ev = event.clone();
-          (ev as any).journalUid = (event as any).journalUid;
           ev.startDate.addDuration(shift);
           ev.endDate.addDuration(shift);
           entries.push(ev);
