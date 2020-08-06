@@ -3,7 +3,7 @@
 
 import * as Etebase from "etebase";
 
-import { store, persistor, StoreState } from "../store";
+import { store, StoreState } from "../store";
 
 import { credentialsSelector } from "../credentials";
 import { setSyncCollection, setSyncGeneral, setCacheItem, setCacheCollection, unsetCacheCollection, unsetCacheItem } from "../store/actions";
@@ -123,9 +123,6 @@ export class SyncManager {
       throw e;
     } finally {
       this.isSyncing = false;
-
-      // Force flusing the store to disk
-      persistor.persist();
     }
   }
 }
