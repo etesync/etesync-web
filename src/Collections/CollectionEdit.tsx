@@ -223,7 +223,7 @@ export default function CollectionEdit(props: PropsType) {
         onOk={() => onDelete(props.collection?.collection!)}
         onCancel={() => setShowDeleteDialog(false)}
       >
-        Are you sure you would like to delete this journal?
+        Are you sure you would like to delete this collection?
       </ConfirmationDialog>
     </>
   );
