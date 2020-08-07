@@ -30,14 +30,14 @@ export type SyncGeneralData = {
   lastSyncDate: Date;
 };
 
-export interface CredentialsData2 {
+export interface CredentialsData {
   storedSession?: string;
 }
 
 export const credentials = handleActions(
   {
     [actions.login.toString()]: (
-      state: CredentialsData2, action: Action<string>) => {
+      state: CredentialsData, action: Action<string>) => {
       if (action.error) {
         return state;
       } else if (action.payload === undefined) {
@@ -48,7 +48,7 @@ export const credentials = handleActions(
         };
       }
     },
-    [actions.logout.toString()]: (_state: CredentialsData2, _action: any) => {
+    [actions.logout.toString()]: (_state: CredentialsData, _action: any) => {
       return { storedSession: undefined };
     },
   },

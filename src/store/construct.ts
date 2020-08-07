@@ -11,12 +11,12 @@ import {
   SettingsType,
   fetchCount, credentials, settingsReducer, encryptionKeyReducer, errorsReducer,
   syncGeneral, syncCollections, collections, items,
-  SyncGeneralData, SyncCollectionsData, CacheCollectionsData, CacheItemsData, CredentialsData2,
+  SyncGeneralData, SyncCollectionsData, CacheCollectionsData, CacheItemsData, CredentialsData,
 } from "./reducers";
 
 export interface StoreState {
   fetchCount: number;
-  credentials2: CredentialsData2;
+  credentials2: CredentialsData;
   settings: SettingsType;
   encryptionKey: {key: string};
   sync: {
@@ -49,7 +49,7 @@ const settingsPersistConfig = {
   migrate: createMigrate(settingsMigrations, { debug: false }),
 };
 
-const credentials2PersistConfig = {
+const credentialsPersistConfig = {
   key: "credentials2",
   version: 0,
   storage: localforage,
@@ -82,7 +82,7 @@ const syncPersistConfig = {
   transforms: [createTransform(syncSerialize, syncDeserialize)],
 };
 
-const cache2Serialize = (state: any, key: string | number) => {
+const cacheSerialize = (state: any, key: string | number) => {
   if (key === "collections") {
     return state.toJS();
   } else if (key === "items") {
@@ -92,7 +92,7 @@ const cache2Serialize = (state: any, key: string | number) => {
   return state;
 };
 
-const cache2Deserialize = (state: any, key: string | number) => {
+const cacheDeserialize = (state: any, key: string | number) => {
   if (key === "collections") {
     return ImmutableMap(state);
   } else if (key === "items") {
@@ -104,23 +104,23 @@ const cache2Deserialize = (state: any, key: string | number) => {
   return state;
 };
 
-const cache2PersistConfig = {
+const cachePersistConfig = {
   key: "cache2",
   version: 0,
   storage: localforage,
-  transforms: [createTransform(cache2Serialize, cache2Deserialize)] as any,
+  transforms: [createTransform(cacheSerialize, cacheDeserialize)] as any,
 };
 
 const reducers = combineReducers({
   fetchCount,
   settings: persistReducer(settingsPersistConfig, settingsReducer),
-  credentials2: persistReducer(credentials2PersistConfig, credentials),
+  credentials2: persistReducer(credentialsPersistConfig, credentials),
   encryptionKey: persistReducer(encryptionKeyPersistConfig, encryptionKeyReducer),
   sync: persistReducer(syncPersistConfig, combineReducers({
     collections: syncCollections,
     general: syncGeneral,
   })),
-  cache2: persistReducer(cache2PersistConfig, combineReducers({
+  cache2: persistReducer(cachePersistConfig, combineReducers({
     collections,
     items,
   })),
