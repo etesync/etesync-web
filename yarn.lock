@@ -4644,17 +4644,15 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-etebase@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/etebase/-/etebase-0.8.0.tgz#b0c4d90f741c769789de9d5d73d01caeb819442e"
-  integrity sha512-RYptjBeDTwMm+piZjPqg80ymOl6+5hbObhrk2mnsK9D4XcwhVaoWnnivaAUgVK7k5k9ODHR8uK1fLQsIC2nszg==
+etebase@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/etebase/-/etebase-0.9.0.tgz#78bf791064de071c733520ff5b7bf45dafdd533e"
+  integrity sha512-KxFhtaFfsz/zmCDbynveWD+NWDAEVlt57IPR1FEb3Rm8F67tIxTOwyJUjY9QMDAYkG+Koy4mk2z+gclcNXPYFQ==
   dependencies:
     "@msgpack/msgpack" "^1.12.2"
     libsodium-wrappers "^0.7.6"
     node-fetch "^2.6.0"
     urijs "^1.19.1"
-  optionalDependencies:
-    react-native-sodium "^0.3.8"
 
 event-emitter@^0.3.5:
   version "0.3.5"
@@ -9311,11 +9309,6 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
-
-react-native-sodium@^0.3.8:
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/react-native-sodium/-/react-native-sodium-0.3.8.tgz#ccb86a67d2cd6856be227ed962ffc019b32e7642"
-  integrity sha512-G+ZrNUr8yWPOGYSzM+Gc+5wKeLcQBlN7SrFjt9JzbeuNM+cEJlj4ntdoaMe43cciWVPr4yQIpFOu2Qapnk5HRQ==
 
 react-overlays@^2.0.0-0:
   version "2.1.1"
