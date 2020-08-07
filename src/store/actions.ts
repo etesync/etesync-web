@@ -1,11 +1,21 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { createAction } from "redux-actions";
+import { createAction as origCreateAction, ActionMeta } from "redux-actions";
 
 import * as Etebase from "etebase";
 
 import { SettingsType } from "./";
+
+type FunctionAny = (...args: any[]) => any;
+
+function createAction<Func extends FunctionAny, MetaFunc extends FunctionAny>(
+  actionType: string,
+  payloadCreator: Func,
+  metaCreator?: MetaFunc
+): (..._params: Parameters<Func>) => ActionMeta<ReturnType<Func>, ReturnType<MetaFunc>> {
+  return origCreateAction(actionType, payloadCreator, metaCreator as any) as any;
+}
 
 export const resetKey = createAction(
   "RESET_KEY",
