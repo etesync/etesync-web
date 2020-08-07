@@ -22,6 +22,8 @@ import { ContactType, EventType, TaskType, PimType } from "../pim-types";
 import { useCredentials } from "../credentials";
 import { CachedCollection } from "../Pim/helpers";
 import { getCollectionManager } from "../etebase-helpers";
+import { useAsyncDispatch } from "../store";
+import { itemBatch } from "../store/actions";
 
 const CHUNK_SIZE = 40;
 
@@ -33,6 +35,7 @@ interface PropsType {
 
 export default function ImportDialog(props: PropsType) {
   const etebase = useCredentials()!;
+  const dispatch = useAsyncDispatch();
   const [loading, setLoading] = React.useState(false);
   const [itemsProcessed, setItemsProccessed] = React.useState<number>();
 
@@ -74,7 +77,7 @@ export default function ImportDialog(props: PropsType) {
 
         const chunks = arrayToChunkIterator(eteItems, CHUNK_SIZE);
         for (const chunk of chunks) {
-          await itemMgr.batch(chunk);
+          await dispatch(itemBatch(collection, itemMgr, chunk));
         }
 
         setItemsProccessed(items.length);

@@ -11,6 +11,8 @@ import * as Etebase from "etebase";
 
 import { PimType } from "../pim-types";
 import { getCollectionManager } from "../etebase-helpers";
+import { asyncDispatch } from "../store";
+import { itemBatch } from "../store/actions";
 
 export const defaultColor = "#8BC34A";
 
@@ -91,7 +93,7 @@ export async function itemSave(etebase: Etebase.Account, collection: Etebase.Col
     eteItem = await itemMgr.create(meta, content);
   }
 
-  await itemMgr.batch([eteItem]);
+  await asyncDispatch(itemBatch(collection, itemMgr, [eteItem]));
 }
 
 export async function itemDelete(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.CollectionItem>>, item: PimType, collectionUid: string) {
@@ -105,7 +107,8 @@ export async function itemDelete(etebase: Etebase.Account, collection: Etebase.C
   meta.mtime = mtime;
   await eteItem.setMeta(meta);
   await eteItem.delete();
-  await itemMgr.batch([eteItem]);
+
+  await asyncDispatch(itemBatch(collection, itemMgr, [eteItem]));
 }
 
 interface PimFabPropsType {

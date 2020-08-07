@@ -88,6 +88,7 @@ export const setCacheItem = createAction(
     return {
       colUid: col.uid,
       itemUid: item.uid,
+      deleted: item.isDeleted,
     };
   }
 );
@@ -101,6 +102,25 @@ export const unsetCacheItem = createAction(
     return {
       colUid,
       itemUid,
+      deleted: true,
+    };
+  }
+);
+
+export const itemBatch = createAction(
+  "ITEM_BATCH",
+  async (_col: Etebase.Collection, itemMgr: Etebase.CollectionItemManager, items: Etebase.CollectionItem[], deps?: Etebase.CollectionItem[]) => {
+    await itemMgr.batch(items, deps);
+    const ret = [];
+    for (const item of items) {
+      ret.push(Etebase.toBase64(await itemMgr.cacheSave(item)));
+    }
+    return ret;
+  },
+  (col: Etebase.Collection, _itemMgr: Etebase.CollectionItemManager, items: Etebase.CollectionItem[], _deps?: Etebase.CollectionItem[]) => {
+    return {
+      colUid: col.uid,
+      items: items,
     };
   }
 );

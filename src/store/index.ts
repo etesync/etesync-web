@@ -25,11 +25,15 @@ if (process.env.NODE_ENV === "development") {
   middleware.push(createLogger());
 }
 
+export function asyncDispatch<T, V>(action: ActionMeta<Promise<T>, V>): Promise<ActionMeta<T, V>> {
+  return store.dispatch(action) as any;
+}
+
 export function useAsyncDispatch() {
   const dispatch = useDispatch();
-  return function asyncDispatch<T, V>(action: ActionMeta<Promise<T>, V>): Promise<ActionMeta<T, V>> {
+  return function (action: any): any {
     return dispatch(action) as any;
-  };
+  } as typeof asyncDispatch;
 }
 
 export const store = createStore(

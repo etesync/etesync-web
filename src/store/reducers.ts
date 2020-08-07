@@ -5,6 +5,8 @@ import { Action, ActionMeta, ActionFunctionAny, combineActions, handleAction, ha
 
 import { List, Map as ImmutableMap } from "immutable";
 
+import * as Etebase from "etebase";
+
 import * as actions from "./actions";
 
 interface BaseModel {
@@ -114,15 +116,34 @@ export const collections = handleActions(
 
 export const items = handleActions(
   {
-    [actions.setCacheItem.toString()]: (state: CacheItemsData, action: ActionMeta<CacheItem, { colUid: string, itemUid: string }>) => {
+    [combineActions(
+      actions.setCacheItem,
+      actions.unsetCacheItem
+    ).toString()]: (state: CacheItemsData, action: ActionMeta<CacheItem, { colUid: string, itemUid: string, deleted: boolean }>) => {
       if (action.payload !== undefined) {
-        return state.setIn([action.meta.colUid, action.meta.itemUid], action.payload);
+        if (action.meta.deleted) {
+          return state.removeIn([action.meta.colUid, action.meta.itemUid]);
+        } else {
+          return state.setIn([action.meta.colUid, action.meta.itemUid], action.payload);
+        }
       }
       return state;
     },
-    [actions.unsetCacheItem.toString()]: (state: CacheItemsData, action: ActionMeta<string, { colUid: string, itemUid: string }>) => {
+    [actions.itemBatch.toString()]: (state: CacheItemsData, action_: any) => {
+      // Fails without it for some reason
+      const action = action_ as ActionMeta<CacheItem[], { colUid: string, items: Etebase.CollectionItem[] }>;
       if (action.payload !== undefined) {
-        return state.removeIn([action.meta.colUid, action.meta.itemUid]);
+        return state.withMutations((state) => {
+          let i = 0;
+          for (const item of action.meta.items) {
+            if (item.isDeleted) {
+              state.removeIn([action.meta.colUid, item.uid]);
+            } else {
+              state.setIn([action.meta.colUid, item.uid], action.payload[i]);
+            }
+            i++;
+          }
+        });
       }
       return state;
     },
