@@ -6,7 +6,7 @@ import * as Etebase from "etebase";
 import { store, StoreState } from "../store";
 
 import { credentialsSelector } from "../credentials";
-import { setSyncCollection, setSyncGeneral, setCacheItem, setCacheCollection, unsetCacheCollection, unsetCacheItem } from "../store/actions";
+import { setSyncCollection, setSyncGeneral, setCacheCollection, unsetCacheCollection, setCacheItemMulti } from "../store/actions";
 
 const cachedSyncManager = new Map<string, SyncManager>();
 export class SyncManager {
@@ -44,13 +44,7 @@ export class SyncManager {
     let done = false;
     while (!done) {
       const items = await itemMgr.list({ stoken, limit });
-      for (const item of items.data) {
-        if (item.isDeleted) {
-          store.dispatch(unsetCacheItem(col.uid, itemMgr, item.uid));
-        } else {
-          store.dispatch(setCacheItem(col, itemMgr, item));
-        }
-      }
+      store.dispatch(setCacheItemMulti(col.uid, itemMgr, items.data));
       done = items.done;
       stoken = items.stoken;
     }

@@ -129,7 +129,10 @@ export const items = handleActions(
       }
       return state;
     },
-    [actions.itemBatch.toString()]: (state: CacheItemsData, action_: any) => {
+    [combineActions(
+      actions.itemBatch,
+      actions.setCacheItemMulti
+    ).toString()]: (state: CacheItemsData, action_: any) => {
       // Fails without it for some reason
       const action = action_ as ActionMeta<CacheItem[], { colUid: string, items: Etebase.CollectionItem[] }>;
       if (action.payload !== undefined) {

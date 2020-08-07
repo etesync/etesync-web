@@ -107,6 +107,23 @@ export const unsetCacheItem = createAction(
   }
 );
 
+export const setCacheItemMulti = createAction(
+  "SET_CACHE_ITEM_MULTI",
+  async (_colUid: string, itemMgr: Etebase.CollectionItemManager, items: Etebase.CollectionItem[]) => {
+    const ret = [];
+    for (const item of items) {
+      ret.push(Etebase.toBase64(await itemMgr.cacheSave(item)));
+    }
+    return ret;
+  },
+  (colUid: string, _itemMgr: Etebase.CollectionItemManager, items: Etebase.CollectionItem[], _deps?: Etebase.CollectionItem[]) => {
+    return {
+      colUid,
+      items: items,
+    };
+  }
+);
+
 export const itemBatch = createAction(
   "ITEM_BATCH",
   async (_col: Etebase.Collection, itemMgr: Etebase.CollectionItemManager, items: Etebase.CollectionItem[], deps?: Etebase.CollectionItem[]) => {
