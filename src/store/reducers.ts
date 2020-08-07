@@ -110,6 +110,9 @@ export const collections = handleActions(
       }
       return state;
     },
+    [actions.logout.toString()]: (state: CacheCollectionsData, _action: any) => {
+      return state.clear();
+    },
   },
   ImmutableMap({})
 );
@@ -161,6 +164,9 @@ export const items = handleActions(
         return state.remove(action.meta.colUid);
       }
       return state;
+    },
+    [actions.logout.toString()]: (state: CacheItemsData, _action: any) => {
+      return state.clear();
     },
   },
   ImmutableMap({})
