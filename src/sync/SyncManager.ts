@@ -68,12 +68,7 @@ export class SyncManager {
       for (const col of collections.data) {
         const meta = await col.getMeta();
         if (this.COLLECTION_TYPES.includes(meta.type)) {
-          // We only get the changed collections here, so always fetch
-          if (col.isDeleted) {
-            store.dispatch(unsetCacheCollection(colMgr, col.uid));
-          } else {
-            store.dispatch(setCacheCollection(colMgr, col));
-          }
+          store.dispatch(setCacheCollection(colMgr, col));
           await this.fetchCollection(col);
         }
       }
