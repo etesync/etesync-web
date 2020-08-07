@@ -18,6 +18,8 @@ import PageNotFound from "../PageNotFound";
 import CollectionEdit from "./CollectionEdit";
 import CollectionMembers from "./CollectionMembers";
 import Collection from "./Collection";
+import { useAsyncDispatch } from "../store";
+import { collectionUpload } from "../store/actions";
 
 const decryptCollections = getDecryptCollectionsFunction();
 
@@ -26,6 +28,7 @@ export default function CollectionsMain() {
   const history = useHistory();
   const etebase = useCredentials()!;
   const collections = useCollections(etebase);
+  const dispatch = useAsyncDispatch();
 
   React.useEffect(() => {
     if (collections) {
@@ -43,7 +46,7 @@ export default function CollectionsMain() {
 
   async function onSave(collection: Etebase.Collection): Promise<void> {
     const colMgr = getCollectionManager(etebase);
-    await colMgr.upload(collection);
+    await dispatch(collectionUpload(colMgr, collection));
 
     history.push(routeResolver.getRoute("collections"));
   }
@@ -51,7 +54,7 @@ export default function CollectionsMain() {
   async function onDelete(collection: Etebase.Collection) {
     const colMgr = getCollectionManager(etebase);
     await collection.delete();
-    await colMgr.upload(collection);
+    await dispatch(collectionUpload(colMgr, collection));
 
     history.push(routeResolver.getRoute("collections"));
   }

@@ -33,17 +33,15 @@ export interface CachedItem {
 
 async function decryptItems(items: Map<string, Map<string, Etebase.CollectionItem>>) {
   const entries: Map<string, Map<string, CachedItem>> = new Map();
-  if (items) {
-    for (const [colUid, col] of items.entries()) {
-      const cur = new Map();
-      entries.set(colUid, cur);
-      for (const item of col.values()) {
-        cur.set(item.uid, {
-          item,
-          metadata: await item.getMeta(),
-          content: await item.getContent(Etebase.OutputFormat.String),
-        });
-      }
+  for (const [colUid, col] of items.entries()) {
+    const cur = new Map();
+    entries.set(colUid, cur);
+    for (const item of col.values()) {
+      cur.set(item.uid, {
+        item,
+        metadata: await item.getMeta(),
+        content: await item.getContent(Etebase.OutputFormat.String),
+      });
     }
   }
 

@@ -94,15 +94,17 @@ export const syncGeneral = handleActions(
 
 export const collections = handleActions(
   {
-    [actions.setCacheCollection.toString()]: (state: CacheCollectionsData, action: ActionMeta<CacheCollection, { colUid: string }>) => {
+    [combineActions(
+      actions.setCacheCollection,
+      actions.collectionUpload,
+      actions.unsetCacheCollection
+    ).toString()]: (state: CacheCollectionsData, action: ActionMeta<CacheCollection, { colUid: string, deleted: boolean }>) => {
       if (action.payload !== undefined) {
-        return state.set(action.meta.colUid, action.payload);
-      }
-      return state;
-    },
-    [actions.unsetCacheCollection.toString()]: (state: CacheCollectionsData, action: ActionMeta<string, { colUid: string }>) => {
-      if (action.payload !== undefined) {
-        return state.remove(action.meta.colUid);
+        if (action.meta.deleted) {
+          return state.remove(action.meta.colUid);
+        } else {
+          return state.set(action.meta.colUid, action.payload);
+        }
       }
       return state;
     },
@@ -121,6 +123,12 @@ export const items = handleActions(
     [actions.unsetCacheItem.toString()]: (state: CacheItemsData, action: ActionMeta<string, { colUid: string, itemUid: string }>) => {
       if (action.payload !== undefined) {
         return state.removeIn([action.meta.colUid, action.meta.itemUid]);
+      }
+      return state;
+    },
+    [actions.setCacheCollection.toString()]: (state: CacheItemsData, action: ActionMeta<CacheCollection, { colUid: string }>) => {
+      if (action.payload !== undefined) {
+        return state.set(action.meta.colUid, ImmutableMap());
       }
       return state;
     },

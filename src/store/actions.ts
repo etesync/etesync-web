@@ -37,15 +37,34 @@ export const setCacheCollection = createAction(
   (_colMgr: Etebase.CollectionManager, col: Etebase.Collection) => {
     return {
       colUid: col.uid,
+      deleted: col.isDeleted,
     };
   }
 );
 
 export const unsetCacheCollection = createAction(
   "UNSET_CACHE_COLLECTION",
+  (_colMgr: Etebase.CollectionManager, _colUid: string) => {
+    return undefined;
+  },
   (_colMgr: Etebase.CollectionManager, colUid: string) => {
     return {
       colUid,
+      deleted: true,
+    };
+  }
+);
+
+export const collectionUpload = createAction(
+  "COLLECTION_UPLOAD",
+  async (colMgr: Etebase.CollectionManager, col: Etebase.Collection) => {
+    await colMgr.upload(col);
+    return Etebase.toBase64(await colMgr.cacheSave(col));
+  },
+  (_colMgr: Etebase.CollectionManager, col: Etebase.Collection) => {
+    return {
+      colUid: col.uid,
+      deleted: col.isDeleted,
     };
   }
 );
