@@ -22,16 +22,20 @@ import LoadingIndicator from "./widgets/LoadingIndicator";
 export default function LoginGate() {
   const credentials = useCredentials();
   const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(false);
   const [fetchError, setFetchError] = React.useState<Error>();
 
   async function onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
     try {
+      setLoading(true);
       setFetchError(undefined);
       const ret = login(username, password, serviceApiUrl);
       await ret.payload;
       dispatch(ret);
     } catch (e) {
       setFetchError(e);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -56,6 +60,7 @@ export default function LoginGate() {
         <h2>Please Log In</h2>
         <LoginForm
           onSubmit={onFormSubmit}
+          loading={loading}
           error={fetchError}
         />
         <hr style={style.divider} />

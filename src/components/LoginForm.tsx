@@ -11,6 +11,7 @@ import Switch from "@material-ui/core/Switch";
 import ExternalLink from "../widgets/ExternalLink";
 
 import * as C from "../constants";
+import LoadingIndicator from "../widgets/LoadingIndicator";
 
 interface FormErrors {
   errorEmail?: string;
@@ -125,6 +126,15 @@ class LoginForm extends React.PureComponent {
           />
           <br />
         </React.Fragment>
+      );
+    }
+
+    if (this.props.loading) {
+      return (
+        <div style={{ textAlign: "center" }}>
+          <LoadingIndicator />
+          <p>Deriving encryption data...</p>
+        </div>
       );
     }
 

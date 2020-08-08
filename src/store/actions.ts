@@ -6,6 +6,7 @@ import { createAction as origCreateAction, ActionMeta } from "redux-actions";
 import * as Etebase from "etebase";
 
 import { SettingsType } from "./";
+import { startTask } from "../helpers";
 
 type FunctionAny = (...args: any[]) => any;
 
@@ -34,8 +35,10 @@ export const logout = createAction(
 export const login = createAction(
   "LOGIN",
   async (username: string, password: string, server: string | undefined) => {
-    const etebase = await Etebase.Account.login(username, password, server);
-    return etebase.save();
+    return startTask((async () => {
+      const etebase = await Etebase.Account.login(username, password, server);
+      return etebase.save();
+    }));
   }
 );
 
