@@ -6,7 +6,6 @@ import { createAction as origCreateAction, ActionMeta } from "redux-actions";
 import * as Etebase from "etebase";
 
 import { SettingsType } from "./";
-import { startTask } from "../helpers";
 
 type FunctionAny = (...args: any[]) => any;
 
@@ -28,17 +27,15 @@ export const resetKey = createAction(
 export const logout = createAction(
   "LOGOUT",
   async (etebase: Etebase.Account) => {
-    await etebase.logout();
+    // We don't wait on purpose, because we would like to logout and clear local data anyway
+    etebase.logout();
   }
 );
 
 export const login = createAction(
   "LOGIN",
-  async (username: string, password: string, server: string | undefined) => {
-    return startTask((async () => {
-      const etebase = await Etebase.Account.login(username, password, server);
-      return etebase.save();
-    }));
+  async (etebase: Etebase.Account) => {
+    return etebase.save();
   }
 );
 

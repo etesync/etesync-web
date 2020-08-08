@@ -12,11 +12,14 @@ import LoginForm from "./components/LoginForm";
 
 import { login } from "./store/actions";
 
+import * as Etebase from "etebase";
+
 import * as C from "./constants";
 
 import SignedPagesBadge from "./images/signed-pages-badge.svg";
 import { useCredentials } from "./credentials";
 import LoadingIndicator from "./widgets/LoadingIndicator";
+import { startTask } from "./helpers";
 
 
 export default function LoginGate() {
@@ -29,11 +32,17 @@ export default function LoginGate() {
     try {
       setLoading(true);
       setFetchError(undefined);
-      const ret = login(username, password, serviceApiUrl);
-      await ret.payload;
-      dispatch(ret);
+      const etebase = await startTask((async () => {
+        return await Etebase.Account.login(username, password, serviceApiUrl);
+      }));
+      dispatch(login(etebase));
     } catch (e) {
-      setFetchError(e);
+      console.log(e);
+      if ((e instanceof Etebase.HTTPError) && (e.status === 404)) {
+        setFetchError(new Error("Etebase server not found: are you sure the server URL is correct?"));
+      } else {
+        setFetchError(e);
+      }
     } finally {
       setLoading(false);
     }
