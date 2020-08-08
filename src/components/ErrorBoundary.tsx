@@ -3,10 +3,7 @@
 
 import * as React from "react";
 
-import { store, persistor } from "../store";
-import { resetKey } from "../store/actions";
-
-import { EncryptionPasswordError, IntegrityError } from "etebase";
+import { IntegrityError } from "etebase";
 import PrettyError from "../widgets/PrettyError";
 
 interface PropsType {
@@ -24,28 +21,13 @@ class ErrorBoundary extends React.Component<PropsType> {
   }
 
   public componentDidCatch(error: Error, _info: any) {
-    if (error instanceof EncryptionPasswordError) {
-      store.dispatch(resetKey());
-    } else if (error instanceof IntegrityError) {
-      persistor.purge();
-    }
-
     this.setState({ error });
   }
 
   public render() {
     const { error } = this.state;
     if (error) {
-      if (error instanceof EncryptionPasswordError) {
-        return (
-          <div>
-            <h2>Wrong Encryption Password</h2>
-            <p>
-              It looks like you've entered the wrong encryption password, please refresh the page and try again.
-            </p>
-          </div>
-        );
-      } else if (error instanceof IntegrityError) {
+      if (error instanceof IntegrityError) {
         return (
           <div>
             <h2>Integrity Error</h2>
