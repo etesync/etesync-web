@@ -127,6 +127,34 @@ export function* arrayToChunkIterator<T>(arr: T[], size: number) {
   }
 }
 
+export function isPromise(x: any): x is Promise<any> {
+  return x && typeof x.then === "function";
+}
+
+export function isDefined<T>(x: T | undefined): x is T {
+  return x !== undefined;
+}
+
+export function startTask<T = any>(func: () => Promise<T> | T, delay = 0): Promise<T> {
+  return new Promise((resolve, reject) => {
+    setTimeout(
+      () => {
+        try {
+          const ret = func();
+          if (isPromise(ret)) {
+            ret.then(resolve)
+              .catch(reject);
+          } else {
+            resolve(ret);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      },
+      delay);
+  });
+}
+
 export function usePromiseMemo<T>(promise: Promise<T> | undefined | null, deps: React.DependencyList, initial: T | undefined = undefined): T | undefined {
   const [val, setVal] = React.useState<T>((promise as any)._returnedValue ?? initial);
   React.useEffect(() => {
