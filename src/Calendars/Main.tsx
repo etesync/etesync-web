@@ -21,7 +21,7 @@ import LoadingIndicator from "../widgets/LoadingIndicator";
 import EventEdit from "./EventEdit";
 import PageNotFound, { PageNotFoundRoute } from "../PageNotFound";
 
-import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemDelete, itemSave } from "../Pim/helpers";
+import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemDelete, itemSave, defaultColor } from "../Pim/helpers";
 import { historyPersistor } from "../persist-state-history";
 
 const PersistCalendar = historyPersistor("Calendar")(Calendar);
@@ -41,16 +41,26 @@ export default function CalendarsMain() {
   const items = useItems(etebase, colType);
 
   React.useEffect(() => {
-    if (items) {
-      decryptItems(items)
-        .then((entries) => setEntries(entries));
-      // FIXME: handle failure to decrypt items
+    if (!collections || !items) {
+      return;
     }
-    if (collections) {
-      decryptCollections(collections)
-        .then((entries) => setCachedCollections(entries));
+    (async () => {
+      const colEntries = await decryptCollections(collections);
       // FIXME: handle failure to decrypt collections
-    }
+
+      const entries = await decryptItems(items);
+      // FIXME: handle failure to decrypt items
+
+      for (const collection of colEntries) {
+        const items = entries.get(collection.collection.uid)!;
+        for (const item of items.values()) {
+          item.color = collection.metadata.color || defaultColor;
+        }
+      }
+
+      setCachedCollections(colEntries);
+      setEntries(entries);
+    })();
   }, [items, collections]);
 
   if (!entries || !cachedCollections) {

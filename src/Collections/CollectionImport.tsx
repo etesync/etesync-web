@@ -12,7 +12,7 @@ import { List, ListItem } from "../widgets/List";
 import AppBarOverride from "../widgets/AppBarOverride";
 import Container from "../widgets/Container";
 
-import { CachedCollection } from "../Pim/helpers";
+import { CachedCollection, defaultColor } from "../Pim/helpers";
 import ColorBox from "../widgets/ColorBox";
 import ImportDialog from "./ImportDialog";
 
@@ -36,8 +36,9 @@ export default function CollectionImport(props: PropsType) {
 
   for (const col of props.collections) {
     if (collectionMap[col.metadata.type]) {
-      const colorBox = (col.metadata.color) ? (
-        <ColorBox size={24} color={col.metadata.color} />
+      const supportsColor = (["etebase.vevent", "etebase.vtodo"].includes(col.metadata.type));
+      const colorBox = (supportsColor) ? (
+        <ColorBox size={24} color={col.metadata.color || defaultColor} />
       ) : undefined;
 
       collectionMap[col.metadata.type].push((
