@@ -9,13 +9,36 @@ import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 import "./index.css";
 
+import * as Etebase from "etebase";
+
+function MyPersistGate(props: React.PropsWithChildren<{}>) {
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    Etebase.ready.then(() => {
+      setLoading(false);
+      persistor.persist();
+    });
+  }, []);
+
+  if (loading) {
+    return (<React.Fragment />);
+  }
+
+  return (
+    <PersistGate persistor={persistor}>
+      {props.children}
+    </PersistGate>
+  );
+}
+
 import { store, persistor } from "./store";
 
 ReactDOM.render(
   <Provider store={store}>
-    <PersistGate persistor={persistor}>
+    <MyPersistGate>
       <App />
-    </PersistGate>
+    </MyPersistGate>
   </Provider>,
   document.getElementById("root") as HTMLElement
 );

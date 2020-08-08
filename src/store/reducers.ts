@@ -19,11 +19,11 @@ export interface SyncCollectionsEntryData extends BaseModel {
 
 export type SyncCollectionsData = ImmutableMap<string, SyncCollectionsEntryData>;
 
-export type CacheItem = string;
+export type CacheItem = Uint8Array;
 export type CacheItems = ImmutableMap<string, CacheItem>;
 export type CacheItemsData = ImmutableMap<string, CacheItems>;
-export type CacheCollection = CacheItem;
-export type CacheCollectionsData = ImmutableMap<string, CacheCollection>;
+export type CacheCollection = Uint8Array;
+export type CacheCollectionsData = ImmutableMap<string, Uint8Array>;
 
 export type SyncGeneralData = {
   stoken: string | null;

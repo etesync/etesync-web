@@ -41,4 +41,4 @@ export const store = createStore(
   applyMiddleware(...middleware)
 );
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, { manualPersist: true } as any);

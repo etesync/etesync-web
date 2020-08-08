@@ -6,6 +6,8 @@ import { combineReducers } from "redux";
 import { createMigrate, persistReducer, createTransform } from "redux-persist";
 import session from "redux-persist/lib/storage/session";
 
+import * as Etebase from "etebase";
+
 import { List, Map as ImmutableMap } from "immutable";
 import {
   SettingsType,
@@ -84,9 +86,15 @@ const syncPersistConfig = {
 
 const cacheSerialize = (state: any, key: string | number) => {
   if (key === "collections") {
-    return state.toJS();
+    const typedState = state as CacheCollectionsData;
+    const ret = typedState.map((x) => Etebase.toBase64(x));
+    return ret.toJS();
   } else if (key === "items") {
-    return state.toJS();
+    const typedState = state as CacheItemsData;
+    const ret = typedState.map((items) => {
+      return items.map((x) => Etebase.toBase64(x));
+    });
+    return ret.toJS();
   }
 
   return state;
@@ -94,10 +102,12 @@ const cacheSerialize = (state: any, key: string | number) => {
 
 const cacheDeserialize = (state: any, key: string | number) => {
   if (key === "collections") {
-    return ImmutableMap(state);
+    return ImmutableMap(state).map((x: string) => {
+      return Etebase.fromBase64(x);
+    });
   } else if (key === "items") {
     return ImmutableMap(state).map((item: any) => {
-      return ImmutableMap(item);
+      return ImmutableMap(item).map((x: string) => Etebase.fromBase64(x));
     });
   }
 
