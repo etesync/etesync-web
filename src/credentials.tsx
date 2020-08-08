@@ -10,7 +10,7 @@ import * as store from "./store";
 import { usePromiseMemo } from "./helpers";
 
 export const credentialsSelector = createSelector(
-  (state: store.StoreState) => state.credentials2.storedSession,
+  (state: store.StoreState) => state.credentials.storedSession,
   (storedSession) => {
     if (storedSession) {
       return Etebase.Account.restore(storedSession);

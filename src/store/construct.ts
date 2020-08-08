@@ -18,14 +18,14 @@ import {
 
 export interface StoreState {
   fetchCount: number;
-  credentials2: CredentialsData;
+  credentials: CredentialsData;
   settings: SettingsType;
   encryptionKey: {key: string};
   sync: {
     collections: SyncCollectionsData;
     general: SyncGeneralData;
   };
-  cache2: {
+  cache: {
     collections: CacheCollectionsData;
     items: CacheItemsData;
   };
@@ -124,13 +124,13 @@ const cachePersistConfig = {
 const reducers = combineReducers({
   fetchCount,
   settings: persistReducer(settingsPersistConfig, settingsReducer),
-  credentials2: persistReducer(credentialsPersistConfig, credentials),
+  credentials: persistReducer(credentialsPersistConfig, credentials),
   encryptionKey: persistReducer(encryptionKeyPersistConfig, encryptionKeyReducer),
   sync: persistReducer(syncPersistConfig, combineReducers({
     collections: syncCollections,
     general: syncGeneral,
   })),
-  cache2: persistReducer(cachePersistConfig, combineReducers({
+  cache: persistReducer(cachePersistConfig, combineReducers({
     collections,
     items,
   })),

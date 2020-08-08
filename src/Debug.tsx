@@ -17,8 +17,8 @@ export default function Debug() {
   const [stateCollectionUid, setCollectionUid] = React.useState("");
   const [itemsUids, setEntriesUids] = React.useState("");
   const [result, setResult] = React.useState("");
-  const cacheCollections = useSelector((state: StoreState) => state.cache2.collections);
-  const cacheItems = useSelector((state: StoreState) => state.cache2.items);
+  const cacheCollections = useSelector((state: StoreState) => state.cache.collections);
+  const cacheItems = useSelector((state: StoreState) => state.cache.items);
 
   function handleInputChange(func: (value: string) => void) {
     return (event: React.ChangeEvent<any>) => {
