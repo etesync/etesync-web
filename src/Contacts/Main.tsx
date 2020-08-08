@@ -18,7 +18,7 @@ import SearchableAddressBook from "./SearchableAddressBook";
 import Contact from "./Contact";
 import LoadingIndicator from "../widgets/LoadingIndicator";
 import ContactEdit from "./ContactEdit";
-import PageNotFound from "../PageNotFound";
+import PageNotFound, { PageNotFoundRoute } from "../PageNotFound";
 
 import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemSave, itemDelete } from "../Pim/helpers";
 
@@ -183,10 +183,12 @@ export default function ContactsMain() {
                 </div>
                 <Contact item={item} />
               </Route>
+              <PageNotFoundRoute />
             </Switch>
           );
         }}
       />
+      <PageNotFoundRoute />
     </Switch>
   );
 }

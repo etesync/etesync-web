@@ -19,7 +19,7 @@ import Calendar from "./Calendar";
 import Event from "./Event";
 import LoadingIndicator from "../widgets/LoadingIndicator";
 import EventEdit from "./EventEdit";
-import PageNotFound from "../PageNotFound";
+import PageNotFound, { PageNotFoundRoute } from "../PageNotFound";
 
 import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemDelete, itemSave } from "../Pim/helpers";
 import { historyPersistor } from "../persist-state-history";
@@ -220,10 +220,12 @@ export default function CalendarsMain() {
                 </div>
                 <Event item={item} />
               </Route>
+              <PageNotFoundRoute />
             </Switch>
           );
         }}
       />
+      <PageNotFoundRoute />
     </Switch>
   );
 }

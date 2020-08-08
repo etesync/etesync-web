@@ -18,7 +18,7 @@ import TaskList from "./TaskList";
 import Task from "./Task";
 import LoadingIndicator from "../widgets/LoadingIndicator";
 import TaskEdit from "./TaskEdit";
-import PageNotFound from "../PageNotFound";
+import PageNotFound, { PageNotFoundRoute } from "../PageNotFound";
 
 import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemSave, itemDelete } from "../Pim/helpers";
 
@@ -185,10 +185,12 @@ export default function TasksMain() {
                 </div>
                 <Task item={item} />
               </Route>
+              <PageNotFoundRoute />
             </Switch>
           );
         }}
       />
+      <PageNotFoundRoute />
     </Switch>
   );
 }

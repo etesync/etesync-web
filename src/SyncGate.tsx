@@ -27,6 +27,7 @@ import { StoreState } from "./store";
 import { performSync } from "./store/actions";
 import { useCredentials } from "./credentials";
 import PimNavigationTabs from "./Pim/NavigationTabs";
+import { PageNotFoundRoute } from "./PageNotFound";
 
 export default function SyncGate() {
   const etebase = useCredentials();
@@ -98,6 +99,7 @@ export default function SyncGate() {
               <TasksMain />
             </Container>
           </Route>
+          <PageNotFoundRoute container />
         </Switch>
       </Route>
       <Route
@@ -119,6 +121,7 @@ export default function SyncGate() {
           <Debug />
         )}
       />
+      <PageNotFoundRoute container />
     </Switch>
   );
 }
