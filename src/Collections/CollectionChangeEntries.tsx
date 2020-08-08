@@ -31,6 +31,7 @@ export interface CachedItem {
   content: string;
 }
 
+// FIXME: use the ones used by e.g. Contacts/Main so ew share the cache
 async function decryptItems(items: Map<string, Map<string, Etebase.CollectionItem>>) {
   const entries: Map<string, Map<string, CachedItem>> = new Map();
   for (const [colUid, col] of items.entries()) {
@@ -52,7 +53,6 @@ interface PropsType {
   collection: CachedCollection;
 }
 
-// FIXME: use the ones used by e.g. Contacts/Main so ew share the cache
 export default function CollectionChangeEntries(props: PropsType) {
   const [entries, setEntries] = React.useState<Map<string, CachedItem>>();
   const [dialog, setDialog] = React.useState<CachedItem>();
