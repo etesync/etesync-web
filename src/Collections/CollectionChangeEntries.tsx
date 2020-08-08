@@ -66,7 +66,6 @@ export default function CollectionChangeEntries(props: PropsType) {
     if (items) {
       decryptItems(items)
         .then((entries) => setEntries(entries.get(collection.uid)));
-      // FIXME: handle failure to decrypt items
     }
   }, [items]);
 

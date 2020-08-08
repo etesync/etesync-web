@@ -20,6 +20,7 @@ import { getCollectionManager } from "../etebase-helpers";
 import { CachedCollection } from "../Pim/helpers";
 
 import CollectionMemberAddDialog from "./CollectionMemberAddDialog";
+import Alert from "@material-ui/lab/Alert";
 
 interface PropsType {
   collection: CachedCollection;
@@ -30,15 +31,19 @@ export default function CollectionMembers(props: PropsType) {
   const [members_, setMembers] = React.useState<Etebase.CollectionMember[]>();
   const [revokeUser, setRevokeUser] = React.useState<string | null>(null);
   const [addMemberOpen, setAddMemberOpen] = React.useState(false);
-  // FIXME: add error handling
+  const [error, setError] = React.useState<Error>();
 
   const { collection, metadata } = props.collection;
 
   async function fetchMembers() {
     const colMgr = getCollectionManager(etebase);
     const memberManager = colMgr.getMemberManager(collection);
-    const members = await memberManager.list();
-    setMembers(members.data);
+    try {
+      const members = await memberManager.list();
+      setMembers(members.data);
+    } catch (e) {
+      setError(e);
+    }
   }
 
   React.useEffect(() => {
@@ -70,6 +75,11 @@ export default function CollectionMembers(props: PropsType) {
     <>
       <AppBarOverride title={`${metadata.name} - Members`} />
       <Container style={{ maxWidth: "30rem" }}>
+        {error && (
+          <Alert color="error">
+            {error.toString()}
+          </Alert>
+        )}
         {members ?
           <List>
             <ListItem rightIcon={<IconMemberAdd />} onClick={() => setAddMemberOpen(true)}>

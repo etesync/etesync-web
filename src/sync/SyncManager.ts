@@ -6,7 +6,7 @@ import * as Etebase from "etebase";
 import { store, StoreState } from "../store";
 
 import { credentialsSelector } from "../credentials";
-import { setSyncCollection, setSyncGeneral, setCacheCollection, unsetCacheCollection, setCacheItemMulti } from "../store/actions";
+import { setSyncCollection, setSyncGeneral, setCacheCollection, unsetCacheCollection, setCacheItemMulti, appendError } from "../store/actions";
 
 const cachedSyncManager = new Map<string, SyncManager>();
 export class SyncManager {
@@ -105,7 +105,7 @@ export class SyncManager {
           case 401: // INVALID TOKEN
           case 403: // FORBIDDEN
           case 503: // UNAVAILABLE
-            // FIXME store.dispatch(addNonFatalError(this.etebase, e));
+            store.dispatch(appendError(e));
             return null;
         }
       }

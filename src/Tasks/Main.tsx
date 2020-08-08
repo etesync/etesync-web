@@ -37,16 +37,16 @@ export default function TasksMain() {
   const items = useItems(etebase, colType);
 
   React.useEffect(() => {
-    if (items) {
-      decryptItems(items)
-        .then((entries) => setEntries(entries));
-      // FIXME: handle failure to decrypt items
+    if (!collections || !items) {
+      return;
     }
-    if (collections) {
-      decryptCollections(collections)
-        .then((entries) => setCachedCollections(entries));
-      // FIXME: handle failure to decrypt collections
-    }
+    (async () => {
+      const colEntries = await decryptCollections(collections);
+      const entries = await decryptItems(items);
+
+      setCachedCollections(colEntries);
+      setEntries(entries);
+    })();
   }, [items, collections]);
 
   if (!entries || !cachedCollections) {

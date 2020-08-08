@@ -46,10 +46,8 @@ export default function CalendarsMain() {
     }
     (async () => {
       const colEntries = await decryptCollections(collections);
-      // FIXME: handle failure to decrypt collections
 
       const entries = await decryptItems(items);
-      // FIXME: handle failure to decrypt items
 
       for (const collection of colEntries) {
         const items = entries.get(collection.collection.uid)!;

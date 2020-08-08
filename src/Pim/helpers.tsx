@@ -11,8 +11,8 @@ import * as Etebase from "etebase";
 
 import { PimType } from "../pim-types";
 import { getCollectionManager } from "../etebase-helpers";
-import { asyncDispatch } from "../store";
-import { itemBatch } from "../store/actions";
+import { asyncDispatch, store } from "../store";
+import { itemBatch, appendError } from "../store/actions";
 
 export const defaultColor = "#8BC34A";
 
@@ -32,10 +32,14 @@ export function getDecryptCollectionsFunction(_colType?: string) {
       const entries: CachedCollection[] = [];
       if (collections) {
         for (const collection of collections) {
-          entries.push({
-            collection,
-            metadata: await collection.getMeta(),
-          });
+          try {
+            entries.push({
+              collection,
+              metadata: await collection.getMeta(),
+            });
+          } catch (e) {
+            store.dispatch(appendError(e));
+          }
         }
       }
 
@@ -54,10 +58,14 @@ export function getDecryptItemsFunction<T extends PimType>(_colType: string, par
           const cur = new Map();
           entries.set(colUid, cur);
           for (const item of col.values()) {
-            const contact = parseFunc(await item.getContent(Etebase.OutputFormat.String));
-            contact.collectionUid = colUid;
-            contact.itemUid = item.uid;
-            cur.set(item.uid, contact);
+            try {
+              const contact = parseFunc(await item.getContent(Etebase.OutputFormat.String));
+              contact.collectionUid = colUid;
+              contact.itemUid = item.uid;
+              cur.set(item.uid, contact);
+            } catch (e) {
+              store.dispatch(appendError(e));
+            }
           }
         }
       }

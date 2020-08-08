@@ -168,7 +168,7 @@ export const performSync = createAction(
 
 export const appendError = createAction(
   "APPEND_ERROR",
-  (_etesync: Etebase.Account, error: Error | Error[]) => {
+  (error: Error | Error[]) => {
     return Array.isArray(error) ? error : [error];
   }
 );
