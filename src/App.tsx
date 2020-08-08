@@ -3,7 +3,6 @@
 
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { MuiThemeProvider as ThemeProvider, createMuiTheme } from "@material-ui/core/styles"; // v1.x
 import amber from "@material-ui/core/colors/amber";
@@ -15,7 +14,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 
 import NavigationMenu from "@material-ui/icons/Menu";
-import NavigationBack from "@material-ui/icons/ArrowBack";
 import NavigationRefresh from "@material-ui/icons/Refresh";
 import ErrorsIcon from "@material-ui/icons/Error";
 
@@ -99,22 +97,6 @@ interface AppBarPropsType {
 }
 
 function AppBarWitHistory(props: AppBarPropsType) {
-  const location = useLocation();
-  const history = useHistory();
-
-  function canGoBack() {
-    return (
-      (history!.length > 1) &&
-      (location.pathname !== routeResolver.getRoute("pim.contacts")) &&
-      (location.pathname !== routeResolver.getRoute("pim.events")) &&
-      (location.pathname !== routeResolver.getRoute("pim.tasks")) &&
-      (location.pathname !== routeResolver.getRoute("home"))
-    );
-  }
-
-  function goBack() {
-    history!.goBack();
-  }
   const {
     toggleDrawerIcon,
     iconElementRight,
@@ -127,10 +109,7 @@ function AppBarWitHistory(props: AppBarPropsType) {
     >
       <Toolbar>
         <div style={{ marginLeft: -12, marginRight: 20 }}>
-          {!canGoBack() ?
-            toggleDrawerIcon :
-            <IconButton onClick={goBack}><NavigationBack /></IconButton>
-          }
+          {toggleDrawerIcon}
         </div>
 
         <div style={{ flexGrow: 1, fontSize: "1.25em" }} id="appbar-title" />
