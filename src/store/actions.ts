@@ -144,9 +144,9 @@ export const itemBatch = createAction(
 
 export const setSyncCollection = createAction(
   "SET_SYNC_COLLECTION",
-  (colUid: string, stoken: string) => {
+  (uid: string, stoken: string) => {
     return {
-      colUid,
+      uid,
       stoken,
     };
   }
