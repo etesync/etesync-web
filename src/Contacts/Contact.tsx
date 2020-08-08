@@ -38,7 +38,7 @@ class Contact extends React.PureComponent {
 
     function getAllType(
       propName: string,
-      props: any,
+      props_: any,
       valueToHref?: (value: string, type: string) => string,
       primaryTransform?: (value: string, type: string) => string,
       secondaryTransform?: (value: string, type: string) => string) {
@@ -57,6 +57,8 @@ class Contact extends React.PureComponent {
               <CopyIcon />
             </IconButton>
           );
+
+          const { ref, ...props } = props_;
 
           return (
             <ListItem
