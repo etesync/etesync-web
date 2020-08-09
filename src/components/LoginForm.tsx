@@ -181,6 +181,9 @@ class LoginForm extends React.PureComponent {
             </Button>
           </div>
         </form>
+        <div style={styles.forgotPassword}>
+          Don't have an account yet? <ExternalLink href={C.signUp}>Sign up here!</ExternalLink>
+        </div>
       </React.Fragment>
     );
   }
