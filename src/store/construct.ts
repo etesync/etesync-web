@@ -102,12 +102,12 @@ const cacheSerialize = (state: any, key: string | number) => {
 
 const cacheDeserialize = (state: any, key: string | number) => {
   if (key === "collections") {
-    return ImmutableMap(state).map((x: string) => {
+    return ImmutableMap<string, string>(state).map((x) => {
       return Etebase.fromBase64(x);
     });
   } else if (key === "items") {
     return ImmutableMap(state).map((item: any) => {
-      return ImmutableMap(item).map((x: string) => Etebase.fromBase64(x));
+      return ImmutableMap<string, string>(item).map((x) => Etebase.fromBase64(x));
     });
   }
 
