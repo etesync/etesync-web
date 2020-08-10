@@ -31,7 +31,7 @@ export class SyncManager {
   protected etebase: Etebase.Account;
   protected isSyncing: boolean;
 
-  public async fetchCollection(col: Etebase.Collection) {
+  private async fetchCollection(col: Etebase.Collection) {
     const storeState = store.getState() as unknown as StoreState;
     const etebase = (await credentialsSelector(storeState))!;
     const syncCollection = storeState.sync.collections.get(col.uid, undefined);
@@ -54,7 +54,7 @@ export class SyncManager {
     }
   }
 
-  public async fetchAllCollections() {
+  private async fetchAllCollections() {
     const storeState = store.getState() as unknown as StoreState;
     const etebase = (await credentialsSelector(storeState))!;
     const syncGeneral = storeState.sync.general;
