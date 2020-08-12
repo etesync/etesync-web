@@ -155,7 +155,9 @@ export const items = handleActions(
     },
     [actions.setCacheCollection.toString()]: (state: CacheItemsData, action: ActionMeta<CacheCollection, { colUid: string }>) => {
       if (action.payload !== undefined) {
-        return state.set(action.meta.colUid, ImmutableMap());
+        if (!state.has(action.meta.colUid)) {
+          return state.set(action.meta.colUid, ImmutableMap());
+        }
       }
       return state;
     },
