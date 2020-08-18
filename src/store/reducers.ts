@@ -273,6 +273,7 @@ export const errorsReducer = handleActions(
 export interface SettingsType {
   locale: string;
   darkMode?: boolean;
+  hideBirthdayCalendar?: boolean;
   taskSettings: {
     filterBy: string | null;
     sortBy: string;
