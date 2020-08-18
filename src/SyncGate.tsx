@@ -26,6 +26,9 @@ import { CURRENT_VERSION } from "etesync";
 
 import { store, JournalsData, EntriesData, StoreState, CredentialsData, UserInfoData } from "./store";
 import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } from "./store/actions";
+import { syncEntriesToItemMap } from "./journal-processors";
+import { ContactType } from "./pim-types";
+import { parseDate } from "./helpers";
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -45,6 +48,7 @@ interface SelectorProps {
   journals: JournalsData;
   entries: EntriesData;
   userInfo: UserInfoData;
+  hideBirthdays?: boolean;
 }
 
 const syncInfoSelector = createSelector(
@@ -52,7 +56,8 @@ const syncInfoSelector = createSelector(
   (props: SelectorProps) => props.journals!,
   (props: SelectorProps) => props.entries,
   (props: SelectorProps) => props.userInfo,
-  (etesync, journals, entries, userInfo) => {
+  (props: SelectorProps) => props.hideBirthdays,
+  (etesync, journals, entries, userInfo, hideBirthdays) => {
     const derived = etesync.encryptionKey;
     const userInfoCryptoManager = userInfo.getCryptoManager(etesync.encryptionKey);
     try {
@@ -65,7 +70,9 @@ const syncInfoSelector = createSelector(
       }
     }
 
-    return journals.reduce(
+    let bdayEntries = List<EteSync.SyncEntry>();
+
+    let syncInfo = journals.reduce(
       (ret, journal) => {
         const journalEntries = entries.get(journal.uid);
         let prevUid: string | null = null;
@@ -86,6 +93,30 @@ const syncInfoSelector = createSelector(
           return syncEntry;
         });
 
+        if ((collectionInfo.type === "ADDRESS_BOOK") && !hideBirthdays) {
+          let addressBookItems: {[key: string]: ContactType} = {};
+          addressBookItems = syncEntriesToItemMap(collectionInfo, syncEntries, addressBookItems);
+
+          Object.values(addressBookItems).filter((c) => c.bday).forEach((c) => {
+            const bdayTime = parseDate(c.comp.getFirstProperty("bday"));
+            if (bdayTime === {} || bdayTime.month === undefined) {
+              return;
+            }
+            const year = bdayTime.year ?? 1900;
+            const month = (bdayTime.month + 1).toString().padStart(2, "0");
+            const day = bdayTime.day.toString().padStart(2, "0");
+
+            const content =
+              "BEGIN:VCALENDAR\nBEGIN:VEVENT\n" +
+              `SUMMARY:${c.fn}'s Birthday\n` +
+              `UID:${journal.uid}${c.uid}\n` +
+              `DTSTART;VALUE=DATE:${year}${month}${day}\n` +
+              "RRULE:FREQ=YEARLY\nEND:VEVENT\nEND:VCALENDAR";
+
+            bdayEntries = bdayEntries.push({ action: EteSync.SyncEntryAction.Add, content });
+          });
+        }
+
         return ret.set(journal.uid, {
           entries: syncEntries,
           collection: collectionInfo,
@@ -95,6 +126,27 @@ const syncInfoSelector = createSelector(
       },
       Map<string, SyncInfoJournal>()
     );
+
+    if (!hideBirthdays) {
+      const bdayCollection = new EteSync.CollectionInfo();
+      bdayCollection.uid = "birthdays";
+      bdayCollection.type = "CALENDAR";
+      bdayCollection.displayName = "Birthdays";
+      bdayCollection.color = -1413414;
+
+      const bdayJournal = new EteSync.Journal({ uid: bdayCollection.uid, readOnly: true });
+      const cryptoManager = new EteSync.CryptoManager(etesync.encryptionKey, bdayCollection.uid);
+      bdayJournal.setInfo(cryptoManager, bdayCollection);
+
+      syncInfo = syncInfo.set("birthdays", {
+        journal: bdayJournal,
+        journalEntries: List<EteSync.Entry>(),
+        collection: bdayCollection,
+        entries: bdayEntries,
+      });
+    }
+
+    return syncInfo;
   }
 );
 
@@ -186,7 +238,7 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
   moment.locale(settings.locale);
 
 
-  const journalMap = syncInfoSelector({ etesync, userInfo, journals, entries });
+  const journalMap = syncInfoSelector({ etesync, userInfo, journals, entries, hideBirthdays: settings.hideBirthdayCalendar });
 
   return (
     <Switch>

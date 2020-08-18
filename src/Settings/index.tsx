@@ -43,6 +43,7 @@ export default React.memo(function Settings() {
   const settings = useSelector((state: StoreState) => state.settings);
 
   const darkMode = !!settings.darkMode;
+  const hideBirthdayCalendar = !!settings.hideBirthdayCalendar;
 
   function handleChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
@@ -85,7 +86,21 @@ export default React.memo(function Settings() {
             label="Dark mode"
           />
         </FormGroup>
+        <h2>Birthday calendar</h2>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                color="primary"
+                checked={hideBirthdayCalendar}
+                onChange={() => dispatch(setSettings({ ...settings, hideBirthdayCalendar: !hideBirthdayCalendar }))}
+              />
+            }
+            label="Hide birthday calendar"
+          />
+        </FormGroup>
       </Container>
     </>
   );
 });
+
