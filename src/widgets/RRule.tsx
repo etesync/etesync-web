@@ -85,7 +85,7 @@ const menuItemsWeekDays = weekdays.map((day) => {
 
 function makeArray<T>(item: T) {
   if (item === undefined) {
-    return item;
+    return [];
   } else if (Array.isArray(item)) {
     return item;
   } else {
@@ -95,16 +95,12 @@ function makeArray<T>(item: T) {
 
 function sanitizeByDay(item: string | string[] | undefined) {
   const ret = makeArray(item);
-  if (Array.isArray(ret)) {
-    return (ret as string[]).map((value) => {
-      if (parseInt(value) === 1) {
-        return value.substr(1);
-      }
-      return value;
-    });
-  } else {
-    return [];
-  }
+  return (ret as string[]).map((value) => {
+    if (parseInt(value) === 1) {
+      return value.substr(1);
+    }
+    return value;
+  });
 }
 
 const styles = {
@@ -250,7 +246,7 @@ export default function RRule(props: PropsType) {
               <InputLabel>Months</InputLabel>
               <Select
                 style={styles.multiSelect}
-                value={makeArray(options.bymonth)}
+                value={makeArray(options.bymonth) ?? []}
                 multiple
                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
                   const value = event.target.value as string[];
