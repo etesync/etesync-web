@@ -247,6 +247,10 @@ const CollectionRoutes = withStyles(styles)(withRouter(
               if (this.itemUndefined(itemUid)) {
                 return PageNotFound();
               }
+              const journalUid = (props.items[itemUid] as any).journalUid;
+              const syncJournal = this.props.syncInfo.get(journalUid)!;
+              const readOnly = syncJournal.journal.readOnly;
+
               return (
                 <Container>
                   <div style={{ textAlign: "right", marginBottom: 15 }}>
@@ -266,7 +270,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                     <Button
                       color="secondary"
                       variant="contained"
-                      disabled={!props.componentEdit}
+                      disabled={!props.componentEdit || readOnly}
                       className={classes.button}
                       style={{ marginLeft: 15 }}
                       onClick={() =>
@@ -283,7 +287,7 @@ const CollectionRoutes = withStyles(styles)(withRouter(
                       <Button
                         color="secondary"
                         variant="contained"
-                        disabled={!props.componentEdit}
+                        disabled={!props.componentEdit || readOnly}
                         className={classes.button}
                         style={{ marginLeft: 15 }}
                         onClick={() =>
