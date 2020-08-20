@@ -300,7 +300,7 @@ class EventEdit extends React.PureComponent<PropsType> {
             <Select
               name="journalUid"
               value={this.state.journalUid}
-              disabled={this.props.item !== undefined}
+              disabled={this.props.item !== undefined && !this.props.duplicate}
               onChange={this.handleInputChange}
             >
               {this.props.collections.map((x) => (
