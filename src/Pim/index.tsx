@@ -60,13 +60,19 @@ const itemsSelector = createSelector(
 
         if (collectionInfo.type === "ADDRESS_BOOK") {
           addressBookItems = syncEntriesToItemMap(collectionInfo, syncEntries, addressBookItems);
-          collectionsAddressBook.push(collectionInfo);
+          if (!syncJournal.journal.readOnly) {
+            collectionsAddressBook.push(collectionInfo);
+          }
         } else if (collectionInfo.type === "CALENDAR") {
           calendarItems = syncEntriesToEventItemMap(collectionInfo, syncEntries, calendarItems);
-          collectionsCalendar.push(collectionInfo);
+          if (!syncJournal.journal.readOnly) {
+            collectionsCalendar.push(collectionInfo);
+          }
         } else if (collectionInfo.type === "TASKS") {
           taskListItems = syncEntriesToTaskItemMap(collectionInfo, syncEntries, taskListItems);
-          collectionsTaskList.push(collectionInfo);
+          if (!syncJournal.journal.readOnly) {
+            collectionsTaskList.push(collectionInfo);
+          }
         }
       }
     );
