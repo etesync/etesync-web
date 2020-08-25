@@ -102,7 +102,7 @@ const syncInfoSelector = createSelector(
             if (bdayTime === {} || bdayTime.month === undefined) {
               return;
             }
-            const year = bdayTime.year ?? 1900;
+            const year = (bdayTime.year ?? 1900).toString().padStart(4, "19"); // XXX The padding is a hack to fix malformed dates
             const month = (bdayTime.month + 1).toString().padStart(2, "0");
             const day = bdayTime.day.toString().padStart(2, "0");
 
