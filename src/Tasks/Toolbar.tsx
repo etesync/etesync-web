@@ -6,7 +6,6 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import MenuItem from "@material-ui/core/MenuItem";
 import SortIcon from "@material-ui/icons/Sort";
 import SearchIcon from "@material-ui/icons/Search";
-import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import { Transition } from "react-transition-group";
@@ -56,22 +55,15 @@ interface PropsType {
 export default function Toolbar(props: PropsType) {
   const { showCompleted, setShowCompleted, searchTerm, setSearchTerm, showHidden, setShowHidden } = props;
 
-  const [showSearchField, setShowSearchField] = React.useState(false);
   const [sortAnchorEl, setSortAnchorEl] = React.useState<null | HTMLElement>(null);
   const [optionsAnchorEl, setOptionsAnchorEl] = React.useState<null | HTMLElement>(null);
 
+  const showSearchField = true;
   const classes = useStyles();
 
   const dispatch = useDispatch();
   const taskSettings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { sortBy } = taskSettings;
-
-  const toggleSearchField = () => {
-    if (showSearchField) {
-      setSearchTerm("");
-    }
-    setShowSearchField(!showSearchField);
-  };
 
   const handleSortChange = (sort: string) => {
     dispatch(setSettings({ taskSettings: { ...taskSettings, sortBy: sort } }));
@@ -107,12 +99,6 @@ export default function Toolbar(props: PropsType) {
           />
         )}
       </Transition>
-
-      <div className={classes.button}>
-        <IconButton size="small" onClick={toggleSearchField} title={showSearchField ? "Close" : "Search"}>
-          {showSearchField ? <CloseIcon /> : <SearchIcon />}
-        </IconButton>
-      </div>
 
       <div className={classes.button}>
         <IconButton
