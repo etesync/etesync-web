@@ -219,7 +219,9 @@ class EventEdit extends React.PureComponent<PropsType> {
       new EventType()
       ;
 
-    event.uid = this.state.uid;
+    const collectionChanged = !this.props.duplicate && this.props.initialCollection && this.state.journalUid !== this.props.initialCollection;
+
+    event.uid = collectionChanged ? uuid.v4() : this.state.uid;
     event.summary = this.state.title;
     event.startDate = startDate;
     event.endDate = endDate;
@@ -240,6 +242,9 @@ class EventEdit extends React.PureComponent<PropsType> {
 
     this.props.onSave(event, this.state.journalUid, this.props.item)
       .then(() => {
+        if (collectionChanged) {
+          this.deleteItem();
+        }
         this.props.history.goBack();
       });
   }
@@ -248,6 +253,10 @@ class EventEdit extends React.PureComponent<PropsType> {
     this.setState({
       showDeleteDialog: true,
     });
+  }
+
+  public deleteItem() {
+    this.props.onDelete(this.props.item!, this.props.initialCollection!);
   }
 
   public render() {
@@ -293,14 +302,13 @@ class EventEdit extends React.PureComponent<PropsType> {
             onChange={this.handleInputChange}
           />
 
-          <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
+          <FormControl style={styles.fullWidth}>
             <InputLabel>
               Saving to
             </InputLabel>
             <Select
               name="journalUid"
               value={this.state.journalUid}
-              disabled={this.props.item !== undefined && !this.props.duplicate}
               onChange={this.handleInputChange}
             >
               {this.props.collections.map((x) => (
@@ -429,7 +437,7 @@ class EventEdit extends React.PureComponent<PropsType> {
           title="Delete Confirmation"
           labelOk="Delete"
           open={this.state.showDeleteDialog}
-          onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
+          onOk={() => this.deleteItem()}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
           Are you sure you would like to delete this event?
