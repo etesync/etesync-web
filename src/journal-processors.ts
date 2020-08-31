@@ -52,6 +52,7 @@ export function colorIntToHtml(color?: number) {
   }
 
   // tslint:disable:no-bitwise
+  color = color >>> 0;
   const blue = color & 0xFF;
   const green = (color >> 8) & 0xFF;
   const red = (color >> 16) & 0xFF;

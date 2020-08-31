@@ -29,6 +29,7 @@ import { addJournal, fetchAll, fetchEntries, fetchUserInfo, createUserInfo } fro
 import { syncEntriesToItemMap } from "./journal-processors";
 import { ContactType } from "./pim-types";
 import { parseDate } from "./helpers";
+import MigrateV2 from "./MigrateV2";
 
 export interface SyncInfoJournal {
   journal: EteSync.Journal;
@@ -288,6 +289,16 @@ export default withRouter(function SyncGate(props: RouteComponentProps<{}> & Pro
         exact
         render={() => (
           <Debug
+            etesync={etesync}
+            userInfo={userInfo}
+          />
+        )}
+      />
+      <Route
+        path={routeResolver.getRoute("migrate-v2")}
+        exact
+        render={() => (
+          <MigrateV2
             etesync={etesync}
             userInfo={userInfo}
           />

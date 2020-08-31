@@ -147,3 +147,9 @@ export function parseDate(prop: ICAL.Property) {
 
   return {};
 }
+
+export function* arrayToChunkIterator<T>(arr: T[], size: number) {
+  for (let i = 0 ; i < arr.length ; i += size) {
+    yield arr.slice(i, i + size);
+  }
+}

@@ -12,6 +12,7 @@ export interface PimType {
   uid: string;
   toIcal(): string;
   clone(): PimType;
+  lastModified: ICAL.Time | undefined;
 }
 
 export function timezoneLoadFromName(timezone: string | null) {
@@ -370,6 +371,10 @@ export class ContactType implements PimType {
 
   get bday() {
     return this.comp.getFirstPropertyValue("bday");
+  }
+
+  get lastModified() {
+    return this.comp.getFirstPropertyValue("rev");
   }
 
   get group() {

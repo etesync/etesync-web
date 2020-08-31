@@ -89,6 +89,8 @@ export const routeResolver = new RouteResolver({
   },
   debug: {
   },
+  "migrate-v2": {
+  },
 });
 
 interface AppBarPropsType {
@@ -143,7 +145,7 @@ function App(props: PropsType) {
 
   function autoRefresh() {
     if (navigator.onLine && props.credentials &&
-      !(window.location.pathname.match(/.*\/(new|edit|duplicate)$/))) { 
+      !(window.location.pathname.match(/.*\/(new|edit|duplicate)$/) || window.location.pathname.startsWith("/migrate-v2"))) {
       refresh();
     }
   }
