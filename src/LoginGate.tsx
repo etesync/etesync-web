@@ -20,6 +20,9 @@ import SignedPagesBadge from "./images/signed-pages-badge.svg";
 import { useCredentials } from "./credentials";
 import LoadingIndicator from "./widgets/LoadingIndicator";
 import { startTask } from "./helpers";
+import { Switch, Route } from "react-router";
+import { routeResolver } from "./App";
+import SignupPage from "./SignupPage";
 
 
 export default function LoginGate() {
@@ -65,27 +68,38 @@ export default function LoginGate() {
     };
 
     return (
-      <Container style={{ maxWidth: "30rem" }}>
-        <h2>Please Log In</h2>
-        <LoginForm
-          onSubmit={onFormSubmit}
-          loading={loading}
-          error={fetchError}
+      <Switch>
+        <Route
+          path={routeResolver.getRoute("signup")}
+          exact
+          render={() => (
+            <SignupPage />
+          )}
         />
-        <hr style={style.divider} />
-        <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
-          <img alt="SignedPgaes badge" src={SignedPagesBadge} />
-        </ExternalLink>
-        <ul>
-          <li><ExternalLink style={style.isSafe} href={C.homePage}>
-            The EteSync Website
-          </ExternalLink></li>
-          <li><ExternalLink style={style.isSafe} href={C.faq + "#web-client"}>
-            Is the web client safe to use?
-          </ExternalLink></li>
-          <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>
-        </ul>
-      </Container>
+        <Route>
+          <Container style={{ maxWidth: "30rem" }}>
+            <h2>Please Log In</h2>
+            <LoginForm
+              onSubmit={onFormSubmit}
+              loading={loading}
+              error={fetchError}
+            />
+            <hr style={style.divider} />
+            <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
+              <img alt="SignedPgaes badge" src={SignedPagesBadge} />
+            </ExternalLink>
+            <ul>
+              <li><ExternalLink style={style.isSafe} href={C.homePage}>
+                The EteSync Website
+              </ExternalLink></li>
+              <li><ExternalLink style={style.isSafe} href={C.faq + "#web-client"}>
+                Is the web client safe to use?
+              </ExternalLink></li>
+              <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>
+            </ul>
+          </Container>
+        </Route>
+      </Switch>
     );
   }
 

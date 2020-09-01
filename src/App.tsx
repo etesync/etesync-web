@@ -85,6 +85,8 @@ export const routeResolver = new RouteResolver({
     new: "new",
     import: "import",
   },
+  signup: {
+  },
   settings: {
   },
   debug: {
