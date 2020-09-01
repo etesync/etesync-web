@@ -51,7 +51,7 @@ export function getDecryptCollectionsFunction(_colType?: string) {
 
 export function getDecryptItemsFunction<T extends PimType>(_colType: string, parseFunc: (str: string) => T) {
   return memoize(
-    async function (items: Map<string, Map<string, Etebase.CollectionItem>>) {
+    async function (items: Map<string, Map<string, Etebase.Item>>) {
       const entries: Map<string, Map<string, T>> = new Map();
       if (items) {
         for (const [colUid, col] of items.entries()) {
@@ -76,7 +76,7 @@ export function getDecryptItemsFunction<T extends PimType>(_colType: string, par
   );
 }
 
-export async function itemSave(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.CollectionItem>>, item: PimType, collectionUid: string, originalItem?: PimType): Promise<void> {
+export async function itemSave(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.Item>>, item: PimType, collectionUid: string, originalItem?: PimType): Promise<void> {
   const itemUid = originalItem?.itemUid;
   const colMgr = getCollectionManager(etebase);
   const itemMgr = colMgr.getItemManager(collection);
@@ -94,7 +94,7 @@ export async function itemSave(etebase: Etebase.Account, collection: Etebase.Col
     await eteItem.setMeta(meta);
   } else {
     // New
-    const meta: Etebase.CollectionItemMetadata = {
+    const meta: Etebase.ItemMetadata = {
       mtime,
       name: item.uid,
     };
@@ -104,7 +104,7 @@ export async function itemSave(etebase: Etebase.Account, collection: Etebase.Col
   await asyncDispatch(itemBatch(collection, itemMgr, [eteItem]));
 }
 
-export async function itemDelete(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.CollectionItem>>, item: PimType, collectionUid: string) {
+export async function itemDelete(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.Item>>, item: PimType, collectionUid: string) {
   const itemUid = item.itemUid!;
   const colMgr = getCollectionManager(etebase);
   const itemMgr = colMgr.getItemManager(collection);

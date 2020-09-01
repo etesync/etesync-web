@@ -26,13 +26,13 @@ import { CachedCollection } from "../Pim/helpers";
 import LoadingIndicator from "../widgets/LoadingIndicator";
 
 export interface CachedItem {
-  item: Etebase.CollectionItem;
-  metadata: Etebase.CollectionItemMetadata;
+  item: Etebase.Item;
+  metadata: Etebase.ItemMetadata;
   content: string;
 }
 
 // FIXME: use the ones used by e.g. Contacts/Main so ew share the cache
-async function decryptItems(items: Map<string, Map<string, Etebase.CollectionItem>>) {
+async function decryptItems(items: Map<string, Map<string, Etebase.Item>>) {
   const entries: Map<string, Map<string, CachedItem>> = new Map();
   for (const [colUid, col] of items.entries()) {
     const cur = new Map();

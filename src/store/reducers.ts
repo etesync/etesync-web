@@ -137,7 +137,7 @@ export const items = handleActions(
       actions.setCacheItemMulti
     ).toString()]: (state: CacheItemsData, action_: any) => {
       // Fails without it for some reason
-      const action = action_ as ActionMeta<CacheItem[], { colUid: string, items: Etebase.CollectionItem[] }>;
+      const action = action_ as ActionMeta<CacheItem[], { colUid: string, items: Etebase.Item[] }>;
       if (action.payload !== undefined) {
         return state.withMutations((state) => {
           let i = 0;
