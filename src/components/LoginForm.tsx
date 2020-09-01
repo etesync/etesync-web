@@ -20,51 +20,21 @@ interface FormErrors {
   errorServer?: string;
 }
 
-class LoginForm extends React.PureComponent {
-  public state: {
-    showAdvanced: boolean;
-    errors: FormErrors;
+interface PropsType {
+  onSubmit: (username: string, password: string, serviceApiUrl?: string) => void;
+  loading?: boolean;
+  error?: Error;
+}
 
-    server: string;
-    username: string;
-    password: string;
-  };
+export default function LoginForm(props: PropsType) {
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [server, setServer] = React.useState("");
+  const [showAdvanced, setShowAdvanced] = React.useState(false);
+  const [errors, setErrors] = React.useState<FormErrors>({});
 
-  public props: {
-    onSubmit: (username: string, password: string, serviceApiUrl?: string) => void;
-    loading?: boolean;
-    error?: Error;
-  };
-
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      showAdvanced: false,
-      errors: {},
-      server: "",
-      username: "",
-      password: "",
-    };
-    this.generateEncryption = this.generateEncryption.bind(this);
-    this.toggleAdvancedSettings = this.toggleAdvancedSettings.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-  }
-
-  public handleInputChange(event: React.ChangeEvent<any>) {
-    const name = event.target.name;
-    const value = event.target.value;
-    this.setState({
-      [name]: value,
-    });
-  }
-
-  public generateEncryption(e: any) {
+  function generateEncryption(e: React.FormEvent<any>) {
     e.preventDefault();
-    const server = this.state.showAdvanced ? this.state.server : undefined;
-
-    const username = this.state.username;
-    const password = this.state.password;
-
     const errors: FormErrors = {};
     const fieldRequired = "This field is required!";
     if (!username) {
@@ -75,125 +45,121 @@ class LoginForm extends React.PureComponent {
     }
 
     if (process.env.NODE_ENV !== "development") {
-      if (this.state.showAdvanced && !this.state.server.startsWith("https://")) {
+      if (showAdvanced && !server.startsWith("https://")) {
         errors.errorServer = "Server URI must start with https://";
       }
     }
 
     if (Object.keys(errors).length) {
-      this.setState({ errors });
+      setErrors(errors);
       return;
     } else {
-      this.setState({ errors: {} });
+      setErrors({});
     }
 
-    this.props.onSubmit(username, password, server);
+    props.onSubmit(username, password, (showAdvanced) ? server : undefined);
   }
 
-  public toggleAdvancedSettings() {
-    this.setState({ showAdvanced: !this.state.showAdvanced });
-  }
+  const styles = {
+    form: {
+    },
+    forgotPassword: {
+      paddingTop: 20,
+    },
+    textField: {
+      marginTop: 20,
+    },
+    submit: {
+      marginTop: 40,
+      textAlign: "right" as any,
+    },
+  };
 
-  public render() {
-    const styles = {
-      form: {
-      },
-      forgotPassword: {
-        paddingTop: 20,
-      },
-      textField: {
-        marginTop: 20,
-      },
-      submit: {
-        marginTop: 40,
-        textAlign: "right" as any,
-      },
+  function handleInputChange(func: (value: string) => void) {
+    return (event: React.ChangeEvent<any>) => {
+      func(event.target.value);
     };
+  }
 
-    let advancedSettings = null;
-    if (this.state.showAdvanced) {
-      advancedSettings = (
-        <React.Fragment>
-          <TextField
-            type="url"
-            style={styles.textField}
-            error={!!this.state.errors.errorServer}
-            helperText={this.state.errors.errorServer}
-            label="Server"
-            name="server"
-            value={this.state.server}
-            onChange={this.handleInputChange}
-          />
-          <br />
-        </React.Fragment>
-      );
-    }
-
-    if (this.props.loading) {
-      return (
-        <div style={{ textAlign: "center" }}>
-          <LoadingIndicator />
-          <p>Deriving encryption data...</p>
-        </div>
-      );
-    }
-
-    return (
+  let advancedSettings = null;
+  if (showAdvanced) {
+    advancedSettings = (
       <React.Fragment>
-        {(this.props.error) && (<div>Error! {this.props.error.message}</div>)}
-        <form style={styles.form} onSubmit={this.generateEncryption}>
-          <TextField
-            type="text"
-            style={styles.textField}
-            error={!!this.state.errors.errorEmail}
-            helperText={this.state.errors.errorEmail}
-            label="Username"
-            name="username"
-            value={this.state.username}
-            onChange={this.handleInputChange}
-          />
-          <br />
-          <TextField
-            type="password"
-            style={styles.textField}
-            error={!!this.state.errors.errorPassword}
-            helperText={this.state.errors.errorPassword}
-            label="Password"
-            name="password"
-            value={this.state.password}
-            onChange={this.handleInputChange}
-          />
-          <div style={styles.forgotPassword}>
-            <ExternalLink href={C.forgotPassword}>Forgot password?</ExternalLink>
-          </div>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  color="primary"
-                  checked={this.state.showAdvanced}
-                  onChange={this.toggleAdvancedSettings}
-                />
-              }
-              label="Advanced settings"
-            />
-          </FormGroup>
-          {advancedSettings}
-
-          <div style={styles.submit}>
-            <Button
-              variant="contained"
-              type="submit"
-              color="secondary"
-              disabled={this.props.loading}
-            >
-              {this.props.loading ? "Loading…" : "Log In"}
-            </Button>
-          </div>
-        </form>
+        <TextField
+          type="url"
+          style={styles.textField}
+          error={!!errors.errorServer}
+          helperText={errors.errorServer}
+          label="Server"
+          value={server}
+          onChange={handleInputChange(setServer)}
+        />
+        <br />
       </React.Fragment>
     );
   }
-}
 
-export default LoginForm;
+  if (props.loading) {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <LoadingIndicator />
+        <p>Deriving encryption data...</p>
+      </div>
+    );
+  }
+
+  return (
+    <React.Fragment>
+      {(props.error) && (<div>Error! {props.error.message}</div>)}
+      <form style={styles.form} onSubmit={generateEncryption}>
+        <TextField
+          type="text"
+          style={styles.textField}
+          error={!!errors.errorEmail}
+          helperText={errors.errorEmail}
+          label="Username"
+          value={username}
+          onChange={handleInputChange(setUsername)}
+        />
+        <br />
+        <TextField
+          type="password"
+          style={styles.textField}
+          error={!!errors.errorPassword}
+          helperText={errors.errorPassword}
+          label="Password"
+          name="password"
+          value={password}
+          onChange={handleInputChange(setPassword)}
+        />
+        <div style={styles.forgotPassword}>
+          <ExternalLink href={C.forgotPassword}>Forgot password?</ExternalLink>
+        </div>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                color="primary"
+                checked={showAdvanced}
+                onChange={() => setShowAdvanced(!showAdvanced)}
+              />
+            }
+            label="Advanced settings"
+          />
+        </FormGroup>
+        {advancedSettings}
+
+        <div style={styles.submit}>
+          <Button
+            variant="contained"
+            type="submit"
+            color="secondary"
+            disabled={props.loading}
+          >
+            {props.loading ? "Loading…" : "Log In"}
+          </Button>
+        </div>
+      </form>
+    </React.Fragment>
+  );
+}
