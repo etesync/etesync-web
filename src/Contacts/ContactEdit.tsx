@@ -596,11 +596,6 @@ class ContactEdit extends React.PureComponent<PropsType> {
               Save
             </Button>
           </div>
-
-          <div>
-            Not all types are supported at the moment. If you are editing a contact,
-            the unsupported types will be copied as is.
-          </div>
         </form>
 
         <ConfirmationDialog
