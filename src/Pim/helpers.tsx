@@ -114,7 +114,7 @@ export async function itemDelete(etebase: Etebase.Account, collection: Etebase.C
   const meta = await eteItem.getMeta();
   meta.mtime = mtime;
   await eteItem.setMeta(meta);
-  await eteItem.delete();
+  await eteItem.delete(true);
 
   await asyncDispatch(itemBatch(collection, itemMgr, [eteItem]));
 }

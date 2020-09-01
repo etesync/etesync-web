@@ -53,7 +53,7 @@ export default function CollectionsMain() {
 
   async function onDelete(collection: Etebase.Collection) {
     const colMgr = getCollectionManager(etebase);
-    await collection.delete();
+    await collection.delete(true);
     await dispatch(collectionUpload(colMgr, collection));
 
     history.push(routeResolver.getRoute("collections"));
