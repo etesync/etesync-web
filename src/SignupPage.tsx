@@ -23,6 +23,7 @@ import { useCredentials } from "./credentials";
 import { useDispatch } from "react-redux";
 import { startTask } from "./helpers";
 import { login } from "./store/actions";
+import { Link } from "react-router-dom";
 
 interface FormErrors {
   errorUsername?: string;
@@ -147,7 +148,8 @@ export default function SignupPage() {
 
   return (
     <Container style={{ maxWidth: "30rem" }}>
-      <h2>Signup</h2>
+      <h2 style={{ marginBottom: "0.1em" }}>Signup</h2>
+      <div style={{ fontSize: "90%" }}>or <Link to={routeResolver.getRoute("home")}>log in to your account</Link></div>
       <form style={styles.form} onSubmit={signup}>
         <TextField
           type="text"

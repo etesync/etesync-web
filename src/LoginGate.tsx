@@ -23,6 +23,7 @@ import { startTask } from "./helpers";
 import { Switch, Route } from "react-router";
 import { routeResolver } from "./App";
 import SignupPage from "./SignupPage";
+import { Link } from "react-router-dom";
 
 
 export default function LoginGate() {
@@ -78,7 +79,8 @@ export default function LoginGate() {
         />
         <Route>
           <Container style={{ maxWidth: "30rem" }}>
-            <h2>Please Log In</h2>
+            <h2 style={{ marginBottom: "0.1em" }}>Log In</h2>
+            <div style={{ fontSize: "90%" }}>or <Link to={routeResolver.getRoute("signup")}>create an account</Link></div>
             <LoginForm
               onSubmit={onFormSubmit}
               loading={loading}
