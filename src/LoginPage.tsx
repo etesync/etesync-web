@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 
 import Container from "./widgets/Container";
 import ExternalLink from "./widgets/ExternalLink";
-import SyncGate from "./SyncGate";
 import LoginForm from "./components/LoginForm";
 
 import { login } from "./store/actions";
@@ -20,17 +19,29 @@ import SignedPagesBadge from "./images/signed-pages-badge.svg";
 import { useCredentials } from "./credentials";
 import LoadingIndicator from "./widgets/LoadingIndicator";
 import { startTask } from "./helpers";
-import { Switch, Route } from "react-router";
+import { Redirect, useLocation } from "react-router";
 import { routeResolver } from "./App";
-import SignupPage from "./SignupPage";
 import { Link } from "react-router-dom";
 
+interface LocationState {
+  from: {
+    pathname: string;
+  };
+}
 
-export default function LoginGate() {
+export default function LoginPage() {
   const credentials = useCredentials();
   const dispatch = useDispatch();
+  const location = useLocation();
   const [loading, setLoading] = React.useState(false);
   const [fetchError, setFetchError] = React.useState<Error>();
+
+  const { from } = location.state as LocationState || { from: { pathname: routeResolver.getRoute("home") } };
+  if (credentials) {
+    return (
+      <Redirect to={from.pathname} />
+    );
+  }
 
   async function onFormSubmit(username: string, password: string, serviceApiUrl?: string) {
     try {
@@ -56,7 +67,7 @@ export default function LoginGate() {
     return (
       <LoadingIndicator />
     );
-  } else if (credentials === null) {
+  } else {
     const style = {
       isSafe: {
         textDecoration: "none",
@@ -69,43 +80,28 @@ export default function LoginGate() {
     };
 
     return (
-      <Switch>
-        <Route
-          path={routeResolver.getRoute("signup")}
-          exact
-          render={() => (
-            <SignupPage />
-          )}
+      <Container style={{ maxWidth: "30rem" }}>
+        <h2 style={{ marginBottom: "0.1em" }}>Log In</h2>
+        <div style={{ fontSize: "90%" }}>or <Link to={routeResolver.getRoute("signup")}>create an account</Link></div>
+        <LoginForm
+          onSubmit={onFormSubmit}
+          loading={loading}
+          error={fetchError}
         />
-        <Route>
-          <Container style={{ maxWidth: "30rem" }}>
-            <h2 style={{ marginBottom: "0.1em" }}>Log In</h2>
-            <div style={{ fontSize: "90%" }}>or <Link to={routeResolver.getRoute("signup")}>create an account</Link></div>
-            <LoginForm
-              onSubmit={onFormSubmit}
-              loading={loading}
-              error={fetchError}
-            />
-            <hr style={style.divider} />
-            <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
-              <img alt="SignedPgaes badge" src={SignedPagesBadge} />
-            </ExternalLink>
-            <ul>
-              <li><ExternalLink style={style.isSafe} href={C.homePage}>
-                The EteSync Website
-              </ExternalLink></li>
-              <li><ExternalLink style={style.isSafe} href={C.faq + "#web-client"}>
-                Is the web client safe to use?
-              </ExternalLink></li>
-              <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>
-            </ul>
-          </Container>
-        </Route>
-      </Switch>
+        <hr style={style.divider} />
+        <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
+          <img alt="SignedPgaes badge" src={SignedPagesBadge} />
+        </ExternalLink>
+        <ul>
+          <li><ExternalLink style={style.isSafe} href={C.homePage}>
+            The EteSync Website
+          </ExternalLink></li>
+          <li><ExternalLink style={style.isSafe} href={C.faq + "#web-client"}>
+            Is the web client safe to use?
+          </ExternalLink></li>
+          <li><ExternalLink style={style.isSafe} href={C.sourceCode}>Source code</ExternalLink></li>
+        </ul>
+      </Container>
     );
   }
-
-  return (
-    <SyncGate />
-  );
 }

@@ -27,7 +27,6 @@ import { List, ListItem } from "./widgets/List";
 import withSpin from "./widgets/withSpin";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SideMenu from "./SideMenu";
-import LoginGate from "./LoginGate";
 import { RouteResolver } from "./routes";
 
 import * as store from "./store";
@@ -35,6 +34,7 @@ import * as actions from "./store/actions";
 
 import { useCredentials } from "./credentials";
 import { SyncManager } from "./sync/SyncManager";
+import MainRouter from "./MainRouter";
 
 export const routeResolver = new RouteResolver({
   home: "",
@@ -84,6 +84,8 @@ export const routeResolver = new RouteResolver({
     },
     new: "new",
     import: "import",
+  },
+  login: {
   },
   signup: {
   },
@@ -239,7 +241,7 @@ export default function App() {
           </Drawer>
 
           <ErrorBoundary>
-            <LoginGate />
+            <MainRouter />
           </ErrorBoundary>
         </div>
       </BrowserRouter>
