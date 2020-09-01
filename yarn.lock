@@ -4644,13 +4644,13 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-etebase@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/etebase/-/etebase-0.9.1.tgz#20794a12986474a431d550810c1a01e993fa5c9d"
-  integrity sha512-j89tGZ7fFqAaQ3p0l/wj9RSSTbdxKHFLWcqHFtMjaaERo4YNjZhqVDiivpSLa26FMWqM6lLigX+koYmhjZQusA==
+etebase@^0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/etebase/-/etebase-0.10.1.tgz#a988149fbee607d23740df1bbce3f639e4d79abf"
+  integrity sha512-UQU90LPl5Vyx6Rb9NAB7Tp5EJCpHZG9EJhLWRBubXvhn7ToCxzMRBcB4KJNPY69N2bPqQRkUO9kNdypMkm3Jkg==
   dependencies:
     "@msgpack/msgpack" "^1.12.2"
-    libsodium-wrappers "^0.7.6"
+    libsodium-wrappers "0.7.6"
     node-fetch "^2.6.0"
     urijs "^1.19.1"
 
@@ -6987,17 +6987,17 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-libsodium-wrappers@^0.7.6:
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/libsodium-wrappers/-/libsodium-wrappers-0.7.8.tgz#d95cdf3e7236c2aef76844bf8e1929ba9eef3e9e"
-  integrity sha512-PDhPWXBqd/SaqAFUBgH2Ux7b3VEEJgyD6BQB+VdNFJb9PbExGr/T/myc/MBoSvl8qLzfm0W0IVByOQS5L1MrCg==
+libsodium-wrappers@0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/libsodium-wrappers/-/libsodium-wrappers-0.7.6.tgz#baed4c16d4bf9610104875ad8a8e164d259d48fb"
+  integrity sha512-OUO2CWW5bHdLr6hkKLHIKI4raEkZrf3QHkhXsJ1yCh6MZ3JDA7jFD3kCATNquuGSG6MjjPHQIQms0y0gBDzjQg==
   dependencies:
-    libsodium "0.7.8"
+    libsodium "0.7.6"
 
-libsodium@0.7.8:
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/libsodium/-/libsodium-0.7.8.tgz#fbd12247b7b1353f88d8de1cbc66bc1a07b2e008"
-  integrity sha512-/Qc+APf0jbeWSaeEruH0L1/tbbT+sbf884ZL0/zV/0JXaDPBzYkKbyb/wmxMHgAHzm3t6gqe7bOOXAVwfqVikQ==
+libsodium@0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/libsodium/-/libsodium-0.7.6.tgz#018b80c5728054817845fbffa554274441bda277"
+  integrity sha512-hPb/04sEuLcTRdWDtd+xH3RXBihpmbPCsKW/Jtf4PsvdyKh+D6z2D2gvp/5BfoxseP+0FCOg66kE+0oGUE/loQ==
 
 lie@3.1.1:
   version "3.1.1"
