@@ -53,7 +53,7 @@ export default function LoginPage() {
       dispatch(login(etebase));
     } catch (e) {
       console.log(e);
-      if ((e instanceof Etebase.HTTPError) && (e.status === 404)) {
+      if ((e instanceof Etebase.HttpError) && (e.status === 404)) {
         setFetchError(new Error("Etebase server not found: are you sure the server URL is correct?"));
       } else {
         setFetchError(e);
