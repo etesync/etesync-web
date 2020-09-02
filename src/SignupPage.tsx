@@ -91,7 +91,26 @@ export default function SignupPage() {
       }));
       dispatch(login(etebase));
     } catch (e) {
-      errors.errorGeneral = e.toString();
+      if ((e instanceof Etebase.HttpError) && (e.content)) {
+        let found = false;
+        if (e.content.errors) {
+          for (const field of e.content.errors) {
+            if (field.field === "user.username") {
+              errors.errorUsername = field.detail;
+              found = true;
+            } else if (!field.field) {
+              errors.errorGeneral = field.detail;
+              found = true;
+            }
+          }
+        }
+
+        if (!found) {
+          errors.errorGeneral = e.content.detail ?? e.toString();
+        }
+      } else {
+        errors.errorGeneral = e.toString();
+      }
       setErrors(errors);
     } finally {
       setLoading(false);

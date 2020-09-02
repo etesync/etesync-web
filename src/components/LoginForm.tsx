@@ -12,6 +12,7 @@ import ExternalLink from "../widgets/ExternalLink";
 
 import * as C from "../constants";
 import LoadingIndicator from "../widgets/LoadingIndicator";
+import Alert from "@material-ui/lab/Alert";
 
 interface FormErrors {
   errorEmail?: string;
@@ -110,7 +111,6 @@ export default function LoginForm(props: PropsType) {
 
   return (
     <React.Fragment>
-      {(props.error) && (<div>Error! {props.error.message}</div>)}
       <form style={styles.form} onSubmit={generateEncryption}>
         <TextField
           type="text"
@@ -148,6 +148,10 @@ export default function LoginForm(props: PropsType) {
           />
         </FormGroup>
         {advancedSettings}
+
+        {props.error && (
+          <Alert severity="error" style={styles.textField}>{props.error.message}</Alert>
+        )}
 
         <div style={styles.submit}>
           <Button
