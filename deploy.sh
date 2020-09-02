@@ -1,7 +1,7 @@
 SSH_HOST=client.etesync.com
 SSH_PORT=22
 SSH_USER=etesync
-SSH_TARGET_DIR=sites/client.etesync.com
+SSH_TARGET_DIR=sites/pim.etesync.com
 
 OUTPUTDIR=./build
 
