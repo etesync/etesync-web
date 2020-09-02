@@ -1,3 +1,5 @@
+set -e
+
 SSH_HOST=client.etesync.com
 SSH_PORT=22
 SSH_USER=etesync
