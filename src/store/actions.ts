@@ -169,7 +169,7 @@ export const performSync = createAction(
 export const appendError = createAction(
   "APPEND_ERROR",
   (error: Error | Error[]) => {
-    return Array.isArray(error) ? error : [error];
+    return error;
   }
 );
 
