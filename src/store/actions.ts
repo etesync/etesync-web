@@ -54,8 +54,8 @@ export const setCacheCollection = createAction(
 
 export const unsetCacheCollection = createAction(
   "UNSET_CACHE_COLLECTION",
-  (_colMgr: Etebase.CollectionManager, _colUid: string) => {
-    return undefined;
+  (_colMgr: Etebase.CollectionManager, colUid: string) => {
+    return colUid;
   },
   (_colMgr: Etebase.CollectionManager, colUid: string) => {
     return {
