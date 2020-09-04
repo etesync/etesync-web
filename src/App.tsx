@@ -22,7 +22,6 @@ import "react-virtualized/styles.css"; // only needs to be imported once
 import "./App.css";
 
 import ConfirmationDialog from "./widgets/ConfirmationDialog";
-import PrettyError from "./widgets/PrettyError";
 import { List, ListItem } from "./widgets/List";
 import withSpin from "./widgets/withSpin";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -198,7 +197,7 @@ export default function App() {
             iconElementRight={
               <>
                 {(errors.size > 0) && (
-                  <IconButton onClick={() => setErrorsDialog(true)} title="Parse Errors">
+                  <IconButton onClick={() => setErrorsDialog(true)} title="Errors">
                     <Badge badgeContent={errors.size} color="error">
                       <ErrorsIcon />
                     </Badge>
@@ -211,14 +210,14 @@ export default function App() {
             }
           />
           <ConfirmationDialog
-            title="Parse Errors"
+            title="Sync Errors"
             open={errorsDialog}
             labelOk="OK"
             onCancel={() => setErrorsDialog(false)}
             onOk={() => setErrorsDialog(false)}
           >
             <h4>
-              This should not happen, please contact developers!
+              Please contact developers if any of the errors below persist.
             </h4>
             <List>
               {errors.map((error, index) => (
@@ -227,7 +226,7 @@ export default function App() {
                   style={{ height: "unset" }}
                   onClick={() => (window as any).navigator.clipboard.writeText(`${error.message}\n\n${error.stack}`)}
                 >
-                  <PrettyError error={error} />
+                  {error.message}
                 </ListItem>
               ))}
             </List>
