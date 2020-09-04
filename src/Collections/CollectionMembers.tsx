@@ -39,8 +39,20 @@ export default function CollectionMembers(props: PropsType) {
     const colMgr = getCollectionManager(etebase);
     const memberManager = colMgr.getMemberManager(collection);
     try {
-      const members = await memberManager.list();
-      setMembers(members.data);
+      const ret: Etebase.CollectionMember[] = [];
+      let iterator: string | null = null;
+      let done = false;
+      while (!done) {
+        // FIXME: shouldn't be any
+        const members: any = await memberManager.list({ iterator, limit: 30 });
+        iterator = members.iterator;
+        done = members.done;
+
+        for (const member of members.data) {
+          ret.push(member);
+        }
+      }
+      setMembers(ret);
     } catch (e) {
       setError(e);
     }
