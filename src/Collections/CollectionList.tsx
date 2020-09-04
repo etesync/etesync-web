@@ -7,6 +7,7 @@ import { Link, useHistory } from "react-router-dom";
 
 import IconButton from "@material-ui/core/IconButton";
 import IconAdd from "@material-ui/icons/Add";
+import IconInvitation from "@material-ui/icons/MailOutline";
 import ContactsIcon from "@material-ui/icons/Contacts";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
@@ -56,6 +57,13 @@ export default function CollectionList(props: PropsType) {
   return (
     <Container>
       <AppBarOverride title="Collections">
+        <IconButton
+          component={Link}
+          title="Invitations"
+          {...{ to: routeResolver.getRoute("collections.invitations") }}
+        >
+          <IconInvitation />
+        </IconButton>
         <IconButton
           component={Link}
           title="New"

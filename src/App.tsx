@@ -81,6 +81,12 @@ export const routeResolver = new RouteResolver({
       members: {
       },
     },
+    invitations: {
+      incoming: {
+      },
+      outgoing: {
+      },
+    },
     new: "new",
     import: "import",
   },

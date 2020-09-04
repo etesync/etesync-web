@@ -20,6 +20,7 @@ import CollectionMembers from "./CollectionMembers";
 import Collection from "./Collection";
 import { useAsyncDispatch } from "../store";
 import { collectionUpload } from "../store/actions";
+import Invitations from "./Invitations";
 
 const decryptCollections = getDecryptCollectionsFunction();
 
@@ -95,6 +96,11 @@ export default function CollectionsMain() {
           onDelete={onDelete}
           onCancel={onCancel}
         />
+      </Route>
+      <Route
+        path={routeResolver.getRoute("collections.invitations")}
+      >
+        <Invitations />
       </Route>
       <Route
         path={routeResolver.getRoute("collections._id")}
