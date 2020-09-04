@@ -58,6 +58,9 @@ export function getDecryptItemsFunction<T extends PimType>(_colType: string, par
           const cur = new Map();
           entries.set(colUid, cur);
           for (const item of col.values()) {
+            if (item.isDeleted) {
+              continue;
+            }
             try {
               const contact = parseFunc(await item.getContent(Etebase.OutputFormat.String));
               contact.collectionUid = colUid;

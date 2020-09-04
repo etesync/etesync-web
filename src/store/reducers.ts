@@ -120,15 +120,10 @@ export const collections = handleActions(
 export const items = handleActions(
   {
     [combineActions(
-      actions.setCacheItem,
-      actions.unsetCacheItem
+      actions.setCacheItem
     ).toString()]: (state: CacheItemsData, action: ActionMeta<CacheItem, { colUid: string, itemUid: string, deleted: boolean }>) => {
       if (action.payload !== undefined) {
-        if (action.meta.deleted) {
-          return state.removeIn([action.meta.colUid, action.meta.itemUid]);
-        } else {
-          return state.setIn([action.meta.colUid, action.meta.itemUid], action.payload);
-        }
+        return state.setIn([action.meta.colUid, action.meta.itemUid], action.payload);
       }
       return state;
     },
@@ -142,11 +137,7 @@ export const items = handleActions(
         return state.withMutations((state) => {
           let i = 0;
           for (const item of action.meta.items) {
-            if (item.isDeleted) {
-              state.removeIn([action.meta.colUid, item.uid]);
-            } else {
-              state.setIn([action.meta.colUid, item.uid], action.payload[i]);
-            }
+            state.setIn([action.meta.colUid, item.uid], action.payload[i]);
             i++;
           }
         });

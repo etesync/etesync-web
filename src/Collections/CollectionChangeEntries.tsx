@@ -31,7 +31,8 @@ export interface CachedItem {
   content: string;
 }
 
-// FIXME: use the ones used by e.g. Contacts/Main so ew share the cache
+// FIXME: use the ones used by e.g. Contacts/Main so ew share the cache.
+// Only problem though is that we want the deleted items here and not there.
 async function decryptItems(items: Map<string, Map<string, Etebase.Item>>) {
   const entries: Map<string, Map<string, CachedItem>> = new Map();
   for (const [colUid, col] of items.entries()) {

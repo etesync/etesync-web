@@ -93,20 +93,6 @@ export const setCacheItem = createAction(
   }
 );
 
-export const unsetCacheItem = createAction(
-  "UNSET_CACHE_ITEM",
-  (_colUid: string, _itemMgr: Etebase.ItemManager, itemUid: string) => {
-    return itemUid;
-  },
-  (colUid: string, _itemMgr: Etebase.ItemManager, itemUid: string) => {
-    return {
-      colUid,
-      itemUid,
-      deleted: true,
-    };
-  }
-);
-
 export const setCacheItemMulti = createAction(
   "SET_CACHE_ITEM_MULTI",
   async (_colUid: string, itemMgr: Etebase.ItemManager, items: Etebase.Item[]) => {
