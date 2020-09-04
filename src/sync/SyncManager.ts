@@ -97,17 +97,15 @@ export class SyncManager {
       const stoken = await this.fetchAllCollections();
       return stoken;
     } catch (e) {
-      if (e instanceof Etebase.NetworkError) {
+      if (e instanceof Etebase.NetworkError || e instanceof Etebase.TemporaryServerError) {
         // Ignore network errors
         return null;
+      } else if (e instanceof Etebase.PermissionDeniedError) {
+        store.dispatch(appendError(e));
+        return null;
       } else if (e instanceof Etebase.HttpError) {
-        switch (e.status) {
-          case 401: // INVALID TOKEN
-          case 403: // FORBIDDEN
-          case 503: // UNAVAILABLE
-            store.dispatch(appendError(e));
-            return null;
-        }
+        store.dispatch(appendError(e));
+        return null;
       }
       throw e;
     } finally {
