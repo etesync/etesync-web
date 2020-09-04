@@ -5,17 +5,13 @@ import * as React from "react";
 
 import * as Etebase from "etebase";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-
 import { useCredentials } from "../credentials";
 import { useItems } from "../etebase-helpers";
-import { CachedCollection } from "../Pim/helpers";
+import { CachedCollection, getRawItemNavigationUid } from "../Pim/helpers";
 import LoadingIndicator from "../widgets/LoadingIndicator";
 import GenericChangeHistory from "../components/GenericChangeHistory";
+import { useHistory } from "react-router";
+import { routeResolver } from "../App";
 
 export interface CachedItem {
   item: Etebase.Item;
@@ -48,7 +44,7 @@ interface PropsType {
 
 export default function CollectionChangeEntries(props: PropsType) {
   const [entries, setEntries] = React.useState<Map<string, CachedItem>>();
-  const [dialog, setDialog] = React.useState<CachedItem>();
+  const history = useHistory();
   const etebase = useCredentials()!;
 
   const { collection, metadata } = props.collection;
@@ -74,33 +70,29 @@ export default function CollectionChangeEntries(props: PropsType) {
     return a - b;
   });
 
+  let changelogRoute = "";
+  switch (colType) {
+    case "etebase.vevent": {
+      changelogRoute = "pim.events._id.log";
+      break;
+    }
+    case "etebase.vtodo": {
+      changelogRoute = "pim.tasks._id.log";
+      break;
+    }
+    case "etebase.vcard": {
+      changelogRoute = "pim.contacts._id.log";
+      break;
+    }
+  }
+
   return (
     <div style={{ height: "calc(100vh - 300px)" }}>
-      <Dialog
-        open={dialog !== undefined}
-        onClose={() => setDialog(undefined)}
-      >
-        <DialogTitle>
-          Raw Content
-        </DialogTitle>
-        <DialogContent>
-          <div>Entry UID: <pre className="d-inline-block">{dialog?.item.uid}</pre></div>
-          <div>Content:
-            <pre>{dialog?.content}</pre>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            color="primary"
-            onClick={() => setDialog(undefined)}
-          >
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
       <GenericChangeHistory
         items={entriesList}
-        onItemClick={setDialog}
+        onItemClick={(item) =>
+          history.push(routeResolver.getRoute(changelogRoute, { itemUid: getRawItemNavigationUid(collection.uid, item.item.uid) }))
+        }
       />
     </div>
   );

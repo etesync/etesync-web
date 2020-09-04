@@ -21,6 +21,7 @@ import TaskEdit from "./TaskEdit";
 import PageNotFound, { PageNotFoundRoute } from "../PageNotFound";
 
 import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemSave, itemDelete } from "../Pim/helpers";
+import ItemChangeHistory from "../Pim/ItemChangeHistory";
 
 const colType = "etebase.vtodo";
 
@@ -150,9 +151,17 @@ export default function TasksMain() {
               </Route>
               <Route
                 path={routeResolver.getRoute("pim.tasks._id.log")}
-              >
-                <h1>Not currently implemented.</h1>
-              </Route>
+                render={() => {
+                  const cachedCollection = cachedCollections!.find((x) => x.collection.uid === colUid)!;
+                  if (!cachedCollection) {
+                    return (<PageNotFound />);
+                  }
+
+                  return (
+                    <ItemChangeHistory collection={cachedCollection} itemUid={itemUid} />
+                  );
+                }}
+              />
               <Route
                 path={routeResolver.getRoute("pim.tasks._id")}
                 exact

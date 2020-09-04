@@ -21,9 +21,13 @@ export interface CachedCollection {
   metadata: Etebase.CollectionMetadata;
 }
 
-export function getItemNavigationUid(item: PimType) {
+export function getRawItemNavigationUid(collectionUid: string, itemUid: string) {
   // Both collectionUid and itemUid are url safe
-  return `${item.collectionUid}|${item.itemUid}`;
+  return `${collectionUid}|${itemUid}`;
+}
+
+export function getItemNavigationUid(item: PimType) {
+  return getRawItemNavigationUid(item.collectionUid!, item.itemUid!);
 }
 
 export function getDecryptCollectionsFunction(_colType?: string) {

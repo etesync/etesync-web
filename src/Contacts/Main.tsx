@@ -21,6 +21,7 @@ import ContactEdit from "./ContactEdit";
 import PageNotFound, { PageNotFoundRoute } from "../PageNotFound";
 
 import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemSave, itemDelete } from "../Pim/helpers";
+import ItemChangeHistory from "../Pim/ItemChangeHistory";
 
 const colType = "etebase.vcard";
 
@@ -148,9 +149,17 @@ export default function ContactsMain() {
               </Route>
               <Route
                 path={routeResolver.getRoute("pim.contacts._id.log")}
-              >
-                <h1>Not currently implemented.</h1>
-              </Route>
+                render={() => {
+                  const cachedCollection = cachedCollections!.find((x) => x.collection.uid === colUid)!;
+                  if (!cachedCollection) {
+                    return (<PageNotFound />);
+                  }
+
+                  return (
+                    <ItemChangeHistory collection={cachedCollection} itemUid={itemUid} />
+                  );
+                }}
+              />
               <Route
                 path={routeResolver.getRoute("pim.contacts._id")}
                 exact
