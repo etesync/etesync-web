@@ -46,9 +46,8 @@ export default function CollectionMembers(props: PropsType) {
       let iterator: string | null = null;
       let done = false;
       while (!done) {
-        // FIXME: shouldn't be any
-        const members: any = await memberManager.list({ iterator, limit: 30 });
-        iterator = members.iterator;
+        const members = await memberManager.list({ iterator, limit: 30 });
+        iterator = members.iterator as string;
         done = members.done;
 
         for (const member of members.data) {

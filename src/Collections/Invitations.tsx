@@ -26,9 +26,8 @@ async function loadInvitations(etebase: Etebase.Account) {
   let iterator: string | null = null;
   let done = false;
   while (!done) {
-    // FIXME: shouldn't be any
-    const invitations: any = await invitationManager.listIncoming({ iterator, limit: 30 });
-    iterator = invitations.iterator;
+    const invitations = await invitationManager.listIncoming({ iterator, limit: 30 });
+    iterator = invitations.iterator as string;
     done = invitations.done;
 
     ret.push(...invitations.data);

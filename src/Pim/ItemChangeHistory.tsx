@@ -31,9 +31,8 @@ async function loadRevisions(etebase: Etebase.Account, col: Etebase.Collection, 
   let iterator: string | null = null;
   let done = false;
   while (!done) {
-    // FIXME: shouldn't be any
-    const revisions: any = await itemManager.itemRevisions(item, { iterator, limit: 30 });
-    iterator = revisions.iterator;
+    const revisions = await itemManager.itemRevisions(item, { iterator, limit: 30 });
+    iterator = revisions.iterator as string;
     done = revisions.done;
 
     for (const item of revisions.data) {
