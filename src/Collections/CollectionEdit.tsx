@@ -110,7 +110,7 @@ export default function CollectionEdit(props: PropsType) {
   const { collection, onDelete, onCancel } = props;
   const item = collection?.metadata;
 
-  const pageTitle = (item !== undefined) ? item.name : "New Journal";
+  const pageTitle = (item !== undefined) ? item.name : "New Collection";
 
   const styles = {
     fullWidth: {
