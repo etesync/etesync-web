@@ -81,12 +81,12 @@ export default function CollectionEdit(props: PropsType) {
       saveErrors.name = fieldRequired;
     }
 
-    if (selectedColor && !color) {
+    if (color && !/^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(color)) {
       saveErrors.color = "Must be of the form #RRGGBB or #RRGGBBAA or empty";
     }
 
+    setErrors(saveErrors);
     if (Object.keys(saveErrors).length > 0) {
-      setErrors(saveErrors);
       return;
     }
 
