@@ -9,6 +9,7 @@ import { List, ListItem } from "../widgets/List";
 
 import IconMemberAdd from "@material-ui/icons/PersonAdd";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import AdminIcon from "@material-ui/icons/SupervisedUserCircle";
 
 import AppBarOverride from "../widgets/AppBarOverride";
 import Container from "../widgets/Container";
@@ -28,12 +29,14 @@ interface PropsType {
 
 export default function CollectionMembers(props: PropsType) {
   const etebase = useCredentials()!;
-  const [members_, setMembers] = React.useState<Etebase.CollectionMember[]>();
-  const [revokeUser, setRevokeUser] = React.useState<string | null>(null);
+  const [members, setMembers] = React.useState<Etebase.CollectionMember[]>();
+  const [revokeUser, setRevokeUser] = React.useState<Etebase.CollectionMember | null>(null);
   const [addMemberOpen, setAddMemberOpen] = React.useState(false);
   const [error, setError] = React.useState<Error>();
 
   const { collection, metadata } = props.collection;
+
+  const revokeUserIsAdmin = revokeUser?.accessLevel === Etebase.CollectionAccessLevel.Admin;
 
   async function fetchMembers() {
     const colMgr = getCollectionManager(etebase);
@@ -62,14 +65,10 @@ export default function CollectionMembers(props: PropsType) {
     fetchMembers();
   }, []);
 
-  function onRevokeRequest(user: string) {
-    setRevokeUser(user);
-  }
-
   async function onRevokeDo() {
     const colMgr = getCollectionManager(etebase);
     const memberManager = colMgr.getMemberManager(collection);
-    await memberManager.remove(revokeUser!);
+    await memberManager.remove(revokeUser!.username);
     await fetchMembers();
     setRevokeUser(null);
   }
@@ -80,8 +79,6 @@ export default function CollectionMembers(props: PropsType) {
     await fetchMembers();
     setAddMemberOpen(false);
   }
-
-  const members = members_?.filter((x) => x.username !== etebase.user.username);
 
   return (
     <>
@@ -98,15 +95,23 @@ export default function CollectionMembers(props: PropsType) {
               Invite user
             </ListItem>
             {(members.length > 0 ?
-              members.map((member) => (
-                <ListItem
-                  key={member.username}
-                  onClick={() => onRevokeRequest(member.username)}
-                  rightIcon={(member.accessLevel === Etebase.CollectionAccessLevel.ReadOnly) ? (<VisibilityIcon />) : undefined}
-                >
-                  {member.username}
-                </ListItem>
-              ))
+              members.map((member) => {
+                let rightIcon: React.ReactElement | undefined = undefined;
+                if (member.accessLevel === Etebase.CollectionAccessLevel.ReadOnly) {
+                  rightIcon = (<div title="Read Only"><VisibilityIcon /></div>);
+                } else if (member.accessLevel === Etebase.CollectionAccessLevel.Admin) {
+                  rightIcon = (<div title="Admin"><AdminIcon /></div>);
+                }
+                return (
+                  <ListItem
+                    key={member.username}
+                    onClick={() => setRevokeUser(member)}
+                    rightIcon={rightIcon}
+                  >
+                    {member.username}
+                  </ListItem>
+                );
+              })
               :
               <ListItem>
                 No members
@@ -121,11 +126,19 @@ export default function CollectionMembers(props: PropsType) {
         title="Remove member"
         labelOk="OK"
         open={revokeUser !== null}
-        onOk={onRevokeDo}
+        onOk={(revokeUserIsAdmin) ? () => setRevokeUser(null) : onRevokeDo}
         onCancel={() => setRevokeUser(null)}
       >
-        Would you like to revoke {revokeUser}'s access?<br />
-        Please be advised that a malicious user would potentially be able to retain access to encryption keys. Please refer to the FAQ for more information.
+        {(revokeUserIsAdmin) ? (
+          <p>
+            Revoking admin access is not allowed.
+          </p>
+        ) : (
+          <p>
+            Would you like to revoke {revokeUser?.username}'s access?<br />
+            Please be advised that a malicious user would potentially be able to retain access to encryption keys. Please refer to the FAQ for more information.
+          </p>
+        )}
       </ConfirmationDialog>
 
       {addMemberOpen &&
