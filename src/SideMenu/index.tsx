@@ -11,6 +11,7 @@ import ActionBugReport from "@material-ui/icons/BugReport";
 import ActionQuestionAnswer from "@material-ui/icons/QuestionAnswer";
 import LogoutIcon from "@material-ui/icons/PowerSettingsNew";
 import IconImport from "@material-ui/icons/ImportExport";
+import IconInvitation from "@material-ui/icons/MailOutline";
 
 import logo from "../images/logo.svg";
 
@@ -49,6 +50,14 @@ export default function SideMenu(props: PropsType) {
           onClick={() => {
             props.onCloseDrawerRequest();
             history.push(routeResolver.getRoute("collections"));
+          }}
+        />
+        <ListItem
+          primaryText="Invitations"
+          leftIcon={<IconInvitation />}
+          onClick={() => {
+            props.onCloseDrawerRequest();
+            history.push(routeResolver.getRoute("collections.invitations"));
           }}
         />
         <ListItem
