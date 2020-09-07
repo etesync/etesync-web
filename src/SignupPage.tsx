@@ -11,10 +11,8 @@ import Switch from "@material-ui/core/Switch";
 
 import { routeResolver } from "./App";
 
-import ExternalLink from "./widgets/ExternalLink";
 import Container from "./widgets/Container";
 
-import * as C from "./constants";
 import LoadingIndicator from "./widgets/LoadingIndicator";
 import Alert from "@material-ui/lab/Alert";
 import { CircularProgress } from "@material-ui/core";
@@ -124,9 +122,6 @@ export default function SignupPage() {
   const styles = {
     form: {
     },
-    forgotPassword: {
-      paddingTop: 20,
-    },
     textField: {
       marginTop: 20,
     },
@@ -205,9 +200,7 @@ export default function SignupPage() {
           value={password}
           onChange={handleInputChange(setPassword)}
         />
-        <div style={styles.forgotPassword}>
-          <ExternalLink href={C.forgotPassword}>Forgot password?</ExternalLink>
-        </div>
+
         <FormGroup>
           <FormControlLabel
             control={
@@ -224,6 +217,10 @@ export default function SignupPage() {
         {errors.errorGeneral && (
           <Alert severity="error" style={styles.textField}>{errors.errorGeneral}</Alert>
         )}
+
+        <Alert severity="warning" style={styles.textField}>
+          Please make sure you remember your password, as it <em>can't</em> be recovered if lost!
+        </Alert>
 
         <div style={styles.submit}>
           <Button
