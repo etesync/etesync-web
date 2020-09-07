@@ -96,17 +96,23 @@ export default function GenericChangeHistory(props: PropsType) {
 
   return (
     <List style={{ height: "100%" }}>
-      <AutoSizer>
-        {({ height, width }) => (
-          <VirtualizedList
-            width={width}
-            height={height}
-            rowCount={entriesList.length}
-            rowHeight={56}
-            rowRenderer={rowRenderer}
-          />
-        )}
-      </AutoSizer>
+      {(entriesList.length > 0) ? (
+        <AutoSizer>
+          {({ height, width }) => (
+            <VirtualizedList
+              width={width}
+              height={height}
+              rowCount={entriesList.length}
+              rowHeight={56}
+              rowRenderer={rowRenderer}
+            />
+          )}
+        </AutoSizer>
+      ) : (
+        <ListItem
+          primaryText="No entries found"
+        />
+      )}
     </List>
   );
 }
