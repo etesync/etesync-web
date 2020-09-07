@@ -94,6 +94,8 @@ export const routeResolver = new RouteResolver({
   },
   signup: {
   },
+  wizard: {
+  },
   settings: {
   },
   debug: {

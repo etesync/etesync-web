@@ -23,12 +23,6 @@ import { Redirect, useLocation } from "react-router";
 import { routeResolver } from "./App";
 import { Link } from "react-router-dom";
 
-interface LocationState {
-  from: {
-    pathname: string;
-  };
-}
-
 export default function LoginPage() {
   const credentials = useCredentials();
   const dispatch = useDispatch();
@@ -36,10 +30,9 @@ export default function LoginPage() {
   const [loading, setLoading] = React.useState(false);
   const [fetchError, setFetchError] = React.useState<Error>();
 
-  const { from } = location.state as LocationState || { from: { pathname: routeResolver.getRoute("home") } };
   if (credentials) {
     return (
-      <Redirect to={from.pathname} />
+      <Redirect to={{ pathname: routeResolver.getRoute("wizard"), state: location.state }} />
     );
   }
 

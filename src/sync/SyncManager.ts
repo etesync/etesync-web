@@ -87,7 +87,7 @@ export class SyncManager {
     return true;
   }
 
-  public async sync() {
+  public async sync(alwaysThrowErrors = false) {
     if (this.isSyncing) {
       return false;
     }
@@ -97,6 +97,10 @@ export class SyncManager {
       const stoken = await this.fetchAllCollections();
       return stoken;
     } catch (e) {
+      if (alwaysThrowErrors) {
+        throw e;
+      }
+
       if (e instanceof Etebase.NetworkError || e instanceof Etebase.TemporaryServerError) {
         // Ignore network errors
         return null;

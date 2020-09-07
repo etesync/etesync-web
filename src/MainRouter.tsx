@@ -9,6 +9,7 @@ import SyncGate from "./SyncGate";
 import { routeResolver } from "./App";
 import SignupPage from "./SignupPage";
 import LoginPage from "./LoginPage";
+import WizardPage from "./WizardPage";
 
 
 export default function MainRouter() {
@@ -26,6 +27,12 @@ export default function MainRouter() {
       >
         <LoginPage />
       </Route>
+      <PrivateRoute
+        path={routeResolver.getRoute("wizard")}
+        exact
+      >
+        <WizardPage />
+      </PrivateRoute>
       <PrivateRoute
         path="*"
       >
