@@ -9,6 +9,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 
 import ExternalLink from "../widgets/ExternalLink";
+import PasswordField from "../widgets/PasswordField";
 
 import * as C from "../constants";
 import LoadingIndicator from "../widgets/LoadingIndicator";
@@ -67,8 +68,12 @@ export default function LoginForm(props: PropsType) {
     forgotPassword: {
       paddingTop: 20,
     },
+    infoAlert: {
+      marginTop: 20,
+    },
     textField: {
       marginTop: 20,
+      width: "18em",
     },
     submit: {
       marginTop: 40,
@@ -122,8 +127,7 @@ export default function LoginForm(props: PropsType) {
           onChange={handleInputChange(setUsername)}
         />
         <br />
-        <TextField
-          type="password"
+        <PasswordField
           style={styles.textField}
           error={!!errors.errorPassword}
           helperText={errors.errorPassword}
@@ -150,7 +154,7 @@ export default function LoginForm(props: PropsType) {
         {advancedSettings}
 
         {props.error && (
-          <Alert severity="error" style={styles.textField}>{props.error.message}</Alert>
+          <Alert severity="error" style={styles.infoAlert}>{props.error.message}</Alert>
         )}
 
         <div style={styles.submit}>

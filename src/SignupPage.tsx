@@ -12,6 +12,7 @@ import Switch from "@material-ui/core/Switch";
 import { routeResolver } from "./App";
 
 import Container from "./widgets/Container";
+import PasswordField from "./widgets/PasswordField";
 
 import LoadingIndicator from "./widgets/LoadingIndicator";
 import Alert from "@material-ui/lab/Alert";
@@ -122,8 +123,12 @@ export default function SignupPage() {
   const styles = {
     form: {
     },
+    infoAlert: {
+      marginTop: 20,
+    },
     textField: {
       marginTop: 20,
+      width: "18em",
     },
     submit: {
       marginTop: 40,
@@ -189,14 +194,15 @@ export default function SignupPage() {
           onChange={handleInputChange(setEmail)}
         />
         <br />
-        <TextField
-          type="password"
+        <PasswordField
           style={styles.textField}
           error={!!errors.errorPassword}
           helperText={errors.errorPassword}
           label="Password"
           name="password"
-          inputProps={{ minLength: PASSWORD_MIN_LENGTH }}
+          inputProps={{
+            minLength: PASSWORD_MIN_LENGTH,
+          }}
           value={password}
           onChange={handleInputChange(setPassword)}
         />
@@ -215,10 +221,10 @@ export default function SignupPage() {
         </FormGroup>
         {advancedSettings}
         {errors.errorGeneral && (
-          <Alert severity="error" style={styles.textField}>{errors.errorGeneral}</Alert>
+          <Alert severity="error" style={styles.infoAlert}>{errors.errorGeneral}</Alert>
         )}
 
-        <Alert severity="warning" style={styles.textField}>
+        <Alert severity="warning" style={styles.infoAlert}>
           Please make sure you remember your password, as it <em>can't</em> be recovered if lost!
         </Alert>
 
