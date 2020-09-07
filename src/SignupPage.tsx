@@ -35,6 +35,8 @@ interface FormErrors {
   errorGeneral?: string;
 }
 
+const PASSWORD_MIN_LENGTH = 8;
+
 export default function SignupPage() {
   const credentials = useCredentials();
   const dispatch = useDispatch();
@@ -66,6 +68,8 @@ export default function SignupPage() {
       }
       if (!password) {
         errors.errorPassword = fieldRequired;
+      } else if (password.length < PASSWORD_MIN_LENGTH) {
+        errors.errorPassword = `Passwourds should be at least ${PASSWORD_MIN_LENGTH} digits long.`;
       }
 
       if (process.env.NODE_ENV !== "development") {
@@ -197,6 +201,7 @@ export default function SignupPage() {
           helperText={errors.errorPassword}
           label="Password"
           name="password"
+          inputProps={{ minLength: PASSWORD_MIN_LENGTH }}
           value={password}
           onChange={handleInputChange(setPassword)}
         />
