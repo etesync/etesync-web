@@ -6,12 +6,17 @@ import Paper from "@material-ui/core/Paper";
 
 import "./Container.css";
 
-export default (props: {style?: any, children: any}) => (
-  <div className="Container" style={props.style}>
-    <Paper elevation={3}>
-      <div className="Container-inner">
-        {props.children}
-      </div>
-    </Paper>
-  </div>
-);
+export default (props: {style?: React.CSSProperties, children: any}) => {
+  const display = props.style?.display;
+  const flexDirection = props.style?.flexDirection;
+
+  return (
+    <div className="Container" style={props.style}>
+      <Paper elevation={3} style={{ display, flexDirection, flexGrow: 1 }}>
+        <div className="Container-inner" style={{ display, flexDirection, flexGrow: 1 }}>
+          {props.children}
+        </div>
+      </Paper>
+    </div>
+  );
+};
