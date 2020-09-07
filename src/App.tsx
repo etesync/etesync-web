@@ -186,11 +186,13 @@ export default function App() {
     },
   });
 
-  const styles = {
+  const styles: {[key: string]: React.CSSProperties} = {
     main: {
       backgroundColor: muiTheme.palette.background.default,
       color: muiTheme.palette.text.primary,
       flexGrow: 1,
+      display: "flex",
+      flexDirection: "column",
     },
   };
 
