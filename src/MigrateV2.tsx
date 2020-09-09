@@ -44,12 +44,14 @@ export default function MigrateV2(props: PropsType) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [server, setServer] = React.useState("");
+  const [hasAccount, setHasAccount] = React.useState(false);
   const [showAdvanced, setShowAdvanced] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState("");
   const [errors, setErrors] = React.useState<FormErrors>({});
   const journals = useSelector((state: StoreState) => state.cache.journals!);
   const journalEntries = useSelector((state: StoreState) => state.cache.entries);
+  const email = props.etesync.credentials.email;
   const derived = props.etesync.encryptionKey;
 
   const decryptedJournals = React.useMemo(() => {
@@ -152,8 +154,18 @@ export default function MigrateV2(props: PropsType) {
       const serverUrl = (showAdvanced) ? server : undefined;
       let malformed = 0;
 
-      setProgress("Logging into EteSync 2.0 account");
-      const etebase = await Etebase.Account.login(username, password, serverUrl);
+      let etebase: Etebase.Account;
+      if (hasAccount) {
+        setProgress("Logging into EteSync 2.0 account");
+        etebase = await Etebase.Account.login(username, password, serverUrl);
+      } else {
+        setProgress("Logging into EteSync 2.0 account");
+        const user: Etebase.User = {
+          username,
+          email,
+        };
+        etebase = await Etebase.Account.signup(user, password, serverUrl);
+      }
       const colMgr = etebase.getCollectionManager();
 
       const { etesync, userInfo } = props;
@@ -327,6 +339,11 @@ export default function MigrateV2(props: PropsType) {
       </List>
 
       <h3>EteSync 2.0 credentials</h3>
+      <FormControlLabel
+        control={<Checkbox checked={hasAccount} onChange={() => setHasAccount(!hasAccount)} />}
+        label="I already have an EteSync 2.0 account"
+      />
+      <br />
       <TextField
         type="text"
         style={styles.textField}
@@ -347,6 +364,11 @@ export default function MigrateV2(props: PropsType) {
         value={password}
         onChange={handleInputChange(setPassword)}
       />
+      {!hasAccount && (
+        <Alert severity="warning" style={styles.alertInfo}>
+          Please make sure you remember your password, as it <em>can't</em> be recovered if lost!
+        </Alert>
+      )}
       <FormGroup>
         <FormControlLabel
           control={
@@ -375,7 +397,7 @@ export default function MigrateV2(props: PropsType) {
         >
           {loading ? (
             <CircularProgress />
-          ) : "Migrate"
+          ) : (hasAccount) ? "Login & Migrate" : "Signup & Migrate"
           }
         </Button>
       </div>
