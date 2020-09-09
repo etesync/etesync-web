@@ -4,6 +4,7 @@
 import * as React from "react";
 import * as EteSync from "etesync";
 import * as Etebase from "etebase";
+import URI from "urijs";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Switch from "@material-ui/core/Switch";
@@ -44,7 +45,7 @@ export default function MigrateV2(props: PropsType) {
   const [etebase, setEtebase] = React.useState<Etebase.Account>();
 
   const wizardPages = [
-    (props: PagePropsType) => (
+    (pageProps: PagePropsType) => (
       <>
         <div style={{ maxWidth: "50em", textAlign: "center", margin: "auto" }}>
           <h2>Etebase 2.0 Migration tool</h2>
@@ -53,7 +54,7 @@ export default function MigrateV2(props: PropsType) {
             The migration doesn't delete any data. It only copies your data over to the new EteSync 2.0 server. This means that there is no risk of data-loss in the migration.
           </p>
         </div>
-        <WizardNavigationBar {...props} />
+        <WizardNavigationBar {...pageProps} />
       </>
     ),
     (pageProps: PagePropsType) => (
@@ -161,6 +162,21 @@ export function WizardAccountPage(props: OurPagePropsType & { setEtebase: (eteba
           username,
           email,
         };
+        // Let the server know the account is asking for a migration
+        {
+          const serviceUrl = URI(props.etesync.serviceApiUrl).normalize();
+          serviceUrl.segment("etesync-v2");
+          serviceUrl.segment("confirm-migration");
+          serviceUrl.segment("");
+          const response = await fetch(serviceUrl.normalize().toString(), {
+            method: "post",
+            headers: { Authorization: "Token " + props.etesync.credentials.authToken },
+          });
+          if (!response.ok) {
+            throw new Error("Failed preparing account for migration");
+          }
+        }
+
         etebase = await Etebase.Account.signup(user, password, serverUrl);
       }
       props.setEtebase(etebase);
