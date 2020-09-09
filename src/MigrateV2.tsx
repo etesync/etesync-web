@@ -24,6 +24,7 @@ import { Checkbox, FormGroup, FormControlLabel, CircularProgress } from "@materi
 import Alert from "@material-ui/lab/Alert";
 import { arrayToChunkIterator } from "./helpers";
 import { ContactType, EventType, TaskType, PimType } from "./pim-types";
+import PasswordField from "./widgets/PasswordField";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -107,7 +108,11 @@ export default function MigrateV2(props: PropsType) {
     forgotPassword: {
       paddingTop: 20,
     },
+    alertInfo: {
+      marginTop: 20,
+    },
     textField: {
+      width: "20em",
       marginTop: 20,
     },
     submit: {
@@ -333,8 +338,7 @@ export default function MigrateV2(props: PropsType) {
         onChange={handleInputChange(setUsername)}
       />
       <br />
-      <TextField
-        type="password"
+      <PasswordField
         style={styles.textField}
         error={!!errors.errorPassword}
         helperText={errors.errorPassword}
@@ -357,10 +361,10 @@ export default function MigrateV2(props: PropsType) {
       </FormGroup>
       {advancedSettings}
       {errors.errorGeneral && (
-        <Alert severity="error" style={styles.textField}>{errors.errorGeneral}</Alert>
+        <Alert severity="error" style={styles.alertInfo}>{errors.errorGeneral}</Alert>
       )}
       {progress && (
-        <Alert severity="info" style={styles.textField}>{progress}</Alert>
+        <Alert severity="info" style={styles.alertInfo}>{progress}</Alert>
       )}
       <div style={styles.submit}>
         <Button
