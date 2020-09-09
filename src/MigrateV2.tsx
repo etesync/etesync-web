@@ -13,7 +13,6 @@ import ContactsIcon from "@material-ui/icons/Contacts";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 
-import Container from "./widgets/Container";
 import { useSelector } from "react-redux";
 import { StoreState, CredentialsData, UserInfoData } from "./store";
 import AppBarOverride from "./widgets/AppBarOverride";
@@ -25,6 +24,8 @@ import Alert from "@material-ui/lab/Alert";
 import { arrayToChunkIterator } from "./helpers";
 import { ContactType, EventType, TaskType, PimType } from "./pim-types";
 import PasswordField from "./widgets/PasswordField";
+import Wizard, { PagePropsType, WizardNavigationBar } from "./widgets/Wizard";
+import ExternalLink from "./widgets/ExternalLink";
 
 interface PropsType {
   etesync: CredentialsData;
@@ -40,7 +41,55 @@ interface FormErrors {
 }
 
 export default function MigrateV2(props: PropsType) {
-  const [wantedJournals, setWantedJournals] = React.useState<ImmutableMap<string, EteSync.Journal>>(ImmutableMap({}));
+  const [etebase, setEtebase] = React.useState<Etebase.Account>();
+
+  const wizardPages = [
+    (props: PagePropsType) => (
+      <>
+        <div style={{ maxWidth: "50em", textAlign: "center", margin: "auto" }}>
+          <h2>Etebase 2.0 Migration tool</h2>
+          <p>
+            This tool will help you migrate your data to EteSync 2.0.
+            The migration doesn't delete any data. It only copies your data over to the new EteSync 2.0 server. This means that there is no risk of data-loss in the migration.
+          </p>
+        </div>
+        <WizardNavigationBar {...props} />
+      </>
+    ),
+    (pageProps: PagePropsType) => (
+      <WizardAccountPage {...props} {...pageProps} etebase={etebase} setEtebase={setEtebase} />
+    ),
+    (pageProps: PagePropsType) => (
+      <WizardMigrationPage {...props} {...pageProps} etebase={etebase} />
+    ),
+    (_props: PagePropsType) => (
+      <>
+        <div style={{ maxWidth: "50em", textAlign: "center", margin: "auto" }}>
+          <h2>Migration finished successfully!</h2>
+          <p>
+            You should now log into your apps using your EteSync 2.0 credentials, and logout from your EteSync 1.0 accounts.
+          </p>
+          <p>
+            The EteSync 2.0 web client is located at: <ExternalLink href="https://pim.etesync.com">https://pim.etesync.com</ExternalLink>
+          </p>
+        </div>
+      </>
+    ),
+  ];
+
+  return (
+    <>
+      <AppBarOverride title="Migrate to EteSync 2.0" />
+      <Wizard pages={wizardPages} onFinish={() => 1} style={{ display: "flex", flexDirection: "column", flex: 1 }} />
+    </>
+  );
+}
+
+interface OurPagePropsType extends PropsType, PagePropsType {
+  etebase?: Etebase.Account;
+}
+
+export function WizardAccountPage(props: OurPagePropsType & { setEtebase: (etebase: Etebase.Account) => void }) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [server, setServer] = React.useState("");
@@ -49,9 +98,191 @@ export default function MigrateV2(props: PropsType) {
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState("");
   const [errors, setErrors] = React.useState<FormErrors>({});
+  const email = props.etesync.credentials.email;
+
+  const styles = {
+    form: {
+    },
+    forgotPassword: {
+      paddingTop: 20,
+    },
+    alertInfo: {
+      marginTop: 20,
+      maxWidth: "50em",
+    },
+    textField: {
+      width: "20em",
+      marginTop: 20,
+    },
+    submit: {
+      marginTop: 40,
+      marginBottom: 40,
+    },
+  };
+
+  function handleInputChange(func: (value: string) => void) {
+    return (event: React.ChangeEvent<any>) => {
+      func(event.target.value);
+    };
+  }
+
+  async function onSubmit() {
+    setLoading(true);
+    setProgress("");
+    try {
+      const errors: FormErrors = {};
+      const fieldRequired = "This field is required!";
+      if (!username) {
+        errors.errorEmail = fieldRequired;
+      }
+      if (!password) {
+        errors.errorPassword = fieldRequired;
+      }
+      if (showAdvanced && !server.startsWith("http")) {
+        errors.errorServer = "Server URI must start with http/https://";
+      }
+
+      if (Object.keys(errors).length) {
+        setErrors(errors);
+        return;
+      } else {
+        setErrors({});
+      }
+
+      const serverUrl = (showAdvanced) ? server : undefined;
+
+      let etebase: Etebase.Account;
+      if (hasAccount) {
+        setProgress("Logging into EteSync 2.0 account");
+        etebase = await Etebase.Account.login(username, password, serverUrl);
+      } else {
+        setProgress("Creating an EteSync 2.0 account");
+        const user: Etebase.User = {
+          username,
+          email,
+        };
+        etebase = await Etebase.Account.signup(user, password, serverUrl);
+      }
+      props.setEtebase(etebase);
+      props.next?.();
+      setProgress("Done");
+    } catch (e) {
+      if (e instanceof Etebase.UnauthorizedError) {
+        errors.errorGeneral = "Wrong username or password";
+      } else {
+        errors.errorGeneral = e.toString();
+      }
+      setErrors(errors);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  let advancedSettings = null;
+  if (showAdvanced) {
+    advancedSettings = (
+      <React.Fragment>
+        <TextField
+          type="url"
+          style={styles.textField}
+          error={!!errors.errorServer}
+          helperText={errors.errorServer}
+          label="Server"
+          name="server"
+          value={server}
+          onChange={handleInputChange(setServer)}
+        />
+        <br />
+      </React.Fragment>
+    );
+  }
+
+  if (props.etebase) {
+    return (
+      <>
+        <h2>EteSync 2.0 credentials</h2>
+        <p>Already logged in. Click "Next" to continue.</p>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <h2>EteSync 2.0 credentials</h2>
+      <FormControlLabel
+        control={<Checkbox checked={hasAccount} onChange={() => setHasAccount(!hasAccount)} />}
+        label="I already have an EteSync 2.0 account"
+      />
+      <br />
+      <TextField
+        type="text"
+        style={styles.textField}
+        error={!!errors.errorEmail}
+        helperText={errors.errorEmail}
+        label="Username"
+        name="username"
+        value={username}
+        onChange={handleInputChange(setUsername)}
+      />
+      <br />
+      <PasswordField
+        style={styles.textField}
+        error={!!errors.errorPassword}
+        helperText={errors.errorPassword}
+        label="Password"
+        name="password"
+        value={password}
+        onChange={handleInputChange(setPassword)}
+      />
+      {!hasAccount && (
+        <Alert severity="warning" style={styles.alertInfo}>
+          Please make sure you remember your password, as it <em>can't</em> be recovered if lost!
+        </Alert>
+      )}
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              color="primary"
+              checked={showAdvanced}
+              onChange={() => setShowAdvanced(!showAdvanced)}
+            />
+          }
+          label="Advanced settings"
+        />
+      </FormGroup>
+      {advancedSettings}
+      {errors.errorGeneral && (
+        <Alert severity="error" style={styles.alertInfo}>{errors.errorGeneral}</Alert>
+      )}
+      {progress && (
+        <Alert severity="info" style={styles.alertInfo}>{progress}</Alert>
+      )}
+      <div style={styles.submit}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={onSubmit}
+          disabled={loading}
+        >
+          {loading ? (
+            <CircularProgress />
+          ) : (hasAccount) ? "Login" : "Create account"
+          }
+        </Button>
+      </div>
+    </>
+  );
+}
+
+export function WizardMigrationPage(props: OurPagePropsType) {
+  const [wantedJournals, setWantedJournals] = React.useState<ImmutableMap<string, EteSync.Journal>>(ImmutableMap({}));
+  const [loading, setLoading] = React.useState(false);
+  const [done, setDone] = React.useState(false);
+  const [progress, setProgress] = React.useState("");
+  const [errors, setErrors] = React.useState<FormErrors>({});
   const journals = useSelector((state: StoreState) => state.cache.journals!);
   const journalEntries = useSelector((state: StoreState) => state.cache.entries);
-  const email = props.etesync.credentials.email;
   const derived = props.etesync.encryptionKey;
 
   const decryptedJournals = React.useMemo(() => {
@@ -122,50 +353,12 @@ export default function MigrateV2(props: PropsType) {
     },
   };
 
-  function handleInputChange(func: (value: string) => void) {
-    return (event: React.ChangeEvent<any>) => {
-      func(event.target.value);
-    };
-  }
-
   async function onSubmit() {
     setLoading(true);
     setProgress("");
     try {
-      const errors: FormErrors = {};
-      const fieldRequired = "This field is required!";
-      if (!username) {
-        errors.errorEmail = fieldRequired;
-      }
-      if (!password) {
-        errors.errorPassword = fieldRequired;
-      }
-      if (showAdvanced && !server.startsWith("http")) {
-        errors.errorServer = "Server URI must start with http/https://";
-      }
-
-      if (Object.keys(errors).length) {
-        setErrors(errors);
-        return;
-      } else {
-        setErrors({});
-      }
-
-      const serverUrl = (showAdvanced) ? server : undefined;
       let malformed = 0;
-
-      let etebase: Etebase.Account;
-      if (hasAccount) {
-        setProgress("Logging into EteSync 2.0 account");
-        etebase = await Etebase.Account.login(username, password, serverUrl);
-      } else {
-        setProgress("Logging into EteSync 2.0 account");
-        const user: Etebase.User = {
-          username,
-          email,
-        };
-        etebase = await Etebase.Account.signup(user, password, serverUrl);
-      }
+      const etebase = props.etebase!;
       const colMgr = etebase.getCollectionManager();
 
       const { etesync, userInfo } = props;
@@ -274,50 +467,19 @@ export default function MigrateV2(props: PropsType) {
       } else {
         setProgress("Done");
       }
+      setDone(true);
 
     } catch (e) {
-      if (e instanceof Etebase.UnauthorizedError) {
-        errors.errorGeneral = "Wrong username or password";
-      } else {
-        errors.errorGeneral = e.toString();
-      }
+      errors.errorGeneral = e.toString();
       setErrors(errors);
     } finally {
       setLoading(false);
     }
   }
 
-  let advancedSettings = null;
-  if (showAdvanced) {
-    advancedSettings = (
-      <React.Fragment>
-        <TextField
-          type="url"
-          style={styles.textField}
-          error={!!errors.errorServer}
-          helperText={errors.errorServer}
-          label="Server"
-          name="server"
-          value={server}
-          onChange={handleInputChange(setServer)}
-        />
-        <br />
-      </React.Fragment>
-    );
-  }
-
   return (
-    <Container>
-      <AppBarOverride title="Migrate to EteSync 2.0" />
-      <p>
-        This tool will help you migrate your data to EteSync 2.0.
-      </p>
-      <p>
-        The migration doesn't delete any data. It only copies your data over to the new EteSync 2.0 server. This means that there is no risk of data-loss in the migration.
-      </p>
-      <p>
-        Please select the collections you would like to migrate, and then enter your EteSync 2.0 credentials and click migrate.
-      </p>
+    <>
+      <h2>Choose collections to migrate</h2>
       <List>
         <ListItem
           primaryText="Address Books"
@@ -338,50 +500,6 @@ export default function MigrateV2(props: PropsType) {
         />
       </List>
 
-      <h3>EteSync 2.0 credentials</h3>
-      <FormControlLabel
-        control={<Checkbox checked={hasAccount} onChange={() => setHasAccount(!hasAccount)} />}
-        label="I already have an EteSync 2.0 account"
-      />
-      <br />
-      <TextField
-        type="text"
-        style={styles.textField}
-        error={!!errors.errorEmail}
-        helperText={errors.errorEmail}
-        label="Username"
-        name="username"
-        value={username}
-        onChange={handleInputChange(setUsername)}
-      />
-      <br />
-      <PasswordField
-        style={styles.textField}
-        error={!!errors.errorPassword}
-        helperText={errors.errorPassword}
-        label="Password"
-        name="password"
-        value={password}
-        onChange={handleInputChange(setPassword)}
-      />
-      {!hasAccount && (
-        <Alert severity="warning" style={styles.alertInfo}>
-          Please make sure you remember your password, as it <em>can't</em> be recovered if lost!
-        </Alert>
-      )}
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              color="primary"
-              checked={showAdvanced}
-              onChange={() => setShowAdvanced(!showAdvanced)}
-            />
-          }
-          label="Advanced settings"
-        />
-      </FormGroup>
-      {advancedSettings}
       {errors.errorGeneral && (
         <Alert severity="error" style={styles.alertInfo}>{errors.errorGeneral}</Alert>
       )}
@@ -389,18 +507,28 @@ export default function MigrateV2(props: PropsType) {
         <Alert severity="info" style={styles.alertInfo}>{progress}</Alert>
       )}
       <div style={styles.submit}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={onSubmit}
-          disabled={loading}
-        >
-          {loading ? (
-            <CircularProgress />
-          ) : (hasAccount) ? "Login & Migrate" : "Signup & Migrate"
-          }
-        </Button>
+        {(done) ? (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={props.next}
+          >
+            Next
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={onSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <CircularProgress />
+            ) : "Migrate"
+            }
+          </Button>
+        )}
       </div>
-    </Container>
+    </>
   );
 }
