@@ -173,7 +173,12 @@ export function WizardAccountPage(props: OurPagePropsType & { setEtebase: (eteba
             headers: { Authorization: "Token " + props.etesync.credentials.authToken },
           });
           if (!response.ok) {
-            throw new Error("Failed preparing account for migration");
+            try {
+              const json = await response.json();
+              throw new Error(json.detail ?? JSON.stringify(json));
+            } catch (e) {
+              throw new Error("Failed preparing account for migration");
+            }
           }
         }
 
