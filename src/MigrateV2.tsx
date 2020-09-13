@@ -86,6 +86,8 @@ export default function MigrateV2(props: PropsType) {
   );
 }
 
+const PASSWORD_MIN_LENGTH = 8;
+
 interface OurPagePropsType extends PropsType, PagePropsType {
   etebase?: Etebase.Account;
 }
@@ -138,6 +140,8 @@ export function WizardAccountPage(props: OurPagePropsType & { setEtebase: (eteba
       }
       if (!password) {
         errors.errorPassword = fieldRequired;
+      } else if (password.length < PASSWORD_MIN_LENGTH) {
+        errors.errorPassword = `Passwourds should be at least ${PASSWORD_MIN_LENGTH} digits long.`;
       }
       if (showAdvanced && !server.startsWith("http")) {
         errors.errorServer = "Server URI must start with http/https://";
