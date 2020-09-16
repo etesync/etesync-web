@@ -327,6 +327,8 @@ export function WizardMigrationPage(props: OurPagePropsType) {
   const journalEntries = useSelector((state: StoreState) => state.cache.entries);
   const derived = props.etesync.encryptionKey;
 
+  const me = props.etesync.credentials.email;
+
   const decryptedJournals = React.useMemo(() => {
     return journals.map((journal) => {
       const userInfo = props.userInfo;
@@ -365,6 +367,9 @@ export function WizardMigrationPage(props: OurPagePropsType) {
               checked={wantedJournals.has(journal.uid)}
             />
             {info.displayName}
+            {((journal.owner !== me) && wantedJournals.has(journal.uid)) && (
+              <Alert severity="warning">Migrating a shared collection will only copy its contents, and will not make it shared. Pleaes ask the collection owner to migrate it to EteSync 2.0 and share it with you instead.</Alert>
+            )}
           </ListItem>
         );
 
