@@ -11,7 +11,7 @@ export const getCollections = memoize(async function (cachedCollections: CacheCo
   const colMgr = getCollectionManager(etebase);
   const ret: Etebase.Collection[] = [];
   for (const cached of cachedCollections.values()) {
-    ret.push(await colMgr.cacheLoad(cached));
+    ret.push(colMgr.cacheLoad(cached));
   }
   return ret;
 }, { length: 1 });
@@ -31,7 +31,7 @@ export const getCollectionsByType = memoize(async function (cachedCollections: C
 export const getItems = memoize(async function (cachedItems: CacheItems, itemMgr: Etebase.ItemManager) {
   const ret = new Map<string, Etebase.Item>();
   for (const cached of cachedItems.values()) {
-    const item = await itemMgr.cacheLoad(cached);
+    const item = itemMgr.cacheLoad(cached);
     ret.set(item.uid, item);
   }
   return ret;

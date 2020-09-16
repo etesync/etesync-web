@@ -60,7 +60,7 @@ export default function Debug() {
           }
 
           const colMgr = getCollectionManager(etebase);
-          const col = await colMgr.cacheLoad(cachedCollection);
+          const col = colMgr.cacheLoad(cachedCollection);
           const itemMgr = colMgr.getItemManager(col);
 
           const wantedEntries = {};
@@ -70,7 +70,7 @@ export default function Debug() {
           const retEntries = [];
           console.log(wantAll, colItems.size);
           for (const cached of colItems.values()) {
-            const item = await itemMgr.cacheLoad(cached);
+            const item = itemMgr.cacheLoad(cached);
             const meta = await item.getMeta();
             const content = await item.getContent(Etebase.OutputFormat.String);
             if (wantAll || wantedEntries[item.uid]) {
