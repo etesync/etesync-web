@@ -405,6 +405,7 @@ export function WizardMigrationPage(props: OurPagePropsType) {
     setProgress("");
     try {
       let malformed = 0;
+      let badMtime = 0;
       const etebase = props.etebase!;
       const colMgr = etebase.getCollectionManager();
 
@@ -471,12 +472,17 @@ export function WizardMigrationPage(props: OurPagePropsType) {
             prevUid = entry.uid;
             const pimItem = parseFunc(syncEntry.content);
             const uid = pimItem.uid;
-            // When we can't set mtime, set to the item's position in the change log so we at least maintain EteSync 1.0 ordering.
-            const mtime = (pimItem.lastModified?.toJSDate())?.getTime() ?? now + done;
 
             if (!uid) {
               malformed++;
               continue;
+            }
+
+            // When we can't set mtime, set to the item's position in the change log so we at least maintain EteSync 1.0 ordering.
+            let mtime = (pimItem.lastModified?.toJSDate())?.getTime();
+            if (!mtime) {
+              mtime = now + done;
+              badMtime++;
             }
 
             let item = items.get(uid);
@@ -509,10 +515,14 @@ export function WizardMigrationPage(props: OurPagePropsType) {
       }
 
       await etebase.logout();
-      if (malformed > 0) {
-        setProgress(`Done\nIgnored ${malformed} entries (probably safe to ignore)`);
-      } else {
-        setProgress("Done");
+      {
+        let out = "Done";
+        if (badMtime > 0) {
+          out += `\nModification time missing for ${badMtime} entries (setting to "now")`;
+        } else if (malformed > 0) {
+          out += `\nIgnored ${malformed} entries (probably safe to ignore)`;
+        }
+        setProgress(out);
       }
       setDone(true);
 
