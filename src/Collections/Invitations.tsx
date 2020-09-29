@@ -89,7 +89,7 @@ function InvitationsIncoming() {
         {invitations ?
           <List>
             {(invitations.length > 0 ?
-              invitations.map((invite, idx) => (
+              invitations.map((invite) => (
                 <ListItem
                   key={invite.uid}
                   rightIcon={(
@@ -103,7 +103,7 @@ function InvitationsIncoming() {
                     </>
                   )}
                 >
-                  Invitation {idx + 1}
+                  Invitation from {invite.fromUsername}
                 </ListItem>
               ))
               :
