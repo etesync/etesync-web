@@ -161,7 +161,7 @@ export default function App() {
     const interval = 60 * 1000;
     const id = setInterval(autoRefresh, interval);
     return () => clearInterval(id);
-  });
+  }, []);
 
   function toggleDrawer() {
     setDrawerOpen(!drawerOpen);
