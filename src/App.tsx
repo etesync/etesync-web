@@ -158,7 +158,7 @@ export default function App() {
   }
 
   React.useEffect(() => {
-    const interval = 60 * 1000;
+    const interval = 5 * 60 * 1000;
     const id = setInterval(autoRefresh, interval);
     return () => clearInterval(id);
   }, []);
