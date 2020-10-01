@@ -91,7 +91,8 @@ export default function CollectionEdit(props: PropsType) {
     }
 
     const colMgr = getCollectionManager(etebase);
-    const meta = { ...info, color };
+    const mtime = (new Date()).getTime();
+    const meta = { ...info, color, mtime };
     let collection;
     if (props.collection) {
       collection = props.collection.collection;
