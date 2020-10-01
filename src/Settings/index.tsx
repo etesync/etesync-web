@@ -36,6 +36,7 @@ function SecurityFingerprint() {
 }
 
 export default React.memo(function Settings() {
+  const etebase = useCredentials();
   const dispatch = useDispatch();
   const settings = useSelector((state: StoreState) => state.settings);
 
@@ -52,8 +53,13 @@ export default React.memo(function Settings() {
     <>
       <AppBarOverride title="Settings" />
       <Container>
-        <h1>Security Fingerprint</h1>
-        <SecurityFingerprint />
+        {(etebase) && (
+          <>
+            <h1>Account</h1>
+            <h2>Security Fingerprint</h2>
+            <SecurityFingerprint />
+          </>
+        )}
 
         <h1>Look & Feel</h1>
         <h2>Date & Time</h2>
