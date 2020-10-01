@@ -20,7 +20,7 @@ import { CircularProgress } from "@material-ui/core";
 import { Redirect } from "react-router";
 import { useCredentials } from "./credentials";
 import { useDispatch } from "react-redux";
-import { startTask } from "./helpers";
+import { startTask, PASSWORD_MIN_LENGTH, enforcePasswordRules } from "./helpers";
 import { login } from "./store/actions";
 import { Link } from "react-router-dom";
 
@@ -33,8 +33,6 @@ interface FormErrors {
 
   errorGeneral?: string;
 }
-
-const PASSWORD_MIN_LENGTH = 8;
 
 export default function SignupPage() {
   const credentials = useCredentials();
@@ -67,8 +65,11 @@ export default function SignupPage() {
       }
       if (!password) {
         errors.errorPassword = fieldRequired;
-      } else if (password.length < PASSWORD_MIN_LENGTH) {
-        errors.errorPassword = `Passwourds should be at least ${PASSWORD_MIN_LENGTH} digits long.`;
+      } else {
+        const passwordRulesError = enforcePasswordRules(password);
+        if (passwordRulesError) {
+          errors.errorPassword = passwordRulesError;
+        }
       }
 
       if (process.env.NODE_ENV !== "development") {

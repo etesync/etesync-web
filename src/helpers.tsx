@@ -201,3 +201,13 @@ export function parseDate(prop: ICAL.Property) {
 
   return {};
 }
+
+export const PASSWORD_MIN_LENGTH = 8;
+
+export function enforcePasswordRules(password: string): string | undefined {
+
+  if (password.length < PASSWORD_MIN_LENGTH) {
+    return `Passwourds should be at least ${PASSWORD_MIN_LENGTH} digits long.`;
+  }
+  return undefined;
+}
