@@ -447,11 +447,13 @@ export function WizardMigrationPage(props: OurPagePropsType) {
             continue;
           }
         }
+        const mtime = (new Date()).getTime();
         const meta: Etebase.CollectionMetadata = {
           type: colType,
           name: info.displayName,
           description: info.description,
           color: (info.color !== undefined) ? colorIntToHtml(info.color) : undefined,
+          mtime,
         };
         const collection = await colMgr.create(meta, "");
         await colMgr.upload(collection);
