@@ -32,6 +32,7 @@ export default function CollectionMembers(props: PropsType) {
   const [members, setMembers] = React.useState<Etebase.CollectionMember[]>();
   const [revokeUser, setRevokeUser] = React.useState<Etebase.CollectionMember | null>(null);
   const [addMemberOpen, setAddMemberOpen] = React.useState(false);
+  const [inviteSuccessOpen, setInviteSuccessOpen] = React.useState(false);
   const [error, setError] = React.useState<Error>();
 
   const { collection, metadata } = props.collection;
@@ -77,6 +78,7 @@ export default function CollectionMembers(props: PropsType) {
     await inviteMgr.invite(collection, username, pubkey, accessLevel);
     await fetchMembers();
     setAddMemberOpen(false);
+    setInviteSuccessOpen(true);
   }
 
   return (
@@ -147,6 +149,17 @@ export default function CollectionMembers(props: PropsType) {
           onClose={() => setAddMemberOpen(false)}
         />
       }
+
+      <ConfirmationDialog
+        title="Invite user"
+        labelOk="OK"
+        open={inviteSuccessOpen}
+        onOk={() => setInviteSuccessOpen(false)}
+      >
+        <p>
+          Invitation sent. User will be added once the invitation has been accepted.
+        </p>
+      </ConfirmationDialog>
     </>
   );
 }
