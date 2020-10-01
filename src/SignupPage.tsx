@@ -49,7 +49,7 @@ export default function SignupPage() {
 
   if (credentials) {
     return (
-      <Redirect to={routeResolver.getRoute("home")} />
+      <Redirect to={routeResolver.getRoute("wizard")} />
     );
   }
 
