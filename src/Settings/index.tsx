@@ -54,7 +54,9 @@ export default React.memo(function Settings() {
       <Container>
         <h1>Security Fingerprint</h1>
         <SecurityFingerprint />
-        <h1>Date & Time</h1>
+
+        <h1>Look & Feel</h1>
+        <h2>Date & Time</h2>
         <FormControl style={{ width: "15em" }}>
           <InputLabel>
             Locale
@@ -68,7 +70,6 @@ export default React.memo(function Settings() {
             <MenuItem value="en-us">English (United States)</MenuItem>
           </Select>
         </FormControl>
-        <h1>Experimental</h1>
         <h2>Dark mode</h2>
         <FormGroup>
           <FormControlLabel
