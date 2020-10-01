@@ -62,6 +62,7 @@ function SetupCollectionsPage(props: PagePropsType) {
         const meta: Etebase.CollectionMetadata = {
           type,
           name,
+          mtime: (new Date()).getTime(),
         };
         const collection = await colMgr.create(meta, "");
         await colMgr.upload(collection);
