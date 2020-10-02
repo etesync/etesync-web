@@ -30,6 +30,11 @@ export type SyncGeneralData = {
   lastSyncDate: Date;
 };
 
+export type Message = {
+  message: string;
+  severity: "error" | "warning" | "info" | "success";
+};
+
 export interface CredentialsData {
   storedSession?: string;
 }
@@ -214,6 +219,18 @@ export const errorsReducer = handleActions(
     },
     [actions.clearErros.toString()]: (state: List<Error>, _action: Action<any>) => {
       return state.clear();
+    },
+  },
+  List([])
+);
+
+export const messagesReducer = handleActions(
+  {
+    [actions.pushMessage.toString()]: (state: List<Message>, action: Action<Message>) => {
+      return state.push(action.payload);
+    },
+    [actions.popMessage.toString()]: (state: List<Message>, _action: Action<unknown>) => {
+      return state.remove(0);
     },
   },
   List([])

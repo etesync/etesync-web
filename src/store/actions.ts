@@ -6,6 +6,7 @@ import { createAction as origCreateAction, ActionMeta } from "redux-actions";
 import * as Etebase from "etebase";
 
 import { SettingsType } from "./";
+import { Message } from "./reducers";
 
 type FunctionAny = (...args: any[]) => any;
 
@@ -162,6 +163,20 @@ export const appendError = createAction(
 export const clearErros = createAction(
   "CLEAR_ERRORS",
   (_etesync: Etebase.Account) => {
+    return true;
+  }
+);
+
+export const pushMessage = createAction(
+  "PUSH_MESSAGE",
+  (message: Message) => {
+    return message;
+  }
+);
+
+export const popMessage = createAction(
+  "POP_MESSAGE",
+  () => {
     return true;
   }
 );

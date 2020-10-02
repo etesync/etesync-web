@@ -11,9 +11,9 @@ import * as Etebase from "etebase";
 import { List, Map as ImmutableMap } from "immutable";
 import {
   SettingsType,
-  fetchCount, credentials, settingsReducer, encryptionKeyReducer, errorsReducer,
+  fetchCount, credentials, settingsReducer, encryptionKeyReducer, errorsReducer, messagesReducer,
   syncGeneral, syncCollections, collections, items,
-  SyncGeneralData, SyncCollectionsData, CacheCollectionsData, CacheItemsData, CredentialsData,
+  SyncGeneralData, SyncCollectionsData, CacheCollectionsData, CacheItemsData, CredentialsData, Message,
 } from "./reducers";
 
 export interface StoreState {
@@ -30,6 +30,7 @@ export interface StoreState {
     items: CacheItemsData;
   };
   errors: List<Error>;
+  messages: List<Message>;
 }
 
 const settingsMigrations = {
@@ -135,6 +136,7 @@ const reducers = combineReducers({
     items,
   })),
   errors: errorsReducer,
+  messages: messagesReducer,
 });
 
 export default reducers;

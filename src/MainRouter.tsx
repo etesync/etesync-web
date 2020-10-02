@@ -10,35 +10,66 @@ import { routeResolver } from "./App";
 import SignupPage from "./SignupPage";
 import LoginPage from "./LoginPage";
 import WizardPage from "./WizardPage";
+import { Snackbar } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
+import { useSelector, useDispatch } from "react-redux";
+import { StoreState } from "./store";
+import { popMessage } from "./store/actions";
 
 
 export default function MainRouter() {
   return (
-    <Switch>
-      <Route
-        path={routeResolver.getRoute("signup")}
-        exact
-      >
-        <SignupPage />
-      </Route>
-      <Route
-        path={routeResolver.getRoute("login")}
-        exact
-      >
-        <LoginPage />
-      </Route>
-      <PrivateRoute
-        path={routeResolver.getRoute("wizard")}
-        exact
-      >
-        <WizardPage />
-      </PrivateRoute>
-      <PrivateRoute
-        path="*"
-      >
-        <SyncGate />
-      </PrivateRoute>
-    </Switch>
+    <>
+      <Switch>
+        <Route
+          path={routeResolver.getRoute("signup")}
+          exact
+        >
+          <SignupPage />
+        </Route>
+        <Route
+          path={routeResolver.getRoute("login")}
+          exact
+        >
+          <LoginPage />
+        </Route>
+        <PrivateRoute
+          path={routeResolver.getRoute("wizard")}
+          exact
+        >
+          <WizardPage />
+        </PrivateRoute>
+        <PrivateRoute
+          path="*"
+        >
+          <SyncGate />
+        </PrivateRoute>
+      </Switch>
+      <GlobalMessages />
+    </>
+  );
+}
+
+function GlobalMessages() {
+  const dispatch = useDispatch();
+  const message = useSelector((state: StoreState) => state.messages.first(undefined));
+
+  function handleClose() {
+    dispatch(popMessage());
+  }
+
+  return (
+    <Snackbar
+      key={message?.message}
+      open={!!message}
+      autoHideDuration={5000}
+      onClose={handleClose}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+    >
+      <Alert onClose={handleClose} severity={message?.severity}>
+        {message?.message}
+      </Alert>
+    </Snackbar>
   );
 }
 
