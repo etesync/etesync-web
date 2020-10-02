@@ -56,7 +56,7 @@ export default function CollectionMemberAddDialog(props: PropsType) {
           onOk={onClose}
           onCancel={onClose}
         >
-          User ({addUser}) not found. Have they setup their encryption password from one of the apps?
+          User ({addUser}) not found.
         </ConfirmationDialog>
       </>
     );
