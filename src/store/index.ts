@@ -25,7 +25,8 @@ if (process.env.NODE_ENV === "development") {
   middleware.push(createLogger());
 }
 
-export function asyncDispatch<T, V>(action: ActionMeta<Promise<T>, V>): Promise<ActionMeta<T, V>> {
+// FIXME: Hack, we don't actually return a promise when one is not passed.
+export function asyncDispatch<T, V>(action: ActionMeta<Promise<T> | T, V>): Promise<ActionMeta<T, V>> {
   return store.dispatch(action) as any;
 }
 
