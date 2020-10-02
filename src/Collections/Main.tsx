@@ -19,7 +19,7 @@ import CollectionEdit from "./CollectionEdit";
 import CollectionMembers from "./CollectionMembers";
 import Collection from "./Collection";
 import { useAsyncDispatch } from "../store";
-import { collectionUpload } from "../store/actions";
+import { collectionUpload, pushMessage } from "../store/actions";
 import Invitations from "./Invitations";
 
 const decryptCollections = getDecryptCollectionsFunction();
@@ -48,6 +48,7 @@ export default function CollectionsMain() {
   async function onSave(collection: Etebase.Collection): Promise<void> {
     const colMgr = getCollectionManager(etebase);
     await dispatch(collectionUpload(colMgr, collection));
+    dispatch(pushMessage({ message: "Collection saved", severity: "success" }));
 
     history.push(routeResolver.getRoute("collections"));
   }
@@ -59,6 +60,7 @@ export default function CollectionsMain() {
     await collection.setMeta({ ...meta, mtime });
     await collection.delete(true);
     await dispatch(collectionUpload(colMgr, collection));
+    dispatch(pushMessage({ message: "Collection deleted", severity: "success" }));
 
     history.push(routeResolver.getRoute("collections"));
   }

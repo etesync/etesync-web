@@ -22,6 +22,8 @@ import { CachedCollection } from "../Pim/helpers";
 
 import CollectionMemberAddDialog from "./CollectionMemberAddDialog";
 import Alert from "@material-ui/lab/Alert";
+import { pushMessage } from "../store/actions";
+import { useDispatch } from "react-redux";
 
 interface PropsType {
   collection: CachedCollection;
@@ -29,10 +31,10 @@ interface PropsType {
 
 export default function CollectionMembers(props: PropsType) {
   const etebase = useCredentials()!;
+  const dispatch = useDispatch();
   const [members, setMembers] = React.useState<Etebase.CollectionMember[]>();
   const [revokeUser, setRevokeUser] = React.useState<Etebase.CollectionMember | null>(null);
   const [addMemberOpen, setAddMemberOpen] = React.useState(false);
-  const [inviteSuccessOpen, setInviteSuccessOpen] = React.useState(false);
   const [error, setError] = React.useState<Error>();
 
   const { collection, metadata } = props.collection;
@@ -71,6 +73,7 @@ export default function CollectionMembers(props: PropsType) {
     await memberManager.remove(revokeUser!.username);
     await fetchMembers();
     setRevokeUser(null);
+    dispatch(pushMessage({ message: "Removed member", severity: "success" }));
   }
 
   async function onMemberAdd(username: string, pubkey: Uint8Array, accessLevel: Etebase.CollectionAccessLevel) {
@@ -78,7 +81,7 @@ export default function CollectionMembers(props: PropsType) {
     await inviteMgr.invite(collection, username, pubkey, accessLevel);
     await fetchMembers();
     setAddMemberOpen(false);
-    setInviteSuccessOpen(true);
+    dispatch(pushMessage({ message: "Invitation sent", severity: "success" }));
   }
 
   return (
@@ -149,17 +152,6 @@ export default function CollectionMembers(props: PropsType) {
           onClose={() => setAddMemberOpen(false)}
         />
       }
-
-      <ConfirmationDialog
-        title="Invite user"
-        labelOk="OK"
-        open={inviteSuccessOpen}
-        onOk={() => setInviteSuccessOpen(false)}
-      >
-        <p>
-          Invitation sent. User will be added once the invitation has been accepted.
-        </p>
-      </ConfirmationDialog>
     </>
   );
 }
