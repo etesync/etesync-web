@@ -25,13 +25,12 @@ import { login } from "./store/actions";
 import { Link } from "react-router-dom";
 
 interface FormErrors {
-  errorUsername?: string;
-  errorEmail?: string;
-  errorPassword?: string;
-  errorEncryptionPassword?: string;
-  errorServer?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+  server?: string;
 
-  errorGeneral?: string;
+  general?: string;
 }
 
 export default function SignupPage() {
@@ -58,23 +57,23 @@ export default function SignupPage() {
       const errors: FormErrors = {};
       const fieldRequired = "This field is required!";
       if (!username) {
-        errors.errorUsername = fieldRequired;
+        errors.username = fieldRequired;
       }
       if (!email) {
-        errors.errorEmail = fieldRequired;
+        errors.email = fieldRequired;
       }
       if (!password) {
-        errors.errorPassword = fieldRequired;
+        errors.password = fieldRequired;
       } else {
         const passwordRulesError = enforcePasswordRules(password);
         if (passwordRulesError) {
-          errors.errorPassword = passwordRulesError;
+          errors.password = passwordRulesError;
         }
       }
 
       if (process.env.NODE_ENV !== "development") {
         if (showAdvanced && !server.startsWith("https://")) {
-          errors.errorServer = "Server URI must start with https://";
+          errors.server = "Server URI must start with https://";
         }
       }
 
@@ -100,20 +99,20 @@ export default function SignupPage() {
         if (e.content.errors) {
           for (const field of e.content.errors) {
             if (field.field === "user.username") {
-              errors.errorUsername = field.detail;
+              errors.username = field.detail;
               found = true;
             } else if (!field.field) {
-              errors.errorGeneral = field.detail;
+              errors.general = field.detail;
               found = true;
             }
           }
         }
 
         if (!found) {
-          errors.errorGeneral = e.content.detail ?? e.toString();
+          errors.general = e.content.detail ?? e.toString();
         }
       } else {
-        errors.errorGeneral = e.toString();
+        errors.general = e.toString();
       }
       setErrors(errors);
     } finally {
@@ -150,8 +149,8 @@ export default function SignupPage() {
         <TextField
           type="url"
           style={styles.textField}
-          error={!!errors.errorServer}
-          helperText={errors.errorServer}
+          error={!!errors.server}
+          helperText={errors.server}
           label="Server"
           value={server}
           onChange={handleInputChange(setServer)}
@@ -178,8 +177,8 @@ export default function SignupPage() {
         <TextField
           type="text"
           style={styles.textField}
-          error={!!errors.errorUsername}
-          helperText={errors.errorUsername}
+          error={!!errors.username}
+          helperText={errors.username}
           label="Username"
           value={username}
           onChange={handleInputChange(setUsername)}
@@ -188,8 +187,8 @@ export default function SignupPage() {
         <TextField
           type="email"
           style={styles.textField}
-          error={!!errors.errorEmail}
-          helperText={errors.errorEmail}
+          error={!!errors.email}
+          helperText={errors.email}
           label="Email"
           value={email}
           onChange={handleInputChange(setEmail)}
@@ -197,8 +196,8 @@ export default function SignupPage() {
         <br />
         <PasswordField
           style={styles.textField}
-          error={!!errors.errorPassword}
-          helperText={errors.errorPassword}
+          error={!!errors.password}
+          helperText={errors.password}
           label="Password"
           name="password"
           inputProps={{
@@ -221,8 +220,8 @@ export default function SignupPage() {
           />
         </FormGroup>
         {advancedSettings}
-        {errors.errorGeneral && (
-          <Alert severity="error" style={styles.infoAlert}>{errors.errorGeneral}</Alert>
+        {errors.general && (
+          <Alert severity="error" style={styles.infoAlert}>{errors.general}</Alert>
         )}
 
         <Alert severity="warning" style={styles.infoAlert}>
