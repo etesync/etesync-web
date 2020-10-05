@@ -101,6 +101,9 @@ export default function SignupPage() {
             if (field.field === "user.username") {
               errors.username = field.detail;
               found = true;
+            } else if (field.field === "user.email") {
+              errors.email = field.detail;
+              found = true;
             } else if (!field.field) {
               errors.general = field.detail;
               found = true;
