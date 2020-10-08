@@ -23,7 +23,7 @@ class DateTimePicker extends React.PureComponent<PropsType> {
 
   public render() {
     const Picker = (this.props.dateOnly) ? KeyboardDatePicker : KeyboardDateTimePicker;
-    const dateFormat = (this.props.dateOnly) ? "DD/MM/YYYY" : "DD/MM/YYYY HH:mm";
+    const dateFormat = (this.props.dateOnly) ? "L" : "L LT";
     return (
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <Picker
