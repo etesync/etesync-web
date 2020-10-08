@@ -1,6 +1,6 @@
 <p align="center">
   <img width="120" src="src/images/logo.svg" />
-  <h1 align="center">EteSync - Secure Data Sync</h1>
+  <h1 align="center">EteSync - Encrypt Everything</h1>
 </p>
 
 The EteSync Web App - Use EteSync from the browser!
@@ -11,11 +11,7 @@ The EteSync Web App - Use EteSync from the browser!
 
 # Usage
 
-**Note:** This is still in an early stage, but it should be safe to use. It uses the battle
-tested [sjcl](https://crypto.stanford.edu/sjcl/) javascript crypto library for encryption,
-so that should be fine too.
-
-A live instance is available on: https://client.etesync.com
+A live instance is available on: https://pim.etesync.com
 
 Please be advised that while it's probably safe enough to use the hosted client
 in many cases, it's generally not preferable. It's recommended that you use signed
@@ -28,7 +24,7 @@ More info is available on the [FAQ](https://www.etesync.com/faq/#web-client).
 You can either self-host your own client to be served from your own server, or
 better yet, just run an instance locally.
 
-You can get the latest version of the web client from https://client.etesync.com/etesync-web.tgz. This
+You can get the latest version of the web client from https://pim.etesync.com/etesync-web.tgz. This
 file is automatically generated on each deploy and is exactly the same as the delpoyed version.
 After fetching thise file you need to extract it by e.g. running `tar -xzf etesync-web.tgz`, and then
 you can serve the files using your favourite web server. Please keep in mind that opening the HTML files
@@ -47,7 +43,7 @@ Then clone this repository `yarn`, run `yarn` and wait until all of the deps are
 Then it's recommended you run `yarn build` to build a production ready client you should serve
 (even if run locally!) and then just serve the `build` directory from a web server.
 
-The URL of the EteSync API the web app connects to defaults to `etesync.com`, but can be changed on
+The URL of the EteSync API the web app connects to defaults to `api.etebase.com`, but can be changed on
 the login page. You can change this default by setting the environment variable `REACT_APP_DEFAULT_API_PATH`
 during the build. This can be useful for self-hosting. You can set the default URL to the address
 of your self-hosted EteSync server so you don't have to change the address for every login.
