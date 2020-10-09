@@ -192,6 +192,21 @@ export default React.memo(function Settings() {
             <h2>Security Fingerprint</h2>
             <SecurityFingerprint />
 
+            <h2>Account Dashboard</h2>
+            <p>
+              Change your payment info, plan and other account settings
+            </p>
+            <Button color="secondary" variant="contained" onClick={async () => {
+              try {
+                const url = await etebase!.getDashboardUrl();
+                window.open(url, "_blank", "noopener,noreferrer");
+              } catch (e) {
+                dispatch(pushMessage({ message: e.message, severity: "error" }));
+              }
+            }}>
+              Open Dashboard
+            </Button>
+
             <h2>Password</h2>
             <ChangePassword />
           </>
