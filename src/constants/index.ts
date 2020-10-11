@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 export const appName = "EteSync";
-export const defaultServerUrl = "https://api.etebase.com/partner/etesync/";
+export const defaultServerUrl = process.env.REACT_APP_DEFAULT_API_PATH ?? "https://api.etebase.com/partner/etesync/";
 export const homePage = "https://www.etesync.com/";
 export const faq = homePage + "faq/";
 export const sourceCode = "https://github.com/etesync/etesync-web";
