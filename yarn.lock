@@ -4641,10 +4641,10 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-etebase@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/etebase/-/etebase-0.11.0.tgz#082e6785167957723419c8eac59372b70953a921"
-  integrity sha512-VZwYf/i9yy89TEm2vR2dREukVcfrLmnRPS6xo5WmOTZHqBXxxMfjXtIKbH9B4xpqT5khzHmKQW6y9qFCxmWzgg==
+etebase@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/etebase/-/etebase-0.14.0.tgz#87a7e0c678a6c842aa2c71af46aa0d4a11129441"
+  integrity sha512-PYTgQ1w/qHjazlXoC2XZ7pMccwvIa1Beqv+iY5atwJ4zbxcfqgDgy/ibsOYXftr9h7YHxSnIKuhF5eHLlsh19A==
   dependencies:
     "@msgpack/msgpack" "^1.12.2"
     libsodium-wrappers "0.7.6"
