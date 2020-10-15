@@ -96,7 +96,7 @@ class AddressBook extends React.PureComponent<PropsType> {
       : sortedEntries;
 
     return (
-      <List style={{ height: "calc(100vh - 300px)" }}>
+      <List style={{ height: "calc(100vh - 350px)" }}>
         <AutoSizer>
           {({ height, width }) => (
             <VirtualizedList
