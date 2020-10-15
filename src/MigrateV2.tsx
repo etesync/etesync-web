@@ -448,14 +448,13 @@ export function WizardMigrationPage(props: OurPagePropsType) {
           }
         }
         const mtime = (new Date()).getTime();
-        const meta: Etebase.CollectionMetadata = {
-          type: colType,
+        const meta: Etebase.ItemMetadata = {
           name: info.displayName,
           description: info.description,
           color: (info.color !== undefined) ? colorIntToHtml(info.color) : undefined,
           mtime,
         };
-        const collection = await colMgr.create(meta, "");
+        const collection = await colMgr.create(colType, meta, "");
         await colMgr.upload(collection);
 
         const itemMgr = colMgr.getItemManager(collection);
