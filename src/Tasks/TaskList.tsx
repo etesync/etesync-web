@@ -4,14 +4,13 @@
 import * as React from "react";
 
 import { List } from "../widgets/List";
-import Toast, { PropsType as ToastProps } from "../widgets/Toast";
 
 import { TaskType, PimType, TaskStatusType } from "../pim-types";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import { useTheme, makeStyles } from "@material-ui/core/styles";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import Fuse from "fuse.js";
 
@@ -23,6 +22,7 @@ import QuickAdd from "./QuickAdd";
 import { StoreState } from "../store";
 import { formatDate } from "../helpers";
 import { CachedCollection } from "../Pim/helpers";
+import { pushMessage } from "../store/actions";
 
 function sortCompleted(a: TaskType, b: TaskType) {
   return (!!a.finished === !!b.finished) ? 0 : (a.finished) ? 1 : -1;
@@ -109,9 +109,9 @@ export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
   const [showHidden, setShowHidden] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [toast, setToast] = React.useState<{ message: string, severity: ToastProps["severity"] }>({ message: "", severity: undefined });
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
+  const dispatch = useDispatch();
   const theme = useTheme();
   const classes = useStyles();
 
@@ -126,10 +126,10 @@ export default function TaskList(props: PropsType) {
     try {
       await props.onItemSave(clonedTask, task.collectionUid!, task);
       if (nextTask) {
-        setToast({ message: `${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`, severity: "success" });
+        dispatch(pushMessage({ message: `${nextTask.title} rescheduled for ${formatDate(nextTask.startDate ?? nextTask.dueDate)}`, severity: "success" }));
       }
     } catch (_e) {
-      setToast({ message: "Failed to save changes. This may be due to a network error.", severity: "error" });
+      dispatch(pushMessage({ message: "Failed to save changes. This may be due to a network error.", severity: "error" }));
     }
   };
 
@@ -230,10 +230,6 @@ export default function TaskList(props: PropsType) {
           {itemList}
         </List>
       </Grid>
-
-      <Toast open={!!toast.message} severity={toast.severity} onClose={() => setToast({ message: "", severity: undefined })} autoHideDuration={3000}>
-        {toast.message}
-      </Toast>
     </Grid>
   );
 }
