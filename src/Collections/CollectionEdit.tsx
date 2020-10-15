@@ -40,19 +40,21 @@ interface FormErrors {
 export default function CollectionEdit(props: PropsType) {
   const [errors, setErrors] = React.useState<FormErrors>({});
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
-  const [info, setInfo] = React.useState<Etebase.CollectionMetadata>();
+  const [colType, setColType] = React.useState("");
+  const [info, setInfo] = React.useState<Etebase.ItemMetadata>();
   const [selectedColor, setSelectedColor] = React.useState("");
   const etebase = useCredentials()!;
 
   React.useEffect(() => {
     if (props.collection !== undefined) {
+      setColType(props.collection.collectionType);
       setInfo(props.collection.metadata);
       if (props.collection.metadata.color) {
         setSelectedColor(props.collection.metadata.color);
       }
     } else {
+      setColType("etebase.vcard");
       setInfo({
-        type: "etebase.vcard",
         name: "",
         description: "",
       });
@@ -98,7 +100,7 @@ export default function CollectionEdit(props: PropsType) {
       collection = props.collection.collection;
       await collection.setMeta(meta);
     } else {
-      collection = await colMgr.create(meta, "");
+      collection = await colMgr.create(colType, meta, "");
     }
 
     onSave(collection);
@@ -111,7 +113,7 @@ export default function CollectionEdit(props: PropsType) {
   const { collection, onDelete, onCancel } = props;
   const item = collection?.metadata;
 
-  const pageTitle = (item !== undefined) ? item.name : "New Collection";
+  const pageTitle = (item !== undefined) ? item.name! : "New Collection";
 
   const styles = {
     fullWidth: {
@@ -130,7 +132,7 @@ export default function CollectionEdit(props: PropsType) {
     "etebase.vtodo": "Task List",
   };
   let collectionColorBox: React.ReactNode;
-  switch (info.type) {
+  switch (colType) {
     case "etebase.vevent":
     case "etebase.vtodo":
       collectionColorBox = (
@@ -156,8 +158,8 @@ export default function CollectionEdit(props: PropsType) {
             <Select
               name="type"
               required
-              value={info.type}
-              onChange={(event: React.ChangeEvent<{ value: string }>) => setInfo({ ...info, type: event.target.value })}
+              value={colType}
+              onChange={(event: React.ChangeEvent<{ value: string }>) => setColType(event.target.value)}
             >
               {Object.keys(colTypes).map((x) => (
                 <MenuItem key={x} value={x}>{colTypes[x]}</MenuItem>

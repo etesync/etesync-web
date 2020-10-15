@@ -38,13 +38,14 @@ export default function CollectionList(props: PropsType) {
   }
 
   for (const col of props.collections) {
-    if (collectionMap[col.metadata.type]) {
-      const supportsColor = (["etebase.vevent", "etebase.vtodo"].includes(col.metadata.type));
+    const colType = col.collectionType;
+    if (collectionMap[colType]) {
+      const supportsColor = (["etebase.vevent", "etebase.vtodo"].includes(colType));
       const colorBox = (supportsColor) ? (
         <ColorBox size={24} color={col.metadata.color || defaultColor} />
       ) : undefined;
 
-      collectionMap[col.metadata.type].push((
+      collectionMap[colType].push((
         <ListItem key={col.collection.uid} rightIcon={colorBox} insetChildren
           onClick={() => colClicked(col.collection.uid)}>
           {col.metadata.name}

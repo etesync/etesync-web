@@ -48,7 +48,7 @@ class Collection extends React.Component<PropsType> {
 
     return (
       <React.Fragment>
-        <AppBarOverride title={metadata.name}>
+        <AppBarOverride title={metadata.name!!}>
           {isAdmin &&
             <>
               <IconButton

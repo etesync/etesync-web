@@ -64,10 +64,10 @@ export class SyncManager {
     let stoken = syncGeneral?.stoken;
     let done = false;
     while (!done) {
-      const collections = await colMgr.list({ stoken, limit });
+      const collections = await colMgr.list(this.COLLECTION_TYPES, { stoken, limit });
       for (const col of collections.data) {
-        const meta = await col.getMeta();
-        if (this.COLLECTION_TYPES.includes(meta.type)) {
+        const collectionType = await col.getCollectionType();
+        if (this.COLLECTION_TYPES.includes(collectionType)) {
           store.dispatch(setCacheCollection(colMgr, col));
           await this.fetchCollection(col);
         }

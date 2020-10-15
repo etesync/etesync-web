@@ -9,7 +9,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.10.0",
-    "etebase": "^0.14.0",
+    "etebase": "^0.20.0",
     "fuse.js": "^5.0.9-beta",
     "ical.js": "^1.4.0",
     "immutable": "^4.0.0-rc.12",

@@ -56,8 +56,8 @@ export default function ItemChangeHistory(props: PropsType) {
   const [entries, setEntries] = React.useState<CachedItem[]>();
   const [dialog, setDialog] = React.useState<CachedItem>();
   const etebase = useCredentials()!;
-  const { collection, metadata } = props.collection;
-  const items = useItems(etebase, metadata.type);
+  const { collection, collectionType } = props.collection;
+  const items = useItems(etebase, collectionType);
 
   const item = items?.get(collection.uid)?.get(props.itemUid);
 

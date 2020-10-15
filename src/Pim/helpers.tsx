@@ -18,7 +18,8 @@ export const defaultColor = "#8BC34A";
 
 export interface CachedCollection {
   collection: Etebase.Collection;
-  metadata: Etebase.CollectionMetadata;
+  metadata: Etebase.ItemMetadata;
+  collectionType: string;
 }
 
 export function getRawItemNavigationUid(collectionUid: string, itemUid: string) {
@@ -40,6 +41,7 @@ export function getDecryptCollectionsFunction(_colType?: string) {
             entries.push({
               collection,
               metadata: await collection.getMeta(),
+              collectionType: await collection.getCollectionType(),
             });
           } catch (e) {
             store.dispatch(appendError(e));

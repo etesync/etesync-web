@@ -158,17 +158,17 @@ export default function ImportDialog(props: PropsType) {
     }
   }
 
-  const { metadata } = props.collection;
+  const { collectionType } = props.collection;
   let acceptTypes;
   let dropFunction;
 
-  if (metadata.type === "etebase.vcard") {
+  if (collectionType === "etebase.vcard") {
     acceptTypes = ["text/vcard", "text/directory", "text/x-vcard", ".vcf"];
     dropFunction = onFileDropContact;
-  } else if (metadata.type === "etebase.vevent") {
+  } else if (collectionType === "etebase.vevent") {
     acceptTypes = ["text/calendar", ".ics", ".ical"];
     dropFunction = onFileDropEvent;
-  } else if (metadata.type === "etebase.vtodo") {
+  } else if (collectionType === "etebase.vtodo") {
     acceptTypes = ["text/calendar", ".ics", ".ical"];
     dropFunction = onFileDropTask;
   }

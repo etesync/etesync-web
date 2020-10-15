@@ -59,12 +59,11 @@ function SetupCollectionsPage(props: PagePropsType) {
         ["etebase.vtodo", "My Tasks"],
       ];
       for (const [type, name] of types) {
-        const meta: Etebase.CollectionMetadata = {
-          type,
+        const meta: Etebase.ItemMetadata = {
           name,
           mtime: (new Date()).getTime(),
         };
-        const collection = await colMgr.create(meta, "");
+        const collection = await colMgr.create(type, meta, "");
         await colMgr.upload(collection);
       }
 

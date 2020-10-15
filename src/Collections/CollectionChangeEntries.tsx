@@ -47,9 +47,8 @@ export default function CollectionChangeEntries(props: PropsType) {
   const history = useHistory();
   const etebase = useCredentials()!;
 
-  const { collection, metadata } = props.collection;
-  const colType = metadata.type;
-  const items = useItems(etebase, colType);
+  const { collection, collectionType } = props.collection;
+  const items = useItems(etebase, collectionType);
 
   React.useEffect(() => {
     if (items) {
@@ -71,7 +70,7 @@ export default function CollectionChangeEntries(props: PropsType) {
   });
 
   let changelogRoute = "";
-  switch (colType) {
+  switch (collectionType) {
     case "etebase.vevent": {
       changelogRoute = "pim.events._id.log";
       break;
