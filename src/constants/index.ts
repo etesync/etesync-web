@@ -5,6 +5,7 @@ export const appName = "EteSync";
 export const defaultServerUrl = process.env.REACT_APP_DEFAULT_API_PATH ?? "https://api.etebase.com/partner/etesync/";
 export const homePage = "https://www.etesync.com/";
 export const faq = homePage + "faq/";
+export const pricing = homePage + "pricing/";
 export const sourceCode = "https://github.com/etesync/etesync-web";
 export const reportIssue = sourceCode + "/issues";
 

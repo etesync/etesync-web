@@ -24,6 +24,8 @@ import { startTask, PASSWORD_MIN_LENGTH, enforcePasswordRules } from "./helpers"
 import { login } from "./store/actions";
 import { Link } from "react-router-dom";
 
+import * as C from "./constants";
+
 interface FormErrors {
   username?: string;
   email?: string;
@@ -176,6 +178,17 @@ export default function SignupPage() {
     <Container style={{ maxWidth: "30rem" }}>
       <h2 style={{ marginBottom: "0.1em" }}>Signup</h2>
       <div style={{ fontSize: "90%" }}>or <Link to={routeResolver.getRoute("home")}>log in to your account</Link></div>
+
+      <Alert
+        style={styles.infoAlert}
+        severity="info"
+      >
+        <a href={C.pricing} style={{ color: "inherit", textDecoration: "inherit", display: "block" }}>
+          You are signing up for a free trial. Click here for pricing information.
+        </a>
+      </Alert>
+
+
       <form style={styles.form} onSubmit={signup}>
         <TextField
           type="text"
