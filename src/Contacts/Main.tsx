@@ -119,6 +119,21 @@ export default function ContactsMain() {
         />
       </Route>
       <Route
+        path={routeResolver.getRoute("pim.contacts._id.log")}
+        render={({ match }) => {
+          // We have this path outside because we don't want the item existing check
+          const [colUid, itemUid] = match.params.itemUid.split("|");
+          const cachedCollection = cachedCollections!.find((x) => x.collection.uid === colUid)!;
+          if (!cachedCollection) {
+            return (<PageNotFound />);
+          }
+
+          return (
+            <ItemChangeHistory collection={cachedCollection} itemUid={itemUid} />
+          );
+        }}
+      />
+      <Route
         path={routeResolver.getRoute("pim.contacts._id")}
         render={({ match }) => {
           const [colUid, itemUid] = match.params.itemUid.split("|");
@@ -147,19 +162,6 @@ export default function ContactsMain() {
                   history={history}
                 />
               </Route>
-              <Route
-                path={routeResolver.getRoute("pim.contacts._id.log")}
-                render={() => {
-                  const cachedCollection = cachedCollections!.find((x) => x.collection.uid === colUid)!;
-                  if (!cachedCollection) {
-                    return (<PageNotFound />);
-                  }
-
-                  return (
-                    <ItemChangeHistory collection={cachedCollection} itemUid={itemUid} />
-                  );
-                }}
-              />
               <Route
                 path={routeResolver.getRoute("pim.contacts._id")}
                 exact

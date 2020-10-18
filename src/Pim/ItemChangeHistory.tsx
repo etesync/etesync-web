@@ -16,6 +16,7 @@ import LoadingIndicator from "../widgets/LoadingIndicator";
 import GenericChangeHistory from "../components/GenericChangeHistory";
 import { useItems } from "../etebase-helpers";
 import { CachedCollection } from "./helpers";
+import PageNotFound from "../PageNotFound";
 
 export interface CachedItem {
   item: Etebase.Item;
@@ -67,6 +68,10 @@ export default function ItemChangeHistory(props: PropsType) {
         .then((entries) => setEntries(entries));
     }
   }, [etebase, collection, item]);
+
+  if (!item) {
+    return (<PageNotFound />);
+  }
 
   if (!entries) {
     return (

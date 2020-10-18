@@ -121,6 +121,21 @@ export default function TasksMain() {
         />
       </Route>
       <Route
+        path={routeResolver.getRoute("pim.tasks._id.log")}
+        render={({ match }) => {
+          // We have this path outside because we don't want the item existing check
+          const [colUid, itemUid] = match.params.itemUid.split("|");
+          const cachedCollection = cachedCollections!.find((x) => x.collection.uid === colUid)!;
+          if (!cachedCollection) {
+            return (<PageNotFound />);
+          }
+
+          return (
+            <ItemChangeHistory collection={cachedCollection} itemUid={itemUid} />
+          );
+        }}
+      />
+      <Route
         path={routeResolver.getRoute("pim.tasks._id")}
         render={({ match }) => {
           const [colUid, itemUid] = match.params.itemUid.split("|");
@@ -149,19 +164,6 @@ export default function TasksMain() {
                   history={history}
                 />
               </Route>
-              <Route
-                path={routeResolver.getRoute("pim.tasks._id.log")}
-                render={() => {
-                  const cachedCollection = cachedCollections!.find((x) => x.collection.uid === colUid)!;
-                  if (!cachedCollection) {
-                    return (<PageNotFound />);
-                  }
-
-                  return (
-                    <ItemChangeHistory collection={cachedCollection} itemUid={itemUid} />
-                  );
-                }}
-              />
               <Route
                 path={routeResolver.getRoute("pim.tasks._id")}
                 exact
