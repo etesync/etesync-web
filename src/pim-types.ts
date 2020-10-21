@@ -10,6 +10,8 @@ export const PRODID = "-//iCal.js EteSync iOS";
 
 export interface PimType {
   uid: string;
+  collectionUid?: string;
+  itemUid?: string;
   toIcal(): string;
   clone(): PimType;
   lastModified: ICAL.Time | undefined;
@@ -55,6 +57,9 @@ export function parseString(content: string) {
 }
 
 export class EventType extends ICAL.Event implements PimType {
+  public collectionUid?: string;
+  public itemUid?: string;
+
   public static isEvent(comp: ICAL.Component) {
     return !!comp.getFirstSubcomponent("vevent");
   }
@@ -135,6 +140,8 @@ export class EventType extends ICAL.Event implements PimType {
   public clone() {
     const ret = new EventType(ICAL.Component.fromString(this.component.toString()));
     ret.color = this.color;
+    ret.collectionUid = this.collectionUid;
+    ret.itemUid = this.itemUid;
     return ret;
   }
 }
@@ -160,6 +167,9 @@ export function setTaskTags(tags: string[]) {
 }
 
 export class TaskType extends EventType {
+  public collectionUid?: string;
+  public itemUid?: string;
+
   public static fromVCalendar(comp: ICAL.Component) {
     const task = new TaskType(comp.getFirstSubcomponent("vtodo"));
     // FIXME: we need to clone it so it loads the correct timezone and applies it
@@ -199,12 +209,18 @@ export class TaskType extends EventType {
   }
 
   set tags(tags: string[]) {
-    this.component.updatePropertyWithValue("categories", tags.join(","));
+    const property = this.component.getFirstProperty("categories");
+    if (property) {
+      property.setValues(tags);
+    } else {
+      const newProp = new ICAL.Property("categories", this.component);
+      newProp.setValues(tags);
+      this.component.addProperty(newProp);
+    }
   }
 
   get tags() {
-    const tags = this.component.getFirstPropertyValue("categories");
-    return tags ? tags.split(",") : [];
+    return this.component.getFirstProperty("categories")?.getValues() ?? [];
   }
 
   set dueDate(date: ICAL.Time | undefined) {
@@ -336,6 +352,9 @@ export class TaskType extends EventType {
 
 export class ContactType implements PimType {
   public comp: ICAL.Component;
+  public collectionUid?: string;
+  public itemUid?: string;
+
 
   public static parse(content: string) {
     return new ContactType(parseString(content));
@@ -379,6 +398,10 @@ export class ContactType implements PimType {
 
   get group() {
     const kind = this.comp.getFirstPropertyValue("kind");
-    return kind in ["group", "organization"];
+    return ["group", "organization"].includes(kind);
+  }
+
+  get members() {
+    return this.comp.getAllProperties("member").map((prop) => prop.getFirstValue<string>().replace("urn:uuid:", ""));
   }
 }
