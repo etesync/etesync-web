@@ -209,12 +209,18 @@ export class TaskType extends EventType {
   }
 
   set tags(tags: string[]) {
-    this.component.updatePropertyWithValue("categories", tags.join(","));
+    const property = this.component.getFirstProperty("categories");
+    if (property) {
+      property.setValues(tags);
+    } else {
+      const newProp = new ICAL.Property("categories", this.component);
+      newProp.setValues(tags);
+      this.component.addProperty(newProp);
+    }
   }
 
   get tags() {
-    const tags = this.component.getFirstPropertyValue("categories");
-    return tags ? tags.split(",") : [];
+    return this.component.getFirstProperty("categories")?.getValues() ?? [];
   }
 
   set dueDate(date: ICAL.Time | undefined) {
