@@ -25,6 +25,7 @@ import { login } from "./store/actions";
 import { Link } from "react-router-dom";
 
 import * as C from "./constants";
+import ExternalLink from "./widgets/ExternalLink";
 
 interface FormErrors {
   username?: string;
@@ -136,7 +137,7 @@ export default function SignupPage() {
       width: "18em",
     },
     submit: {
-      marginTop: 40,
+      marginTop: 20,
       textAlign: "right" as any,
     },
   };
@@ -243,6 +244,10 @@ export default function SignupPage() {
         <Alert severity="warning" style={styles.infoAlert}>
           Please make sure you remember your password, as it <em>can't</em> be recovered if lost!
         </Alert>
+
+        <p style={styles.infoAlert}>
+          You can also signup using <ExternalLink href={C.getApps}>any of the apps</ExternalLink>.
+        </p>
 
         <div style={styles.submit}>
           <Button
