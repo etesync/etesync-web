@@ -129,7 +129,7 @@ export default function WizardPage() {
     return (
       <Container>
         <div style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <h2 style={{ textAlign: "center" }}>Error!</h2>
+          <h2 style={{ textAlign: "center" }}>Important</h2>
           <p style={{ textAlign: "center" }}>
             {syncError?.message}
           </p>
