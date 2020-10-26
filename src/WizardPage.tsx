@@ -86,7 +86,16 @@ function SetupCollectionsPage(props: PagePropsType) {
         {(loading) ? (
           <LoadingIndicator style={{ display: "block", margin: "40px auto" }} />
         ) : (error) ? (
-          <Alert severity="error">{error.message}</Alert>
+          <>
+            <Alert severity="error">{error.message}</Alert>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={props.next}
+            >
+              Skip
+            </Button>
+          </>
         ) : (
           <img src={wizardCreate} style={{ maxWidth: "30em", marginTop: "2em" }} />
         )}
