@@ -2,6 +2,9 @@ import * as React from "react";
 
 import InboxIcon from "@material-ui/icons/Inbox";
 import LabelIcon from "@material-ui/icons/LabelOutlined";
+import AddIcon from "@material-ui/icons/Add";
+
+import IconButton from "@material-ui/core/IconButton";
 
 import { List, ListItem, ListSubheader } from "../widgets/List";
 import { ContactType } from "../pim-types";
@@ -33,10 +36,11 @@ interface PropsType {
   groups: ContactType[];
   filterByGroup: string | undefined;
   setFilterByGroup: (group: string | undefined) => void;
+  newGroup: () => void;
 }
 
 export default React.memo(function Sidebar(props: PropsType) {
-  const { groups, filterByGroup, setFilterByGroup } = props;
+  const { groups, filterByGroup, setFilterByGroup, newGroup } = props;
 
   const groupList = [...groups].sort((a, b) => a.fn.localeCompare(b.fn)).map((group) => (
     <SidebarListItem
@@ -59,7 +63,18 @@ export default React.memo(function Sidebar(props: PropsType) {
         setFilterByGroup={setFilterByGroup}
       />
 
-      <ListSubheader>Groups</ListSubheader>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <ListSubheader>
+          Groups
+        </ListSubheader>
+        <IconButton
+          edge="end"
+          onClick={newGroup}
+        >
+          <AddIcon />
+        </IconButton>
+      </div>
+
       {groupList}
     </List>
   );

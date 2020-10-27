@@ -44,7 +44,10 @@ export const routeResolver = new RouteResolver({
         edit: "edit",
         log: "log",
       },
-      new: "new",
+      new: {
+        contact: "contact",
+        group: "group",
+      },
     },
     events: {
       _id: {

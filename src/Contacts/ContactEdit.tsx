@@ -120,6 +120,7 @@ interface PropsType {
   collections: CachedCollection[];
   initialCollection?: string;
   item?: ContactType;
+  group?: boolean;
   onSave: (contact: ContactType, collectionUid: string, originalContact?: ContactType) => Promise<void>;
   onDelete: (contact: ContactType, collectionUid: string) => void;
   onCancel: () => void;
@@ -142,6 +143,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     org: string;
     note: string;
     title: string;
+    group: boolean;
 
     collectionUid: string;
     showDeleteDialog: boolean;
@@ -164,6 +166,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
       org: "",
       note: "",
       title: "",
+      group: false,
 
       collectionUid: "",
       showDeleteDialog: false,
@@ -172,6 +175,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     if (this.props.item !== undefined) {
       const contact = this.props.item;
 
+      this.state.group = contact.group;
       this.state.uid = contact.uid;
       this.state.fn = contact.fn ? contact.fn : "";
       if (contact.n) {
@@ -301,6 +305,9 @@ class ContactEdit extends React.PureComponent<PropsType> {
     comp.updatePropertyWithValue("version", "4.0");
     comp.updatePropertyWithValue("uid", this.state.uid);
     comp.updatePropertyWithValue("rev", ICAL.Time.now());
+    if (this.props.group) {
+      comp.updatePropertyWithValue("kind", "group");
+    }
 
     const lastName = this.state.lastName.trim();
     const firstName = this.state.firstName.trim();
@@ -341,13 +348,6 @@ class ContactEdit extends React.PureComponent<PropsType> {
       });
     }
 
-    setProperties("tel", this.state.phone);
-    setProperties("email", this.state.email);
-    setProperties("adr", this.state.address);
-    setProperties("impp", this.state.impp.map((x) => (
-      { type: x.type, value: x.type + ":" + x.value }
-    )));
-
     function setProperty(name: string, value: string) {
       comp.removeAllProperties(name);
       if (value !== "") {
@@ -355,10 +355,19 @@ class ContactEdit extends React.PureComponent<PropsType> {
       }
     }
 
-    setProperty("org", this.state.org);
-    setProperty("title", this.state.title);
-    setProperty("note", this.state.note);
 
+    if (!this.props.group && !this.state.group) {
+      setProperties("tel", this.state.phone);
+      setProperties("email", this.state.email);
+      setProperties("adr", this.state.address);
+      setProperties("impp", this.state.impp.map((x) => (
+        { type: x.type, value: x.type + ":" + x.value }
+      )));
+
+      setProperty("org", this.state.org);
+      setProperty("title", this.state.title);
+      setProperty("note", this.state.note);
+    }
 
     this.props.onSave(contact, this.state.collectionUid, this.props.item)
       .then(() => {
@@ -390,7 +399,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     return (
       <React.Fragment>
         <h2>
-          {this.props.item ? "Edit Contact" : "New Contact"}
+          {this.props.item ? this.state.group ? "Edit Group" : "Edit Contact" : this.props.group ? "New Group" : "New Contact"}
         </h2>
         <form style={styles.form} onSubmit={this.onSubmit}>
           <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
@@ -408,163 +417,175 @@ class ContactEdit extends React.PureComponent<PropsType> {
             </Select>
           </FormControl>
 
-          <TextField
-            name="namePrefix"
-            placeholder="Prefix"
-            style={{ marginTop: "2rem", ...styles.fullWidth }}
-            value={this.state.namePrefix}
-            onChange={this.handleInputChange}
-          />
-
-          <TextField
-            name="firstName"
-            placeholder="First name"
-            style={{ marginTop: "2rem", ...styles.fullWidth }}
-            value={this.state.firstName}
-            onChange={this.handleInputChange}
-          />
-
-          <TextField
-            name="middleName"
-            placeholder="Middle name"
-            style={{ marginTop: "2rem", ...styles.fullWidth }}
-            value={this.state.middleName}
-            onChange={this.handleInputChange}
-          />
-
-          <TextField
-            name="lastName"
-            placeholder="Last name"
-            style={{ marginTop: "2rem", ...styles.fullWidth }}
-            value={this.state.lastName}
-            onChange={this.handleInputChange}
-          />
-
-          <TextField
-            name="nameSuffix"
-            placeholder="Suffix"
-            style={{ marginTop: "2rem", ...styles.fullWidth }}
-            value={this.state.nameSuffix}
-            onChange={this.handleInputChange}
-          />
-
-          <div>
-            Phone numbers
-            <IconButton
-              onClick={() => this.addValueType("phone")}
-              title="Add phone number"
-            >
-              <IconAdd />
-            </IconButton>
-          </div>
-          {this.state.phone.map((x, idx) => (
-            <ValueTypeComponent
-              key={idx}
-              name="phone"
-              placeholder="Phone"
-              types={telTypes}
-              value={x}
-              onClearRequest={(name: string) => this.removeValueType(name, idx)}
-              onChange={(name: string, type: string, value: string) => (
-                this.handleValueTypeChange(name, idx, { type, value })
-              )}
+          {this.props.group || this.state.group ?
+            <TextField
+              name="firstName"
+              placeholder="Name"
+              style={{ marginTop: "2rem", ...styles.fullWidth }}
+              value={this.state.firstName}
+              onChange={this.handleInputChange}
             />
-          ))}
+            :
+            <>
+              <TextField
+                name="namePrefix"
+                placeholder="Prefix"
+                style={{ marginTop: "2rem", ...styles.fullWidth }}
+                value={this.state.namePrefix}
+                onChange={this.handleInputChange}
+              />
 
-          <div>
-            Emails
-            <IconButton
-              onClick={() => this.addValueType("email")}
-              title="Add email address"
-            >
-              <IconAdd />
-            </IconButton>
-          </div>
-          {this.state.email.map((x, idx) => (
-            <ValueTypeComponent
-              key={idx}
-              name="email"
-              placeholder="Email"
-              types={emailTypes}
-              value={x}
-              onClearRequest={(name: string) => this.removeValueType(name, idx)}
-              onChange={(name: string, type: string, value: string) => (
-                this.handleValueTypeChange(name, idx, { type, value })
-              )}
-            />
-          ))}
+              <TextField
+                name="firstName"
+                placeholder="First name"
+                style={{ marginTop: "2rem", ...styles.fullWidth }}
+                value={this.state.firstName}
+                onChange={this.handleInputChange}
+              />
 
-          <div>
-            IMPP
-            <IconButton
-              onClick={() => this.addValueType("impp", "jabber")}
-              title="Add impp address"
-            >
-              <IconAdd />
-            </IconButton>
-          </div>
-          {this.state.impp.map((x, idx) => (
-            <ValueTypeComponent
-              key={idx}
-              name="impp"
-              placeholder="IMPP"
-              types={imppTypes}
-              value={x}
-              onClearRequest={(name: string) => this.removeValueType(name, idx)}
-              onChange={(name: string, type: string, value: string) => (
-                this.handleValueTypeChange(name, idx, { type, value })
-              )}
-            />
-          ))}
+              <TextField
+                name="middleName"
+                placeholder="Middle name"
+                style={{ marginTop: "2rem", ...styles.fullWidth }}
+                value={this.state.middleName}
+                onChange={this.handleInputChange}
+              />
 
-          <div>
-            Addresses
-            <IconButton
-              onClick={() => this.addValueType("address")}
-              title="Add address"
-            >
-              <IconAdd />
-            </IconButton>
-          </div>
-          {this.state.address.map((x, idx) => (
-            <ValueTypeComponent
-              key={idx}
-              name="address"
-              placeholder="Address"
-              types={addressTypes}
-              multiline
-              value={x}
-              onClearRequest={(name: string) => this.removeValueType(name, idx)}
-              onChange={(name: string, type: string, value: string) => (
-                this.handleValueTypeChange(name, idx, { type, value })
-              )}
-            />
-          ))}
+              <TextField
+                name="lastName"
+                placeholder="Last name"
+                style={{ marginTop: "2rem", ...styles.fullWidth }}
+                value={this.state.lastName}
+                onChange={this.handleInputChange}
+              />
 
-          <TextField
-            name="org"
-            placeholder="Organization"
-            style={styles.fullWidth}
-            value={this.state.org}
-            onChange={this.handleInputChange}
-          />
+              <TextField
+                name="nameSuffix"
+                placeholder="Suffix"
+                style={{ marginTop: "2rem", ...styles.fullWidth }}
+                value={this.state.nameSuffix}
+                onChange={this.handleInputChange}
+              />
 
-          <TextField
-            name="title"
-            placeholder="Title"
-            style={styles.fullWidth}
-            value={this.state.title}
-            onChange={this.handleInputChange}
-          />
+              <div>
+                Phone numbers
+                <IconButton
+                  onClick={() => this.addValueType("phone")}
+                  title="Add phone number"
+                >
+                  <IconAdd />
+                </IconButton>
+              </div>
+              {this.state.phone.map((x, idx) => (
+                <ValueTypeComponent
+                  key={idx}
+                  name="phone"
+                  placeholder="Phone"
+                  types={telTypes}
+                  value={x}
+                  onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                  onChange={(name: string, type: string, value: string) => (
+                    this.handleValueTypeChange(name, idx, { type, value })
+                  )}
+                />
+              ))}
 
-          <TextField
-            name="note"
-            multiline
-            placeholder="Note"
-            style={styles.fullWidth}
-            value={this.state.note}
-            onChange={this.handleInputChange}
-          />
+              <div>
+                Emails
+                <IconButton
+                  onClick={() => this.addValueType("email")}
+                  title="Add email address"
+                >
+                  <IconAdd />
+                </IconButton>
+              </div>
+              {this.state.email.map((x, idx) => (
+                <ValueTypeComponent
+                  key={idx}
+                  name="email"
+                  placeholder="Email"
+                  types={emailTypes}
+                  value={x}
+                  onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                  onChange={(name: string, type: string, value: string) => (
+                    this.handleValueTypeChange(name, idx, { type, value })
+                  )}
+                />
+              ))}
+
+              <div>
+                IMPP
+                <IconButton
+                  onClick={() => this.addValueType("impp", "jabber")}
+                  title="Add impp address"
+                >
+                  <IconAdd />
+                </IconButton>
+              </div>
+              {this.state.impp.map((x, idx) => (
+                <ValueTypeComponent
+                  key={idx}
+                  name="impp"
+                  placeholder="IMPP"
+                  types={imppTypes}
+                  value={x}
+                  onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                  onChange={(name: string, type: string, value: string) => (
+                    this.handleValueTypeChange(name, idx, { type, value })
+                  )}
+                />
+              ))}
+
+              <div>
+                Addresses
+                <IconButton
+                  onClick={() => this.addValueType("address")}
+                  title="Add address"
+                >
+                  <IconAdd />
+                </IconButton>
+              </div>
+              {this.state.address.map((x, idx) => (
+                <ValueTypeComponent
+                  key={idx}
+                  name="address"
+                  placeholder="Address"
+                  types={addressTypes}
+                  multiline
+                  value={x}
+                  onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                  onChange={(name: string, type: string, value: string) => (
+                    this.handleValueTypeChange(name, idx, { type, value })
+                  )}
+                />
+              ))}
+
+              <TextField
+                name="org"
+                placeholder="Organization"
+                style={styles.fullWidth}
+                value={this.state.org}
+                onChange={this.handleInputChange}
+              />
+
+              <TextField
+                name="title"
+                placeholder="Title"
+                style={styles.fullWidth}
+                value={this.state.title}
+                onChange={this.handleInputChange}
+              />
+
+              <TextField
+                name="note"
+                multiline
+                placeholder="Note"
+                style={styles.fullWidth}
+                value={this.state.note}
+                onChange={this.handleInputChange}
+              />
+            </>
+          }
 
           <div style={styles.submit}>
             <Button
@@ -605,7 +626,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
-          Are you sure you would like to delete this contact?
+          {`Are you sure you would like to delete this ${this.state.group ? "group" : "contact"}?`}
         </ConfirmationDialog>
       </React.Fragment>
     );

@@ -99,15 +99,31 @@ export default function ContactsMain() {
           onItemClick={(item) => history.push(
             routeResolver.getRoute("pim.contacts._id", { itemUid: getItemNavigationUid(item) })
           )}
+          onNewGroupClick={() => history.push(
+            routeResolver.getRoute("pim.contacts.new.group")
+          )}
         />
         <PimFab
           onClick={() => history.push(
-            routeResolver.getRoute("pim.contacts.new")
+            routeResolver.getRoute("pim.contacts.new.contact")
           )}
         />
       </Route>
       <Route
-        path={routeResolver.getRoute("pim.contacts.new")}
+        path={routeResolver.getRoute("pim.contacts.new.group")}
+        exact
+      >
+        <ContactEdit
+          collections={cachedCollections}
+          onSave={onItemSave}
+          onDelete={onItemDelete}
+          onCancel={onCancel}
+          history={history}
+          group
+        />
+      </Route>
+      <Route
+        path={routeResolver.getRoute("pim.contacts.new.contact")}
         exact
       >
         <ContactEdit
@@ -160,6 +176,7 @@ export default function ContactsMain() {
                   onDelete={onItemDelete}
                   onCancel={onCancel}
                   history={history}
+                  group
                 />
               </Route>
               <Route
