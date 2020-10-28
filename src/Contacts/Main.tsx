@@ -119,7 +119,7 @@ export default function ContactsMain() {
           onDelete={onItemDelete}
           onCancel={onCancel}
           history={history}
-          group
+          newGroup
         />
       </Route>
       <Route
@@ -176,7 +176,7 @@ export default function ContactsMain() {
                   onDelete={onItemDelete}
                   onCancel={onCancel}
                   history={history}
-                  group
+                  newGroup
                 />
               </Route>
               <Route

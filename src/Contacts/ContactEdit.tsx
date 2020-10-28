@@ -120,7 +120,7 @@ interface PropsType {
   collections: CachedCollection[];
   initialCollection?: string;
   item?: ContactType;
-  group?: boolean;
+  newGroup?: boolean;
   onSave: (contact: ContactType, collectionUid: string, originalContact?: ContactType) => Promise<void>;
   onDelete: (contact: ContactType, collectionUid: string) => void;
   onCancel: () => void;
@@ -305,7 +305,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     comp.updatePropertyWithValue("version", "4.0");
     comp.updatePropertyWithValue("uid", this.state.uid);
     comp.updatePropertyWithValue("rev", ICAL.Time.now());
-    if (this.props.group) {
+    if (this.props.newGroup) {
       comp.updatePropertyWithValue("kind", "group");
     }
 
@@ -356,7 +356,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     }
 
 
-    if (!this.props.group && !this.state.group) {
+    if (!this.props.newGroup && !this.state.group) {
       setProperties("tel", this.state.phone);
       setProperties("email", this.state.email);
       setProperties("adr", this.state.address);
@@ -399,7 +399,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     return (
       <React.Fragment>
         <h2>
-          {this.props.item ? this.state.group ? "Edit Group" : "Edit Contact" : this.props.group ? "New Group" : "New Contact"}
+          {this.props.item ? this.state.group ? "Edit Group" : "Edit Contact" : this.props.newGroup ? "New Group" : "New Contact"}
         </h2>
         <form style={styles.form} onSubmit={this.onSubmit}>
           <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
@@ -417,7 +417,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
             </Select>
           </FormControl>
 
-          {this.props.group || this.state.group ?
+          {this.props.newGroup || this.state.group ?
             <TextField
               name="firstName"
               placeholder="Name"

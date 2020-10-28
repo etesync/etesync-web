@@ -68,6 +68,7 @@ export default function SearchableAddressBook(props: PropsType) {
           filterByGroup={filterByGroup}
           setFilterByGroup={setFilterByGroup}
           newGroup={props.onNewGroupClick}
+          editGroup={props.onItemClick}
         />
       </Grid>
 

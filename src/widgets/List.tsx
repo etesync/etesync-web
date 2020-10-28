@@ -6,6 +6,7 @@ import * as React from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import MuiList from "@material-ui/core/List";
 import MuiListItem from "@material-ui/core/ListItem";
+import MuiListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import MuiListSubheader from "@material-ui/core/ListSubheader";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -47,6 +48,7 @@ interface ListItemPropsType {
   nestedItems?: React.ReactNode[];
   selected?: boolean;
   secondaryTextColor?: "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | "error";
+  secondaryAction?: React.ReactNode;
 }
 
 export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) {
@@ -64,6 +66,7 @@ export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) 
     nestedItems,
     selected,
     secondaryTextColor,
+    secondaryAction,
   } = _props;
 
   const extraProps = (onClick || href) ? {
@@ -93,6 +96,11 @@ export const ListItem = React.memo(function ListItem(_props: ListItemPropsType) 
           <ListItemIcon>
             {rightIcon}
           </ListItemIcon>
+        )}
+        {secondaryAction && (
+          <MuiListItemSecondaryAction>
+            {secondaryAction}
+          </MuiListItemSecondaryAction>
         )}
       </MuiListItem>
       {nestedItems && (
