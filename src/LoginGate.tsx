@@ -21,6 +21,7 @@ import SignedPagesBadge from "./images/signed-pages-badge.svg";
 import LoadingIndicator from "./widgets/LoadingIndicator";
 import { useCredentials, useRemoteCredentials } from "./login";
 import { useSelector } from "react-redux";
+import Alert from "@material-ui/lab/Alert";
 
 
 function EncryptionPart(props: { credentials: CredentialsDataRemote }) {
@@ -72,6 +73,7 @@ function EncryptionPart(props: { credentials: CredentialsDataRemote }) {
   return (
     <Container style={{ maxWidth: "30rem" }}>
       <h2>Encryption Password</h2>
+      <Alert severity="info">This is the EteSync 1.0 web client. For EteSync 2.0 please use <ExternalLink href={C.newWebClient}>the new web client</ExternalLink> instead.</Alert>
       {(isNewUser) ?
         <div>
           <h3>Welcome to EteSync!</h3>
@@ -127,6 +129,7 @@ export default function LoginGate() {
     return (
       <Container style={{ maxWidth: "30rem" }}>
         <h2>Please Log In</h2>
+        <Alert severity="info">This is the EteSync 1.0 web client. For EteSync 2.0 please use <ExternalLink href={C.newWebClient}>the new web client</ExternalLink> instead.</Alert>
         <LoginForm
           onSubmit={onFormSubmit}
           error={fetchError}
