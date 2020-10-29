@@ -18,6 +18,7 @@ import SearchableAddressBook from "./SearchableAddressBook";
 import Contact from "./Contact";
 import LoadingIndicator from "../widgets/LoadingIndicator";
 import ContactEdit from "./ContactEdit";
+import GroupEdit from "./GroupEdit";
 import PageNotFound, { PageNotFoundRoute } from "../PageNotFound";
 
 import { CachedCollection, getItemNavigationUid, getDecryptCollectionsFunction, getDecryptItemsFunction, PimFab, itemSave, itemDelete } from "../Pim/helpers";
@@ -79,7 +80,7 @@ export default function ContactsMain() {
     }
   }
 
-  const groups = flatEntries.filter((x) => x.group);
+  const allGroups = flatEntries.filter((x) => x.group);
 
   const styles = {
     button: {
@@ -115,14 +116,13 @@ export default function ContactsMain() {
         path={routeResolver.getRoute("pim.contacts.new.group")}
         exact
       >
-        <ContactEdit
+        <GroupEdit
           collections={cachedCollections}
           onSave={onItemSave}
           onDelete={onItemDelete}
           onCancel={onCancel}
           history={history}
-          newGroup
-          groups={groups}
+          allGroups={allGroups}
         />
       </Route>
       <Route
@@ -135,7 +135,7 @@ export default function ContactsMain() {
           onDelete={onItemDelete}
           onCancel={onCancel}
           history={history}
-          groups={groups}
+          allGroups={allGroups}
         />
       </Route>
       <Route
@@ -164,24 +164,39 @@ export default function ContactsMain() {
 
           const collection = collections!.find((x) => x.uid === colUid)!;
           const readOnly = collection.accessLevel === Etebase.CollectionAccessLevel.ReadOnly;
+          const path = `pim.contacts._id.edit.${item.group ? "group" : "contact"}`;
 
           return (
             <Switch>
               <Route
-                path={routeResolver.getRoute("pim.contacts._id.edit")}
+                path={routeResolver.getRoute(path)}
                 exact
               >
-                <ContactEdit
-                  key={itemUid}
-                  initialCollection={item.collectionUid}
-                  item={item}
-                  collections={cachedCollections}
-                  onSave={onItemSave}
-                  onDelete={onItemDelete}
-                  onCancel={onCancel}
-                  history={history}
-                  groups={groups}
-                />
+                {item.group ?
+                  <GroupEdit
+                    key={itemUid}
+                    initialCollection={item.collectionUid}
+                    item={item}
+                    collections={cachedCollections}
+                    onSave={onItemSave}
+                    onDelete={onItemDelete}
+                    onCancel={onCancel}
+                    history={history}
+                    allGroups={allGroups}
+                  />
+                  :
+                  <ContactEdit
+                    key={itemUid}
+                    initialCollection={item.collectionUid}
+                    item={item}
+                    collections={cachedCollections}
+                    onSave={onItemSave}
+                    onDelete={onItemDelete}
+                    onCancel={onCancel}
+                    history={history}
+                    allGroups={allGroups}
+                  />
+                }
               </Route>
               <Route
                 path={routeResolver.getRoute("pim.contacts._id")}
@@ -205,7 +220,7 @@ export default function ContactsMain() {
                     disabled={readOnly}
                     style={{ ...styles.button, marginLeft: 15 }}
                     onClick={() =>
-                      history.push(routeResolver.getRoute("pim.contacts._id.edit", { itemUid: getItemNavigationUid(item) }))
+                      history.push(routeResolver.getRoute(path, { itemUid: getItemNavigationUid(item) }))
                     }
                   >
                     <IconEdit style={styles.leftIcon} />

@@ -121,12 +121,11 @@ interface PropsType {
   collections: CachedCollection[];
   initialCollection?: string;
   item?: ContactType;
-  newGroup?: boolean;
   onSave: (contact: ContactType, collectionUid: string, originalContact?: ContactType) => Promise<void>;
   onDelete: (contact: ContactType, collectionUid: string) => void;
   onCancel: () => void;
   history: History<any>;
-  groups: ContactType[];
+  allGroups: ContactType[];
 }
 
 class ContactEdit extends React.PureComponent<PropsType> {
@@ -145,13 +144,12 @@ class ContactEdit extends React.PureComponent<PropsType> {
     org: string;
     note: string;
     title: string;
-    group: boolean;
 
     collectionUid: string;
     showDeleteDialog: boolean;
-    collectionGroups: ContactType[];
-    newGroups: (string | ContactType)[];
-    originalGroups: ContactType[];
+    collectionGroups: {};
+    newGroups: string[];
+    originalGroups: string[];
   };
 
   constructor(props: PropsType) {
@@ -171,11 +169,10 @@ class ContactEdit extends React.PureComponent<PropsType> {
       org: "",
       note: "",
       title: "",
-      group: false,
 
       collectionUid: "",
       showDeleteDialog: false,
-      collectionGroups: [],
+      collectionGroups: {},
       newGroups: [],
       originalGroups: [],
     };
@@ -183,7 +180,6 @@ class ContactEdit extends React.PureComponent<PropsType> {
     if (this.props.item !== undefined) {
       const contact = this.props.item;
 
-      this.state.group = contact.group;
       this.state.uid = contact.uid;
       this.state.fn = contact.fn ? contact.fn : "";
       if (contact.n) {
@@ -244,16 +240,17 @@ class ContactEdit extends React.PureComponent<PropsType> {
       this.state.collectionUid = props.collections[0].collection.uid;
     }
 
-    this.state.collectionGroups = this.props.groups.filter((group) => this.state.collectionUid === group.collectionUid);
-    this.state.collectionGroups.forEach((group) => {
+    this.state.collectionGroups = this.getCollectionGroups(this.state.collectionUid);
+    Object.values(this.state.collectionGroups).forEach((group: ContactType) => {
       if (group.members.includes(this.state.uid)) {
-        this.state.newGroups.push(group);
-        this.state.originalGroups.push(group);
+        this.state.newGroups.push(group.fn);
+        this.state.originalGroups.push(group.fn);
       }
     });
 
     this.onSubmit = this.onSubmit.bind(this);
     this.addMetadata = this.addMetadata.bind(this);
+    this.getCollectionGroups = this.getCollectionGroups.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleCollectionChange = this.handleCollectionChange.bind(this);
@@ -298,15 +295,25 @@ class ContactEdit extends React.PureComponent<PropsType> {
     });
   }
 
-  public handleChange(name: string, value: string | (string | ContactType)[]) {
+  public handleChange(name: string, value: string | string[]) {
     this.setState({
       [name]: value,
     });
   }
 
+  public getCollectionGroups(collectionUid: string) {
+    const groups = {};
+    this.props.allGroups.forEach((group) => {
+      if (collectionUid === group.collectionUid) {
+        groups[group.fn] = group;
+      }
+    });
+    return groups;
+  }
+
   public reloadGroupSuggestions(collectionUid: string) {
     this.setState({
-      collectionGroups: this.props.groups.filter((group) => collectionUid === group.collectionUid),
+      collectionGroups: this.getCollectionGroups(collectionUid),
       newGroups: [],
     });
   }
@@ -324,7 +331,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     this.handleChange(name, value);
   }
 
-  public addMetadata(item: ContactType, uid: string, isGroup?: boolean) {
+  public addMetadata(item: ContactType, uid: string, isGroup: boolean) {
     const comp = item.comp;
     comp.updatePropertyWithValue("prodid", "-//iCal.js EteSync Web");
     comp.updatePropertyWithValue("version", "4.0");
@@ -345,32 +352,33 @@ class ContactEdit extends React.PureComponent<PropsType> {
       ;
 
     const comp = contact.comp;
-    this.addMetadata(contact, this.state.uid, this.props.newGroup);
+    this.addMetadata(contact, this.state.uid, false);
 
     // Add new groups
     this.state.newGroups.forEach((group) => {
-      if (typeof(group) === "string") {
+      if (!this.state.collectionGroups[group]) {
         const newGroup = new ContactType(new ICAL.Component(["vcard", [], []]));
         this.addMetadata(newGroup, uuid.v4(), true);
-        newGroup.comp.updatePropertyWithValue("fn", group);
+        newGroup.comp.updatePropertyWithValue("fn", group.trim());
         newGroup.comp.updatePropertyWithValue("member", `urn:uuid:${this.state.uid}`);
         this.props.onSave(newGroup, this.state.collectionUid, undefined);
-      } else if (!this.state.originalGroups.includes(group)) {
-        const updatedGroup = group.clone();
-        updatedGroup.comp.updatePropertyWithValue("member", `urn:uuid:${this.state.uid}`);
-        this.props.onSave(updatedGroup, this.state.collectionUid, group);
+      } else if (!this.state.originalGroups[group]) {
+        const oldGroup = this.state.collectionGroups[group];
+        const updatedGroup = oldGroup.clone();
+        updatedGroup.comp.addPropertyWithValue("member", `urn:uuid:${this.state.uid}`);
+        this.props.onSave(updatedGroup, this.state.collectionUid, oldGroup);
       }
     });
 
     // Remove deleted groups
-    this.state.originalGroups.filter((x) => !this.state.newGroups.includes(x)).forEach((deletedGroup) => {
+    this.state.originalGroups.filter((x) => !this.state.newGroups.includes(x)).forEach((removed) => {
+      const deletedGroup = this.state.collectionGroups[removed];
       const updatedGroup = deletedGroup.clone();
-      const members = updatedGroup.members.filter((uid) => uid !== this.state.uid);
+      const members = updatedGroup.members.filter((uid: string) => uid !== this.state.uid);
       updatedGroup.comp.removeAllProperties("member");
-      members.forEach((m) => updatedGroup.comp.updatePropertyWithValue("member", `urn:uuid:${m}`));
+      members.forEach((m: string) => updatedGroup.comp.addPropertyWithValue("member", `urn:uuid:${m}`));
       this.props.onSave(updatedGroup, this.state.collectionUid, deletedGroup);
     });
-
 
     const lastName = this.state.lastName.trim();
     const firstName = this.state.firstName.trim();
@@ -411,6 +419,13 @@ class ContactEdit extends React.PureComponent<PropsType> {
       });
     }
 
+    setProperties("tel", this.state.phone);
+    setProperties("email", this.state.email);
+    setProperties("adr", this.state.address);
+    setProperties("impp", this.state.impp.map((x) => (
+      { type: x.type, value: x.type + ":" + x.value }
+    )));
+
     function setProperty(name: string, value: string) {
       comp.removeAllProperties(name);
       if (value !== "") {
@@ -418,19 +433,9 @@ class ContactEdit extends React.PureComponent<PropsType> {
       }
     }
 
-
-    if (!this.props.newGroup && !this.state.group) {
-      setProperties("tel", this.state.phone);
-      setProperties("email", this.state.email);
-      setProperties("adr", this.state.address);
-      setProperties("impp", this.state.impp.map((x) => (
-        { type: x.type, value: x.type + ":" + x.value }
-      )));
-
-      setProperty("org", this.state.org);
-      setProperty("title", this.state.title);
-      setProperty("note", this.state.note);
-    }
+    setProperty("org", this.state.org);
+    setProperty("title", this.state.title);
+    setProperty("note", this.state.note);
 
     this.props.onSave(contact, this.state.collectionUid, this.props.item)
       .then(() => {
@@ -462,7 +467,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     return (
       <React.Fragment>
         <h2>
-          {this.props.item ? this.state.group ? "Edit Group" : "Edit Contact" : this.props.newGroup ? "New Group" : "New Contact"}
+          {this.props.item ? "Edit Contact" : "New Contact"}
         </h2>
         <form style={styles.form} onSubmit={this.onSubmit}>
           <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
@@ -480,193 +485,181 @@ class ContactEdit extends React.PureComponent<PropsType> {
             </Select>
           </FormControl>
 
-          {this.props.newGroup || this.state.group ?
-            <TextField
-              name="firstName"
-              placeholder="Name"
-              style={{ marginTop: "2rem", ...styles.fullWidth }}
-              value={this.state.firstName}
-              onChange={this.handleInputChange}
+          <TextField
+            name="namePrefix"
+            placeholder="Prefix"
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
+            value={this.state.namePrefix}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="firstName"
+            placeholder="First name"
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
+            value={this.state.firstName}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="middleName"
+            placeholder="Middle name"
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
+            value={this.state.middleName}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="lastName"
+            placeholder="Last name"
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
+            value={this.state.lastName}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="nameSuffix"
+            placeholder="Suffix"
+            style={{ marginTop: "2rem", ...styles.fullWidth }}
+            value={this.state.nameSuffix}
+            onChange={this.handleInputChange}
+          />
+
+          <div>
+            Phone numbers
+            <IconButton
+              onClick={() => this.addValueType("phone")}
+              title="Add phone number"
+            >
+              <IconAdd />
+            </IconButton>
+          </div>
+          {this.state.phone.map((x, idx) => (
+            <ValueTypeComponent
+              key={idx}
+              name="phone"
+              placeholder="Phone"
+              types={telTypes}
+              value={x}
+              onClearRequest={(name: string) => this.removeValueType(name, idx)}
+              onChange={(name: string, type: string, value: string) => (
+                this.handleValueTypeChange(name, idx, { type, value })
+              )}
             />
-            :
-            <>
+          ))}
+
+          <div>
+            Emails
+            <IconButton
+              onClick={() => this.addValueType("email")}
+              title="Add email address"
+            >
+              <IconAdd />
+            </IconButton>
+          </div>
+          {this.state.email.map((x, idx) => (
+            <ValueTypeComponent
+              key={idx}
+              name="email"
+              placeholder="Email"
+              types={emailTypes}
+              value={x}
+              onClearRequest={(name: string) => this.removeValueType(name, idx)}
+              onChange={(name: string, type: string, value: string) => (
+                this.handleValueTypeChange(name, idx, { type, value })
+              )}
+            />
+          ))}
+
+          <div>
+            IMPP
+            <IconButton
+              onClick={() => this.addValueType("impp", "jabber")}
+              title="Add impp address"
+            >
+              <IconAdd />
+            </IconButton>
+          </div>
+          {this.state.impp.map((x, idx) => (
+            <ValueTypeComponent
+              key={idx}
+              name="impp"
+              placeholder="IMPP"
+              types={imppTypes}
+              value={x}
+              onClearRequest={(name: string) => this.removeValueType(name, idx)}
+              onChange={(name: string, type: string, value: string) => (
+                this.handleValueTypeChange(name, idx, { type, value })
+              )}
+            />
+          ))}
+
+          <div>
+            Addresses
+            <IconButton
+              onClick={() => this.addValueType("address")}
+              title="Add address"
+            >
+              <IconAdd />
+            </IconButton>
+          </div>
+          {this.state.address.map((x, idx) => (
+            <ValueTypeComponent
+              key={idx}
+              name="address"
+              placeholder="Address"
+              types={addressTypes}
+              multiline
+              value={x}
+              onClearRequest={(name: string) => this.removeValueType(name, idx)}
+              onChange={(name: string, type: string, value: string) => (
+                this.handleValueTypeChange(name, idx, { type, value })
+              )}
+            />
+          ))}
+
+          <TextField
+            name="org"
+            placeholder="Organization"
+            style={styles.fullWidth}
+            value={this.state.org}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="title"
+            placeholder="Title"
+            style={styles.fullWidth}
+            value={this.state.title}
+            onChange={this.handleInputChange}
+          />
+
+          <TextField
+            name="note"
+            multiline
+            placeholder="Note"
+            style={styles.fullWidth}
+            value={this.state.note}
+            onChange={this.handleInputChange}
+          />
+          <Autocomplete
+            style={styles.fullWidth}
+            freeSolo
+            multiple
+            clearOnBlur
+            selectOnFocus
+            options={Object.keys(this.state.collectionGroups)}
+            value={this.state.newGroups}
+            onChange={(_e, value) => this.handleChange("newGroups", value)}
+            renderInput={(params) => (
               <TextField
-                name="namePrefix"
-                placeholder="Prefix"
-                style={{ marginTop: "2rem", ...styles.fullWidth }}
-                value={this.state.namePrefix}
-                onChange={this.handleInputChange}
+                {...params}
+                variant="standard"
+                label="Groups"
+                fullWidth
               />
-
-              <TextField
-                name="firstName"
-                placeholder="First name"
-                style={{ marginTop: "2rem", ...styles.fullWidth }}
-                value={this.state.firstName}
-                onChange={this.handleInputChange}
-              />
-
-              <TextField
-                name="middleName"
-                placeholder="Middle name"
-                style={{ marginTop: "2rem", ...styles.fullWidth }}
-                value={this.state.middleName}
-                onChange={this.handleInputChange}
-              />
-
-              <TextField
-                name="lastName"
-                placeholder="Last name"
-                style={{ marginTop: "2rem", ...styles.fullWidth }}
-                value={this.state.lastName}
-                onChange={this.handleInputChange}
-              />
-
-              <TextField
-                name="nameSuffix"
-                placeholder="Suffix"
-                style={{ marginTop: "2rem", ...styles.fullWidth }}
-                value={this.state.nameSuffix}
-                onChange={this.handleInputChange}
-              />
-
-              <div>
-                Phone numbers
-                <IconButton
-                  onClick={() => this.addValueType("phone")}
-                  title="Add phone number"
-                >
-                  <IconAdd />
-                </IconButton>
-              </div>
-              {this.state.phone.map((x, idx) => (
-                <ValueTypeComponent
-                  key={idx}
-                  name="phone"
-                  placeholder="Phone"
-                  types={telTypes}
-                  value={x}
-                  onClearRequest={(name: string) => this.removeValueType(name, idx)}
-                  onChange={(name: string, type: string, value: string) => (
-                    this.handleValueTypeChange(name, idx, { type, value })
-                  )}
-                />
-              ))}
-
-              <div>
-                Emails
-                <IconButton
-                  onClick={() => this.addValueType("email")}
-                  title="Add email address"
-                >
-                  <IconAdd />
-                </IconButton>
-              </div>
-              {this.state.email.map((x, idx) => (
-                <ValueTypeComponent
-                  key={idx}
-                  name="email"
-                  placeholder="Email"
-                  types={emailTypes}
-                  value={x}
-                  onClearRequest={(name: string) => this.removeValueType(name, idx)}
-                  onChange={(name: string, type: string, value: string) => (
-                    this.handleValueTypeChange(name, idx, { type, value })
-                  )}
-                />
-              ))}
-
-              <div>
-                IMPP
-                <IconButton
-                  onClick={() => this.addValueType("impp", "jabber")}
-                  title="Add impp address"
-                >
-                  <IconAdd />
-                </IconButton>
-              </div>
-              {this.state.impp.map((x, idx) => (
-                <ValueTypeComponent
-                  key={idx}
-                  name="impp"
-                  placeholder="IMPP"
-                  types={imppTypes}
-                  value={x}
-                  onClearRequest={(name: string) => this.removeValueType(name, idx)}
-                  onChange={(name: string, type: string, value: string) => (
-                    this.handleValueTypeChange(name, idx, { type, value })
-                  )}
-                />
-              ))}
-
-              <div>
-                Addresses
-                <IconButton
-                  onClick={() => this.addValueType("address")}
-                  title="Add address"
-                >
-                  <IconAdd />
-                </IconButton>
-              </div>
-              {this.state.address.map((x, idx) => (
-                <ValueTypeComponent
-                  key={idx}
-                  name="address"
-                  placeholder="Address"
-                  types={addressTypes}
-                  multiline
-                  value={x}
-                  onClearRequest={(name: string) => this.removeValueType(name, idx)}
-                  onChange={(name: string, type: string, value: string) => (
-                    this.handleValueTypeChange(name, idx, { type, value })
-                  )}
-                />
-              ))}
-
-              <TextField
-                name="org"
-                placeholder="Organization"
-                style={styles.fullWidth}
-                value={this.state.org}
-                onChange={this.handleInputChange}
-              />
-
-              <TextField
-                name="title"
-                placeholder="Title"
-                style={styles.fullWidth}
-                value={this.state.title}
-                onChange={this.handleInputChange}
-              />
-
-              <TextField
-                name="note"
-                multiline
-                placeholder="Note"
-                style={styles.fullWidth}
-                value={this.state.note}
-                onChange={this.handleInputChange}
-              />
-              <Autocomplete
-                style={styles.fullWidth}
-                freeSolo
-                multiple
-                autoHighlight
-                options={this.state.collectionGroups}
-                getOptionLabel={(option: ContactType) => option.fn ?? option}
-                value={this.state.newGroups}
-                onChange={(_e, value) => this.handleChange("newGroups", value)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    label="Groups"
-                    fullWidth
-                  />
-                )}
-              />
-            </>
-          }
+            )}
+          />
 
           <div style={styles.submit}>
             <Button
@@ -707,7 +700,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           onOk={() => this.props.onDelete(this.props.item!, this.props.initialCollection!)}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
-          {`Are you sure you would like to delete this ${this.state.group ? "group" : "contact"}?`}
+          Are you sure you would like to delete this contact?
         </ConfirmationDialog>
       </React.Fragment>
     );

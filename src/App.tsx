@@ -41,7 +41,10 @@ export const routeResolver = new RouteResolver({
     contacts: {
       _id: {
         _base: ":itemUid",
-        edit: "edit",
+        edit: {
+          contact: "contact",
+          group: "group",
+        },
         log: "log",
       },
       new: {
