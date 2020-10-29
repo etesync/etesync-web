@@ -27,6 +27,7 @@ import * as ICAL from "ical.js";
 import { ContactType } from "../pim-types";
 
 import { History } from "history";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const telTypes = [
   { type: "Home" },
@@ -125,6 +126,7 @@ interface PropsType {
   onDelete: (contact: ContactType, collectionUid: string) => void;
   onCancel: () => void;
   history: History<any>;
+  groups: ContactType[];
 }
 
 class ContactEdit extends React.PureComponent<PropsType> {
@@ -147,6 +149,9 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
     collectionUid: string;
     showDeleteDialog: boolean;
+    collectionGroups: ContactType[];
+    newGroups: (string | ContactType)[];
+    originalGroups: ContactType[];
   };
 
   constructor(props: PropsType) {
@@ -170,6 +175,9 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
       collectionUid: "",
       showDeleteDialog: false,
+      collectionGroups: [],
+      newGroups: [],
+      originalGroups: [],
     };
 
     if (this.props.item !== undefined) {
@@ -235,9 +243,21 @@ class ContactEdit extends React.PureComponent<PropsType> {
     } else if (props.collections[0]) {
       this.state.collectionUid = props.collections[0].collection.uid;
     }
+
+    this.state.collectionGroups = this.props.groups.filter((group) => this.state.collectionUid === group.collectionUid);
+    this.state.collectionGroups.forEach((group) => {
+      if (group.members.includes(this.state.uid)) {
+        this.state.newGroups.push(group);
+        this.state.originalGroups.push(group);
+      }
+    });
+
     this.onSubmit = this.onSubmit.bind(this);
+    this.addMetadata = this.addMetadata.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleCollectionChange = this.handleCollectionChange.bind(this);
+    this.reloadGroupSuggestions = this.reloadGroupSuggestions.bind(this);
     this.handleValueTypeChange = this.handleValueTypeChange.bind(this);
     this.addValueType = this.addValueType.bind(this);
     this.removeValueType = this.removeValueType.bind(this);
@@ -278,17 +298,41 @@ class ContactEdit extends React.PureComponent<PropsType> {
     });
   }
 
-  public handleChange(name: string, value: string) {
+  public handleChange(name: string, value: string | (string | ContactType)[]) {
     this.setState({
       [name]: value,
     });
+  }
 
+  public reloadGroupSuggestions(collectionUid: string) {
+    this.setState({
+      collectionGroups: this.props.groups.filter((group) => collectionUid === group.collectionUid),
+      newGroups: [],
+    });
+  }
+
+  public handleCollectionChange(contact: any) {
+    const name = contact.target.name;
+    const value = contact.target.value;
+    this.reloadGroupSuggestions(value);
+    this.handleChange(name, value);
   }
 
   public handleInputChange(contact: any) {
     const name = contact.target.name;
     const value = contact.target.value;
     this.handleChange(name, value);
+  }
+
+  public addMetadata(item: ContactType, uid: string, isGroup?: boolean) {
+    const comp = item.comp;
+    comp.updatePropertyWithValue("prodid", "-//iCal.js EteSync Web");
+    comp.updatePropertyWithValue("version", "4.0");
+    comp.updatePropertyWithValue("uid", uid);
+    comp.updatePropertyWithValue("rev", ICAL.Time.now());
+    if (isGroup) {
+      comp.updatePropertyWithValue("kind", "group");
+    }
   }
 
   public onSubmit(e: React.FormEvent<any>) {
@@ -301,13 +345,32 @@ class ContactEdit extends React.PureComponent<PropsType> {
       ;
 
     const comp = contact.comp;
-    comp.updatePropertyWithValue("prodid", "-//iCal.js EteSync Web");
-    comp.updatePropertyWithValue("version", "4.0");
-    comp.updatePropertyWithValue("uid", this.state.uid);
-    comp.updatePropertyWithValue("rev", ICAL.Time.now());
-    if (this.props.newGroup) {
-      comp.updatePropertyWithValue("kind", "group");
-    }
+    this.addMetadata(contact, this.state.uid, this.props.newGroup);
+
+    // Add new groups
+    this.state.newGroups.forEach((group) => {
+      if (typeof(group) === "string") {
+        const newGroup = new ContactType(new ICAL.Component(["vcard", [], []]));
+        this.addMetadata(newGroup, uuid.v4(), true);
+        newGroup.comp.updatePropertyWithValue("fn", group);
+        newGroup.comp.updatePropertyWithValue("member", `urn:uuid:${this.state.uid}`);
+        this.props.onSave(newGroup, this.state.collectionUid, undefined);
+      } else if (!this.state.originalGroups.includes(group)) {
+        const updatedGroup = group.clone();
+        updatedGroup.comp.updatePropertyWithValue("member", `urn:uuid:${this.state.uid}`);
+        this.props.onSave(updatedGroup, this.state.collectionUid, group);
+      }
+    });
+
+    // Remove deleted groups
+    this.state.originalGroups.filter((x) => !this.state.newGroups.includes(x)).forEach((deletedGroup) => {
+      const updatedGroup = deletedGroup.clone();
+      const members = updatedGroup.members.filter((uid) => uid !== this.state.uid);
+      updatedGroup.comp.removeAllProperties("member");
+      members.forEach((m) => updatedGroup.comp.updatePropertyWithValue("member", `urn:uuid:${m}`));
+      this.props.onSave(updatedGroup, this.state.collectionUid, deletedGroup);
+    });
+
 
     const lastName = this.state.lastName.trim();
     const firstName = this.state.firstName.trim();
@@ -409,7 +472,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
             <Select
               name="collectionUid"
               value={this.state.collectionUid}
-              onChange={this.handleInputChange}
+              onChange={this.handleCollectionChange}
             >
               {this.props.collections.map((x) => (
                 <MenuItem key={x.collection.uid} value={x.collection.uid}>{x.metadata.name}</MenuItem>
@@ -583,6 +646,24 @@ class ContactEdit extends React.PureComponent<PropsType> {
                 style={styles.fullWidth}
                 value={this.state.note}
                 onChange={this.handleInputChange}
+              />
+              <Autocomplete
+                style={styles.fullWidth}
+                freeSolo
+                multiple
+                autoHighlight
+                options={this.state.collectionGroups}
+                getOptionLabel={(option: ContactType) => option.fn ?? option}
+                value={this.state.newGroups}
+                onChange={(_e, value) => this.handleChange("newGroups", value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    label="Groups"
+                    fullWidth
+                  />
+                )}
               />
             </>
           }

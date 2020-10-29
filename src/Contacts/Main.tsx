@@ -79,6 +79,8 @@ export default function ContactsMain() {
     }
   }
 
+  const groups = flatEntries.filter((x) => x.group);
+
   const styles = {
     button: {
       marginLeft: theme.spacing(1),
@@ -120,6 +122,7 @@ export default function ContactsMain() {
           onCancel={onCancel}
           history={history}
           newGroup
+          groups={groups}
         />
       </Route>
       <Route
@@ -132,6 +135,7 @@ export default function ContactsMain() {
           onDelete={onItemDelete}
           onCancel={onCancel}
           history={history}
+          groups={groups}
         />
       </Route>
       <Route
@@ -176,7 +180,7 @@ export default function ContactsMain() {
                   onDelete={onItemDelete}
                   onCancel={onCancel}
                   history={history}
-                  newGroup
+                  groups={groups}
                 />
               </Route>
               <Route
