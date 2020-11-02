@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 interface PropsType {
   entries: ContactType[];
   onItemClick: (contact: ContactType) => void;
+  onNewGroupClick: () => void;
 }
 
 export default function SearchableAddressBook(props: PropsType) {
@@ -66,6 +67,8 @@ export default function SearchableAddressBook(props: PropsType) {
           groups={groups}
           filterByGroup={filterByGroup}
           setFilterByGroup={setFilterByGroup}
+          newGroup={props.onNewGroupClick}
+          editGroup={props.onItemClick}
         />
       </Grid>
 
