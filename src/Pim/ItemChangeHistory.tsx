@@ -39,7 +39,7 @@ async function loadRevisions(etebase: Etebase.Account, col: Etebase.Collection, 
     for (const item of revisions.data) {
       ret.push({
         item,
-        metadata: await item.getMeta(),
+        metadata: item.getMeta(),
         content: await item.getContent(Etebase.OutputFormat.String),
       });
     }

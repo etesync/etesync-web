@@ -20,7 +20,7 @@ export const getCollectionsByType = memoize(async function (cachedCollections: C
   const collections = await getCollections(cachedCollections, etebase);
   const ret: Etebase.Collection[] = [];
   for (const col of collections) {
-    const collectionType = await col.getCollectionType();
+    const collectionType = col.getCollectionType();
     if (collectionType === colType) {
       ret.push(col);
     }

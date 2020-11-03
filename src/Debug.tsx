@@ -71,7 +71,7 @@ export default function Debug() {
           console.log(wantAll, colItems.size);
           for (const cached of colItems.values()) {
             const item = itemMgr.cacheLoad(cached);
-            const meta = await item.getMeta();
+            const meta = item.getMeta();
             const content = await item.getContent(Etebase.OutputFormat.String);
             if (wantAll || wantedEntries[item.uid]) {
               retEntries.push(`${JSON.stringify(meta)}\n${content}`);

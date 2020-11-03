@@ -40,8 +40,8 @@ export function getDecryptCollectionsFunction(_colType?: string) {
           try {
             entries.push({
               collection,
-              metadata: await collection.getMeta(),
-              collectionType: await collection.getCollectionType(),
+              metadata: collection.getMeta(),
+              collectionType: collection.getCollectionType(),
             });
           } catch (e) {
             store.dispatch(appendError(e));
@@ -98,9 +98,9 @@ export async function itemSave(etebase: Etebase.Account, collection: Etebase.Col
     // Existing item
     eteItem = items!.get(collectionUid)?.get(itemUid)!;
     await eteItem.setContent(content);
-    const meta = await eteItem.getMeta();
+    const meta = eteItem.getMeta();
     meta.mtime = mtime;
-    await eteItem.setMeta(meta);
+    eteItem.setMeta(meta);
   } else {
     // New
     const meta: Etebase.ItemMetadata = {
@@ -120,10 +120,10 @@ export async function itemDelete(etebase: Etebase.Account, collection: Etebase.C
 
   const eteItem = items!.get(collectionUid)?.get(itemUid)!;
   const mtime = (new Date()).getTime();
-  const meta = await eteItem.getMeta();
+  const meta = eteItem.getMeta();
   meta.mtime = mtime;
-  await eteItem.setMeta(meta);
-  await eteItem.delete(true);
+  eteItem.setMeta(meta);
+  eteItem.delete(true);
 
   await asyncDispatch(itemBatch(collection, itemMgr, [eteItem]));
 }

@@ -56,9 +56,9 @@ export default function CollectionsMain() {
   async function onDelete(collection: Etebase.Collection) {
     const colMgr = getCollectionManager(etebase);
     const mtime = (new Date()).getTime();
-    const meta = await collection.getMeta();
-    await collection.setMeta({ ...meta, mtime });
-    await collection.delete(true);
+    const meta = collection.getMeta();
+    collection.setMeta({ ...meta, mtime });
+    collection.delete(true);
     await dispatch(collectionUpload(colMgr, collection));
     dispatch(pushMessage({ message: "Collection deleted", severity: "success" }));
 

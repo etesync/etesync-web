@@ -29,7 +29,7 @@ async function decryptItems(items: Map<string, Map<string, Etebase.Item>>) {
     for (const item of col.values()) {
       cur.set(item.uid, {
         item,
-        metadata: await item.getMeta(),
+        metadata: item.getMeta(),
         content: await item.getContent(Etebase.OutputFormat.String),
       });
     }

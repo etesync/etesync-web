@@ -98,7 +98,7 @@ export default function CollectionEdit(props: PropsType) {
     let collection;
     if (props.collection) {
       collection = props.collection.collection;
-      await collection.setMeta(meta);
+      collection.setMeta(meta);
     } else {
       collection = await colMgr.create(colType, meta, "");
     }
