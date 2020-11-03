@@ -491,9 +491,9 @@ export function WizardMigrationPage(props: OurPagePropsType) {
               // Existing item
               item = item._clone(); // We are cloning so we can push multiple revisions at once
               await item.setContent(syncEntry.content);
-              const meta = await item.getMeta();
+              const meta = item.getMeta();
               meta.mtime = mtime;
-              await item.setMeta(meta);
+              item.setMeta(meta);
             } else {
               // New
               const meta: Etebase.ItemMetadata = {
