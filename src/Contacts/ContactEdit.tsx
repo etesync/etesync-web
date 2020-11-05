@@ -149,7 +149,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     showDeleteDialog: boolean;
     collectionGroups: {};
     newGroups: string[];
-    originalGroups: string[];
+    originalGroups: {};
   };
 
   constructor(props: PropsType) {
@@ -244,7 +244,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     Object.values(this.state.collectionGroups).forEach((group: ContactType) => {
       if (group.members.includes(this.state.uid)) {
         this.state.newGroups.push(group.fn);
-        this.state.originalGroups.push(group.fn);
+        this.state.originalGroups[group.fn] = undefined;
       }
     });
 
@@ -362,7 +362,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
         newGroup.comp.updatePropertyWithValue("fn", group.trim());
         newGroup.comp.updatePropertyWithValue("member", `urn:uuid:${this.state.uid}`);
         this.props.onSave(newGroup, this.state.collectionUid, undefined);
-      } else if (!this.state.originalGroups[group]) {
+      } else if (!(group in this.state.originalGroups)) {
         const oldGroup = this.state.collectionGroups[group];
         const updatedGroup = oldGroup.clone();
         updatedGroup.comp.addPropertyWithValue("member", `urn:uuid:${this.state.uid}`);
@@ -371,7 +371,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     });
 
     // Remove deleted groups
-    this.state.originalGroups.filter((x) => !this.state.newGroups.includes(x)).forEach((removed) => {
+    Object.keys(this.state.originalGroups).filter((x) => !this.state.newGroups.includes(x)).forEach((removed) => {
       const deletedGroup = this.state.collectionGroups[removed];
       const updatedGroup = deletedGroup.clone();
       const members = updatedGroup.members.filter((uid: string) => uid !== this.state.uid);
