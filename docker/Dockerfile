@@ -35,5 +35,10 @@ RUN ln -s /etc/nginx/etesync_web_nginx.conf /etc/nginx/sites-enabled/etesync_web
 VOLUME /etc/nginx/sites-available/
 VOLUME /opt/etesync/web
 
+# Expose the port
+EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
+
+
 
