@@ -18,6 +18,7 @@ RUN mkdir -p etesync-web \
     && cd etesync-web \
     && yarn \
     && yarn build \
+    && mkdir -p /opt/etesync/web \
     && mv build /opt/etesync/web
  
 # Install the nginx server
