@@ -26,7 +26,7 @@ RUN apt update &&\
     apt install -y nginx
 
 # Install nginx config file
-COPY etesync_web_nginx.conf /etc/nginx/sites-available/
+COPY etesync_web_nginx.conf /etc/nginx/sites-available/etesync_web_nginx.conf
 
 # Enable nginx config file
 RUN ln -s /etc/nginx/etesync_web_nginx.conf /etc/nginx/sites-enabled/etesync_web_nginx.conf
