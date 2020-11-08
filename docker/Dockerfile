@@ -35,5 +35,5 @@ RUN ln -s /etc/nginx/etesync_web_nginx.conf /etc/nginx/sites-enabled/etesync_web
 VOLUME /etc/nginx/sites-available/
 VOLUME /opt/etesync/web
 
-ENTRYPOINT ["nginx", "-g", "'daemon off';"]
+CMD ["nginx", "-g", "daemon off;"]
 
