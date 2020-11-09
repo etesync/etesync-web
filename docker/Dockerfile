@@ -26,16 +26,13 @@ RUN apt update &&\
     apt install -y nginx
 
 # Install nginx config file
-COPY etesync_web_nginx.conf /etc/nginx/sites-available/etesync_web_nginx.conf
+COPY etesync_web_nginx.conf /etc/nginx/sites-enabled/
 
 # Remove default config
 RUN rm /etc/nginx/sites-enabled/default
 
-# Enable nginx config file
-RUN ln -s /etc/nginx/etesync_web_nginx.conf /etc/nginx/sites-enabled/etesync_web_nginx.conf
-
 # Setup volumes
-VOLUME /etc/nginx/sites-available/
+VOLUME /etc/nginx/sites-enabled/
 VOLUME /opt/etesync/web
 
 # Expose the port
