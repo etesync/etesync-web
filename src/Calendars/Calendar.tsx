@@ -6,6 +6,8 @@ import { Calendar as BigCalendar, momentLocalizer, View } from "react-big-calend
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
 import * as ICAL from "ical.js";
+import { store } from "../store";
+import { appendError } from "../store/actions";
 
 import { EventType } from "../pim-types";
 
@@ -55,21 +57,25 @@ class Calendar extends React.PureComponent<PropsType> {
     this.props.entries.forEach((event) => {
       entries.push(event);
 
-      if (event.isRecurring()) {
-        const recur = event.iterator();
+      try {
+        if (event.isRecurring()) {
+          const recur = event.iterator();
 
-        let next = recur.next(); // Skip the first one
-        while ((next = recur.next())) {
-          if (next.compare(MAX_RECURRENCE_DATE) > 0) {
-            break;
+          let next = recur.next(); // Skip the first one
+          while ((next = recur.next())) {
+            if (next.compare(MAX_RECURRENCE_DATE) > 0) {
+              break;
+            }
+
+            const shift = next.subtractDateTz(event.startDate);
+            const ev = event.clone();
+            ev.startDate.addDuration(shift);
+            ev.endDate.addDuration(shift);
+            entries.push(ev);
           }
-
-          const shift = next.subtractDateTz(event.startDate);
-          const ev = event.clone();
-          ev.startDate.addDuration(shift);
-          ev.endDate.addDuration(shift);
-          entries.push(ev);
         }
+      } catch (e) {
+        store.dispatch(appendError(e));
       }
     });
 
