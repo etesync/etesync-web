@@ -87,7 +87,7 @@ export default function SignupPage() {
         setErrors({});
       }
 
-      const serverUrl = (showAdvanced) ? server : undefined;
+      const serverUrl = (showAdvanced) ? server : C.defaultServerUrl;
       const user: Etebase.User = {
         username,
         email,

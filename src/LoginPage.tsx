@@ -41,7 +41,7 @@ export default function LoginPage() {
       setLoading(true);
       setFetchError(undefined);
       const etebase = await startTask((async () => {
-        return await Etebase.Account.login(username, password, serviceApiUrl);
+        return await Etebase.Account.login(username, password, serviceApiUrl ?? C.defaultServerUrl);
       }));
       dispatch(login(etebase));
     } catch (e) {
