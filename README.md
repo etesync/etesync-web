@@ -9,6 +9,8 @@ The EteSync Web App - Use EteSync from the browser!
 ![GitHub tag](https://img.shields.io/github/tag/etesync/etesync-web.svg)
 [![Chat on freenode](https://img.shields.io/badge/irc.freenode.net-%23EteSync-blue.svg)](https://webchat.freenode.net/?channels=#etesync)
 
+For notes, please refer to [the EteSync Notes](https://github.com/etesync/etesync-notes/) repository.
+
 # Usage
 
 A live instance is available on: https://pim.etesync.com
