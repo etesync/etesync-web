@@ -210,9 +210,14 @@ export class TaskType extends EventType {
 
   set tags(tags: string[]) {
     const property = this.component.getFirstProperty("categories");
+    const empty = tags.length === 0;
     if (property) {
-      property.setValues(tags);
-    } else {
+      if (empty) {
+        this.component.removeAllProperties("categories");
+      } else {
+        property.setValues(tags);
+      }
+    } else if (!empty) {
       const newProp = new ICAL.Property("categories", this.component);
       newProp.setValues(tags);
       this.component.addProperty(newProp);
