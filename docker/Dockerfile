@@ -14,7 +14,8 @@ FROM node:alpine as build
 ENV REACT_APP_DEFAULT_API_PATH "https://api.etebase.com/partner/etesync/"
 
 # Clones the latest web client code from git and builds the client and its dependencies with yarn
-RUN git clone https://github.com/etesync/etesync-web.git etesync-web && \
+RUN apk add --no-cache git && \
+    git clone https://github.com/etesync/etesync-web.git etesync-web && \
     cd etesync-web && \
     yarn && \
     yarn build
