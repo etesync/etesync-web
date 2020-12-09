@@ -225,7 +225,7 @@ export class TaskType extends EventType {
   }
 
   get tags() {
-    return this.component.getFirstProperty("categories")?.getValues() ?? [];
+    return this.component.getFirstProperty("categories")?.getValues()?.filter((x) => x !== "") ?? [];
   }
 
   set dueDate(date: ICAL.Time | undefined) {
