@@ -2324,6 +2324,18 @@ aproba@^1.1.1:
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"
   integrity sha512-Y9J6ZjXtoYh8RnXVCMOU/ttDmk1aBjunq9vO0ta5x85WDQiQfUF9sIPBITdbiiIVcBo03Hi3jMxigBtsddlXRw==
 
+argon2-browser@^1.15.3:
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/argon2-browser/-/argon2-browser-1.15.3.tgz#0bf95b9af8eb4a2171bacde00fabe455ad5f840c"
+  integrity sha512-CLY1Y+hqdP305Wnkh7ZyWVDmBc3SRjaFETqQ0Sx2Rc2x0D/o+rSscL1P4hVI1Yz6qMHP469vc2DyJJesq9h8WQ==
+
+argon2-webworker@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/argon2-webworker/-/argon2-webworker-0.1.0.tgz#cf6c2ee5721a85b50d0feeeeeccfb4674d4a4cf3"
+  integrity sha512-auEl1dk/N3ZLL3GJY3dGVWzkGKjR6V/bhAcg5q8AxIIv28NwaLDBJ1emDxwfsFoqWs94DDA+vtbMJofBXe7oMA==
+  dependencies:
+    argon2-browser "^1.15.3"
+
 argparse@^1.0.7:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
@@ -4644,12 +4656,13 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-etebase@^0.30.0:
-  version "0.30.0"
-  resolved "https://registry.yarnpkg.com/etebase/-/etebase-0.30.0.tgz#60c33e0acaefcf02704ce31d0b831f0874de4f2a"
-  integrity sha512-MUQi04iQfDHaGhmx7b/JdouX2JZTEqnkqWUX+eedg1KHpa+se+kra/byQvrY7zzAbUueJiLnEdGfuFGCL/8ohw==
+etebase@^0.41.0:
+  version "0.41.0"
+  resolved "https://registry.yarnpkg.com/etebase/-/etebase-0.41.0.tgz#8c54d01789c2a12ea82c0bb37f29bbc75f8197a6"
+  integrity sha512-o4AZolCFtef/g0ItCcU0sZuBw4GdfgYiQME1ZiJNbDKsnRtatciHfUgRLSqgC/fpl7DfVyqdd3oILGrN4X/VXw==
   dependencies:
     "@msgpack/msgpack" "^1.12.2"
+    argon2-webworker "^0.1.0"
     libsodium-wrappers "0.7.6"
     node-fetch "^2.6.0"
     urijs "^1.19.1"
