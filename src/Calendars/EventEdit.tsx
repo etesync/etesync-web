@@ -310,7 +310,13 @@ export default class EventEdit extends React.PureComponent<PropsType> {
               dateOnly={this.state.allDay}
               placeholder="Start"
               value={this.state.start}
-              onChange={(date?: Date) => this.setState({ start: date })}
+              onChange={(date?: Date) => {
+                // If end is unset, set it to start + 30 minutes
+                const end = this.state.end ?? (
+                  new Date(date!.getTime() + 30 * 60 * 1000)
+                );
+                this.setState({ start: date, end });
+              }}
             />
             {differentTimezone && this.state.start && (
               <FormHelperText>{ICAL.Time.fromJSDate(this.state.start, false).convertToZone(differentTimezone!).toJSDate().toString()}</FormHelperText>
