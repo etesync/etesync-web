@@ -6,7 +6,8 @@
     {
       "src": "favicon.ico",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "start_url": "https://pim.etesync.com",
