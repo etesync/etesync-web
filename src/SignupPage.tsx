@@ -246,7 +246,7 @@ export default function SignupPage() {
         </Alert>
 
         <p style={styles.infoAlert}>
-          You can also signup using <ExternalLink href={C.getApps}>any of the apps</ExternalLink>.
+          By signing up you agree to our <ExternalLink href={C.terms}>terms of service</ExternalLink>.
         </p>
 
         <div style={styles.submit}>

@@ -7,6 +7,7 @@ export const homePage = "https://www.etesync.com/";
 export const faq = homePage + "faq/";
 export const pricing = homePage + "pricing/";
 export const getApps = homePage + "get-apps/";
+export const terms = homePage + "tos/";
 export const sourceCode = "https://github.com/etesync/etesync-web";
 export const reportIssue = sourceCode + "/issues";
 
