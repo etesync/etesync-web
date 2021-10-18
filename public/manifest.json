@@ -1,15 +1,47 @@
 {
   "short_name": "EteSync",
   "name": "EteSync - Secure Data Sync",
+  "description": "Secure, end-to-end encrypted, and privacy respecting sync for your contacts, calendars, tasks, and notes.",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "https://pim.etesync.com",
   "display": "standalone",
   "theme_color": "#ffc107",
-  "background_color": "#03a9f4"
+  "background_color": "#03a9f4",
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.etesync.syncadapter",
+      "id": "com.etesync.syncadapter"
+    }, {
+      "platform": "itunes",
+      "url": "https://apps.apple.com/us/app/apple-store/id1489574285"
+    }, {
+      "platform": "f-droid",
+      "url": "https://f-droid.org/packages/com.etesync.syncadapter/",
+      "id": "com.etesync.syncadapter"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Calendar",
+      "url": "/pim/events"
+    }, {
+      "name": "Tasks",
+      "url": "/pim/tasks"
+    }, {
+      "name": "Address Book",
+      "url": "/pim/contacts"
+    }
+  ]
 }
