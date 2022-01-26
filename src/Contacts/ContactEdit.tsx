@@ -487,7 +487,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
           <TextField
             name="namePrefix"
-            placeholder="Prefix"
+            label="Prefix"
             style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.namePrefix}
             onChange={this.handleInputChange}
@@ -495,7 +495,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
           <TextField
             name="firstName"
-            placeholder="First name"
+            label="First name"
             style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.firstName}
             onChange={this.handleInputChange}
@@ -503,7 +503,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
           <TextField
             name="middleName"
-            placeholder="Middle name"
+            label="Middle name"
             style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.middleName}
             onChange={this.handleInputChange}
@@ -511,7 +511,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
           <TextField
             name="lastName"
-            placeholder="Last name"
+            label="Last name"
             style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.lastName}
             onChange={this.handleInputChange}
@@ -519,7 +519,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
           <TextField
             name="nameSuffix"
-            placeholder="Suffix"
+            label="Suffix"
             style={{ marginTop: "2rem", ...styles.fullWidth }}
             value={this.state.nameSuffix}
             onChange={this.handleInputChange}
@@ -620,7 +620,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
           <TextField
             name="org"
-            placeholder="Organization"
+            label="Organization"
             style={styles.fullWidth}
             value={this.state.org}
             onChange={this.handleInputChange}
@@ -628,7 +628,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
           <TextField
             name="title"
-            placeholder="Title"
+            label="Title"
             style={styles.fullWidth}
             value={this.state.title}
             onChange={this.handleInputChange}
@@ -637,7 +637,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
           <TextField
             name="note"
             multiline
-            placeholder="Note"
+            label="Note"
             style={styles.fullWidth}
             value={this.state.note}
             onChange={this.handleInputChange}
