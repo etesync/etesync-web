@@ -496,354 +496,356 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
     return (
       <React.Fragment>
-        <h2>
-          {this.props.item ? "Edit Contact" : "New Contact"}
-        </h2>
-        <form style={styles.form} onSubmit={this.onSubmit}>
-          <Grid container direction="column" spacing={4} style={{ marginTop: "1.5rem", marginBottom: "1.5rem", paddingLeft: "0.5rem", paddingRight: "1rem" }}>
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconSaveTo style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid item xs="auto">
-                <FormControl
-                  disabled={this.props.item !== undefined}
-                  style={styles.fullWidth}
-                >
-                  <Select
-                    name="collectionUid"
-                    value={this.state.collectionUid}
-                    variant="outlined"
-                    onChange={this.handleCollectionChange}
-                  >
-                    {this.props.collections.map((x) => (
-                      <MenuItem key={x.collection.uid} value={x.collection.uid}>{x.metadata.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconPerson style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid container item direction="column" spacing={2} xs>
-                {(this.state.showAllNameFields || this.state.namePrefix) &&
-                  <Grid item>
-                    <TextField
-                      name="namePrefix"
-                      label="Prefix"
-                      variant="outlined"
-                      style={{ ...styles.fullWidth }}
-                      value={this.state.namePrefix}
-                      onChange={this.handleInputChange}
-                    />
-                  </Grid>
-                }
-
-                <Grid item>
-                  <TextField
-                    name="firstName"
-                    label="First name"
-                    variant="outlined"
-                    style={{ ...styles.fullWidth }}
-                    value={this.state.firstName}
-                    onChange={this.handleInputChange}
-                  />
+        <div style={{ paddingLeft: "0.5rem", paddingRight: "1rem" }}>
+          <h2>
+            {this.props.item ? "Edit Contact" : "New Contact"}
+          </h2>
+          <form style={styles.form} onSubmit={this.onSubmit}>
+            <Grid container direction="column" spacing={4} style={{ marginTop: "0.5rem" }}>
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconSaveTo style={{ paddingTop: "1rem" }} />
                 </Grid>
-
-                {(this.state.showAllNameFields || this.state.middleName) &&
-                  <Grid item>
-                    <TextField
-                      name="middleName"
-                      label="Middle name"
-                      variant="outlined"
-                      style={{ ...styles.fullWidth }}
-                      value={this.state.middleName}
-                      onChange={this.handleInputChange}
-                    />
-                  </Grid>
-                }
-
-                <Grid item>
-                  <TextField
-                    name="lastName"
-                    label="Last name"
-                    variant="outlined"
-                    style={{ ...styles.fullWidth }}
-                    value={this.state.lastName}
-                    onChange={this.handleInputChange}
-                  />
-                </Grid>
-
-                {(this.state.showAllNameFields || this.state.nameSuffix) &&
-                  <Grid item>
-                    <TextField
-                      name="nameSuffix"
-                      label="Suffix"
-                      variant="outlined"
-                      style={{ ...styles.fullWidth }}
-                      value={this.state.nameSuffix}
-                      onChange={this.handleInputChange}
-                    />
-                  </Grid>
-                }
-              </Grid>
-
-              <Grid item xs="auto">
-                <IconButton
-                  onClick={() => this.setState({ showAllNameFields: !this.state.showAllNameFields })}
-                  title="Show all name fields"
-                >
-                  {this.state.showAllNameFields ? <IconExpandLess /> : <IconExpandMore />}
-                </IconButton>
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconPhone style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid container item direction="column" spacing={2} xs>
-                {this.state.phone.map((x, idx) => (
-                  <ValueTypeComponent
-                    key={idx}
-                    name="phone"
-                    placeholder="Phone"
-                    types={telTypes}
-                    typeLabel="Label"
-                    value={x}
-                    style={{ ...styles.fullWidth }}
-                    onClearRequest={(name: string) => this.removeValueType(name, idx)}
-                    onChange={(name: string, type: string, value: string) => (
-                      this.handleValueTypeChange(name, idx, { type, value })
-                    )}
-                  />
-                ))}
 
                 <Grid item xs="auto">
-                  <Button
-                    onClick={() => this.addValueType("phone")}
-                    color="secondary"
-                    variant="outlined"
-                    style={{ height: "3.5rem", fontSize: "1em" }}
-                  >
-                    Add phone number
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconOrganization style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid container item direction="column" spacing={2} xs>
-                <Grid item>
-                  <TextField
-                    name="org"
-                    label="Organization"
-                    variant="outlined"
+                  <FormControl
+                    disabled={this.props.item !== undefined}
                     style={styles.fullWidth}
-                    value={this.state.org}
-                    onChange={this.handleInputChange}
-                  />
+                  >
+                    <Select
+                      name="collectionUid"
+                      value={this.state.collectionUid}
+                      variant="outlined"
+                      onChange={this.handleCollectionChange}
+                    >
+                      {this.props.collections.map((x) => (
+                        <MenuItem key={x.collection.uid} value={x.collection.uid}>{x.metadata.name}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Grid>
-                <Grid item>
+              </Grid>
+
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconPerson style={{ paddingTop: "1rem" }} />
+                </Grid>
+
+                <Grid container item direction="column" spacing={2} xs>
+                  {(this.state.showAllNameFields || this.state.namePrefix) &&
+                    <Grid item>
+                      <TextField
+                        name="namePrefix"
+                        label="Prefix"
+                        variant="outlined"
+                        style={{ ...styles.fullWidth }}
+                        value={this.state.namePrefix}
+                        onChange={this.handleInputChange}
+                      />
+                    </Grid>
+                  }
+
+                  <Grid item>
+                    <TextField
+                      name="firstName"
+                      label="First name"
+                      variant="outlined"
+                      style={{ ...styles.fullWidth }}
+                      value={this.state.firstName}
+                      onChange={this.handleInputChange}
+                    />
+                  </Grid>
+
+                  {(this.state.showAllNameFields || this.state.middleName) &&
+                    <Grid item>
+                      <TextField
+                        name="middleName"
+                        label="Middle name"
+                        variant="outlined"
+                        style={{ ...styles.fullWidth }}
+                        value={this.state.middleName}
+                        onChange={this.handleInputChange}
+                      />
+                    </Grid>
+                  }
+
+                  <Grid item>
+                    <TextField
+                      name="lastName"
+                      label="Last name"
+                      variant="outlined"
+                      style={{ ...styles.fullWidth }}
+                      value={this.state.lastName}
+                      onChange={this.handleInputChange}
+                    />
+                  </Grid>
+
+                  {(this.state.showAllNameFields || this.state.nameSuffix) &&
+                    <Grid item>
+                      <TextField
+                        name="nameSuffix"
+                        label="Suffix"
+                        variant="outlined"
+                        style={{ ...styles.fullWidth }}
+                        value={this.state.nameSuffix}
+                        onChange={this.handleInputChange}
+                      />
+                    </Grid>
+                  }
+                </Grid>
+
+                <Grid item xs="auto">
+                  <IconButton
+                    onClick={() => this.setState({ showAllNameFields: !this.state.showAllNameFields })}
+                    title="Show all name fields"
+                  >
+                    {this.state.showAllNameFields ? <IconExpandLess /> : <IconExpandMore />}
+                  </IconButton>
+                </Grid>
+              </Grid>
+
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconPhone style={{ paddingTop: "1rem" }} />
+                </Grid>
+
+                <Grid container item direction="column" spacing={2} xs>
+                  {this.state.phone.map((x, idx) => (
+                    <ValueTypeComponent
+                      key={idx}
+                      name="phone"
+                      placeholder="Phone"
+                      types={telTypes}
+                      typeLabel="Label"
+                      value={x}
+                      style={{ ...styles.fullWidth }}
+                      onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                      onChange={(name: string, type: string, value: string) => (
+                        this.handleValueTypeChange(name, idx, { type, value })
+                      )}
+                    />
+                  ))}
+
+                  <Grid item xs="auto">
+                    <Button
+                      onClick={() => this.addValueType("phone")}
+                      color="secondary"
+                      variant="outlined"
+                      style={{ height: "3.5rem", fontSize: "1em" }}
+                    >
+                      Add phone number
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconOrganization style={{ paddingTop: "1rem" }} />
+                </Grid>
+
+                <Grid container item direction="column" spacing={2} xs>
+                  <Grid item>
+                    <TextField
+                      name="org"
+                      label="Organization"
+                      variant="outlined"
+                      style={styles.fullWidth}
+                      value={this.state.org}
+                      onChange={this.handleInputChange}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      name="title"
+                      label="Title"
+                      variant="outlined"
+                      style={styles.fullWidth}
+                      value={this.state.title}
+                      onChange={this.handleInputChange}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconEmail style={{ paddingTop: "1rem" }} />
+                </Grid>
+
+                <Grid container item direction="column" spacing={2} xs>
+                  {this.state.email.map((x, idx) => (
+                    <ValueTypeComponent
+                      key={idx}
+                      name="email"
+                      placeholder="Email"
+                      types={emailTypes}
+                      style={{ ...styles.fullWidth }}
+                      value={x}
+                      onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                      onChange={(name: string, type: string, value: string) => (
+                        this.handleValueTypeChange(name, idx, { type, value })
+                      )}
+                    />
+                  ))}
+                  <Grid item xs="auto">
+                    <Button
+                      onClick={() => this.addValueType("email")}
+                      color="secondary"
+                      variant="outlined"
+                      style={{ height: "3.5rem", fontSize: "1em" }}
+                    >
+                      Add email address
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconImpp style={{ paddingTop: "1rem" }} />
+                </Grid>
+
+                <Grid container item direction="column" spacing={2} xs>
+                  {this.state.impp.map((x, idx) => (
+                    <ValueTypeComponent
+                      key={idx}
+                      name="impp"
+                      placeholder="IMPP"
+                      types={imppTypes}
+                      style={{ ...styles.fullWidth }}
+                      value={x}
+                      onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                      onChange={(name: string, type: string, value: string) => (
+                        this.handleValueTypeChange(name, idx, { type, value })
+                      )}
+                    />
+                  ))}
+                  <Grid item xs="auto">
+                    <Button
+                      onClick={() => this.addValueType("impp", "jabber")}
+                      color="secondary"
+                      variant="outlined"
+                      style={{ height: "3.5rem", fontSize: "1em" }}
+                    >
+                      Add impp address
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconAddress style={{ paddingTop: "1rem" }} />
+                </Grid>
+
+                <Grid container item direction="column" spacing={2} xs>
+                  {this.state.address.map((x, idx) => (
+                    <ValueTypeComponent
+                      key={idx}
+                      name="address"
+                      placeholder="Address"
+                      types={addressTypes}
+                      style={{ ...styles.fullWidth }}
+                      multiline
+                      value={x}
+                      onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                      onChange={(name: string, type: string, value: string) => (
+                        this.handleValueTypeChange(name, idx, { type, value })
+                      )}
+                    />
+                  ))}
+                  <Grid item xs="auto">
+                    <Button
+                      onClick={() => this.addValueType("address")}
+                      color="secondary"
+                      variant="outlined"
+                      style={{ height: "3.5rem", fontSize: "1em" }}
+                    >
+                      Add address
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconNote style={{ paddingTop: "1rem" }} />
+                </Grid>
+
+                <Grid item xs>
                   <TextField
-                    name="title"
-                    label="Title"
-                    variant="outlined"
-                    style={styles.fullWidth}
-                    value={this.state.title}
-                    onChange={this.handleInputChange}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconEmail style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid container item direction="column" spacing={2} xs>
-                {this.state.email.map((x, idx) => (
-                  <ValueTypeComponent
-                    key={idx}
-                    name="email"
-                    placeholder="Email"
-                    types={emailTypes}
-                    style={{ ...styles.fullWidth }}
-                    value={x}
-                    onClearRequest={(name: string) => this.removeValueType(name, idx)}
-                    onChange={(name: string, type: string, value: string) => (
-                      this.handleValueTypeChange(name, idx, { type, value })
-                    )}
-                  />
-                ))}
-                <Grid item xs="auto">
-                  <Button
-                    onClick={() => this.addValueType("email")}
-                    color="secondary"
-                    variant="outlined"
-                    style={{ height: "3.5rem", fontSize: "1em" }}
-                  >
-                    Add email address
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconImpp style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid container item direction="column" spacing={2} xs>
-                {this.state.impp.map((x, idx) => (
-                  <ValueTypeComponent
-                    key={idx}
-                    name="impp"
-                    placeholder="IMPP"
-                    types={imppTypes}
-                    style={{ ...styles.fullWidth }}
-                    value={x}
-                    onClearRequest={(name: string) => this.removeValueType(name, idx)}
-                    onChange={(name: string, type: string, value: string) => (
-                      this.handleValueTypeChange(name, idx, { type, value })
-                    )}
-                  />
-                ))}
-                <Grid item xs="auto">
-                  <Button
-                    onClick={() => this.addValueType("impp", "jabber")}
-                    color="secondary"
-                    variant="outlined"
-                    style={{ height: "3.5rem", fontSize: "1em" }}
-                  >
-                    Add impp address
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconAddress style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid container item direction="column" spacing={2} xs>
-                {this.state.address.map((x, idx) => (
-                  <ValueTypeComponent
-                    key={idx}
-                    name="address"
-                    placeholder="Address"
-                    types={addressTypes}
-                    style={{ ...styles.fullWidth }}
+                    name="note"
                     multiline
-                    value={x}
-                    onClearRequest={(name: string) => this.removeValueType(name, idx)}
-                    onChange={(name: string, type: string, value: string) => (
-                      this.handleValueTypeChange(name, idx, { type, value })
+                    label="Note"
+                    variant="outlined"
+                    style={styles.fullWidth}
+                    value={this.state.note}
+                    onChange={this.handleInputChange}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs="auto">
+                  <IconGroup style={{ paddingTop: "1rem" }} />
+                </Grid>
+
+                <Grid item xs>
+                  <Autocomplete
+                    style={styles.fullWidth}
+                    freeSolo
+                    multiple
+                    clearOnBlur
+                    selectOnFocus
+                    options={Object.keys(this.state.collectionGroups)}
+                    value={this.state.newGroups}
+                    onChange={(_e, value) => this.handleChange("newGroups", value)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Groups"
+                        fullWidth
+                      />
                     )}
                   />
-                ))}
-                <Grid item xs="auto">
-                  <Button
-                    onClick={() => this.addValueType("address")}
-                    color="secondary"
-                    variant="outlined"
-                    style={{ height: "3.5rem", fontSize: "1em" }}
-                  >
-                    Add address
-                  </Button>
                 </Grid>
               </Grid>
             </Grid>
 
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconNote style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid item xs>
-                <TextField
-                  name="note"
-                  multiline
-                  label="Note"
-                  variant="outlined"
-                  style={styles.fullWidth}
-                  value={this.state.note}
-                  onChange={this.handleInputChange}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
-                <IconGroup style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid item xs>
-                <Autocomplete
-                  style={styles.fullWidth}
-                  freeSolo
-                  multiple
-                  clearOnBlur
-                  selectOnFocus
-                  options={Object.keys(this.state.collectionGroups)}
-                  value={this.state.newGroups}
-                  onChange={(_e, value) => this.handleChange("newGroups", value)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="Groups"
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-
-          <div style={styles.submit}>
-            <Button
-              variant="contained"
-              onClick={this.props.onCancel}
-            >
-              <IconCancel style={{ marginRight: 8 }} />
-              Cancel
-            </Button>
-
-            {this.props.item &&
+            <div style={styles.submit}>
               <Button
                 variant="contained"
-                style={{ marginLeft: 15, backgroundColor: colors.red[500], color: "white" }}
-                onClick={this.onDeleteRequest}
+                onClick={this.props.onCancel}
               >
-                <IconDelete style={{ marginRight: 8 }} />
-                Delete
+                <IconCancel style={{ marginRight: 8 }} />
+                Cancel
               </Button>
-            }
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="secondary"
-              style={{ marginLeft: 15 }}
-            >
-              <IconSave style={{ marginRight: 8 }} />
-              Save
-            </Button>
-          </div>
-        </form>
+              {this.props.item &&
+                <Button
+                  variant="contained"
+                  style={{ marginLeft: 15, backgroundColor: colors.red[500], color: "white" }}
+                  onClick={this.onDeleteRequest}
+                >
+                  <IconDelete style={{ marginRight: 8 }} />
+                  Delete
+                </Button>
+              }
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="secondary"
+                style={{ marginLeft: 15 }}
+              >
+                <IconSave style={{ marginRight: 8 }} />
+                Save
+              </Button>
+            </div>
+          </form>
+        </div>
 
         <ConfirmationDialog
           title="Delete Confirmation"
