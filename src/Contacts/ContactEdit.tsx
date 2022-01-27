@@ -23,6 +23,8 @@ import IconImpp from "@material-ui/icons/SmsOutlined";
 import IconAddress from "@material-ui/icons/LocationOnOutlined";
 import IconNote from "@material-ui/icons/EditOutlined";
 import IconGroup from "@material-ui/icons/GroupOutlined";
+import IconExpandMore from "@material-ui/icons/ExpandMoreOutlined";
+import IconExpandLess from "@material-ui/icons/ExpandLessOutlined";
 
 import ConfirmationDialog from "../widgets/ConfirmationDialog";
 
@@ -174,6 +176,8 @@ class ContactEdit extends React.PureComponent<PropsType> {
     collectionGroups: {};
     newGroups: string[];
     originalGroups: {};
+
+    showAllNameFields: boolean;
   };
 
   constructor(props: PropsType) {
@@ -199,6 +203,8 @@ class ContactEdit extends React.PureComponent<PropsType> {
       collectionGroups: {},
       newGroups: [],
       originalGroups: [],
+
+      showAllNameFields: false,
     };
 
     if (this.props.item !== undefined) {
@@ -500,7 +506,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                 <IconSaveTo style={{ paddingTop: "1rem" }} />
               </Grid>
 
-              <Grid item>
+              <Grid item xs="auto">
                 <FormControl
                   disabled={this.props.item !== undefined}
                   style={styles.fullWidth}
@@ -525,16 +531,18 @@ class ContactEdit extends React.PureComponent<PropsType> {
               </Grid>
 
               <Grid container item direction="column" spacing={2} xs>
-                <Grid item>
-                  <TextField
-                    name="namePrefix"
-                    label="Prefix"
-                    variant="outlined"
-                    style={{ ...styles.fullWidth }}
-                    value={this.state.namePrefix}
-                    onChange={this.handleInputChange}
-                  />
-                </Grid>                
+                {(this.state.showAllNameFields || this.state.namePrefix) &&
+                  <Grid item>
+                    <TextField
+                      name="namePrefix"
+                      label="Prefix"
+                      variant="outlined"
+                      style={{ ...styles.fullWidth }}
+                      value={this.state.namePrefix}
+                      onChange={this.handleInputChange}
+                    />
+                  </Grid>
+                }
 
                 <Grid item>
                   <TextField
@@ -547,16 +555,18 @@ class ContactEdit extends React.PureComponent<PropsType> {
                   />
                 </Grid>
 
-                <Grid item>
-                  <TextField
-                    name="middleName"
-                    label="Middle name"
-                    variant="outlined"
-                    style={{ ...styles.fullWidth }}
-                    value={this.state.middleName}
-                    onChange={this.handleInputChange}
-                  />
-                </Grid>
+                {(this.state.showAllNameFields || this.state.middleName) &&
+                  <Grid item>
+                    <TextField
+                      name="middleName"
+                      label="Middle name"
+                      variant="outlined"
+                      style={{ ...styles.fullWidth }}
+                      value={this.state.middleName}
+                      onChange={this.handleInputChange}
+                    />
+                  </Grid>
+                }
 
                 <Grid item>
                   <TextField
@@ -569,16 +579,27 @@ class ContactEdit extends React.PureComponent<PropsType> {
                   />
                 </Grid>
 
-                <Grid item>
-                  <TextField
-                    name="nameSuffix"
-                    label="Suffix"
-                    variant="outlined"
-                    style={{ ...styles.fullWidth }}
-                    value={this.state.nameSuffix}
-                    onChange={this.handleInputChange}
-                  />
-                </Grid>
+                {(this.state.showAllNameFields || this.state.nameSuffix) &&
+                  <Grid item>
+                    <TextField
+                      name="nameSuffix"
+                      label="Suffix"
+                      variant="outlined"
+                      style={{ ...styles.fullWidth }}
+                      value={this.state.nameSuffix}
+                      onChange={this.handleInputChange}
+                    />
+                  </Grid>
+                }
+              </Grid>
+
+              <Grid item xs="auto">
+                <IconButton
+                  onClick={() => this.setState({ showAllNameFields: !this.state.showAllNameFields })}
+                  title="Show all name fields"
+                >
+                  {this.state.showAllNameFields ? <IconExpandLess /> : <IconExpandMore />}
+                </IconButton>
               </Grid>
             </Grid>
 
