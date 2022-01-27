@@ -575,35 +575,6 @@ class ContactEdit extends React.PureComponent<PropsType> {
 
             <Grid container item direction="row" spacing={2}>
               <Grid item xs="auto">
-                <IconOrganization style={{ paddingTop: "1rem" }} />
-              </Grid>
-
-              <Grid container item direction="column" spacing={2} xs>
-                <Grid item>
-                  <TextField
-                    name="org"
-                    label="Organization"
-                    variant="outlined"
-                    style={styles.fullWidth}
-                    value={this.state.org}
-                    onChange={this.handleInputChange}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    name="title"
-                    label="Title"
-                    variant="outlined"
-                    style={styles.fullWidth}
-                    value={this.state.title}
-                    onChange={this.handleInputChange}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs="auto">
                 <IconPhone style={{ paddingTop: "1rem" }} />
               </Grid>
 
@@ -633,6 +604,35 @@ class ContactEdit extends React.PureComponent<PropsType> {
                   >
                     Add phone number
                   </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid container item direction="row" spacing={2}>
+              <Grid item xs="auto">
+                <IconOrganization style={{ paddingTop: "1rem" }} />
+              </Grid>
+
+              <Grid container item direction="column" spacing={2} xs>
+                <Grid item>
+                  <TextField
+                    name="org"
+                    label="Organization"
+                    variant="outlined"
+                    style={styles.fullWidth}
+                    value={this.state.org}
+                    onChange={this.handleInputChange}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    name="title"
+                    label="Title"
+                    variant="outlined"
+                    style={styles.fullWidth}
+                    value={this.state.title}
+                    onChange={this.handleInputChange}
+                  />
                 </Grid>
               </Grid>
             </Grid>
