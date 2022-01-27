@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
+import Grid from "@material-ui/core/Grid";
 import * as colors from "@material-ui/core/colors";
 
 import IconDelete from "@material-ui/icons/Delete";
@@ -37,7 +38,6 @@ import { ContactType } from "../pim-types";
 
 import { History } from "history";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { Grid } from "@material-ui/core";
 
 const telTypes = [
   { type: "Home" },
