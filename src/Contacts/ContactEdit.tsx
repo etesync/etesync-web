@@ -95,7 +95,7 @@ interface ValueTypeComponentProps {
 
   types: Array<{ type: string }>;
   name: string;
-  placeholder: string;
+  label: string;
   value: ValueType;
   onClearRequest: (name: string) => void;
   onChange: (name: string, type: string, value: string) => void;
@@ -108,7 +108,7 @@ const ValueTypeComponent = (props: ValueTypeComponentProps) => {
         <Grid item xs>
           <TextField
             type={props.type}
-            label={props.placeholder}
+            label={props.label}
             multiline={props.multiline}
             variant="outlined"
             style={props.style}
@@ -614,7 +614,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                     <ValueTypeComponent
                       key={idx}
                       name="phone"
-                      placeholder="Phone"
+                      label="Phone"
                       types={telTypes}
                       typeLabel="Label"
                       value={x}
@@ -678,7 +678,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                     <ValueTypeComponent
                       key={idx}
                       name="email"
-                      placeholder="Email"
+                      label="Email"
                       types={emailTypes}
                       style={{ ...styles.fullWidth }}
                       value={x}
@@ -711,7 +711,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                     <ValueTypeComponent
                       key={idx}
                       name="impp"
-                      placeholder="IMPP"
+                      label="IMPP"
                       types={imppTypes}
                       style={{ ...styles.fullWidth }}
                       value={x}
@@ -744,7 +744,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                     <ValueTypeComponent
                       key={idx}
                       name="address"
-                      placeholder="Address"
+                      label="Address"
                       types={addressTypes}
                       style={{ ...styles.fullWidth }}
                       multiline
