@@ -8,13 +8,13 @@ import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
 import * as colors from "@material-ui/core/colors";
 
 import IconDelete from "@material-ui/icons/Delete";
 import IconClear from "@material-ui/icons/Clear";
 import IconCancel from "@material-ui/icons/Clear";
 import IconSave from "@material-ui/icons/Save";
+import IconSaveTo from "@material-ui/icons/FolderOutlined";
 import IconPerson from "@material-ui/icons/PersonOutlined";
 import IconOrganization from "@material-ui/icons/BusinessOutlined";
 import IconPhone from "@material-ui/icons/PhoneOutlined";
@@ -494,22 +494,31 @@ class ContactEdit extends React.PureComponent<PropsType> {
           {this.props.item ? "Edit Contact" : "New Contact"}
         </h2>
         <form style={styles.form} onSubmit={this.onSubmit}>
-          <FormControl disabled={this.props.item !== undefined} style={styles.fullWidth}>
-            <InputLabel>
-              Saving to
-            </InputLabel>
-            <Select
-              name="collectionUid"
-              value={this.state.collectionUid}
-              onChange={this.handleCollectionChange}
-            >
-              {this.props.collections.map((x) => (
-                <MenuItem key={x.collection.uid} value={x.collection.uid}>{x.metadata.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
           <Grid container direction="column" spacing={4} style={{ marginTop: "1.5rem", marginBottom: "1.5rem", paddingLeft: "0.5rem", paddingRight: "1rem" }}>
+            <Grid container item direction="row" spacing={2}>
+              <Grid item xs="auto">
+                <IconSaveTo style={{ paddingTop: "1rem" }} />
+              </Grid>
+
+              <Grid item>
+                <FormControl
+                  disabled={this.props.item !== undefined}
+                  style={styles.fullWidth}
+                >
+                  <Select
+                    name="collectionUid"
+                    value={this.state.collectionUid}
+                    variant="outlined"
+                    onChange={this.handleCollectionChange}
+                  >
+                    {this.props.collections.map((x) => (
+                      <MenuItem key={x.collection.uid} value={x.collection.uid}>{x.metadata.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+
             <Grid container item direction="row" spacing={2}>
               <Grid item xs="auto">
                 <IconPerson style={{ paddingTop: "1rem" }} />
