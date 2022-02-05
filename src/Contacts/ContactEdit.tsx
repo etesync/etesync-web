@@ -246,10 +246,21 @@ class ContactEdit extends React.PureComponent<PropsType> {
         ))
       );
 
-      this.state.phone = propToValueType(contact.comp, "tel");
-      this.state.email = propToValueType(contact.comp, "email");
-      this.state.address = propToValueType(contact.comp, "adr");
-      this.state.impp = propToValueType(contact.comp, "impp");
+      if (propToValueType(contact.comp, "tel").length > 0) {
+        this.state.phone = propToValueType(contact.comp, "tel");
+      }
+
+      if (propToValueType(contact.comp, "email").length > 0) {
+        this.state.email = propToValueType(contact.comp, "email");
+      }
+
+      if (propToValueType(contact.comp, "adr").length > 0) {
+        this.state.address = propToValueType(contact.comp, "adr");
+      }
+
+      if (propToValueType(contact.comp, "impp").length > 0) {
+        this.state.impp = propToValueType(contact.comp, "impp");
+      }
 
       const propToStringType = (comp: ICAL.Component, propName: string) => {
         const val = comp.getFirstPropertyValue(propName);
@@ -303,14 +314,22 @@ class ContactEdit extends React.PureComponent<PropsType> {
     });
   }
 
-  public removeValueType(name: string, idx: number) {
+  public removeValueType(name: string, idx: number, type?: string) {
     this.setState((prevState) => {
       const newArray = prevState[name].slice(0);
       newArray.splice(idx, 1);
-      return {
-        ...prevState,
-        [name]: newArray,
-      };
+
+      if (newArray.length < 1) {
+        return {
+          ...prevState,
+          [name]: [new ValueType(type)],
+        };
+      } else {
+        return {
+          ...prevState,
+          [name]: newArray,
+        };
+      }
     });
   }
 
@@ -452,7 +471,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
     setProperties("tel", this.state.phone);
     setProperties("email", this.state.email);
     setProperties("adr", this.state.address);
-    setProperties("impp", this.state.impp.map((x) => (
+    setProperties("impp", this.state.impp.filter((element) => element.value !== "").map((x) => (
       { type: x.type, value: x.type + ":" + x.value }
     )));
 
@@ -630,8 +649,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                     <Button
                       onClick={() => this.addValueType("phone")}
                       color="secondary"
-                      variant="outlined"
-                      style={{ height: "3.5rem", fontSize: "1em" }}
+                      size="small"
                     >
                       Add phone number
                     </Button>
@@ -692,8 +710,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                     <Button
                       onClick={() => this.addValueType("email")}
                       color="secondary"
-                      variant="outlined"
-                      style={{ height: "3.5rem", fontSize: "1em" }}
+                      size="small"
                     >
                       Add email address
                     </Button>
@@ -715,7 +732,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                       types={imppTypes}
                       style={{ ...styles.fullWidth }}
                       value={x}
-                      onClearRequest={(name: string) => this.removeValueType(name, idx)}
+                      onClearRequest={(name: string) => this.removeValueType(name, idx, "jabber")}
                       onChange={(name: string, type: string, value: string) => (
                         this.handleValueTypeChange(name, idx, { type, value })
                       )}
@@ -725,8 +742,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                     <Button
                       onClick={() => this.addValueType("impp", "jabber")}
                       color="secondary"
-                      variant="outlined"
-                      style={{ height: "3.5rem", fontSize: "1em" }}
+                      size="small"
                     >
                       Add impp address
                     </Button>
@@ -759,8 +775,7 @@ class ContactEdit extends React.PureComponent<PropsType> {
                     <Button
                       onClick={() => this.addValueType("address")}
                       color="secondary"
-                      variant="outlined"
-                      style={{ height: "3.5rem", fontSize: "1em" }}
+                      size="small"
                     >
                       Add address
                     </Button>
