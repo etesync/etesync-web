@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: © 2017 EteSync Authors
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: MPL-2.0
 
 // Disable some style eslint rules for things we can't control
 /* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/class-name-casing */
