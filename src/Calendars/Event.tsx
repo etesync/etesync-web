@@ -35,7 +35,7 @@ class Event extends React.PureComponent {
           <div><u>{this.props.item.location}</u></div>
         </PimItemHeader>
         <div style={style.content}>
-          <p style={{ wordWrap: "break-word" }}>{this.props.item.description}</p>
+          <p style={{ wordWrap: "break-word", whiteSpace: "pre-wrap" }}>{this.props.item.description}</p>
           {(this.props.item.attendees.length > 0) && (
             <div>Attendees: {this.props.item.attendees.map((x) => (x.getFirstValue())).join(", ")}</div>)}
         </div>
