@@ -8,9 +8,6 @@ import { useSelector, useDispatch } from "react-redux";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import Switch from "@material-ui/core/Switch";
 import InputLabel from "@material-ui/core/InputLabel";
 
 import { StoreState } from "../store";
@@ -173,8 +170,6 @@ export default React.memo(function Settings() {
   const dispatch = useDispatch();
   const settings = useSelector((state: StoreState) => state.settings);
 
-  const darkMode = !!settings.darkMode;
-
   function handleChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
@@ -228,18 +223,17 @@ export default React.memo(function Settings() {
           </Select>
         </FormControl>
         <h2>Dark mode</h2>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                color="primary"
-                checked={darkMode}
-                onChange={() => dispatch(setSettings({ ...settings, darkMode: !darkMode }))}
-              />
-            }
-            label="Dark mode"
-          />
-        </FormGroup>
+        <FormControl style={{ width: "15em" }}>
+          <Select
+            name="darkModeUserSelection"
+            value={settings.darkModeUserSelection}
+            onChange={handleChange}
+          >
+            <MenuItem value="auto">Auto</MenuItem>
+            <MenuItem value="dark">Dark</MenuItem>
+            <MenuItem value="light">Light</MenuItem>
+          </Select>
+        </FormControl>
       </Container>
     </>
   );
