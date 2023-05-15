@@ -146,9 +146,34 @@ export default function App() {
   const [errorsDialog, setErrorsDialog] = React.useState(false);
   const dispatch = useDispatch();
   const etebase = useCredentials();
-  const darkMode = useSelector((state: store.StoreState) => state.settings.darkMode);
+  const darkModeUserSelection = useSelector((state: store.StoreState) => state.settings.darkModeUserSelection);
   const fetchCount = useSelector((state: store.StoreState) => state.fetchCount);
   const errors = useSelector((state: store.StoreState) => state.errors);
+
+  function shouldBeDark(userSelection: string, browserPreference: boolean): boolean {
+    if (userSelection === "auto") {
+      return browserPreference;
+    } else if (userSelection === "dark") {
+      return true;
+    }
+    return false;
+  }
+
+  const [darkModeBrowserPreference, setDarkModeBrowserPreference] = React.useState(Boolean(window.matchMedia?.("(prefers-color-scheme: dark)").matches));
+  const handleBrowserDarkModePreferenceChange = React.useCallback((e) => {
+    setDarkModeBrowserPreference(e.matches);
+  }, []);
+  React.useEffect(() => {
+    window.matchMedia?.("(prefers-color-scheme: dark)").addEventListener("change", handleBrowserDarkModePreferenceChange);
+    return () => {
+      window.matchMedia?.("(prefers-color-scheme: dark)").removeEventListener("change", handleBrowserDarkModePreferenceChange);
+    };
+  }, [handleBrowserDarkModePreferenceChange]);
+
+  const [darkMode, setDarkMode] = React.useState(() => shouldBeDark(darkModeUserSelection, darkModeBrowserPreference));
+  React.useEffect(() => {
+    setDarkMode(shouldBeDark(darkModeUserSelection, darkModeBrowserPreference));
+  }, [darkModeUserSelection, darkModeBrowserPreference]);
 
   async function refresh() {
     const syncManager = SyncManager.getManager(etebase!);

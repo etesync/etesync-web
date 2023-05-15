@@ -240,7 +240,7 @@ export const messagesReducer = handleActions(
 // FIXME Move all the below (potentially the fetchCount ones too) to their own file
 export interface SettingsType {
   locale: string;
-  darkMode?: boolean;
+  darkModeUserSelection: string;
   taskSettings: {
     filterBy: string | null;
     sortBy: string;
@@ -255,7 +255,7 @@ export const settingsReducer = handleActions(
   },
   {
     locale: "en-gb",
-    darkMode: false,
+    darkModeUserSelection: "auto",
     taskSettings: {
       filterBy: null,
       sortBy: "smart",
