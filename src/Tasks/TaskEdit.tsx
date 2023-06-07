@@ -80,7 +80,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
   constructor(props: PropsType) {
     super(props);
     this.state = {
-      parentEntry: "",
+      parentEntry: props.item?.relatedTo ?? "",
       uid: "",
       title: "",
       status: TaskStatusType.NeedsAction,
@@ -552,8 +552,8 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
           entries={this.filterChildren()}
           orig={this.state.parentEntry}
           open={this.state.showSelectorDialog}
-          onConfirm={(entry) => console.log(entry)}
-          onCancel={() => this.setState({ openSelector: false })}
+          onConfirm={(entry) => this.setState({ showSelectorDialog: false, parentEntry: entry })}
+          onCancel={() => this.setState({ showSelectorDialog: false })}
         />
       </React.Fragment>
     );

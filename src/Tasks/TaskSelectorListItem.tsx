@@ -5,7 +5,6 @@ import React from "react";
 interface PropsType {
   entries: TaskType[];
   onClick: (uid: string) => void;
-  selected: string | null;
   thisEntry: TaskType;
 }
 
@@ -15,7 +14,6 @@ export default function TaskSelectorListItem(props: PropsType) {
   return (
     <ListItem
       primaryText={props.thisEntry.title}
-      selected={props.selected === props.thisEntry.uid}
       key={props.thisEntry.uid}
       onClick={() => props.onClick(props.thisEntry.uid)}
       nestedItems={tasks.map((e) => 
@@ -23,7 +21,6 @@ export default function TaskSelectorListItem(props: PropsType) {
           key={e.uid}
           entries={props.entries}
           onClick={props.onClick}
-          selected={props.selected}
           thisEntry={e}
         />
       )}

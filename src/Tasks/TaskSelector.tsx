@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { TaskType } from "../pim-types";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, List } from "@material-ui/core";
 import React from "react";
@@ -13,13 +12,6 @@ interface PropsType {
 }
 
 export default function TaskSelector(props: PropsType) {
-  const [itemId, setItemId] = useState<string | null>(props.orig);
-
-  const select = () => {
-    if (itemId) {
-      props.onConfirm(itemId);
-    }
-  };
 
   const itemList = props.entries.filter((e) => !e.relatedTo)
     .map((e) => 
@@ -27,8 +19,7 @@ export default function TaskSelector(props: PropsType) {
         key={e.uid}
         entries={props.entries}
         thisEntry={e}
-        onClick={setItemId}
-        selected={itemId}
+        onClick={props.onConfirm}
       />
     );
 
@@ -43,14 +34,8 @@ export default function TaskSelector(props: PropsType) {
         </List>
       </DialogContent>
       <DialogActions>
-        <Button color="primary" onClick={props.onCancel}>
-          Cancel
-        </Button>
         <Button color="primary" onClick={() => props.onConfirm(null)}>
           Clear
-        </Button>
-        <Button color="primary" onClick={select}>
-          Select
         </Button>
       </DialogActions>
     </Dialog>
