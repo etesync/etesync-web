@@ -72,7 +72,7 @@ export default function TasksMain() {
     history.goBack();
   }
 
-  const flatEntries = [];
+  const flatEntries: TaskType[] = [];
   for (const col of entries.values()) {
     for (const item of col.values()) {
       flatEntries.push(item);
@@ -113,6 +113,7 @@ export default function TasksMain() {
         exact
       >
         <TaskEdit
+          entries={flatEntries}
           collections={cachedCollections}
           onSave={onItemSave}
           onDelete={onItemDelete}
@@ -154,6 +155,7 @@ export default function TasksMain() {
                 exact
               >
                 <TaskEdit
+                  entries={flatEntries}
                   key={itemUid}
                   initialCollection={item.collectionUid}
                   item={item}

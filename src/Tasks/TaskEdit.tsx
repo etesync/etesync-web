@@ -42,8 +42,10 @@ import { History } from "history";
 import ColoredRadio from "../widgets/ColoredRadio";
 import RRule, { RRuleOptions } from "../widgets/RRule";
 import { CachedCollection } from "../Pim/helpers";
+import TaskSelector from "./TaskSelector";
 
 interface PropsType {
+  entries: TaskType[];
   collections: CachedCollection[];
   initialCollection?: string;
   item?: TaskType;
@@ -68,6 +70,8 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
     description: string;
     tags: string[];
     collectionUid: string;
+    showSelectorDialog: boolean;
+    parentEntry: string;
 
     error?: string;
     showDeleteDialog: boolean;
@@ -76,6 +80,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
   constructor(props: PropsType) {
     super(props);
     this.state = {
+      parentEntry: "",
       uid: "",
       title: "",
       status: TaskStatusType.NeedsAction,
@@ -85,6 +90,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
       description: "",
       tags: [],
       timezone: null,
+      showSelectorDialog: false,
 
       collectionUid: "",
       showDeleteDialog: false,
@@ -322,6 +328,17 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
             </Select>
           </FormControl>
 
+          <Button onClick={() => this.setState({ showSelectorDialog: true })} style={styles.fullWidth}>
+            Select parent task
+          </Button>
+          <TextField
+            style={styles.fullWidth}
+            label="Parent task"
+            name="parent"
+            disabled
+            value={this.props.entries.find((e) => e.uid === this.state.parentEntry)?.title ?? "None"}
+          />
+
           <FormControl style={styles.fullWidth}>
             <InputLabel>
               Status
@@ -492,6 +509,13 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
         >
           Are you sure you would like to delete this task?
         </ConfirmationDialog>
+        <TaskSelector
+          entries={this.props.entries}
+          orig=""
+          open={this.state.showSelectorDialog}
+          onConfirm={(entry) => console.log(entry)}
+          onCancel={() => this.setState({ openSelector: false })}
+        />
       </React.Fragment>
     );
   }
