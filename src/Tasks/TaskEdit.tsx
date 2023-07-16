@@ -71,7 +71,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
     tags: string[];
     collectionUid: string;
     showSelectorDialog: boolean;
-    parentEntry: string;
+    parentEntry: string | null;
 
     error?: string;
     showDeleteDialog: boolean;
@@ -150,6 +150,44 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
 
   }
 
+  public filterChildren() {
+    if (!this.props.item) {
+      return this.props.entries;
+    }
+    const idsToRemove: string[] = [this.props.item.uid];
+    const parentMap: {[itemId: string]: TaskType[]} = { "": [] };
+    for (const e of this.props.entries) {
+      if (e.uid === this.props.item.uid) {
+        continue;
+      }
+      if (!e.relatedTo) {
+        parentMap[""].push(e);
+      } else {
+        if (parentMap[e.relatedTo]) {
+          parentMap[e.relatedTo].push(e);
+        } else {
+          parentMap[e.relatedTo] = [e];
+        }
+      }
+    }
+    while (idsToRemove.length > 0) {
+      const current = idsToRemove.shift()!;
+      const children = parentMap[current];
+      if (!children) {
+        continue;
+      }
+      for (const c of children) {
+        idsToRemove.push(c.uid);
+      }
+      delete parentMap[current];
+    }
+    const ret: TaskType[] = [];
+    for (const k in parentMap) {
+      ret.push(...parentMap[k]);
+    }
+    return ret;
+  }
+
   public handleInputChange(event: React.ChangeEvent<any>) {
     const name = event.target.name;
     const value = event.target.value;
@@ -220,6 +258,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
     task.status = this.state.status;
     task.priority = this.state.priority;
     task.tags = this.state.tags;
+    task.relatedTo = this.state.parentEntry ?? undefined;
     if (startDate) {
       task.startDate = startDate;
     }
@@ -510,8 +549,8 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
           Are you sure you would like to delete this task?
         </ConfirmationDialog>
         <TaskSelector
-          entries={this.props.entries}
-          orig=""
+          entries={this.filterChildren()}
+          orig={this.state.parentEntry}
           open={this.state.showSelectorDialog}
           onConfirm={(entry) => console.log(entry)}
           onCancel={() => this.setState({ openSelector: false })}

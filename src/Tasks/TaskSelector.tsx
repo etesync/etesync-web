@@ -6,7 +6,7 @@ import TaskSelectorListItem from "./TaskSelectorListItem";
 
 interface PropsType {
   entries: TaskType[];
-  orig: string;
+  orig: string | null;
   open: boolean;
   onConfirm: (entry: string | null) => void;
   onCancel: () => void;
