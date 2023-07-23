@@ -43,7 +43,7 @@ import { History } from "history";
 import ColoredRadio from "../widgets/ColoredRadio";
 import RRule, { RRuleOptions } from "../widgets/RRule";
 import { CachedCollection } from "../Pim/helpers";
-import { Checkbox, IconButton, InputAdornment, List, ListItem, ListItemSecondaryAction, ListItemText, OutlinedInput } from "@material-ui/core";
+import { Checkbox, Grid, IconButton, InputAdornment, List, ListItem, ListItemSecondaryAction, ListItemText, OutlinedInput } from "@material-ui/core";
 import TaskSelector from "./TaskSelector";
 
 interface PropsType {
@@ -691,19 +691,31 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
           onOk={this.onOk}
           onCancel={() => this.setState({ showDeleteDialog: false })}
         >
-          Are you sure you would like to delete
-          {
-            this.state.deleteTarget ? ` "${this.state.deleteTarget.summary}"` : " this task"
-          }?
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={this.state.recursiveDelete}
-                onChange={(e) => this.setState({ recursiveDelete: e.target.checked })}
+          <Grid
+            container
+            direction="column"
+            alignItems="flex-start"
+            justify="flex-start"
+          >
+            <Grid item>
+              Are you sure you would like to delete
+              {
+                this.state.deleteTarget ? ` "${this.state.deleteTarget.summary}"` : " this task"
+              }?
+            </Grid>
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.recursiveDelete}
+                    onChange={(e) => this.setState({ recursiveDelete: e.target.checked })}
+                  />
+                }
+                label="Delete recursively"
               />
-            }
-            label="Delete recursively"
-          />
+            </Grid>
+          </Grid>
+          
         </ConfirmationDialog>
         <TaskSelector
           entries={this.filterChildren()}
