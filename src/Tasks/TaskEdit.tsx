@@ -20,6 +20,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
+import IconAdd from "@material-ui/icons/Add";
 import IconDelete from "@material-ui/icons/Delete";
 import IconCancel from "@material-ui/icons/Clear";
 import IconSave from "@material-ui/icons/Save";
@@ -42,9 +43,11 @@ import { History } from "history";
 import ColoredRadio from "../widgets/ColoredRadio";
 import RRule, { RRuleOptions } from "../widgets/RRule";
 import { CachedCollection } from "../Pim/helpers";
+import { IconButton, InputAdornment, List, ListItem, ListItemText, OutlinedInput } from "@material-ui/core";
 
 interface PropsType {
   collections: CachedCollection[];
+  directChildren: TaskType[];
   initialCollection?: string;
   item?: TaskType;
   onSave: (changes: PimChanges[], collectionUid: string) => Promise<void>;
@@ -59,6 +62,8 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
     title: string;
     status: TaskStatusType;
     priority: TaskPriorityType;
+    subtasks: string[];
+    tempSubtask: string;
     includeTime: boolean;
     start?: Date;
     due?: Date;
@@ -80,6 +85,8 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
       title: "",
       status: TaskStatusType.NeedsAction,
       priority: TaskPriorityType.Undefined,
+      subtasks: [],
+      tempSubtask: "",
       includeTime: false,
       location: "",
       description: "",
@@ -135,6 +142,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
     this.handleRRuleChange = this.handleRRuleChange.bind(this);
     this.onDeleteRequest = this.onDeleteRequest.bind(this);
     this.handleCloseToast = this.handleCloseToast.bind(this);
+    this.onSubtaskAdd = this.onSubtaskAdd.bind(this);
   }
 
   public handleChange(name: string, value: string | number | string[]) {
@@ -142,6 +150,14 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
       [name]: value,
     });
 
+  }
+
+  public onSubtaskAdd() {
+    const newTaskList = [...this.state.subtasks, this.state.tempSubtask];
+    this.setState({
+      subtasks: newTaskList,
+      tempSubtask: "",
+    });
   }
 
   public handleInputChange(event: React.ChangeEvent<any>) {
@@ -351,6 +367,51 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
               <ColoredRadio value={TaskPriorityType.Medium} label="Medium" color={colors.orange[600]} />
               <ColoredRadio value={TaskPriorityType.High} label="High" color={colors.red[600]} />
             </RadioGroup>
+          </FormControl>
+
+          <List dense>
+            {
+              this.props.directChildren.map((task) => {
+                return (
+                  <ListItem key={`subtask_${task.uid}`}>
+                    <ListItemText>
+                      {task.summary}
+                    </ListItemText>
+                  </ListItem>
+                );
+              })
+            }
+            {
+              this.state.subtasks.map((taskName, index) => {
+                return (
+                  <ListItem key={`subtask_${index}`}>
+                    <ListItemText>
+                      {taskName}
+                    </ListItemText>
+                  </ListItem>
+                );
+              })
+            }
+          </List>
+
+          <FormControl style={styles.fullWidth} variant="outlined">
+            <InputLabel>Add a new subtask</InputLabel>
+            <OutlinedInput
+              name="tempSubtask"
+              value={this.state.tempSubtask}
+              onChange={this.handleInputChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    edge="end"
+                    onClick={this.onSubtaskAdd}
+                  >
+                    <IconAdd />
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Add a new subtask"
+            />
           </FormControl>
 
           <FormControl style={styles.fullWidth}>
