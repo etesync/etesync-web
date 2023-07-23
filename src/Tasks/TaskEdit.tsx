@@ -35,7 +35,7 @@ import * as ICAL from "ical.js";
 
 import { getCurrentTimezone, mapPriority } from "../helpers";
 
-import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType, TaskTags } from "../pim-types";
+import { TaskType, TaskStatusType, timezoneLoadFromName, TaskPriorityType, TaskTags, PimChanges } from "../pim-types";
 
 import { History } from "history";
 
@@ -47,7 +47,7 @@ interface PropsType {
   collections: CachedCollection[];
   initialCollection?: string;
   item?: TaskType;
-  onSave: (item: TaskType, collectionUid: string, originalItem?: TaskType) => Promise<void>;
+  onSave: (changes: PimChanges[], collectionUid: string) => Promise<void>;
   onDelete: (item: TaskType, collectionUid: string) => void;
   onCancel: () => void;
   history: History<any>;
@@ -240,11 +240,11 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
 
     task.component.updatePropertyWithValue("last-modified", ICAL.Time.now());
 
-    this.props.onSave(task, this.state.collectionUid, this.props.item)
+    this.props.onSave([{ new: task, original: this.props.item }], this.state.collectionUid)
       .then(() => {
         const nextTask = task.finished && task.getNextOccurence();
         if (nextTask) {
-          return this.props.onSave(nextTask, this.state.collectionUid);
+          return this.props.onSave([{ new: nextTask }], this.state.collectionUid);
         } else {
           return Promise.resolve();
         }
