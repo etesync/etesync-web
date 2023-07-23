@@ -68,11 +68,13 @@ export default function TasksMain() {
     await itemSave(etebase, collection, items!, collectionUid, changes);
   }
 
-  async function onItemDelete(item: PimType, collectionUid: string) {
+  async function onItemDelete(item: PimType, collectionUid: string, redirect = true) {
     const collection = collections!.find((x) => x.uid === collectionUid)!;
     await itemDelete(etebase, collection, items!, [item], collectionUid);
 
-    history.push(routeResolver.getRoute("pim.tasks"));
+    if (redirect) {
+      history.push(routeResolver.getRoute("pim.tasks"));
+    }
   }
 
   function onCancel() {
