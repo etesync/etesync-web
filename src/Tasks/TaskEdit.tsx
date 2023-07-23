@@ -44,8 +44,10 @@ import ColoredRadio from "../widgets/ColoredRadio";
 import RRule, { RRuleOptions } from "../widgets/RRule";
 import { CachedCollection } from "../Pim/helpers";
 import { Checkbox, IconButton, InputAdornment, List, ListItem, ListItemSecondaryAction, ListItemText, OutlinedInput } from "@material-ui/core";
+import TaskSelector from "./TaskSelector";
 
 interface PropsType {
+  entries: TaskType[];
   collections: CachedCollection[];
   directChildren: TaskType[];
   initialCollection?: string;
@@ -95,6 +97,8 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
      * children are deleted in a recursive manner.
      */
     recursiveDelete: boolean;
+    showSelectorDialog: boolean;
+    parentEntry: string | null;
 
     error?: string;
     showDeleteDialog: boolean;
@@ -103,6 +107,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
   constructor(props: PropsType) {
     super(props);
     this.state = {
+      parentEntry: props.item?.relatedTo ?? "",
       uid: "",
       title: "",
       status: TaskStatusType.NeedsAction,
@@ -116,6 +121,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
       timezone: null,
       creatingSubtasks: false,
       recursiveDelete: false,
+      showSelectorDialog: false,
 
       collectionUid: "",
       showDeleteDialog: false,
@@ -183,6 +189,43 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
       subtasks: newTaskList,
       tempSubtask: "",
     });
+  }
+  public filterChildren() {
+    if (!this.props.item) {
+      return this.props.entries;
+    }
+    const idsToRemove: string[] = [this.props.item.uid];
+    const parentMap: {[itemId: string]: TaskType[]} = { "": [] };
+    for (const e of this.props.entries) {
+      if (e.uid === this.props.item.uid) {
+        continue;
+      }
+      if (!e.relatedTo) {
+        parentMap[""].push(e);
+      } else {
+        if (parentMap[e.relatedTo]) {
+          parentMap[e.relatedTo].push(e);
+        } else {
+          parentMap[e.relatedTo] = [e];
+        }
+      }
+    }
+    while (idsToRemove.length > 0) {
+      const current = idsToRemove.shift()!;
+      const children = parentMap[current];
+      if (!children) {
+        continue;
+      }
+      for (const c of children) {
+        idsToRemove.push(c.uid);
+      }
+      delete parentMap[current];
+    }
+    const ret: TaskType[] = [];
+    for (const k in parentMap) {
+      ret.push(...parentMap[k]);
+    }
+    return ret;
   }
 
   public handleInputChange(event: React.ChangeEvent<any>) {
@@ -261,6 +304,7 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
     task.status = this.state.status;
     task.priority = this.state.priority;
     task.tags = this.state.tags;
+    task.relatedTo = this.state.parentEntry ?? undefined;
     if (startDate) {
       task.startDate = startDate;
     }
@@ -399,6 +443,17 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
               ))}
             </Select>
           </FormControl>
+
+          <Button onClick={() => this.setState({ showSelectorDialog: true })} style={styles.fullWidth}>
+            Select parent task
+          </Button>
+          <TextField
+            style={styles.fullWidth}
+            label="Parent task"
+            name="parent"
+            disabled
+            value={this.props.entries.find((e) => e.uid === this.state.parentEntry)?.title ?? "None"}
+          />
 
           <FormControl style={styles.fullWidth}>
             <InputLabel>
@@ -650,6 +705,13 @@ export default class TaskEdit extends React.PureComponent<PropsType> {
             label="Delete recursively"
           />
         </ConfirmationDialog>
+        <TaskSelector
+          entries={this.filterChildren()}
+          orig={this.state.parentEntry}
+          open={this.state.showSelectorDialog}
+          onConfirm={(entry) => this.setState({ showSelectorDialog: false, parentEntry: entry })}
+          onCancel={() => this.setState({ showSelectorDialog: false })}
+        />
       </React.Fragment>
     );
   }

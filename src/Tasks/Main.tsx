@@ -133,6 +133,7 @@ export default function TasksMain() {
       >
         <TaskEdit
           directChildren={[]}
+          entries={flatEntries}
           collections={cachedCollections}
           onSave={onMultipleItemsSave}
           onDelete={onItemDelete}
@@ -175,6 +176,7 @@ export default function TasksMain() {
               >
                 <TaskEdit
                   directChildren={flatEntries.filter((t) => t.relatedTo === item.uid)}
+                  entries={flatEntries}
                   key={itemUid}
                   initialCollection={item.collectionUid}
                   item={item}
