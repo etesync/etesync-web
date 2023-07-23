@@ -68,15 +68,6 @@ export default function TasksMain() {
     await itemSave(etebase, collection, items!, collectionUid, changes);
   }
 
-  async function onItemDelete(item: PimType, collectionUid: string, redirect = true) {
-    const collection = collections!.find((x) => x.uid === collectionUid)!;
-    await itemDelete(etebase, collection, items!, [item], collectionUid);
-
-    if (redirect) {
-      history.push(routeResolver.getRoute("pim.tasks"));
-    }
-  }
-
   function onCancel() {
     history.goBack();
   }
@@ -85,6 +76,25 @@ export default function TasksMain() {
   for (const col of entries.values()) {
     for (const item of col.values()) {
       flatEntries.push(item);
+    }
+  }
+
+  async function onItemDelete(item: PimType, collectionUid: string, redirect = true, recursive = false) {
+    const collection = collections!.find((x) => x.uid === collectionUid)!;
+    if (recursive) {
+      let index = 0;
+      const deleteTarget = [item];
+      while (index < deleteTarget.length) {
+        const current = deleteTarget[index++];
+        const children = flatEntries.filter((i) => i.relatedTo === current.uid);
+        deleteTarget.push(...children);
+      }
+      await itemDelete(etebase, collection, items!, deleteTarget, collectionUid);
+    } else {
+      await itemDelete(etebase, collection, items!, [item], collectionUid);
+    }
+    if (redirect) {
+      history.push(routeResolver.getRoute("pim.tasks"));
     }
   }
 
