@@ -108,6 +108,7 @@ interface PropsType {
 export default function TaskList(props: PropsType) {
   const [showCompleted, setShowCompleted] = React.useState(false);
   const [showHidden, setShowHidden] = React.useState(false);
+  const [showOrphans, setShowOrphans] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
   const settings = useSelector((state: StoreState) => state.settings.taskSettings);
   const { filterBy, sortBy } = settings;
@@ -179,9 +180,28 @@ export default function TaskList(props: PropsType) {
     return true;
   });
 
+  if (showOrphans) {
+    /**
+     * `entries` currently contains top level tasks only. Keys of `subEntriesMap` contains
+     * ID of all parent tasks, whether they actuall exist or not.
+     * Therefore, orphans can be found by searching for all keys in `subEntriesMap` in
+     * `entries`. If the key is not in `entries`, this indicates that tasks with that
+     * key in `subEntriesMap` are orphaned tasks.
+     * This calculation is done only when `showOrphans` is enabled, so this should not cause
+     * too much overhead when this option is not on.
+     */
+    for (const key of subEntriesMap.keys()) {
+      if (entries.find((entry) => entry.uid === key)) {
+        continue;
+      } else {
+        entries.push(...subEntriesMap.get(key)!);
+      }
+    }
+  }
+
   function taskListItemFromTask(entry: TaskType) {
     const uid = entry.uid;
-
+    
     return (
       <TaskListItem
         key={uid}
@@ -213,6 +233,8 @@ export default function TaskList(props: PropsType) {
           setSearchTerm={setSearchTerm}
           showHidden={showHidden}
           setShowHidden={setShowHidden}
+          showOrphans={showOrphans}
+          setShowOrphans={setShowOrphans}
         />
       </Grid>
 

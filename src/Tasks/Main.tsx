@@ -10,7 +10,7 @@ import { Button, useTheme } from "@material-ui/core";
 import IconEdit from "@material-ui/icons/Edit";
 import IconChangeHistory from "@material-ui/icons/ChangeHistory";
 
-import { TaskType, PimType } from "../pim-types";
+import { TaskType, PimType, PimChanges } from "../pim-types";
 import { useCredentials } from "../credentials";
 import { useItems, useCollections } from "../etebase-helpers";
 import { routeResolver } from "../App";
@@ -57,15 +57,15 @@ export default function TasksMain() {
   }
 
   async function onItemSave(item: PimType, collectionUid: string, originalItem?: PimType): Promise<void> {
-    const collection = collections!.find((x) => x.uid === collectionUid)!;
-    await itemSave(etebase, collection, items!, item, collectionUid, originalItem);
+    await onMultipleItemsSave([{
+      original: originalItem,
+      new: item,
+    }], collectionUid);
   }
 
-  async function onItemDelete(item: PimType, collectionUid: string) {
+  async function onMultipleItemsSave(changes: PimChanges[], collectionUid: string): Promise<void> {
     const collection = collections!.find((x) => x.uid === collectionUid)!;
-    await itemDelete(etebase, collection, items!, item, collectionUid);
-
-    history.push(routeResolver.getRoute("pim.tasks"));
+    await itemSave(etebase, collection, items!, collectionUid, changes);
   }
 
   function onCancel() {
@@ -76,6 +76,25 @@ export default function TasksMain() {
   for (const col of entries.values()) {
     for (const item of col.values()) {
       flatEntries.push(item);
+    }
+  }
+
+  async function onItemDelete(item: PimType, collectionUid: string, redirect = true, recursive = false) {
+    const collection = collections!.find((x) => x.uid === collectionUid)!;
+    if (recursive) {
+      let index = 0;
+      const deleteTarget = [item];
+      while (index < deleteTarget.length) {
+        const current = deleteTarget[index++];
+        const children = flatEntries.filter((i) => i.relatedTo === current.uid);
+        deleteTarget.push(...children);
+      }
+      await itemDelete(etebase, collection, items!, deleteTarget, collectionUid);
+    } else {
+      await itemDelete(etebase, collection, items!, [item], collectionUid);
+    }
+    if (redirect) {
+      history.push(routeResolver.getRoute("pim.tasks"));
     }
   }
 
@@ -113,9 +132,10 @@ export default function TasksMain() {
         exact
       >
         <TaskEdit
+          directChildren={[]}
           entries={flatEntries}
           collections={cachedCollections}
-          onSave={onItemSave}
+          onSave={onMultipleItemsSave}
           onDelete={onItemDelete}
           onCancel={onCancel}
           history={history}
@@ -155,12 +175,13 @@ export default function TasksMain() {
                 exact
               >
                 <TaskEdit
+                  directChildren={flatEntries.filter((t) => t.relatedTo === item.uid)}
                   entries={flatEntries}
                   key={itemUid}
                   initialCollection={item.collectionUid}
                   item={item}
                   collections={cachedCollections}
-                  onSave={onItemSave}
+                  onSave={onMultipleItemsSave}
                   onDelete={onItemDelete}
                   onCancel={onCancel}
                   history={history}
