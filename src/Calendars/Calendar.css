@@ -7,3 +7,11 @@
     margin: 10px 0;
   }
 }
+
+/* tweak some colors for dark theme */
+.theme-dark .rbc-toolbar button:not(:focus):not(:hover):not(.rbc-active) {
+  color: #fff;
+}
+.theme-dark .rbc-now a, .theme-dark .rbc-today a {
+  color: #000;
+}
