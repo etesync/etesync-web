@@ -27,7 +27,7 @@ You can either self-host your own client to be served from your own server, or
 better yet, just run an instance locally.
 
 You can get the latest version of the web client from https://pim.etesync.com/etesync-web.tgz. This
-file is automatically generated on each deploy and is exactly the same as the delpoyed version.
+file is automatically generated on each deploy and is exactly the same as the deployed version.
 After fetching this file you need to extract it by e.g. running `tar -xzf etesync-web.tgz`, and then
 you can serve the files using your favourite web server. Please keep in mind that opening the HTML files
 directly in the browser is not supported.
