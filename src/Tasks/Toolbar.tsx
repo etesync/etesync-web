@@ -50,10 +50,12 @@ interface PropsType {
   setShowHidden: (hidden: boolean) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  showOrphans: boolean;
+  setShowOrphans: (orphans: boolean) => void;
 }
 
 export default function Toolbar(props: PropsType) {
-  const { showCompleted, setShowCompleted, searchTerm, setSearchTerm, showHidden, setShowHidden } = props;
+  const { showCompleted, setShowCompleted, searchTerm, setSearchTerm, showHidden, setShowHidden, showOrphans, setShowOrphans } = props;
 
   const [sortAnchorEl, setSortAnchorEl] = React.useState<null | HTMLElement>(null);
   const [optionsAnchorEl, setOptionsAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -154,6 +156,12 @@ export default function Toolbar(props: PropsType) {
             <ListItemText style={{ marginRight: "1.5em" }}>Show hidden</ListItemText>
             <ListItemSecondaryAction>
               <Switch checked={showHidden} onChange={(_e, checked) => setShowHidden(checked)} edge="end" />
+            </ListItemSecondaryAction>
+          </MenuItem>
+          <MenuItem>
+            <ListItemText style={{ marginRight: "1.5em" }}>Show missing parent</ListItemText>
+            <ListItemSecondaryAction>
+              <Switch checked={showOrphans} onChange={(_e, checked) => setShowOrphans(checked)} edge="end" />
             </ListItemSecondaryAction>
           </MenuItem>
         </Menu>

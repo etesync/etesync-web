@@ -9,7 +9,7 @@ import memoize from "memoizee";
 
 import * as Etebase from "etebase";
 
-import { PimType } from "../pim-types";
+import { PimChanges, PimType } from "../pim-types";
 import { getCollectionManager } from "../etebase-helpers";
 import { asyncDispatch, store } from "../store";
 import { itemBatch, appendError } from "../store/actions";
@@ -85,47 +85,52 @@ export function getDecryptItemsFunction<T extends PimType>(_colType: string, par
   );
 }
 
-export async function itemSave(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.Item>>, item: PimType, collectionUid: string, originalItem?: PimType): Promise<void> {
-  const itemUid = originalItem?.itemUid;
+export async function itemSave(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.Item>>, collectionUid: string, changes: PimChanges[]): Promise<void> {
   const colMgr = getCollectionManager(etebase);
   const itemMgr = colMgr.getItemManager(collection);
-
   const mtime = (new Date()).getTime();
-  const content = item.toIcal();
+  const itemList = [];
+  for (const item of changes) {
+    const itemUid = item.original?.itemUid;
+    const content = item.new.toIcal();
+    let eteItem;
+    if (itemUid) {
+      // Existing item
+      eteItem = items!.get(collectionUid)?.get(itemUid)!;
+      await eteItem.setContent(content);
+      const meta = eteItem.getMeta();
+      meta.mtime = mtime;
+      eteItem.setMeta(meta);
+    } else {
+      // New
+      const meta: Etebase.ItemMetadata = {
+        mtime,
+        name: item.new.uid,
+      };
+      eteItem = await itemMgr.create(meta, content);
+    }
+    itemList.push(eteItem);
+  }
+  await asyncDispatch(itemBatch(collection, itemMgr, itemList));
+}
 
-  let eteItem;
-  if (itemUid) {
-    // Existing item
-    eteItem = items!.get(collectionUid)?.get(itemUid)!;
-    await eteItem.setContent(content);
+export async function itemDelete(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.Item>>, itemsToDelete: PimType[], collectionUid: string) {
+  const colMgr = getCollectionManager(etebase);
+  const itemMgr = colMgr.getItemManager(collection);
+  const itemList = [];
+  for (const item of itemsToDelete) {
+    const itemUid = item.itemUid!;
+    const eteItem = items!.get(collectionUid)?.get(itemUid)!;
+    const mtime = (new Date()).getTime();
     const meta = eteItem.getMeta();
     meta.mtime = mtime;
     eteItem.setMeta(meta);
-  } else {
-    // New
-    const meta: Etebase.ItemMetadata = {
-      mtime,
-      name: item.uid,
-    };
-    eteItem = await itemMgr.create(meta, content);
+    eteItem.delete(true);
+    itemList.push(eteItem);
   }
+  
 
-  await asyncDispatch(itemBatch(collection, itemMgr, [eteItem]));
-}
-
-export async function itemDelete(etebase: Etebase.Account, collection: Etebase.Collection, items: Map<string, Map<string, Etebase.Item>>, item: PimType, collectionUid: string) {
-  const itemUid = item.itemUid!;
-  const colMgr = getCollectionManager(etebase);
-  const itemMgr = colMgr.getItemManager(collection);
-
-  const eteItem = items!.get(collectionUid)?.get(itemUid)!;
-  const mtime = (new Date()).getTime();
-  const meta = eteItem.getMeta();
-  meta.mtime = mtime;
-  eteItem.setMeta(meta);
-  eteItem.delete(true);
-
-  await asyncDispatch(itemBatch(collection, itemMgr, [eteItem]));
+  await asyncDispatch(itemBatch(collection, itemMgr, itemList));
 }
 
 interface PimFabPropsType {

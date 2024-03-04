@@ -17,6 +17,15 @@ export interface PimType {
   lastModified: ICAL.Time | undefined;
 }
 
+export interface PimChanges {
+  /**
+   * If `original` is defined, this indicates a change from the `original` to `new`.
+   * If not, the item in `new` is, well, new.
+   */
+  original?: PimType;
+  new: PimType;
+}
+
 export function timezoneLoadFromName(timezone: string | null) {
   if (!timezone) {
     return null;
