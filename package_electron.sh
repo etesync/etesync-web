@@ -2,6 +2,7 @@ mkdir build-electron
 echo "/*" > build-electron/.gitignore
 
 cp -r build/* build-electron/
+cp public/icon.png build-electron/icon.png
 
 cd build-electron
 
@@ -29,17 +30,19 @@ cat <<EOF > package.json
     "appId": "com.etesync.electron",
     "productName": "EteSync Electron",
     "mac": {
-      "icon": "icon512.png"
+      "icon": "icon.png"
     },
     "dmg": {},
     "mas": {},
     "win": {
-      "icon": "icon512.png",
+      "icon": "icon.png",
       "publisherName": "EteSync Ltd"
     },
     "appx": {},
     "portable": {},
-    "linux": {}
+    "linux": {
+      "icon": "icon.png"
+    }
   },
   "files": [
     "static/**/*",
@@ -51,7 +54,8 @@ cat <<EOF > package.json
     "index.html",
     "manifest.json",
     "precache-manifest.*.js",
-    "service-worker.js"
+    "service-worker.js",
+    "icon.png"
   ]
 }
 EOF
@@ -71,7 +75,8 @@ app.on('ready', () => {
   let mainWindow = new BrowserWindow({
     frame: true, resizable: true, transparent: false,
     width: 1600, height: 900,
-    webPreferences: { nodeIntegration: true }
+    webPreferences: { nodeIntegration: true },
+    icon: path.join(__dirname, 'icon.png')
   });
   mainWindow.center();
   mainWindow.setMenu(null);
