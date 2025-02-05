@@ -1,7 +1,6 @@
 mkdir build-electron
 echo "/*" > build-electron/.gitignore
 
-yarn build
 cp -r build/* build-electron/
 
 cd build-electron
@@ -47,18 +46,26 @@ cat <<EOF > package.json
     "!**/node_modules/*",
     "!**/dist/*",
     "!**/src/*",
-    "index.html"
+    "asset-manifest.json",
+    "favicon.ico",
+    "index.html",
+    "manifest.json",
+    "precache-manifest.*.js",
+    "service-worker.js"
   ]
 }
 EOF
 
-cat <<EOF > main.js
+cat <<'EOF' > main.js
 const { app, BrowserWindow, Menu, globalShortcut, protocol } = require('electron');
 const path = require('path');
 Menu.setApplicationMenu(null);
 app.on('ready', () => {
   protocol.interceptFileProtocol('http', (request, callback) => {
-    const url = request.url.substr('http://127.0.0.1/'.length)
+    var url = request.url.substr('http://127.0.0.1/'.length)
+    const rmparam = new RegExp("\\?([a-zA-Z0-9_-]+=[a-zA-Z0-9_-]+[&]{0,1})+");
+    url = url.replace(rmparam, '')
+    if( url === 'pim/events' ) url = 'index.html'
     callback({path: path.normalize(`${__dirname}/${url}`)})
   })
   let mainWindow = new BrowserWindow({
@@ -69,15 +76,19 @@ app.on('ready', () => {
   mainWindow.center();
   mainWindow.setMenu(null);
   mainWindow.setFullScreen(false);
-  mainWindow.loadURL('http://127.0.0.1/index.html')
+  mainWindow.loadURL('http://127.0.0.1/pim/events')
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 })
 EOF
 
 yarn install
 yarn build-linux
 
-echo "you can now try to run ./build-electron/dist/EteSync Electron-0.6.0.AppImage"
+echo "You can now try to run ./build-electron/dist/EteSync\ Electron-0.6.0.AppImage"
+echo "If you get an empty window and a console message like:"
+echo "Failed to load URL: http://127.0.0.1/pim/events with error: ERR_FILE_NOT_FOUND"
+echo "then make sure you successfully ran yarn build before running this script."
+echo "And feel free to delete ./build-electron. It will get re-generated when you re-run this script."
