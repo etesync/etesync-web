@@ -1,0 +1,83 @@
+mkdir build-electron
+echo "/*" > build-electron/.gitignore
+
+yarn build
+cp -r build/* build-electron/
+
+cd build-electron
+
+cat <<EOF > package.json
+{
+  "name": "etesync-electron",
+  "homepage": "https://www.etesync.com/",
+  "description": "EteSync - Encrypt Everything",
+  "version": "0.6.0",
+  "main": "main.js",
+  "devDependencies": {
+    "electron": "^13.1.9",
+    "electron-builder": "^22.11.7",
+    "electron-packager": "^15.3.0"
+  },
+  "scripts": {
+    "postinstall": "./node_modules/.bin/electron-builder install-app-deps",
+    "start": "./node_modules/.bin/electron .",
+    "build": "./node_modules/.bin/electron-builder build",
+    "build-mac": "./node_modules/.bin/electron-builder build --mac",
+    "build-win": "./node_modules/.bin/electron-builder build --win",
+    "build-linux": "./node_modules/.bin/electron-builder build --linux"
+  },
+  "build": {
+    "appId": "com.etesync.electron",
+    "productName": "EteSync Electron",
+    "mac": {
+      "icon": "icon512.png"
+    },
+    "dmg": {},
+    "mas": {},
+    "win": {
+      "icon": "icon512.png",
+      "publisherName": "EteSync Ltd"
+    },
+    "appx": {},
+    "portable": {},
+    "linux": {}
+  },
+  "files": [
+    "static/**/*",
+    "!**/node_modules/*",
+    "!**/dist/*",
+    "!**/src/*",
+    "index.html"
+  ]
+}
+EOF
+
+cat <<EOF > main.js
+const { app, BrowserWindow, Menu, globalShortcut, protocol } = require('electron');
+const path = require('path');
+Menu.setApplicationMenu(null);
+app.on('ready', () => {
+  protocol.interceptFileProtocol('http', (request, callback) => {
+    const url = request.url.substr('http://127.0.0.1/'.length)
+    callback({path: path.normalize(`${__dirname}/${url}`)})
+  })
+  let mainWindow = new BrowserWindow({
+    frame: true, resizable: true, transparent: false,
+    width: 1600, height: 900,
+    webPreferences: { nodeIntegration: true }
+  });
+  mainWindow.center();
+  mainWindow.setMenu(null);
+  mainWindow.setFullScreen(false);
+  mainWindow.loadURL('http://127.0.0.1/index.html')
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+  mainWindow.webContents.openDevTools()
+})
+EOF
+
+yarn install
+yarn build-linux
+
+echo "you can now try to run ./build-electron/dist/EteSync Electron-0.6.0.AppImage"
