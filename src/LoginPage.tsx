@@ -83,7 +83,7 @@ export default function LoginPage() {
         />
         <hr style={style.divider} />
         <ExternalLink style={style.isSafe} href="https://www.etesync.com/faq/#signed-pages">
-          <img alt="SignedPgaes badge" src={SignedPagesBadge} />
+          <img alt="SignedPages badge" src={SignedPagesBadge} />
         </ExternalLink>
         <ul>
           <li><ExternalLink style={style.isSafe} href={C.homePage}>
