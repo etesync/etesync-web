@@ -34,13 +34,15 @@ directly in the browser is not supported.
 
 If you are just serving the app locally, you could, for example, use the python built-in web server by
 running `python3 -m http.server` from inside the extracted `etesync-web` directory. If you plan on
-serving it from a server, please use a proper web server such as nginx.
+serving it from a server, please use a proper web server such as nginx: for example, you can use the 
+directive [`root`](https://nginx.org/en/docs/http/ngx_http_core_module.html#root) as `root /path/to/etesync-web/`
+where `etesync-web/` contains `index.html`.
 
 ## Building it yourself
 
 Before you can build the web app from source, you need to make sure you have `yarn` install.
 
-Then clone this repository `yarn`, run `yarn` and wait until all of the deps are installed.
+Then clone this repository, run `yarn` and wait until all of the deps are installed.
 
 Then it's recommended you run `yarn build` to build a production ready client you should serve
 (even if run locally!) and then just serve the `build` directory from a web server.
