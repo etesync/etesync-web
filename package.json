@@ -35,8 +35,8 @@
     "uuid": "^3.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "NODE_OPTIONS=\"--openssl-legacy-provider\" react-scripts start",
+    "build": "NODE_OPTIONS=\"--openssl-legacy-provider\" react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "eject": "react-scripts eject"
