@@ -6,10 +6,11 @@ import { Switch, Route, useHistory } from "react-router";
 
 import * as Etebase from "etebase";
 
-import { Button, useTheme } from "@material-ui/core";
+import { Button, IconButton, useTheme } from "@material-ui/core";
 import IconEdit from "@material-ui/icons/Edit";
 import IconDuplicate from "@material-ui/icons/FileCopy";
 import IconChangeHistory from "@material-ui/icons/ChangeHistory";
+import ArrowBack from "@material-ui/icons/ArrowBack";
 
 import { EventType, PimType } from "../pim-types";
 import { useCredentials } from "../credentials";
@@ -198,44 +199,56 @@ export default function CalendarsMain() {
                 path={routeResolver.getRoute("pim.events._id")}
                 exact
               >
-                <div style={{ textAlign: "right", marginBottom: 15 }}>
-                  <Button
-                    variant="contained"
-                    style={styles.button}
-                    onClick={() =>
-                      history.push(routeResolver.getRoute("pim.events._id.log", { itemUid: getItemNavigationUid(item) }))
-                    }
-                  >
-                    <IconChangeHistory style={styles.leftIcon} />
-                    Change History
-                  </Button>
+                <div style={{ marginBottom: 15, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <IconButton
+                      size="small"
+                      onClick={() => 
+                        history.push(routeResolver.getRoute(`pim.events`))
+                      }
+                    >
+                      <ArrowBack />
+                    </IconButton>
+                  </div>
+                  <div>
+                    <Button
+                      variant="contained"
+                      style={styles.button}
+                      onClick={() =>
+                        history.push(routeResolver.getRoute("pim.events._id.log", { itemUid: getItemNavigationUid(item) }))
+                      }
+                    >
+                      <IconChangeHistory style={styles.leftIcon} />
+                      Change History
+                    </Button>
 
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    disabled={readOnly}
-                    style={{ ...styles.button, marginLeft: 15 }}
-                    onClick={() =>
-                      history.push(routeResolver.getRoute("pim.events._id.edit", { itemUid: getItemNavigationUid(item) }))
-                    }
-                  >
-                    <IconEdit style={styles.leftIcon} />
-                    Edit
-                  </Button>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      disabled={readOnly}
+                      style={{ ...styles.button, marginLeft: 15 }}
+                      onClick={() =>
+                        history.push(routeResolver.getRoute("pim.events._id.edit", { itemUid: getItemNavigationUid(item) }))
+                      }
+                    >
+                      <IconEdit style={styles.leftIcon} />
+                      Edit
+                    </Button>
 
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    disabled={readOnly}
-                    style={{ ...styles.button, marginLeft: 15 }}
-                    onClick={() =>
-                      history.push(routeResolver.getRoute("pim.events._id.duplicate", { itemUid: getItemNavigationUid(item) }))
-                    }
-                  >
-                    <IconDuplicate style={styles.leftIcon} />
-                    Duplicate
-                  </Button>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      disabled={readOnly}
+                      style={{ ...styles.button, marginLeft: 15 }}
+                      onClick={() =>
+                        history.push(routeResolver.getRoute("pim.events._id.duplicate", { itemUid: getItemNavigationUid(item) }))
+                      }
+                    >
+                      <IconDuplicate style={styles.leftIcon} />
+                      Duplicate
+                    </Button>
 
+                  </div>
                 </div>
                 <Event item={item} />
               </Route>
