@@ -12,7 +12,7 @@
     "etebase": "^0.41.0",
     "fuse.js": "^5.0.9-beta",
     "ical.js": "^1.4.0",
-    "immutable": "^4.0.0-rc.12",
+    "immutable": "^4.3.8",
     "localforage": "^1.9.0",
     "memoizee": "^0.4.14",
     "moment": "^2.27.0",
