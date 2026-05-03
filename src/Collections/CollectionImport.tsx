@@ -23,7 +23,7 @@ interface PropsType {
 export default function CollectionImport(props: PropsType) {
   const [selectedCollection, setSelectedCollection] = React.useState<CachedCollection>();
 
-  const collectionMap = {
+  const collectionMap: Record<string, React.ReactNode[]> = {
     "etebase.vcard": [],
     "etebase.vevent": [],
     "etebase.vtodo": [],

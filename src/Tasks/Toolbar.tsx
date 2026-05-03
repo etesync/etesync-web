@@ -24,7 +24,7 @@ import { CachedCollection } from "../Pim/helpers";
 
 const transitionTimeout = 300;
 
-const transitionStyles = {
+const transitionStyles: Record<string, React.CSSProperties> = {
   entering: { visibility: "visible", width: "100%", overflow: "hidden" },
   entered: { visibility: "visible", width: "100%" },
   exiting: { visibility: "visible", width: "0%", overflow: "hidden" },

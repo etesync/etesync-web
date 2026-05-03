@@ -29,7 +29,7 @@ export function handleInputChange(self: React.Component, part?: string) {
     } else {
       self.setState({
         [part]: {
-          ...self.state[part],
+          ...(self.state as Record<string, any>)[part],
           ...newState,
         },
       });
@@ -37,7 +37,7 @@ export function handleInputChange(self: React.Component, part?: string) {
   };
 }
 
-export function insertSorted<T>(array: T[] = [], newItem: T, key: string) {
+export function insertSorted<T extends Record<string, any>>(array: T[] = [], newItem: T, key: string) {
   if (array.length === 0) {
     return [newItem];
   }

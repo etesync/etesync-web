@@ -5,7 +5,7 @@ import * as React from "react";
 import { withRouter } from "react-router";
 
 // FIXME: Should probably tie this to the history object, or at least based on the depth of the history
-const stateCache = {};
+const stateCache: Record<string, any> = {};
 
 type Constructor<T> = new(...args: any[]) => T;
 

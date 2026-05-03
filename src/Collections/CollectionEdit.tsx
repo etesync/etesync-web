@@ -126,7 +126,7 @@ export default function CollectionEdit(props: PropsType) {
     },
   };
 
-  const colTypes = {
+  const colTypes: Record<string, string> = {
     "etebase.vcard": "Address Book",
     "etebase.vevent": "Calendar",
     "etebase.vtodo": "Task List",

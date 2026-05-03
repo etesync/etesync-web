@@ -63,7 +63,7 @@ export default function Debug() {
           const col = colMgr.cacheLoad(cachedCollection);
           const itemMgr = colMgr.getItemManager(col);
 
-          const wantedEntries = {};
+          const wantedEntries: Record<string, boolean> = {};
           const wantAll = (itemsUids.trim() === "all");
           itemsUids.split("\n").forEach((ent) => wantedEntries[ent.trim()] = true);
 

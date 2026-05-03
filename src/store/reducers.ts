@@ -179,7 +179,7 @@ for (const func in actions) {
     func.startsWith("update") ||
     func.startsWith("delete")) {
 
-    fetchActions.push(actions[func]);
+    fetchActions.push((actions as Record<string, any>)[func]);
   }
 }
 

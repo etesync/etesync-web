@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "outDir": "build/dist",
     "module": "esnext",
     "target": "es5",
@@ -25,7 +26,6 @@
     "noUnusedParameters": false,
     "strictNullChecks": true,
     "strictBindCallApply": true,
-    "suppressImplicitAnyIndexErrors": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true

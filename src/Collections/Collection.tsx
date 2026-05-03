@@ -52,14 +52,14 @@ class Collection extends React.Component<PropsType> {
           {isAdmin &&
             <>
               <IconButton
-                component={Link}
+                component={Link as any}
                 title="Edit"
                 {...{ to: routeResolver.getRoute("collections._id.edit", { colUid: collection.uid }) }}
               >
                 <IconEdit />
               </IconButton>
               <IconButton
-                component={Link}
+                component={Link as any}
                 title="Members"
                 {...{ to: routeResolver.getRoute("collections._id.members", { colUid: collection.uid }) }}
               >

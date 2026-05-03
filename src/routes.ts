@@ -6,9 +6,9 @@ export interface RouteKeysType {
 }
 
 export class RouteResolver {
-  public routes: {};
+  public routes: Record<string, any>;
 
-  constructor(routes: {}) {
+  constructor(routes: Record<string, any>) {
     this.routes = routes;
   }
 

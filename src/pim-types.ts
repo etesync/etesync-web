@@ -22,9 +22,9 @@ export function timezoneLoadFromName(timezone: string | null) {
     return null;
   }
 
-  let zone = zones.zones[timezone];
-  if (!zone && zones.aliases[timezone]) {
-    zone = zones.zones[zones.aliases[timezone]];
+  let zone = (zones.zones as Record<string, any>)[timezone];
+  if (!zone && (zones.aliases as Record<string, any>)[timezone]) {
+    zone = (zones.zones as Record<string, any>)[(zones.aliases as Record<string, any>)[timezone].aliasTo];
   }
 
   if (!zone) {
@@ -185,6 +185,13 @@ export class TaskType extends EventType {
 
   constructor(comp?: ICAL.Component | null) {
     super(comp ? comp : new ICAL.Component("vtodo"));
+    // Override endDate — not applicable for tasks
+    Object.defineProperty(this, "endDate", {
+      get() {
+        return undefined as any;
+      },
+      configurable: true,
+    });
   }
 
   get finished() {
@@ -262,11 +269,6 @@ export class TaskType extends EventType {
 
   get relatedTo(): string | undefined {
     return this.component.getFirstPropertyValue("related-to");
-  }
-
-  get endDate() {
-    // XXX: A hack to override this as it shouldn't be used
-    return undefined as any;
   }
 
   get allDay() {

@@ -124,9 +124,9 @@ export default function RRule(props: PropsType) {
     }
 
     for (const key of Object.keys(updatedOptions)) {
-      const value = updatedOptions[key];
+      const value = (updatedOptions as Record<string, any>)[key];
       if ((value === undefined) || (value?.length === 0)) {
-        delete updatedOptions[key];
+        delete (updatedOptions as Record<string, any>)[key];
         continue;
       }
     }
@@ -206,7 +206,7 @@ export default function RRule(props: PropsType) {
             </Select>
           }
           {options.bysetpos &&
-            <Select value={options.bysetpos[0]}
+            <Select value={(options.bysetpos as number[])[0]}
               onChange={(event: React.FormEvent<{ value: unknown }>) => {
                 updateRule({ bysetpos: [Number((event.target as HTMLInputElement).value)] });
               }}>
@@ -224,7 +224,7 @@ export default function RRule(props: PropsType) {
         {options.freq === "MONTHLY" &&
           <TextField
             type="number"
-            value={options.bymonthday ? options.bymonthday[0] : undefined}
+            value={options.bymonthday ? (options.bymonthday as number[])[0] : undefined}
             label="Month day"
             style={styles.width}
             inputProps={{ min: 1, step: 1, max: 31 }}

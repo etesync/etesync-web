@@ -97,7 +97,7 @@ class GroupEdit extends React.PureComponent<PropsType> {
   public addValueType(name: string, _type?: string) {
     const type = _type ? _type : "home";
     this.setState((prevState) => {
-      const newArray = prevState[name].slice(0);
+      const newArray = (prevState as any)[name].slice(0);
       newArray.push(new ValueType(type));
       return {
         ...prevState,
@@ -108,7 +108,7 @@ class GroupEdit extends React.PureComponent<PropsType> {
 
   public removeValueType(name: string, idx: number) {
     this.setState((prevState) => {
-      const newArray = prevState[name].slice(0);
+      const newArray = (prevState as any)[name].slice(0);
       newArray.splice(idx, 1);
       return {
         ...prevState,
@@ -119,7 +119,7 @@ class GroupEdit extends React.PureComponent<PropsType> {
 
   public handleValueTypeChange(name: string, idx: number, value: ValueType) {
     this.setState((prevState) => {
-      const newArray = prevState[name].slice(0);
+      const newArray = (prevState as any)[name].slice(0);
       newArray[idx] = value;
       return {
         ...prevState,
@@ -135,7 +135,7 @@ class GroupEdit extends React.PureComponent<PropsType> {
   }
 
   public getCollectionGroups(collectionUid: string) {
-    const groups = {};
+    const groups: Record<string, any> = {};
     this.props.allGroups.forEach((group) => {
       if (collectionUid === group.collectionUid) {
         groups[group.fn] = null;

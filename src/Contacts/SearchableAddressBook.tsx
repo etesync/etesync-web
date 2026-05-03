@@ -15,7 +15,7 @@ import AddressBook from "./AddressBook";
 
 const useStyles = makeStyles((theme) => ({
   topBar: {
-    backgroundColor: theme.palette.primary[500],
+    backgroundColor: theme.palette.primary.main,
   },
 }));
 
